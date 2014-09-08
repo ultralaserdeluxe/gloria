@@ -1,0 +1,95 @@
+\usepackage[swedish]{babel}
+\usepackage[utf8]{inputenc}
+
+% Simple command I defined to allow me to mark TODO items in red
+\newcommand{\todo}[1] {\textbf{\textcolor{red}{#1}}}
+
+%% Headers och Footers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{\LIPSprojektnamn}
+\rhead{\today}
+\lfoot{\LIPSkursnamn \\ \LIPSdokumenttyp}
+\cfoot{\thepage}
+\rfoot{\LIPSprojektgrupp \\ \LIPSgruppadress}
+
+
+%% Titelsida
+\newcommand{\LIPSTitelsida}{%
+{\ }\vspace{45mm}
+\begin{center}
+  \textbf{\Huge \LIPSdokument}
+\end{center}
+\begin{center}
+  {\Large Redaktör: \LIPSredaktor}
+\end{center}
+\begin{center}
+  {\Large \textbf{Version \LIPSversion}}
+\end{center}
+\vfill
+\begin{center}
+  {\large Status}\\[1.5ex]
+  \begin{tabular}{|*{3}{p{40mm}|}}
+    \hline
+    Granskad & \LIPSgranskare & \LIPSgranskatdatum \\
+    \hline
+    Godkänd & \LIPSgodkannare & \LIPSgodkantdatum \\
+    \hline
+  \end{tabular}
+\end{center}
+\newpage
+}
+
+
+% Projektidentitet
+\newenvironment{LIPSprojektidentitet}{%
+{\ }\vspace{45mm}
+\begin{center}
+  {\Large PROJEKTIDENTITET}\\[0.5ex]
+  {\small
+  \LIPSartaltermin, \LIPSprojektgrupp\\
+  Linköpings Tekniska Högskola, MAI
+  }
+\end{center}
+\begin{center}
+  {\small Gruppdeltagare}\\
+%  \begin{tabular}{|p{30mm}|p{40mm}|p{35mm}|p{45mm}|}
+  \begin{tabular}{|l|l|p{25mm}|l|}
+    \hline
+    \textbf{Namn} & \textbf{Ansvar} & \textbf{Telefon} & \textbf{E-post} \\
+    \hline
+}%
+{%
+    \hline
+  \end{tabular}
+\end{center}
+\begin{center}
+  {\small
+    \textbf{E-postlista för hela gruppen}: \LIPSgruppadress\\
+    \textbf{Hemsida}: \LIPSgrupphemsida\\[1ex]
+    \textbf{Kund}: \LIPSkund\\
+    \textbf{Kontaktperson hos kund}: \LIPSkundkontakt\\
+    \textbf{Kursansvarig}: \LIPSkursansvarig\\
+    \textbf{Handledare}: \LIPShandledare\\
+  }
+\end{center}
+\newpage
+}
+\newcommand{\LIPSgruppmedlem}[4]{\hline {#1} & {#2} & {#3} & {#4} \\}
+
+%% Dokumenthistorik
+\newenvironment{LIPSdokumenthistorik}{%
+\begin{center}
+  Dokumenthistorik\\[1ex]
+  \begin{small}
+    \begin{tabular}{|l|l|p{60mm}|l|l|}
+      \hline
+      \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\
+      }%
+    {%
+      \hline
+    \end{tabular}
+  \end{small}
+\end{center}
+}
+\newcommand{\LIPSversionsinfo}[5]{\hline {#1} & {#2} & {#3} & {#4} & {#5} \\}

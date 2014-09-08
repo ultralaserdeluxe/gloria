@@ -1,0 +1,31 @@
+\section{Översikt av systemet}
+
+\subsection{Grov beskrivning av produkten}
+Systemet representerar en lagerrobot som ska kunna följa linjer och hitta stationer. Vid stationerna skall roboten kunna plocka upp och sätta ner paket. Systemet består av 4 moduler som styrs autonomt från DAD men som kan ta emot kommandon via blåtand.
+
+\subsection{Produktkomponenter}
+Den färdiga produkten kommer innehålla:
+Roboten
+Programvara (firmware, software)
+Teknisk dokumentation
+
+\subsection{Beroenden tilll andra system}
+Gloria behöver en pc för att kunna fjärrstyras
+
+
+\subsection{Ingående delsystem}
+DAD styr undermodulerna PROP, ARM och SEN som i sin tur styr sina individuella komponenter.
+
+\subsection{Avgränsningar}
+Roboten skall endast kunna köras på banor som följer banreglerna.
+
+\subsection{Designfilosofi}
+Funktionaliteten och driftsäkerheten av systemet prioriteras högst, dvs kunna leverera paketet till rätt plats utan problem.
+
+\subsection{generella krav på hela systemet}
+Roboten skall kunna färdas autonomt och smidigt längs en tejpbana (se Appendix A - Banregler).
+Stanna vid utmarkerade stationer.
+Plocka upp och sätta ner paket vid dessa stationer (manuellt).
+Ta emot kommandon (trådlöst) från en användare.
+Skicka sensor- samt debugdata (trådlöst) till användaren.
+Ska finnas programvara för att ta emot och skicka data till roboten.

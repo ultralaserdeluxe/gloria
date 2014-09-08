@@ -1,0 +1,82 @@
+\documentclass[titlepage, a4paper]{article}
+\input{layout.tex}
+
+\newcommand{\LIPSredaktor}{Hannes Snögren}
+\newcommand{\LIPSgranskare}{tomten}
+\newcommand{\LIPSversion}{0.0}
+\newcommand{\LIPSdokument}{Kravspecifikation}
+\newcommand{\LIPSdokumenttyp}{LIPS Kravspecifikation}
+\newcommand{\LIPSgranskatdatum}{2014-09-01}
+\newcommand{\LIPSgodkannare}{Du}
+\newcommand{\LIPSgodkantdatum}{2014-12-01}
+\newcommand{\LIPSkursnamn}{TSEA29}
+\newcommand{\LIPSprojektnamn}{Lagerrobot}
+\newcommand{\LIPSprojektgrupp}{Grupp 2}
+\newcommand{\LIPSgruppadress}{lol@hadderaj.nu}
+\newcommand{\LIPSartaltermin}{HT1, 2014}
+\newcommand{\LIPSgrupphemsida}{www.abc.se}
+\newcommand{\LIPSkund}{Tomas Svensson}
+\newcommand{\LIPSkundkontakt}{Sven}
+\newcommand{\LIPSkursansvarig}{Tomas Svensson}
+\newcommand{\LIPShandledare}{Tomas Svensson}
+
+\pagenumbering{roman}
+
+\begin{document}
+
+\LIPSTitelsida
+
+\begin{LIPSprojektidentitet}
+\LIPSgruppmedlem{Hannes}{Dokumentansvarig}{3}{@}
+\end{LIPSprojektidentitet}
+
+\newpage
+\tableofcontents	%Innehållsförteckning	
+%\listoffigures
+%\listoftables
+
+\newpage
+
+\begin{LIPSdokumenthistorik}
+\LIPSversionsinfo{0.0}{}{Allt!}{}{}
+\end{LIPSdokumenthistorik}
+
+\newpage
+\pagenumbering{arabic}	%Påbörja sidnumrering
+
+\input{Kravspec01}
+
+\input{Kravspec02}
+
+\input{Kravspec03}
+
+\input{Kravspec04}
+
+\input{Kravspec05}
+
+\input{Kravspec06}
+
+\input{Kravspec07}
+
+\input{Kravspec08}
+
+\input{Kravspec09}
+
+\input{Kravspec10}
+
+\input{Kravspec11}
+
+\input{Kravspec12}
+
+\input{Kravspec13}
+
+\input{Kravspec14}
+
+\input{Kravspec15}
+
+
+\appendix
+
+\input{Banregler}
+
+\end{document}
