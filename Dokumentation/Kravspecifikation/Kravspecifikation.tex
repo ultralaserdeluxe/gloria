@@ -1,6 +1,7 @@
 \documentclass[titlepage, a4paper]{article}
-\input{layout.tex}
+\input{layout.tex}	% Importera generella layout-strukturer
 
+% Information nödvändig för generella layout-strukturer
 \newcommand{\LIPSredaktor}{Hannes Snögren}
 \newcommand{\LIPSgranskare}{tomten}
 \newcommand{\LIPSversion}{0.0}
@@ -19,6 +20,9 @@
 \newcommand{\LIPSkundkontakt}{Sven}
 \newcommand{\LIPSkursansvarig}{Tomas Svensson}
 \newcommand{\LIPShandledare}{Tomas Svensson}
+
+% Dokument-specifika paket
+\usepackage{tabularx}
 
 \pagenumbering{roman}
 
@@ -78,5 +82,6 @@
 \appendix
 
 \input{Banregler}
+
 
 \end{document}

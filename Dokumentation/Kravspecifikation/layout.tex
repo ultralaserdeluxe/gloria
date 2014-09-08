@@ -1,7 +1,14 @@
 \usepackage[swedish]{babel}
 \usepackage[utf8]{inputenc}
+\usepackage{color}
 
-% Simple command I defined to allow me to mark TODO items in red
+% Sidformat
+\usepackage{a4wide}
+
+% Bättre bildtexter
+\usepackage[margin=10pt,font=small,labelfont=bf,labelsep=endash]{caption}
+
+% Enkelt kommando som låter mig attgöra-markera text
 \newcommand{\todo}[1] {\textbf{\textcolor{red}{#1}}}
 
 %% Headers och Footers
@@ -11,8 +18,7 @@
 \rhead{\today}
 \lfoot{\LIPSkursnamn \\ \LIPSdokumenttyp}
 \cfoot{\thepage}
-\rfoot{\LIPSprojektgrupp \\ \LIPSgruppadress}
-
+\rfoot{\LIPSprojektgrupp} % \\ \LIPSgruppadress}
 
 %% Titelsida
 \newcommand{\LIPSTitelsida}{%
@@ -52,8 +58,7 @@
   }
 \end{center}
 \begin{center}
-  {\small Gruppdeltagare}\\
-%  \begin{tabular}{|p{30mm}|p{40mm}|p{35mm}|p{45mm}|}
+  {\normalsize Gruppdeltagare}\\
   \begin{tabular}{|l|l|p{25mm}|l|}
     \hline
     \textbf{Namn} & \textbf{Ansvar} & \textbf{Telefon} & \textbf{E-post} \\
@@ -81,15 +86,31 @@
 \newenvironment{LIPSdokumenthistorik}{%
 \begin{center}
   Dokumenthistorik\\[1ex]
-  \begin{small}
+  %\begin{small}
     \begin{tabular}{|l|l|p{60mm}|l|l|}
       \hline
       \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\
       }%
     {%
-      \hline
+			\hline
     \end{tabular}
-  \end{small}
+  %\end{small}
 \end{center}
 }
 \newcommand{\LIPSversionsinfo}[5]{\hline {#1} & {#2} & {#3} & {#4} & {#5} \\}
+
+% Kravlistor
+\newenvironment{LIPSkravlista}{
+	\begin{center}
+		\begin{tabular}{| l | l | l | l |}
+			\hline
+			\textbf{Krav} & \textbf{Förändring} & \textbf{Beskrivning} & \textbf{Prioritet} \\\hline
+}
+{
+		\end{tabular}
+	\end{center}
+}
+
+\newcounter{LIPSkravnummer}
+\addtocounter{LIPSkravnummer}{1}
+\newcommand{\LIPSkrav}[4][Krav \arabic{LIPSkravnummer}]{{#1} & {#2} & {#3} & {#4} \stepcounter{LIPSkravnummer}\\\hline}
