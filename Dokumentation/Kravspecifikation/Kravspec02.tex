@@ -1,20 +1,48 @@
 \section{Översikt av systemet}
 
 \subsection{Grov beskrivning av produkten}
-Systemet representerar en lagerrobot som ska kunna följa linjer och hitta stationer. Vid stationerna skall roboten kunna plocka upp och sätta ner paket. Systemet består av 4 moduler som styrs autonomt från DAD men som kan ta emot kommandon via blåtand.
+Systemet representerar en lagerrobot som ska kunna navigera autonomt med hjälp av en tejplinje och hitta paketstationer. Armen och motorerna ska kunna styras manuellt av en användare.
 
 \subsection{Produktkomponenter}
-Den färdiga produkten kommer innehålla:
-Roboten
-Programvara (firmware, software)
-Teknisk dokumentation
+Den färdiga produkten kommer innehålla följande komponenter
+\begin{itemize}
+\item{Robot}
+\item{Programvara för robot}
+\item{Programvara för att styra roboten från en dator}
+\item{Teknisk dokumentation}
+\item{Användarhandledning}
+\end{itemize}
 
 \subsection{Beroenden tilll andra system}
-Gloria behöver en pc för att kunna fjärrstyras
-
+Gloria behöver en PC för att kunna fjärrstyras trådlöst.
 
 \subsection{Ingående delsystem}
-DAD styr undermodulerna PROP, ARM och SEN som i sin tur styr sina individuella komponenter.
+Systemet består av sex delsystem. En PC-modul som består av mjukvara för att styra roboten externt. En huvudmodul som styr fyra undermoduler: en kommunikationsmodul, en sensormodul, en armmodul och en motormodul. \\
+
+\tikzstyle{block} = [draw, fill=blue!20, rectangle, 
+    minimum height=3em, minimum width=6em]
+\tikzstyle{sum} = [draw, fill=blue!20, circle, node distance=1cm]
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+
+% The block diagram code is probably more verbose than necessary
+\begin{center}
+\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+    % We start by placing the blocks
+    \node [block] (PC) {PC};
+    \node [block, below of=PC, node distance=2cm] (Kommunikationsmodul) {Kommunikationsmodul};
+    \node [block, below of=Kommunikationsmodul, node distance=2cm] (Huvudmodul) {Huvudmodul};
+    \node [block, right of=Huvudmodul, node distance=3cm] (Motormodul) {Motormodul};
+    \node [block, below of=Huvudmodul, node distance=2cm] (Armmodul) {Armmodul};
+    \node [block, left of=Huvudmodul, node distance=3cm] (Sensormodul) {Sensormodul};
+    \draw [label=right:Blåtand] (PC) -- (Kommunikationsmodul);
+    \draw (Kommunikationsmodul) -- (Huvudmodul);
+    \draw (Huvudmodul) -- (Sensormodul);
+    \draw (Huvudmodul) -- (Motormodul);
+    \draw (Huvudmodul) -- (Armmodul);
+\end{tikzpicture}
+\end{center}
 
 \subsection{Avgränsningar}
 Roboten skall endast kunna köras på banor som följer banreglerna.
@@ -22,10 +50,14 @@ Roboten skall endast kunna köras på banor som följer banreglerna.
 \subsection{Designfilosofi}
 Funktionaliteten och driftsäkerheten av systemet prioriteras högst, dvs kunna leverera paketet till rätt plats utan problem.
 
-\subsection{generella krav på hela systemet}
-Roboten skall kunna färdas autonomt och smidigt längs en tejpbana (se Appendix A - Banregler).
-Stanna vid utmarkerade stationer.
-Plocka upp och sätta ner paket vid dessa stationer (manuellt).
-Ta emot kommandon (trådlöst) från en användare.
-Skicka sensor- samt debugdata (trådlöst) till användaren.
-Ska finnas programvara för att ta emot och skicka data till roboten.
+\subsection{Generella krav på hela systemet}
+
+\begin{LIPSkravlista}
+\LIPSkrav{Orginal}{Roboten skall kunna färdas autonomt längs en bana}{1}
+\LIPSkrav{Orginal}{Roboten skall stanna vid utmarkerade stationer}{1}
+\LIPSkrav{Orginal}{Roboten skall, styrd av en användare, kunna plocka upp och sätta ner paket}{1}
+\LIPSkrav{Orginal}{Roboten skall kunna ta emot kommandon trådlöst från en användare}{1}
+\LIPSkrav{Orginal}{Roboten skall skicka sensor- och debugdata trådlöst till användaren}{1}
+\LIPSkrav{Orginal}{Det skall finnas programvara för att skicka och ta emot data från roboten}{1}
+\LIPSkrav{Orginal}{Det skall finnas möjlighet att ställa om roboten i ett läge där den detekterar, plockar upp och lägger ner paket autonomt}{2}
+\end{LIPSkravlista}

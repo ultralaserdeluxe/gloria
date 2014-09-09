@@ -1,15 +1,14 @@
-\section{Delsystem 3}
+\section{Armmodul}
 
-\subsection{Inledande beskrivning av delsystem 3}
-ARM, sköter servon.
+\subsection{Inledande beskrivning av armmodul}
+Armmodulen sköter de servon som styr robotarmen.
 
 \subsection{Gränssnitt}
-Tvåvägskommunikation med DAD.
-Logiskt signal med servon.
+\begin{LIPSkravlista}
+\LIPSkrav{Orginal}{Armmodulen skall skicka och ta emot nödvändig data från huvudmodulen}{1}
+\end{LIPSkravlista}
 
-\subsection{Designkrav}
-Ska bestå av en AVR.
-Programmeras i programspråket C.
-
-\subsection{Funktionella krav för delsystem 3}
-Ska kunna reglera rörelsen “tillräckligt bra”.
+\subsection{Funktionella krav för armmodul}
+\begin{LIPSkravlista}
+\LIPSkrav{Orginal}{Armrörelser skall ske utan uppenbara ryck}{1}
+\end{LIPSkravlista}

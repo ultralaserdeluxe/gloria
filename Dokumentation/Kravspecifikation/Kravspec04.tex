@@ -1,15 +1,16 @@
-\section{Delsystem 2}
+\section{Motormodul}
 
-\subsection{Inledande beskrivning av delsystem 2}
-PROP, sköter motorerna.
+\subsection{Inledande beskrivning av motormodul}
+Motormodulen sköter framdrivningen av roboten.
 
 \subsection{Gränssnitt}
-Tvåvägskommunikation med DAD.
-Logiskt signal med motorerna, hantera indata från sensorer.
-
-\subsection{Designkrav}
-Ska bestå av en AVR.
-Programmeras i programspråket C.
+\begin{LIPSkravlista}
+\LIPSkrav{Orginal}{Motormodulen skall skicka och och ta emot nödvändig data från huvudmodulen}{1}
+\LIPSkrav{Orginal}{Motormodulen skall läsa sensordata}{1}
+\end{LIPSkravlista}
 
 \subsection{Funktionella krav för delsystem 2}
-Ska kunna reglera hastigheten “tillräckligt bra”.
+\begin{LIPSkravlista}
+\LIPSkrav{Orginal}{Motormodulen skall reglera hjulens hastighet}{1}
+\LIPSkrav{Orginal}{Motormodulen skall utföra kommandon från huvudmodulen}{1}
+\end{LIPSkravlista}

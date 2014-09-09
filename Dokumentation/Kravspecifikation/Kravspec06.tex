@@ -1,14 +1,15 @@
-\section{Delsystem 4}
-\subsection{Inledande beskrivning av delsystem 4}
-SEN, sköter de övriga sensorerna (ljusdioder, avståndsmätare, gyro etc).
+\section{Sensormodul}
+\subsection{Inledande beskrivning av sensormodul}
+Sensormodulen sköter sensordata för linjeföljare och avståndsmätare för detektering av objekt. 
 
 \subsection{Gränssnitt}
-Tvåvägskommunikation med DAD.
-Hantera indata från sensorer (digital- och analogsignal).
+\begin{LIPSkravlista}
+\LIPSkrav{Orginal}{Sensormodulen skall skicka och ta emot nödvändiga data från huvudmodulen}{1}
+\end{LIPSkravlista}
 
-\subsection{Designkrav}
-Ska bestå av en AVR.
-Programmeras i programspråket C.
-
-\subsection{Funktionella krav för delsystem 4}
-Vidarebefodra sensorernas data till DAD. 
+\subsection{Funktionella krav för sensormodul}
+\begin{LIPSkravlista}
+\LIPSkrav{Orginal}{Sensorerna skall kunna kalibreras}{1}
+\LIPSkrav{Orginal}{Sensorer skall kunna detektera linjen}{1}
+\LIPSkrav{Orginal}{Sensorer skall kunna detektera ett paket}{1}
+\end{LIPSkravlista}

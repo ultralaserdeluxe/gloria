@@ -3,26 +3,28 @@
 
 % Information nödvändig för generella layout-strukturer
 \newcommand{\LIPSredaktor}{Hannes Snögren}
-\newcommand{\LIPSgranskare}{tomten}
-\newcommand{\LIPSversion}{0.0}
+\newcommand{\LIPSgranskare}{Tomas Svensson}
+\newcommand{\LIPSversion}{0.1}
 \newcommand{\LIPSdokument}{Kravspecifikation}
 \newcommand{\LIPSdokumenttyp}{LIPS Kravspecifikation}
 \newcommand{\LIPSgranskatdatum}{2014-09-01}
-\newcommand{\LIPSgodkannare}{Du}
+\newcommand{\LIPSgodkannare}{Tomas Svensson}
 \newcommand{\LIPSgodkantdatum}{2014-12-01}
 \newcommand{\LIPSkursnamn}{TSEA29}
 \newcommand{\LIPSprojektnamn}{Lagerrobot}
 \newcommand{\LIPSprojektgrupp}{Grupp 2}
 \newcommand{\LIPSgruppadress}{lol@hadderaj.nu}
 \newcommand{\LIPSartaltermin}{HT1, 2014}
-\newcommand{\LIPSgrupphemsida}{www.abc.se}
+\newcommand{\LIPSgrupphemsida}{github.com/ultralaserdeluxe/gloria}
 \newcommand{\LIPSkund}{Tomas Svensson}
 \newcommand{\LIPSkundkontakt}{Sven}
 \newcommand{\LIPSkursansvarig}{Tomas Svensson}
-\newcommand{\LIPShandledare}{Tomas Svensson}
+\newcommand{\LIPShandledare}{}
 
 % Dokument-specifika paket
 \usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows}
 
 \pagenumbering{roman}
 
@@ -31,7 +33,12 @@
 \LIPSTitelsida
 
 \begin{LIPSprojektidentitet}
-\LIPSgruppmedlem{Hannes}{Dokumentansvarig}{3}{@}
+\LIPSgruppmedlem{Pål Kastman}{Projektledare}{}{}
+\LIPSgruppmedlem{Hannes Snögren}{Dokumentansvarig}{0706265064}{hansn314@student.liu.se}
+\LIPSgruppmedlem{Alexander Yngve}{Bitch}{}{}
+\LIPSgruppmedlem{Martin Söderén}{}{}{}
+\LIPSgruppmedlem{Daniel Wassing}{}{}{}
+\LIPSgruppmedlem{Dennis Ljung}{Narr}{}{}
 \end{LIPSprojektidentitet}
 
 \newpage
@@ -42,7 +49,7 @@
 \newpage
 
 \begin{LIPSdokumenthistorik}
-\LIPSversionsinfo{0.0}{}{Allt!}{}{}
+\LIPSversionsinfo{0.1}{2014-09-09}{Första utkast}{}{}
 \end{LIPSdokumenthistorik}
 
 \newpage
@@ -60,6 +67,8 @@
 
 \input{Kravspec06}
 
+\input{kommunikationsmodul}
+
 \input{Kravspec07}
 
 \input{Kravspec08}
@@ -70,15 +79,15 @@
 
 \input{Kravspec11}
 
-\input{Kravspec12}
+%\input{Kravspec12}
 
 \input{Kravspec13}
 
 \input{Kravspec14}
 
-\input{Kravspec15}
+%\input{Kravspec15}
 
-
+\newpage
 \appendix
 
 \input{Banregler}
