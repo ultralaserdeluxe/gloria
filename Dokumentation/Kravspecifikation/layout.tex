@@ -18,7 +18,7 @@
 \rhead{\today}
 \lfoot{\LIPSkursnamn \\ \LIPSdokumenttyp}
 \cfoot{\thepage}
-\rfoot{\LIPSprojektgrupp} % \\ \LIPSgruppadress}
+\rfoot{\LIPSprojektgrupp} % \\ \LIPSgrupphemsida}
 
 %% Titelsida
 \newcommand{\LIPSTitelsida}{%
@@ -97,18 +97,19 @@
   %\end{small}
 \end{center}
 }
+
 \newcommand{\LIPSversionsinfo}[5]{\hline {#1} & {#2} & {#3} & {#4} & {#5} \\}
 
 % Kravlistor
 \newenvironment{LIPSkravlista}{
-	\begin{center}
-		\begin{tabular}{| l | l | l | l |}
+	\center
+		\tabularx{\textwidth}{| l | l | X | c |}
 			\hline
 			\textbf{Krav} & \textbf{Förändring} & \textbf{Beskrivning} & \textbf{Prioritet} \\\hline
 }
 {
-		\end{tabular}
-	\end{center}
+		\endtabularx
+	\endcenter
 }
 
 \newcounter{LIPSkravnummer}

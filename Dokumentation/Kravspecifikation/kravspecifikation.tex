@@ -3,19 +3,19 @@
 
 % Information nödvändig för generella layout-strukturer
 \newcommand{\LIPSredaktor}{Hannes Snögren}
-\newcommand{\LIPSgranskare}{Tomas Svensson}
 \newcommand{\LIPSversion}{0.1}
 \newcommand{\LIPSdokument}{Kravspecifikation}
 \newcommand{\LIPSdokumenttyp}{LIPS Kravspecifikation}
-\newcommand{\LIPSgranskatdatum}{2014-09-01}
-\newcommand{\LIPSgodkannare}{Tomas Svensson}
-\newcommand{\LIPSgodkantdatum}{2014-12-01}
+\newcommand{\LIPSgranskatdatum}{}
+\newcommand{\LIPSgranskare}{}
+\newcommand{\LIPSgodkannare}{}
+\newcommand{\LIPSgodkantdatum}{}
 \newcommand{\LIPSkursnamn}{TSEA29}
 \newcommand{\LIPSprojektnamn}{Lagerrobot}
 \newcommand{\LIPSprojektgrupp}{Grupp 2}
 \newcommand{\LIPSgruppadress}{lol@hadderaj.nu}
 \newcommand{\LIPSartaltermin}{HT1, 2014}
-\newcommand{\LIPSgrupphemsida}{github.com/ultralaserdeluxe/gloria}
+\newcommand{\LIPSgrupphemsida}{http://github.com/ultralaserdeluxe/gloria}
 \newcommand{\LIPSkund}{Tomas Svensson}
 \newcommand{\LIPSkundkontakt}{Sven}
 \newcommand{\LIPSkursansvarig}{Tomas Svensson}
@@ -49,48 +49,48 @@
 \newpage
 
 \begin{LIPSdokumenthistorik}
-\LIPSversionsinfo{0.1}{2014-09-09}{Första utkast}{}{}
+\LIPSversionsinfo{0.1}{2014-09-09}{Första utkast}{hansn314}{}
 \end{LIPSdokumenthistorik}
 
 \newpage
 \pagenumbering{arabic}	%Påbörja sidnumrering
 
-\input{Kravspec01}
+\input{inledning}
 
-\input{Kravspec02}
+\input{översikt}
 
-\input{Kravspec03}
-
-\input{Kravspec04}
-
-\input{Kravspec05}
-
-\input{Kravspec06}
+\input{huvudmodul}
 
 \input{kommunikationsmodul}
 
-\input{Kravspec07}
+\input{sensormodul}
 
-\input{Kravspec08}
+\input{armmodul}
 
-\input{Kravspec09}
+\input{motormodul}
 
-\input{Kravspec10}
+\input{programvara}
 
-\input{Kravspec11}
+\input{prestandakrav}
 
-%\input{Kravspec12}
+\input{vidareutveckling}
 
-\input{Kravspec13}
+\input{tillforlitlighet}
 
-\input{Kravspec14}
+\input{ekonomi}
 
-%\input{Kravspec15}
+%\input{säkerhet}
+
+\input{leveranskrav}
+
+\input{dokumentation}
+
+%\input{kvalitetskrav}
 
 \newpage
 \appendix
 
-\input{Banregler}
+\input{banregler}
 
 
 \end{document}
