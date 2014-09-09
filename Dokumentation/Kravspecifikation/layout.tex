@@ -5,6 +5,9 @@
 % Sidformat
 \usepackage{a4wide}
 
+% Fixa Appendix-titlar
+\usepackage[titletoc,title]{appendix}
+
 % Bättre bildtexter
 \usepackage[margin=10pt,font=small,labelfont=bf,labelsep=endash]{caption}
 
@@ -14,11 +17,11 @@
 %% Headers och Footers
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\lhead{\LIPSprojektnamn}
+\lhead{}
 \rhead{\today}
 \lfoot{\LIPSkursnamn \\ \LIPSdokumenttyp}
 \cfoot{\thepage}
-\rfoot{\LIPSprojektgrupp} % \\ \LIPSgrupphemsida}
+\rfoot{\LIPSprojektgrupp \\ \LIPSprojektnamn}
 
 %% Titelsida
 \newcommand{\LIPSTitelsida}{%
@@ -103,7 +106,7 @@
 % Kravlistor
 \newenvironment{LIPSkravlista}{
 	\center
-		\tabularx{\textwidth}{| l | l | X | c |}
+		\tabularx{\textwidth}{| p{1.2cm} | p{1.9cm} | X | c |}
 			\hline
 			\textbf{Krav} & \textbf{Förändring} & \textbf{Beskrivning} & \textbf{Prioritet} \\\hline
 }
