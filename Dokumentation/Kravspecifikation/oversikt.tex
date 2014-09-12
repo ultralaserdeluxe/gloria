@@ -17,7 +17,7 @@ Den färdiga produkten kommer innehålla följande komponenter
 Gloria behöver en PC för att kunna fjärrstyras trådlöst.
 
 \subsection{Ingående delsystem}
-Systemet består av sex delsystem. En PC-modul som består av mjukvara för att styra roboten manuellt. En huvudmodul som styr fyra undermoduler: en kommunikationsmodul, en sensormodul, en armmodul och en motormodul. \\
+Systemet ska bestå av sex delsystem. En PC-modul som består av mjukvara för att styra roboten manuellt. En huvudmodul som styr fyra undermoduler: en kommunikationsmodul, en sensormodul, en armmodul och en motormodul. \\
 
 \tikzstyle{block} = [draw, fill=blue!20, rectangle, 
     minimum height=3em, minimum width=6em]
@@ -53,11 +53,15 @@ Funktionaliteten och driftsäkerheten av systemet prioriteras högst, dvs kunna 
 \subsection{Generella krav på hela systemet}
 
 \begin{LIPSkravlista}
-\LIPSkrav{Orginal}{Roboten skall kunna färdas autonomt längs en bana}{1}
-\LIPSkrav{Orginal}{Roboten skall stanna vid utmarkerade stationer}{1}
-\LIPSkrav{Orginal}{Roboten skall, styrd av en användare, kunna plocka upp och sätta ner paket}{1}
-\LIPSkrav{Orginal}{Roboten skall kunna ta emot kommandon trådlöst från en användare}{1}
-\LIPSkrav{Orginal}{Roboten skall skicka sensor- och debugdata trådlöst till användaren}{1}
+\LIPSkrav{Orginal}{Roboten skall kunna färdas autonomt längs en bana enligt Bilaga \ref{ap:a}}{1}
+\LIPSkrav{2014-09-12}{Roboten skall stanna vid utmarkerade stationer om den skall lasta av eller plocka upp ett paket}{1}
+\LIPSkrav{2014-09-12}{Roboten skall, styrd av en användare, kunna plocka upp}{1}
+\LIPSkrav{Orginal}{Roboten skall autonomt sätta ner paket på en tom station}{1}
+\LIPSkrav{Orginal}{Roboten skall kunna ta emot kommandon trådlöst från en dator}{1}
+\LIPSkrav{Orginal}{Roboten skall skicka sensor- och debugdata trådlöst till dator}{1}
 \LIPSkrav{Orginal}{Det skall finnas programvara för att skicka och ta emot data från roboten}{1}
-\LIPSkrav{Orginal}{Det skall finnas möjlighet att ställa om roboten i ett läge där den detekterar, plockar upp och lägger ner paket autonomt}{2}
+\LIPSkrav{Orginal}{Det skall finnas möjlighet att ställa om roboten i ett läge där den detekterar och plockar upp ett paket autonomt}{2}
+\LIPSkrav{2014-09-12}{Alla moduler skall vara enkelt utbytbara}{1}
+\LIPSkrav{2014-09-12}{Det skall finnas en brytare som startar roboten}{1}
+\LIPSkrav{2014-09-12}{Det skall finnas möjlighet att ställa roboten i antingen ett autonomt läge eller ett manuellt läge där roboten styrs av användaren}{1}
 \end{LIPSkravlista}

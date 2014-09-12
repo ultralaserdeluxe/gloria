@@ -1,11 +1,15 @@
 \section{Huvudmodul}
 
 \subsection{Inledande beskrivning av huvudmodul}
-Huvudmodulen utför alla nödvändiga beräkningar med data från undermodulerna. Huvudmodulen fattar beslut om någonting ska göras och skickar kommandon till undermodulerna om den är i autonomt läge, är den i manuellt läge fås kommandon från användaren. I båda lägena ska data skickas tillbaka till användaren.
+Huvudmodulen skall utföra alla nödvändiga beräkningar utifrån data från undermodulerna. Huvudmodulen fattar beslut om någonting skall göras och skickar kommandon till undermodulerna om den är i autonomt läge, är den i manuellt läge fås kommandon från användaren. I båda lägena skall data skickas tillbaka till användaren.
 
 \subsection{Gränssnitt}
 \begin{LIPSkravlista}
-\LIPSkrav{Orginal}{Huvudmodulen skall kunna skicka och ta emot nödvändiga data från de övriga modulerna}{1}
+\LIPSkrav{2014-09-12}{Huvudmodulen skall skicka kommandon till sensormodulen}{1}
+\LIPSkrav{2014-09-12}{Huvudmodulen skall ta emot sensordata från sensormodulen}{1}
+\LIPSkrav{2014-09-12}{Huvudmodulen skall skicka kommandon till armmodulen och motormodulen}{1}
+\LIPSkrav{2014-09-12}{Huvudmodulen skall skicka sensordata och driftinformation till kommunikationsmodulen}{1}
+\LIPSkrav{2014-09-12}{Huvudmodulen skall ta emot kommandon från kommunikationsmodulen}{1}
 \end{LIPSkravlista}
 
 \subsection{Funktionella krav för huvudmodul}	
