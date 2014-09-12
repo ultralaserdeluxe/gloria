@@ -17,7 +17,7 @@ Den färdiga produkten kommer innehålla följande komponenter
 Gloria behöver en PC för att kunna fjärrstyras trådlöst.
 
 \subsection{Ingående delsystem}
-Systemet ska bestå av sex delsystem. En PC-modul som består av mjukvara för att styra roboten manuellt. En huvudmodul som styr fyra undermoduler: en kommunikationsmodul, en sensormodul, en armmodul och en motormodul. \\
+Systemet ska bestå av fyra delsystem. En PC-modul som skall bestå av mjukvara för att styra roboten manuellt. En huvudmodul som skall kommunicera med PC-modulen, läser sensordata från sensormodulen och bestämmer vad styrmodulen skall göra. \\
 
 \tikzstyle{block} = [draw, fill=blue!20, rectangle, 
     minimum height=3em, minimum width=6em]
@@ -31,16 +31,12 @@ Systemet ska bestå av sex delsystem. En PC-modul som består av mjukvara för a
 \begin{tikzpicture}[auto, node distance=2cm,>=latex']
     % We start by placing the blocks
     \node [block] (PC) {PC};
-    \node [block, below of=PC, node distance=2cm] (Kommunikationsmodul) {Kommunikationsmodul};
-    \node [block, below of=Kommunikationsmodul, node distance=2cm] (Huvudmodul) {Huvudmodul};
-    \node [block, right of=Huvudmodul, node distance=3cm] (Motormodul) {Motormodul};
-    \node [block, below of=Huvudmodul, node distance=2cm] (Armmodul) {Armmodul};
+    \node [block, below of=PC, node distance=2cm] (Huvudmodul) {Huvudmodul};
+    \node [block, right of=Huvudmodul, node distance=3cm] (Styrmodul) {Styrmodul};
     \node [block, left of=Huvudmodul, node distance=3cm] (Sensormodul) {Sensormodul};
-    \draw [label=right:Blåtand] (PC) -- (Kommunikationsmodul);
-    \draw (Kommunikationsmodul) -- (Huvudmodul);
+    \draw [label=right:Blåtand] (PC) -- (Huvudmodul);
     \draw (Huvudmodul) -- (Sensormodul);
-    \draw (Huvudmodul) -- (Motormodul);
-    \draw (Huvudmodul) -- (Armmodul);
+    \draw (Huvudmodul) -- (Styrmodul);
 \end{tikzpicture}
 \end{center}
 
@@ -48,15 +44,15 @@ Systemet ska bestå av sex delsystem. En PC-modul som består av mjukvara för a
 Roboten skall endast kunna köras på banor som följer banreglerna.
 
 \subsection{Designfilosofi}
-Funktionaliteten och driftsäkerheten av systemet prioriteras högst, dvs kunna leverera paketet till rätt plats utan problem.
+Funktionaliteten och driftsäkerheten av systemet prioriteras högst, dvs kunna leverera ett paket till rätt plats utan problem.
 
 \subsection{Generella krav på hela systemet}
 
 \begin{LIPSkravlista}
-\LIPSkrav{Orginal}{Roboten skall kunna färdas autonomt längs en bana enligt Bilaga \ref{ap:a}}{1}
+\LIPSkrav{Orginal}{Roboten skall kunna färdas autonomt längs en bana enligt Bilaga \ref{banregler}}{1}
 \LIPSkrav{2014-09-12}{Roboten skall stanna vid utmarkerade stationer om den skall lasta av eller plocka upp ett paket}{1}
-\LIPSkrav{2014-09-12}{Roboten skall, styrd av en användare, kunna plocka upp}{1}
-\LIPSkrav{Orginal}{Roboten skall autonomt sätta ner paket på en tom station}{1}
+\LIPSkrav{2014-09-12}{Roboten skall, styrd av en användare, kunna plocka upp paket}{1}
+\LIPSkrav{Orginal}{Roboten skall autonomt sätta ner paket på en nästa tomma station}{1}
 \LIPSkrav{Orginal}{Roboten skall kunna ta emot kommandon trådlöst från en dator}{1}
 \LIPSkrav{Orginal}{Roboten skall skicka sensor- och debugdata trådlöst till dator}{1}
 \LIPSkrav{Orginal}{Det skall finnas programvara för att skicka och ta emot data från roboten}{1}
