@@ -1,6 +1,8 @@
 \usepackage[swedish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{color}
+\usepackage{graphicx}
+\usepackage{etoolbox}
 
 % Sidformat
 \usepackage{a4wide}
@@ -17,7 +19,7 @@
 %% Headers och Footers
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\lhead{}
+\lhead{\includegraphics[scale=0.12]{../logga/Logga1.png}}
 \rhead{\today}
 \lfoot{\LIPSkursnamn \\ \LIPSdokumenttyp}
 \cfoot{\thepage}
@@ -73,12 +75,12 @@
 \end{center}
 \begin{center}
   {\small
-    %\textbf{E-postlista för hela gruppen}: \LIPSgruppadress\\
-    \textbf{Hemsida}: \LIPSgrupphemsida\\[1ex]
-    \textbf{Kund}: \LIPSkund\\
-    \textbf{Kontaktperson hos kund}: \LIPSkundkontakt\\
-    \textbf{Kursansvarig}: \LIPSkursansvarig\\
-    \textbf{Handledare}: \LIPShandledare\\
+    \ifdef{\LIPSgruppadress}{\textbf{E-postlista för hela gruppen}: \LIPSgruppadress\\}{}
+    \ifdef{\LIPSgrupphemsida}{\textbf{Hemsida}: \LIPSgrupphemsida\\[1ex]}{}
+    \ifdef{\LIPSkund}{\textbf{Kund}: \LIPSkund\\}{}
+    \ifdef{\LIPSkundkontakt}{\textbf{Kontaktperson hos kund}: \LIPSkundkontakt\\}{}
+    \ifdef{\LIPSkursansvarig}{\textbf{Kursansvarig}: \LIPSkursansvarig\\}{}
+    \ifdef{\LIPShandledare}{\textbf{Handledare}: \LIPShandledare\\}{}
   }
 \end{center}
 \newpage
