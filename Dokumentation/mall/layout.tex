@@ -120,3 +120,36 @@
 \newcounter{LIPSkravnummer}
 \addtocounter{LIPSkravnummer}{1}
 \newcommand{\LIPSkrav}[4][Krav \arabic{LIPSkravnummer}]{{#1} & {#2} & {#3} & {#4} \stepcounter{LIPSkravnummer}\\\hline}
+
+% Milstolps-lista
+\newenvironment{LIPSmilstolpar}{
+	\center
+		\tabularx{\textwidth}{| p{1.2cm} | X | c |}
+			\hline
+			\textbf{Nr} & \textbf{Beskrivning} & \textbf{Datum} \\\hline
+}
+{
+		\endtabularx
+	\endcenter
+}
+
+\newcounter{LIPSstolpnummer}
+\addtocounter{LIPSstolpnummer}{1}
+\newcommand{\LIPSmilstolpe}[4][Krav \arabic{LIPSstolpnummer}]{{#1} & {#2} & {#3} \stepcounter{LIPSstolpnummer}\\\hline}
+
+% Aktivitets-lista
+\newenvironment{LIPSaktivitetslista}{
+	\center
+		\tabularx{\textwidth}{| p{0.3cm} | X |}
+			\hline
+			\textbf{Nr} & \textbf{Beskrivning} \\\hline
+}
+{
+		\endtabularx
+	\endcenter
+}
+
+\newcounter{LIPSaktivitetsnummer}
+\addtocounter{LIPSaktivitetsnummer}{1}
+\newcommand{\LIPSaktivitet}[4][\arabic{LIPSstolpnummer}]{{#1} & {#2} \stepcounter{LIPSstolpnummer}\\\hline}
+
