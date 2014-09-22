@@ -140,9 +140,9 @@
 % Aktivitets-lista
 \newenvironment{LIPSaktivitetslista}{
 	\center
-		\tabularx{\textwidth}{| p{0.3cm} | X |}
+		\tabularx{\textwidth}{| p{0.3cm} | X | c | c |}
 			\hline
-			\textbf{Nr} & \textbf{Beskrivning} \\\hline
+			\textbf{Nr} & \textbf{Beskrivning} & \textbf{Datum} & \textbf{Beroende av} \\\hline
 }
 {
 		\endtabularx
@@ -151,5 +151,5 @@
 
 \newcounter{LIPSaktivitetsnummer}
 \addtocounter{LIPSaktivitetsnummer}{1}
-\newcommand{\LIPSaktivitet}[4][\arabic{LIPSstolpnummer}]{{#1} & {#2} \stepcounter{LIPSstolpnummer}\\\hline}
+\newcommand{\LIPSaktivitet}[4][\arabic{LIPSstolpnummer}]{{#1} & {#2} & {#3} & {#4} \stepcounter{LIPSstolpnummer}\\\hline}
 

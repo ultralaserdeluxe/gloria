@@ -1,0 +1,22 @@
+Kort intro till LaTeX.
+
+Ett kapitel börjar med en rubrik, \section{Kapitelnamn} (Visas som 1 Kapitelnamn). Underrubriker skapas genom att man använder \subsection{Underkapitelnamn} (1.1 Underkapitelnamn) eller \subsubsection{Underunderkapitelnamn} (1.1.1 Underunderkapitelnamn).
+
+Oformatterad brödtext skrivs som om det vore ett .txt-dokument med skillnaden att ny rad fås av att skriva \\ eller \newline. 
+
+Kommentarer kan skrivas genom att man har ett % i början av raden.
+
+Bilder infogas genom att använda följande format:
+\begin{figure}[h]
+\caption{Bildtitel} % Frivilligt 
+\center
+\includegraphics[scale=0.6]{filnamn} % Scale ändras så att bilden blir lagomt stor
+\endcenter
+\caption{Bildtext}
+\end{figure}
+
+Mallar har blivit byggda på ett sådant sätt att det är en masterfil som importerar varje modul/sektion/kapitel från mindre filer. Det är alltså bara huvudfilen som innehåller headers, imports och liknande. Det går förstås utmärkt att lägga till ytterligare imports än de jag har lagt till, om man skulle vilja. Kom ihåg att committa det bara. Det är gjort såhär för att göra det möjligt för oss att samtidigt jobba på flera delar av ett dokument samtidigt utan att det ska bli kaos på git-en.
+
+Det betyder att för att se vad du faktiskt skriver och hur det formatteras, så får du dra ner hela den aktuella dokument-mappen samt mall-mappen (innehåller filer som används i alla dokument) och sedan kompilera main-filen (kravspec.tex, systemskiss.tex osv).
+
+Det går kanon att skriva .tex-filer i anteckningar, emacs eller motsvarande. Vill man ha något mer fancy fungerar t.ex Gummi fint för Debian-distros eller TeXMaker för Windows. Alternativt kika på http://en.wikipedia.org/wiki/Comparison_of_TeX_editors.
