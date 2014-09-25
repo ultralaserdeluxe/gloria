@@ -6,7 +6,7 @@
 %\begin{document}
 
 \section{Sensormodulen}
-Sensormodulen har som uppgift att läsa in data från roboten sensorer, omvandla dem om det är nödvändigt och vidarebefodra dom till huvudmodulen. För att roboten ska kunna hitta behöver den först veta vart den är och till detta så används två stycken linjesensor. För att kunna detektera paket kommer roboten på var sin sida ha två avståndssensorer. Om det finns tid så ska det sitta en linjesensor på armen för att kunna detektera formen på paket.
+Sensormodulen har som uppgift att läsa in data från robotens sensorer, omvandla dem om det är nödvändigt och vidarebefodra dem till huvudmodulen. För att roboten ska kunna hitta behöver den först veta vart den är och till detta så används två stycken linjesensorer. För att kunna detektera paket kommer roboten på var sin sida ha två avståndssensorer. Om det finns tid så ska det sitta en linjesensor på armen för att kunna detektera formen på paket vilket möjligör utökning till autonom upplockning.
 
 \subsection{Reflexsensormodul}
 För att kunna beräkna vilken vinkel roboten har i förhållandet till linjen som den följer så har den en reflexmodul fram och en bak. Dessa består av 11 stycken reflexdetektorer som består av en lysdiod och en ljuskänslig transistor. Varje detektor har en enable ingång som slår på ljusdioden och en OUT utgång som ger en analog signal mellan 0V och 5V. Dessa kommer läsas av var för sig och när en detektorer inte läses av kommer enable vara låg för att inte påverka närliggande detektorer samt för att de inte ska överhettas. Avläsningen kommer att ska med två muxar av typen MC14067B vilket är en analog mux med 16 kanaler.
@@ -31,7 +31,6 @@ För att kunna detektera om det är ett paket på någon sida av roboten vid sta
 \item skicka värden till huvudmodulen
 \end{itemize}
 \subsection{Flödesschema}
-\centerline{\includegraphics[scale=0.5]{sensorflow}}
-
-
+\centerline{\includegraphics[scale=0.4]{sensorflow}}
+\centerline{Flödesschema för sensormodulen}
 %\end{document}

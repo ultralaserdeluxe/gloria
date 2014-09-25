@@ -26,12 +26,11 @@ Robotarmen består av 7 servon av modell AX12-A. Dessa styrs genom att en målvi
 \subsubsection{Arbetsblock}
 
 \begin{itemize}
-\item Ta emot kommandon från huvudmodulen om vilka x,y,z koordinater armen ska till
-\item Omvandla x,y,z koordinater till vinklar hos servona 
+\item Ta emot kommandon från huvudmodulen om vilka vinklar alla servon ska ha
 \item Kolla om armen kommer röra sig igenom förbjuden rymd och beräkna en alternativ väg
 \item Skicka kommandon till servona och se till så att de rör sig mjukt
 \end{itemize}
 
 \subsection{Processor}
 
-Eftersom motorenheten kommunicerar med huvudmodulen genom UART kommer kommandon att tolkas med avbrott.
+Eftersom motorenheten kommunicerar med huvudmodulen genom UART kommer kommandon att tolkas med avbrott. Förslagsvis ska en Atmega16 microcontroller användas.
