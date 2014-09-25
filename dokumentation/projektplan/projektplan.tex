@@ -29,6 +29,9 @@
 
 \pagenumbering{roman}
 
+
+\DeclareGraphicsRule{.2.pdf}{pdf}{*}{}
+
 \begin{document}
 
 \LIPSTitelsida
@@ -80,7 +83,7 @@
 
 \input{projektplan-milstolpar}
 
-% \input{projektplan-aktiviteter}
+%\input{projektplan-aktiviteter}
 
 \input{projektplan-tidplan}
 
@@ -108,6 +111,13 @@ Följande två dokument är mallar avsedda för projektmöten.
 \includepdf[pages=-]{../motesprotokoll/motesmall1.pdf}
 
 \includepdf[pages=-]{../motesprotokoll/motesmall2.pdf}
+
+
+\newpage
+\section{Tidsplan}
+\center
+\includegraphics[angle=90, scale=0.7]{../tidsplan/tidsplan_v0.2.pdf}
+
 
 \end{appendices}
 
