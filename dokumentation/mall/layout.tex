@@ -10,6 +10,9 @@
 % Fixa Appendix-titlar
 \usepackage[titletoc,title]{appendix}
 
+% Bättre tabeller
+\usepackage{tabularx}
+
 % Bättre bildtexter
 \usepackage[margin=10pt,font=small,labelfont=bf,labelsep=endash]{caption}
 
@@ -124,7 +127,7 @@
 % Milstolps-lista
 \newenvironment{LIPSmilstolpar}{
 	\center
-		\tabularx{\textwidth}{| p{1.2cm} | X | c |}
+		\tabularx{\textwidth}{| p{1.2cm} | X | l |}
 			\hline
 			\textbf{Nr} & \textbf{Beskrivning} & \textbf{Datum} \\\hline
 }
@@ -135,7 +138,8 @@
 
 \newcounter{LIPSstolpnummer}
 \addtocounter{LIPSstolpnummer}{1}
-\newcommand{\LIPSmilstolpe}[4][Krav \arabic{LIPSstolpnummer}]{{#1} & {#2} & {#3} \stepcounter{LIPSstolpnummer}\\\hline}
+%\newcommand{\LIPSmilstolpe}[3][Krav \arabic{LIPSstolpnummer}]{{#1} & {#2} & {#3} \stepcounter{LIPSstolpnummer}\\\hline}
+\newcommand{\LIPSmilstolpe}[3]{{#1} & {#2} & {#3} \\\hline}
 
 % Aktivitets-lista
 \newenvironment{LIPSaktivitetslista}{
@@ -151,5 +155,5 @@
 
 \newcounter{LIPSaktivitetsnummer}
 \addtocounter{LIPSaktivitetsnummer}{1}
-\newcommand{\LIPSaktivitet}[4][\arabic{LIPSstolpnummer}]{{#1} & {#2} & {#3} & {#4} \stepcounter{LIPSstolpnummer}\\\hline}
-
+% \newcommand{\LIPSaktivitet}[4][\arabic{LIPSstolpnummer}]{{#1} & {#2} & {#3} & {#4} \stepcounter{LIPSstolpnummer}\\\hline}
+\newcommand{\LIPSaktivitet}[4]{{#1} & {#2} & {#3} & {#4} \\\hline}
