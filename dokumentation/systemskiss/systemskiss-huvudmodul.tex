@@ -5,13 +5,21 @@ Modulen ska förslagsvis bestå av en enkortsdator av modell Beagleboard. Den ha
 \subsection{Autonomt läge}
 När roboten är satt i autonomt läge kommer all styrning skötas av en algoritm i huvudmodulen, med undantag för upphämtning av paket där användaren styr armen. Detta är en väldigt kritisk del då detta är denna algoritm som avgör robotens beteende och som sedan kommer leda till att den kan fullfölja sina uppgifter. Troligtvis kommer en stor del av tiden läggas på att felsöka och optimera algoritmen.
 För att roboten ska kunna färdas framåt smidigt så kommer den behöva någon slags reglering. Förslagsvis ska en PD reglering implementeras som arbetar tidsdiskret. Detta gör att man måste sampla data från linjesensorerna med att visst intervall. Detta intervall är ej bestämt än.
-\newline
-\newline
-\centerline{\includegraphics[scale=0.6]{Styrlogik.pdf}}
-\centerline{Flödesschema för huvudmodules styralgoritm}
-\newline
-\newline
-Ovanstående bild är en visualisering av hur det autonoma läget kommer att styras. Med hjälp av två stycken flaggor, Upplockning och Avplockning, kan systemet avgöra om den ska plocka upp eller lämna av ett paket eller bara fortsätta köra framåt längs banan. När Upplockning är satt till "Ja" väntar systemet på att användaren ska styra armen och sedan skicka ett "färdigt-kommando".
+%\newline
+%\newline
+%\centerline{\includegraphics[scale=0.6]{Styrlogik.pdf}}
+%\centerline{Flödesschema för huvudmodules styralgoritm}
+%\newline
+%\newline
+
+
+\begin{figure}[h]
+\center
+\includegraphics[scale=0.2]{Styrlogik.png}
+\caption{Flödesschema för huvudmodulens styralgoritm.} \label{systemskiss:autonomtschema}
+\end{figure}
+
+Figur \ref{systemskiss:autonomtschema} är en visualisering av hur det autonoma läget kommer att styras. Med hjälp av två stycken flaggor, Upplockning och Avplockning, kan systemet avgöra om den ska plocka upp eller lämna av ett paket eller bara fortsätta köra framåt längs banan. När Upplockning är satt till "Ja" väntar systemet på att användaren ska styra armen och sedan skicka ett "färdigt-kommando".
 \subsubsection{Arbetsblock}
 \begin{itemize}
 \item Vänta på startsignal
