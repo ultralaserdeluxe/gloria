@@ -6,6 +6,7 @@ På plattformen kommer tre moduler att installeras:
 \item Styrmodul
 \item Sensormodul
 \end{itemize}
+Huvudmodulen kommer troligvis bestå av en Beagleboard-xM. Sensormodulen och styrmodulen ska förslagsvis bestå av varsin Atmega16.
 \subsection{Kommunikation}
 Kommunikationen mellan Huvudmodulen, styrmodulen och sensormodulen kommer förslagsvis att ske över UART. Huvudmodulen kommer isåfall ha två stycken USB-RS232 konverterare som kommer kopplas till varsin modul. Kommunikationen från huvudmodulen till PC kommer att ske över Bluetooth. Förslaget är att sätta upp ett PAN (PERSONAL AREA NETWORK) mellan PC:n och huvudmodulen. Detta möjliggör kommunikation över TCP/IP protokollet.
 %\newline

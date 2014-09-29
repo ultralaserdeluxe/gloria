@@ -1,7 +1,7 @@
 
 \section{Styrenhet}
 
-Styrenheten har till uppgift att driva de motorer som driver hjulen och de servon som styr armen.
+Styrenheten har till uppgift att driva de motorer som driver hjulen och de servon som styr armen.Eftersom styrenheten kommunicerar med huvudmodulen genom UART kommer kommandon att tolkas med avbrott. Förslagsvis ska en Atmega16 microcontroller användas
 
 \subsection{Framdrivning}
 
@@ -35,7 +35,3 @@ Robotarmen består av 7 servon av modell AX12-A. Dessa styrs genom att en målvi
 \item Kolla om armen kommer röra sig igenom förbjuden rymd och beräkna en alternativ väg
 \item Skicka kommandon till servona och se till så att de rör sig mjukt
 \end{itemize}
-
-\subsection{Processor}
-
-Eftersom motorenheten kommunicerar med huvudmodulen genom UART kommer kommandon att tolkas med avbrott. Förslagsvis ska en Atmega16 microcontroller användas.
