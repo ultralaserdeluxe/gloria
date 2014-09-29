@@ -23,7 +23,7 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \lhead{\includegraphics[scale=0.12]{../mall/Logga1.png}}
-\rhead{\today}
+\rhead{\ifdef{\LIPSutfardare}{Utfärdat av \LIPSutfardare \\\today}\today}
 \lfoot{\LIPSkursnamn \\ \LIPSdokumenttyp}
 \cfoot{\thepage}
 \rfoot{\LIPSprojektgrupp \\ \LIPSprojektnamn}
@@ -157,3 +157,36 @@
 \addtocounter{LIPSaktivitetsnummer}{1}
 % \newcommand{\LIPSaktivitet}[4][\arabic{LIPSstolpnummer}]{{#1} & {#2} & {#3} & {#4} \stepcounter{LIPSstolpnummer}\\\hline}
 \newcommand{\LIPSaktivitet}[4]{{#1} & {#2} & {#3} & {#4} \\\hline}
+
+% Mall för mötesprotokoll
+\newenvironment{projektmote}[2]{
+  {\ }\vspace{5mm}
+
+  \centerline{\textbf{\Huge #1}}
+  \vspace{2mm}
+  \centerline{\LARGE #2}
+  \vspace{10mm}
+
+  \begin{itemize}
+}
+{
+  \end{itemize}
+}
+
+\newcounter{paragrafnummer}
+\addtocounter{paragrafnummer}{1}
+\newcommand{\paragraf}[1]{\item{\textsection \arabic{paragrafnummer}. {#1}}}
+
+% Mall för Statusrapport
+\newenvironment{statusrapport}{
+  \center
+    \tabularx{\textwidth}{| p{0.4cm} | X | X | p{14.5mm} | p{13.5mm} | p{16.5mm} | p{16.5mm} |}
+    \hline
+    \textbf{Nr} & \textbf{Aktivitet} & \textbf{Kommentarer} & \textbf{Planerad tid} & \textbf{Nedlagd tid} & \textbf{Planerad klar} & \textbf{Beräknat klart} \\\hline
+}
+{
+    \endtabularx
+  \endcenter
+}
+
+\newcommand{\aktivitetstatus}[7]{{#1} & {#2} & {#3} & {#4} & {#5} & {#6} & {#7} \\\hline}
