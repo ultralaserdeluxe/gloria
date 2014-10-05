@@ -92,7 +92,7 @@ Ett kommando består av en byte. De första 4 bitarna definierar vilket kommando
 
 \begin{table}[h]
 	\centering
-		\begin{tabularx}{\textwidth}{| l | l | X | l | l |}
+		\begin{tabularx}{\textwidth}{| l | l | X |}
 			\hline
 			\textbf{Kommando} & \textbf{Argument} & \textbf{Beskrivning} \\
 			\hline
@@ -108,7 +108,7 @@ Ett kommando består av en byte. De första 4 bitarna definierar vilket kommando
 
 \begin{table}[h]
 	\centering
-		\begin{tabularx}{\textwidth}{| l | l | X | l | l |}
+		\begin{tabularx}{\textwidth}{| l | X |}
 			\hline
 			\textbf{Adress} & \textbf{Beskrivning} \\
 			\hline
@@ -145,5 +145,7 @@ Ett kommando består av en byte. De första 4 bitarna definierar vilket kommando
 		\end{tabularx}
 	\caption{Adresser för adressering till motormodul} \label{protokoll:pc-motor-adress}
 \end{table}
+\todo{Illustrera axel-nummer med bild?} \\
+
 
 Modulens busy-pinne (optokoplpare) är definierad som 0 när modulen arbetar, 1 när den är ledig
