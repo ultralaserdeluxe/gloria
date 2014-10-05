@@ -1,2 +1,149 @@
 \section{Protokoll för kommunikation}
 
+\subsection{Kommunikation mellan PC och huvudmodul}
+
+\subsubsection{Hårdvara}
+Kommunikation mellan PC och huvudmodul sker via blåtand.
+
+\subsubsection{Kommandon}
+Kommandon ges som en sträng på formen "command1=arg1,arg...;command2=arg1,arg..." med ett godtyckligt antal kommandon. \\
+
+\begin{table}[h]
+	\centering
+		\begin{tabularx}{\textwidth}{| l | l | X |}
+			\hline
+			\textbf{Kommando} & \textbf{Argument} & \textbf{Beskrivning} \\
+			\hline
+			{motor} & {L,R} & {L och R anger hastigheten på det vänstra, respektive högra hjulparet} \\
+			\hline
+			{arm} & {X,Y,Z,P,G} & {X,Y,Z är koordinaten i rummet dit armens "hand" skall röra sig, armens fundament är origo. P anger handens vinkel i förhållande till Z-axeln och G anger avståndet mellan handens fingrar.} \\
+			\hline
+			{calibrate} & {} & {Begär kalibrering av robotens sensorer} \\
+			\hline
+			{status} & {} & {Begär statusrapport från robot \todo{Format på svar?}} \\
+			\hline
+			{automotor} & {M} & {Anger om robotens motorer skall styras från PC (0) eller autonomt (1)} \\
+			\hline
+			{autoarm} & {M} & {Anger om robotarmen skall styras från PC (0) eller autonomt (1)} \\
+			\hline
+			{start} & {} & {Initiera körning} \\
+			\hline
+		\end{tabularx}
+	\caption{Kommandon från PC till huvudmodul} \label{protokoll:pc-huvud}
+\end{table}
+\todo{Skriv om kommandobeskrivningar, blandar presens, futurum osv} \\
+\todo{Högre/lägre värden på t.ex X eller P gör vad, precis?}\\
+\todo{Illustrera koordinatsystem m. bild}
+
+\subsection{Kommunikation mellan huvudmodul och sensormodul}
+Kommunikation mellan huvudmodul och sensormodul sker via UART. 
+
+\subsubsection{Hårdvara}
+Kommunikation mellan huvudmodul och sensormodul sker via UART. Kommandon från huvudmodulen ges av en byte. De fyra första bitarna ger vilket kommando som skall utföras. De sista fyra ger vilken sensor som gäller. 
+Sensorenheten svarar med endast data. Två bytes för vardera linjesensor med kalibrerad data. En byte för vardera avståndssensor bestående av de 8 MSB av de 10 bitar vi får från sensorn. I fallet med kommando läs data från alla sensorer, skickas sensorernas data seriellt i följande ordning: 1. Linjesensor 1, 2: Linjesensor 2, 3: Avståndssensor Höger, 4: Avståndssensor Vänster.
+
+\subsubsection{Kommandon}
+
+\begin{table}[h]
+	\centering
+		\begin{tabularx}{\textwidth}{| l | l | X |}
+			\hline
+			\textbf{Kommando} & \textbf{Argument} & \textbf{Beskrivning} \\
+			\hline
+			{0000} & {A} & {Returnera sensordata för A} \\
+			\hline
+			{0001} & {A} & {Kalibrera sensor A} \\
+			\hline
+		\end{tabularx}
+	\caption{Kommandon från huvudmodul till sensormodul} \label{protokoll:huvud-sensor}
+\end{table}
+
+\begin{table}[h]
+	\centering
+		\begin{tabularx}{\textwidth}{| l | X |}
+			\hline
+			\textbf{Adress} & \textbf{Beskrivning} \\
+			\hline
+			{0000} & {Linjesensor Fram} \\
+			\hline
+			{0001} & {Linjesensor Bak} \\
+			\hline
+			{0010} & {Avståndssensor Höger} \\
+			\hline
+			{0011} & {Avståndssensor Vänster} \\
+			\hline
+			{1111} & {Adressera samtliga sensorer} \\
+			\hline
+		\end{tabularx}
+	\caption{Adresser för kammandon till motormodul} \label{protokoll:huvud-sensor-adress}
+\end{table}
+
+\todo{Format på returdata från sensormodul?} \\
+
+Modulens busy-pinne (optokoplpare) är definierad som 0 när modulen arbetar, 1 när den är ledig
+
+\subsection{Kommunikation mellan huvudmodul och motormodul}
+
+\subsubsection{Hårdvara}
+Kommunikation mellan huvudmodul och motormodul sker via UART. En digital pinne talar om för huvudmodulen huruvida Armen är i rörelse eller inte.
+
+\subsubsection{Kommandon}
+Ett kommando består av en byte. De första 4 bitarna definierar vilket kommando som skall utföras. De sista 4 av vilken enhet det skall utföras av. Kommandot för att sätta register följs dessutom av en extra byte, innehållandes den data som det valda registret skall sättas till. 
+
+\begin{table}[h]
+	\centering
+		\begin{tabularx}{\textwidth}{| l | l | X | l | l |}
+			\hline
+			\textbf{Kommando} & \textbf{Argument} & \textbf{Beskrivning} \\
+			\hline
+			{0000} & {} & {Stoppa samtliga servon och motorer} \\
+			\hline
+			{0001} & {A, D} & {Sätt register A till D} \\
+			\hline
+			{0010} & {A} & {Utför givna kommandon för A} \\
+			\hline
+		\end{tabularx}
+	\caption{Kommandon från huvudmodul till motormodul} \label{protokoll:pc-motor}
+\end{table}
+
+\begin{table}[h]
+	\centering
+		\begin{tabularx}{\textwidth}{| l | l | X | l | l |}
+			\hline
+			\textbf{Adress} & \textbf{Beskrivning} \\
+			\hline
+			{0000} & {Höger hjulpar} \\
+			\hline
+			{0001} & {Vänster hjulpar} \\
+			\hline
+			{0010} & {Arm axel 1 Hög} \\ % Armens bas?
+			\hline
+			{0011} & {Arm axel 1 Låg} \\
+			\hline
+			{0100} & {Arm axel 2 Hög} \\
+			\hline
+			{0101} & {Arm axel 2 låg} \\
+			\hline
+			{0110} & {Arm axel 3 Hög} \\
+			\hline
+			{0111} & {Arm axel 3 Låg} \\
+			\hline
+			{1000} & {Arm axel 4 Hög} \\
+			\hline
+			{1001} & {Arm axel 4 Låg} \\
+			\hline
+			{1010} & {Arm axel 5 Hög} \\
+			\hline
+			{1011} & {Arm axel 5 Låg} \\ % Gripklo?
+			\hline
+			{1100} & {Samtliga motorer} \\
+			\hline
+			{1101} & {Samtliga servon} \\
+			\hline
+			%{1111} & {Samtliga motorer och servon} \\
+			%\hline
+		\end{tabularx}
+	\caption{Adresser för adressering till motormodul} \label{protokoll:pc-motor-adress}
+\end{table}
+
+Modulens busy-pinne (optokoplpare) är definierad som 0 när modulen arbetar, 1 när den är ledig
