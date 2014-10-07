@@ -2,15 +2,12 @@
 Huvudmodulen kan ses som systemets "hjärna". Här sker alla beräkningar för att roboten ska kunna utföra sina uppgifter. Dessa uppgifter ska huvudmodulen hantera antingen via kommandon från en PC eller skötas helt autonomt. Detta är en kritisk modul då den kommer att utföra mycket uppgifter. Den behöver inte mycket hårdvara men den kommer vara mjukvarutung.
 \subsection{Hårdvara}
 Modulen ska förslagsvis bestå av en enkortsdator av modell Beagleboard. Den har en ARM Cortex-A8 processor som har en klockfrekvens på 1GHz. Denna behöver ett operativsystem för att kunna användas. Den enda hårdvaran som behövs för att kunna använda BB är ett minneskort för operativsystem och en bluetooth-dongel för kommunikationen med PC:n. Även två USB-UART konverterare behövs för kommunikationen med de övriga modulerna.
-\subsection{Autonomt läge}
+\subsection{Mjukvara}
+\input{tradar}
+\subsubsection{Autonomt läge}
 När roboten är satt i autonomt läge kommer all styrning skötas av en algoritm i huvudmodulen, med undantag för upphämtning av paket där användaren styr armen. Detta är en väldigt kritisk del då detta är denna algoritm som avgör robotens beteende och som sedan kommer leda till att den kan fullfölja sina uppgifter. Troligtvis kommer en stor del av tiden läggas på att felsöka och optimera algoritmen.
 För att roboten ska kunna färdas framåt smidigt så kommer den behöva någon slags reglering. Förslagsvis ska en PD reglering implementeras som arbetar tidsdiskret. Detta gör att man måste sampla data från linjesensorerna med att visst intervall. Detta intervall är ej bestämt än.
-%\newline
-%\newline
-%\centerline{\includegraphics[scale=0.6]{Styrlogik.pdf}}
-%\centerline{Flödesschema för huvudmodules styralgoritm}
-%\newline
-%\newline
+
 
 
 \begin{figure}[h]
@@ -20,25 +17,11 @@ För att roboten ska kunna färdas framåt smidigt så kommer den behöva någon
 \end{figure}
 
 Figur \ref{systemskiss:autonomtschema} är en visualisering av hur det autonoma läget kommer att styras. Med hjälp av två stycken flaggor, Upplockning och Avplockning, kan systemet avgöra om den ska plocka upp eller lämna av ett paket eller bara fortsätta köra framåt längs banan. När Upplockning är satt till "Ja" väntar systemet på att användaren ska styra armen och sedan skicka ett "färdigt-kommando".
-\subsubsection{Arbetsblock}
-\begin{itemize}
-\item Vänta på startsignal
-\item Kalibrera sensorer
-\item Hämta sensorvärden från sensormodul
-\item Beräkna nästa lämpliga operation
-\item Skicka kommandon till styrmodulen hur roboten ska färdas
-\item Reglera för att följa linjen
-\item Om upplockning ska ske: 
-\newline
-Vidarebefordra kommandon från användaren till styrmodulen för armen
-\item Skicka sensorvärden till användaren
-\end{itemize}
 
-\subsection{Manuellt läge}
+\subsubsection{Manuellt läge}
 När roboten är satt i manuellt läge väntar huvudmodulen på kommandon från användaren och utför sedan dessa. 
-\subsubsection{Arbetsblock}
-\begin{itemize}
-\item Hämta kommandon från användaren
-\item Vidarebefodra kommandon till rätt modul
-\item Skicka sensorvärden till användaren
-\end{itemize}
+
+\subsection{Kommunikation}
+\subsubsection{Huvudmodul-PC}
+\subsubsection{Huvudmodul-Styrenhet}
+\subsubsection{Huvudmodul-Sensorenhet}
