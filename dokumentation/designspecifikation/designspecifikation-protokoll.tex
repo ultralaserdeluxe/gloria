@@ -82,13 +82,13 @@ Sensorenheten svarar med endast data. Två bytes för vardera linjesensor med ka
 
 Modulens busy-pinne (optokoplpare) är definierad som 0 när modulen arbetar, 1 när den är ledig
 
-\subsection{Kommunikation mellan huvudmodul och motormodul}
+\subsection{Kommunikation mellan huvudmodul och motormodul} \label{protokoll:pc-motor}
 
 \subsubsection{Hårdvara}
 Kommunikation mellan huvudmodul och motormodul sker via UART. En digital pinne talar om för huvudmodulen huruvida Armen är i rörelse eller inte.
 
 \subsubsection{Kommandon}
-Ett kommando består av en byte. De första 4 bitarna definierar vilket kommando som skall utföras. De sista 4 av vilken enhet det skall utföras av. Kommandot för att sätta register följs dessutom av en extra byte, innehållandes den data som det valda registret skall sättas till. 
+Ett kommando består av tre bytes. De första 4 bitarna definierar vilket kommando som skall utföras. De nästkommande 4 vilken enhet det skall utföras av. Därefter följer två databytes. 
 
 \begin{table}[h]
 	\centering
@@ -103,7 +103,7 @@ Ett kommando består av en byte. De första 4 bitarna definierar vilket kommando
 			{0010} & {A} & {Utför givna kommandon för A} \\
 			\hline
 		\end{tabularx}
-	\caption{Kommandon från huvudmodul till motormodul} \label{protokoll:pc-motor}
+	\caption{Kommandon från huvudmodul till motormodul} \label{protokoll:pc-motor-tabell}
 \end{table}
 
 \begin{table}[h]
@@ -116,25 +116,15 @@ Ett kommando består av en byte. De första 4 bitarna definierar vilket kommando
 			\hline
 			{0001} & {Vänster hjulpar} \\
 			\hline
-			{0010} & {Arm axel 1 Hög} \\ % Armens bas?
+			{0010} & {Arm axel 1} \\ % Armens bas?
 			\hline
-			{0011} & {Arm axel 1 Låg} \\
+			{0100} & {Arm axel 2} \\
 			\hline
-			{0100} & {Arm axel 2 Hög} \\
+			{0110} & {Arm axel 3} \\
 			\hline
-			{0101} & {Arm axel 2 låg} \\
+			{1000} & {Arm axel 4} \\
 			\hline
-			{0110} & {Arm axel 3 Hög} \\
-			\hline
-			{0111} & {Arm axel 3 Låg} \\
-			\hline
-			{1000} & {Arm axel 4 Hög} \\
-			\hline
-			{1001} & {Arm axel 4 Låg} \\
-			\hline
-			{1010} & {Arm axel 5 Hög} \\
-			\hline
-			{1011} & {Arm axel 5 Låg} \\ % Gripklo?
+			{1011} & {Arm axel 5} \\ % Gripklo?
 			\hline
 			{1100} & {Samtliga motorer} \\
 			\hline
@@ -143,9 +133,9 @@ Ett kommando består av en byte. De första 4 bitarna definierar vilket kommando
 			%{1111} & {Samtliga motorer och servon} \\
 			%\hline
 		\end{tabularx}
-	\caption{Adresser för adressering till motormodul} \label{protokoll:pc-motor-adress}
+	\caption{Adresser för adressering till motormodul} \label{protokoll:pc-motor-adress-tabell}
 \end{table}
 \todo{Illustrera axel-nummer med bild?} \\
 
 
-Modulens busy-pinne (optokoplpare) är definierad som 0 när modulen arbetar, 1 när den är ledig
+Det finns en busy-pinne (optokoplpare) som är definierad som 0 när armen är upptagen, 1 när den är ledig. \todo{Från huvudmodulen finns en haltflagga som stoppar all körning i modulen.}
