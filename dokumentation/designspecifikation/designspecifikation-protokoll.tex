@@ -36,10 +36,10 @@ Kommandon ges som en sträng på formen "command1=arg1,arg...;command2=arg1,arg.
 \todo{Illustrera koordinatsystem m. bild}
 
 \subsection{Kommunikation mellan huvudmodul och sensormodul}
-Kommunikation mellan huvudmodul och sensormodul sker via UART. 
+Kommunikation mellan huvudmodul och sensormodul sker via en SPI-buss. 
 
 \subsubsection{Hårdvara}
-Kommunikation mellan huvudmodul och sensormodul sker via UART. Kommandon från huvudmodulen ges av en byte. De fyra första bitarna ger vilket kommando som skall utföras. De sista fyra ger vilken sensor som gäller. 
+Kommunikation mellan huvudmodul och sensormodul sker via en SPI-buss. Kommandon från huvudmodulen ges av en byte. De fyra första bitarna ger vilket kommando som skall utföras. De sista fyra ger vilken sensor som gäller. 
 Sensorenheten svarar med endast data. Två bytes för vardera linjesensor med kalibrerad data. En byte för vardera avståndssensor bestående av de 8 MSB av de 10 bitar vi får från sensorn. I fallet med kommando läs data från alla sensorer, skickas sensorernas data seriellt i följande ordning: 1. Linjesensor 1, 2: Linjesensor 2, 3: Avståndssensor Höger, 4: Avståndssensor Vänster.
 
 \subsubsection{Kommandon}
@@ -85,10 +85,10 @@ Modulens busy-pinne (optokoplpare) är definierad som 0 när modulen arbetar, 1 
 \subsection{Kommunikation mellan huvudmodul och motormodul} \label{protokoll:pc-motor}
 
 \subsubsection{Hårdvara}
-Kommunikation mellan huvudmodul och motormodul sker via UART. En digital pinne talar om för huvudmodulen huruvida Armen är i rörelse eller inte.
+Kommunikation mellan huvudmodul och motormodul sker via en SPI-buss. En flagga återkopplar och talar om för huvudmodulen huruvida armen är i rörelse eller inte.
 
 \subsubsection{Kommandon}
-Ett kommando består av tre bytes. De första 4 bitarna definierar vilket kommando som skall utföras. De nästkommande 4 vilken enhet det skall utföras av. Därefter följer två databytes. 
+Ett kommando består av tre bytes. De första fyra bitarna definierar vilket kommando som skall utföras. De nästkommande fyra vilken enhet det skall utföras av. Därefter följer två databytes. 
 
 \begin{table}[h]
 	\centering
@@ -137,5 +137,4 @@ Ett kommando består av tre bytes. De första 4 bitarna definierar vilket komman
 \end{table}
 \todo{Illustrera axel-nummer med bild?} \\
 
-
-Det finns en busy-pinne (optokoplpare) som är definierad som 0 när armen är upptagen, 1 när den är ledig. \todo{Från huvudmodulen finns en haltflagga som stoppar all körning i modulen.}
+Det finns en busy-pinne (optokopplare) som är definierad som 0 när armen är upptagen, 1 när den är ledig. \todo{Från huvudmodulen finns en haltflagga som stoppar all körning i modulen.}
