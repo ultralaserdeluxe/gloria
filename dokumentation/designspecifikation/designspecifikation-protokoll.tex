@@ -2,60 +2,54 @@
 
 \subsection{Kommunikation mellan PC och huvudmodul}
 
-\subsubsection{Hårdvara}
-Kommunikation mellan PC och huvudmodul sker via blåtand.
+Kommunikation mellan PC-enhet och huvudenhet sker via blåtand. En instruktion ges som en sträng på formen $command1=arg1,...,argN;command2=arg1,...,argN$ med ett godtyckligt antal instruktioner där antalet argument per instruktion specificeras i avsnitt \ref{designspec:protokoll-pc-huvud-kommandon}.
 
-\subsubsection{Kommandon}
-Kommandon ges som en sträng på formen "command1=arg1,arg...;command2=arg1,arg..." med ett godtyckligt antal kommandon. \\
+\subsubsection{Instruktioner} \label{designspec:protokoll-pc-huvud-kommandon}
 
 \begin{table}[h]
 	\centering
 		\begin{tabularx}{\textwidth}{| l | l | X |}
 			\hline
-			\textbf{Kommando} & \textbf{Argument} & \textbf{Beskrivning} \\
+			\textbf{Instruktion} & \textbf{Argument} & \textbf{Beskrivning} \\
 			\hline
 			{motor} & {L,R} & {L och R anger hastigheten på det vänstra, respektive högra hjulparet} \\
 			\hline
-			{arm} & {X,Y,Z,P,G} & {X,Y,Z är koordinaten i rummet dit armens "hand" skall röra sig, armens fundament är origo. P anger handens vinkel i förhållande till Z-axeln och G anger avståndet mellan handens fingrar.} \\
+			{arm} & {X,Y,Z,P,G} & {X,Y,Z är koordinaten i rummet dit armens hand skall röra sig. Armens fundament är origo, P anger handens vinkel i förhållande till Z-axeln och G anger avståndet mellan handens fingrar.} \\
 			\hline
 			{calibrate} & {} & {Begär kalibrering av robotens sensorer} \\
 			\hline
 			{status} & {} & {Begär statusrapport från robot \todo{Format på svar?}} \\
 			\hline
-			{automotor} & {M} & {Anger om robotens motorer skall styras från PC (0) eller autonomt (1)} \\
+			{automotor} & {M} & {Ange om robotens motorer skall styras från PC-enheten (0) eller huvudenheten (1)} \\
 			\hline
-			{autoarm} & {M} & {Anger om robotarmen skall styras från PC (0) eller autonomt (1)} \\
+			{autoarm} & {M} & {Ange om robotarmen skall styras från PC-enheten (0) eller huvudenheten (1)} \\
 			\hline
 			{start} & {} & {Initiera körning} \\
 			\hline
 		\end{tabularx}
-	\caption{Kommandon från PC till huvudmodul} \label{protokoll:pc-huvud}
+	\caption{Instruktioner från PC-enhet till huvudenhet} \label{protokoll:pc-huvud}
 \end{table}
-\todo{Skriv om kommandobeskrivningar, blandar presens, futurum osv} \\
 \todo{Högre/lägre värden på t.ex X eller P gör vad, precis?}\\
 \todo{Illustrera koordinatsystem m. bild}
 
 \subsection{Kommunikation mellan huvudmodul och sensormodul}
-Kommunikation mellan huvudmodul och sensormodul sker via en SPI-buss. 
+Kommunikation mellan huvudmodul och sensormodul sker via en SPI-buss. Instruktioner från huvudmodulen ges i form av en byte. De fyra första bitarna anger vilken instruktion som skall utföras. De sista fyra anger vilken sensor instruktionen gäller. Tabell \ref{protokoll:huvud-sensor} och \ref{protokoll:huvud-sensor-adress} under avsnitt \ref{designspec:protokoll-huvud-sensor-instr} specificerar de instruktioner som finns respektive vilken adress som avser vilken sensor. \\
+Sensorenheten svarar med endast data. En byte per fototransistor i linjesensorn. En byte för vardera avståndssensor. I fallet med instruktionen \textit{läs data från alla sensorer} skickas sensorernas data seriellt i följande ordning: 1. Linjesensor, 2: Avståndssensor Höger, 3: Avståndssensor Vänster.
 
-\subsubsection{Hårdvara}
-Kommunikation mellan huvudmodul och sensormodul sker via en SPI-buss. Kommandon från huvudmodulen ges av en byte. De fyra första bitarna ger vilket kommando som skall utföras. De sista fyra ger vilken sensor som gäller. 
-Sensorenheten svarar med endast data. Två bytes för vardera linjesensor med kalibrerad data. En byte för vardera avståndssensor bestående av de 8 MSB av de 10 bitar vi får från sensorn. I fallet med kommando läs data från alla sensorer, skickas sensorernas data seriellt i följande ordning: 1. Linjesensor 1, 2: Linjesensor 2, 3: Avståndssensor Höger, 4: Avståndssensor Vänster.
-
-\subsubsection{Kommandon}
+\subsubsection{Instruktioner} \label{designspec:protokoll-huvud-sensor-instr}
 
 \begin{table}[h]
 	\centering
 		\begin{tabularx}{\textwidth}{| l | l | X |}
 			\hline
-			\textbf{Kommando} & \textbf{Argument} & \textbf{Beskrivning} \\
+			\textbf{Instruktion} & \textbf{Argument} & \textbf{Beskrivning} \\
 			\hline
 			{0000} & {A} & {Returnera sensordata för A} \\
 			\hline
 			{0001} & {A} & {Kalibrera sensor A} \\
 			\hline
 		\end{tabularx}
-	\caption{Kommandon från huvudmodul till sensormodul} \label{protokoll:huvud-sensor}
+	\caption{Instruktioner från huvudenhet till sensorenhet} \label{protokoll:huvud-sensor}
 \end{table}
 
 \begin{table}[h]
@@ -66,8 +60,6 @@ Sensorenheten svarar med endast data. Två bytes för vardera linjesensor med ka
 			\hline
 			{0000} & {Linjesensor Fram} \\
 			\hline
-			{0001} & {Linjesensor Bak} \\
-			\hline
 			{0010} & {Avståndssensor Höger} \\
 			\hline
 			{0011} & {Avståndssensor Vänster} \\
@@ -75,26 +67,21 @@ Sensorenheten svarar med endast data. Två bytes för vardera linjesensor med ka
 			{1111} & {Adressera samtliga sensorer} \\
 			\hline
 		\end{tabularx}
-	\caption{Adresser för kammandon till motormodul} \label{protokoll:huvud-sensor-adress}
+	\caption{Adresser för instruktioner till sensorenhet} \label{protokoll:huvud-sensor-adress}
 \end{table}
 
-\todo{Format på returdata från sensormodul?} \\
+\subsection{Kommunikation mellan huvudenhet och styrenhet} \label{protokoll:pc-motor}
+Kommunikation mellan huvudmodul och motormodul sker via en SPI-buss. Det finns en busy-flagga kopplad huvudmodulen som går låg när armen är i rörelse. \\
+En instruktion består av tre bytes. Den första byten innehåller instruktionen och vilket servo eller vilken motor som avses. De första fyra bitarna av denna byte definierar vilket kommando som skall utföras. De nästkommande fyra vilken enhet det skall utföras av. Tabell \ref{protokoll:pc-motor-tabell} och \ref{protokoll:pc-motor-adress-tabell} i avsnitt \ref{designspec:protokoll-pc-motor-instr} specificerar de instruktioner som finns och vilken adress som avser vilken motor eller servo. Efter instruktions-byten följer alltid två databytes. I de fall där endast en databyte är nödvändig används endast den första av databytesen. Oanvända databytes kasseras utan att tolkas av styrenheten.
 
-Modulens busy-pinne (optokoplpare) är definierad som 0 när modulen arbetar, 1 när den är ledig
 
-\subsection{Kommunikation mellan huvudmodul och motormodul} \label{protokoll:pc-motor}
-
-\subsubsection{Hårdvara}
-Kommunikation mellan huvudmodul och motormodul sker via en SPI-buss. En flagga återkopplar och talar om för huvudmodulen huruvida armen är i rörelse eller inte.
-
-\subsubsection{Kommandon}
-Ett kommando består av tre bytes. De första fyra bitarna definierar vilket kommando som skall utföras. De nästkommande fyra vilken enhet det skall utföras av. Därefter följer två databytes. 
+\subsubsection{Instruktioner} \label{designspec:protokoll-pc-motor-instr}
 
 \begin{table}[h]
 	\centering
 		\begin{tabularx}{\textwidth}{| l | l | X |}
 			\hline
-			\textbf{Kommando} & \textbf{Argument} & \textbf{Beskrivning} \\
+			\textbf{Instruktion} & \textbf{Argument} & \textbf{Beskrivning} \\
 			\hline
 			{0000} & {} & {Stoppa samtliga servon och motorer} \\
 			\hline
@@ -103,7 +90,7 @@ Ett kommando består av tre bytes. De första fyra bitarna definierar vilket kom
 			{0010} & {A} & {Utför givna kommandon för A} \\
 			\hline
 		\end{tabularx}
-	\caption{Kommandon från huvudmodul till motormodul} \label{protokoll:pc-motor-tabell}
+	\caption{Kommandon från huvudenhet till styrenhet} \label{protokoll:pc-motor-tabell}
 \end{table}
 
 \begin{table}[h]
@@ -133,8 +120,6 @@ Ett kommando består av tre bytes. De första fyra bitarna definierar vilket kom
 			{1111} & {Samtliga motorer och servon} \\
 			\hline
 		\end{tabularx}
-	\caption{Adresser för adressering till motormodul} \label{protokoll:pc-motor-adress-tabell}
+	\caption{Adresser för adressering till styrenhet} \label{protokoll:pc-motor-adress-tabell}
 \end{table}
-\todo{Illustrera axel-nummer med bild?} \\
-
-Det finns en busy-pinne (optokopplare) som är definierad som 0 när armen är upptagen, 1 när den är ledig. \todo{Från huvudmodulen finns en haltflagga som stoppar all körning i modulen.}
+\todo{Illustrera axel-nummer och vinklar/grader med bild?} \\
