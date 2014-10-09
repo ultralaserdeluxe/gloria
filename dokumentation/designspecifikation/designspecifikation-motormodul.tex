@@ -5,7 +5,7 @@ Styrenheten har till uppgift att driva de motorer som driver hjulen och de servo
 
 \subsection{Övergripande struktur}
 
-Styrenheten består av en AVR av typ Atmega16, två motorpar och en robotarm av typ Trossenrobotics Reactor. AVRen är ansluten till huvudenheten med en UART-buss och en busy-pinne. Kommandon från huvudenheten fås enligt protokoll definierat i sektion \ref{protokoll:pc-motor}.\\
+Styrenheten består av en AVR av typ Atmega16, två motorpar och en robotarm av typ Trossenrobotics Reactor. AVRen är ansluten till huvudenheten med en SPI-buss och en busy-pinne. Kommandon från huvudenheten fås enligt protokoll definierat i sektion \ref{protokoll:pc-motor}.\\
 
 \todo{Schema över styrenheten}
 
@@ -28,7 +28,7 @@ Robotarmen består av 7 servon av modell AX12-A. De är anslutna till AVRen med 
 Till styrenheten krävs följande hårdvara.
 \begin{itemize}
 \item{2 hjulpar.}
-\item{En AVR typ Atmega16}
+\item{En AVR av typ Atmega16.}
 \item{En Trossenrobotics Reactor.}
 \end{itemize}
 
