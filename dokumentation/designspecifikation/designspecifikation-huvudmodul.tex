@@ -1,8 +1,7 @@
-
 \section{Huvudmodul}
 Huvudmodulen kan ses som systemets "hjärna". Här sker alla beräkningar för att roboten ska kunna utföra sina uppgifter. Dessa uppgifter ska huvudmodulen hantera antingen via kommandon från en PC eller skötas helt autonomt. Detta är en kritisk modul då den kommer att utföra mycket uppgifter. Den behöver inte mycket hårdvara men den kommer vara mjukvarutung.
 \subsection{Hårdvara}
-Modulen ska förslagsvis bestå av en enkortsdator av modell Beagleboard. Den har en ARM Cortex-A8 processor som har en klockfrekvens på 1GHz. Denna behöver ett operativsystem för att kunna användas. Den enda hårdvaran som behövs för att kunna använda BB är ett minneskort för operativsystem och en bluetooth-dongel för kommunikationen med PC:n. Även två USB-UART konverterare behövs för kommunikationen med de övriga modulerna.
+Modulen ska förslagsvis bestå av en enkortsdator av modell Beagleboard. Den har en ARM Cortex-A8 processor som har en klockfrekvens på 1GHz. Denna behöver ett operativsystem för att kunna användas. Den enda hårdvaran som behövs för att kunna använda BB är ett minneskort för operativsystem och en bluetooth-dongel för kommunikationen med PC:n. För kommunikationen med styrenhet och sensorenheten behöver vi 
 \subsection{Mjukvara}
 \input{tradar}
 \subsubsection{Autonomt läge}
@@ -22,12 +21,29 @@ Figur \ref{systemskiss:autonomtschema} är en visualisering av hur det autonoma 
 \subsubsection{Manuellt läge}
 När roboten är satt i manuellt läge väntar huvudmodulen på kommandon från användaren och utför sedan dessa. 
 
+
 \subsection{Kommunikation}
 \subsubsection{Huvudmodul-PC}
 \subsubsection{Huvudmodul-Styrenhet}
 \subsubsection{Huvudmodul-Sensorenhet}
 \subsection{Reglering}
-För att undvika att roboten hackar sig fram och får en smidig rörelse så ska motorns styrsignaler regleras med en tidsdiskret PD-regulator. En PID regulator är onödig då vi inte har något stående fel i teorin. Om roboten är mitt på linjen och står rakt så kommer felet vara noll. I praktiken kommer det inte vara så då roboten troligtvis inte kommer stå rakt på linejn och motorerna kommer säkert åka i olika hastigheter. Dock så blir en PD-regulator tillräckligt bra. En annan anledning till att inte ha med I-delen är att det är svårt att implementera det bra i ett tidsdiskret system. $e[n]$ Är felet vid sampling $n$, $K$
-
+För att undvika att roboten hackar sig fram och får en smidig rörelse så ska motorns styrsignaler regleras med en tidsdiskret PD-regulator. En PID regulator är onödig då vi inte har något stående fel i teorin. Om roboten är mitt på linjen och står rakt så kommer felet vara noll. I praktiken kommer det inte vara så då roboten troligtvis inte kommer stå rakt på linejn och motorerna kommer säkert åka i olika hastigheter. Dock så blir en PD-regulator tillräckligt bra. En annan anledning till att inte ha med I-delen är att det är svårt att implementera det bra i ett tidsdiskret system. e[n] Är felet vid sampling n. 
+\begin{itemize}
+\item e[n] Är felet vid sampling n
+\item e[n-1] Är felet vid sampling n-1
+\item u[n] är styrsignalen till motorerna
+\item K\_P är en konstant för den proportionella delen av regleringen
+\item K\_D är en konstant för den deriverande delen av regleringen
+\item Delta T är tiden mellan sampling n och n-1
+ 
+\end{itemize}
  $$ u[n] = K_P*e[n] + K_D\frac{e[n]-e[n-1]}{\Delta T}$$
-
+ Roboten är begränsade av hårdvaran hur ofta den kan läsa av data från reflexsensorna. Enligt handledaren är en uppdatering på 25 Hertz en rimlig nivå. Så delta T kommer vara 40ms
+\subsection{hårdvara som behövs}
+\begin{itemize}
+\item Beagleboard-xm (finns i vanheden)
+\item BT-dongle Belkin f8t016(vi har en)
+\item Nivåomvandlare Ti TXB0108 ("http://www.electrokit.com/nivaomvandlare-8-kanaler.50717")
+\item Minneskort (Om det inte finns i vanheden så beställ från elfa )
+\item Wifi dongel för utveckling på den (vi har en)
+\end{itemize}
