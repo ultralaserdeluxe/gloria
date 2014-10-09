@@ -1,29 +1,29 @@
-	\documentclass[10pt,a4paper]{article}
-\usepackage[latin1]{inputenc}
-\usepackage[english]{babel}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage{tikz}
-\title{Gränssnitt för PC}
-\author{Daniel Wassing}
-\begin{document}
-	\maketitle
+%	\documentclass[10pt,a4paper]{article}
+%\usepackage[latin1]{inputenc}
+%\usepackage[english]{babel}
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{amssymb}
+%\usepackage{tikz}
+%\title{GrÃ¤nssnitt fÃ¶r PC}
+%\author{Daniel Wassing}
+%\begin{document}
+	%\maketitle
 	\section{GUI}
 	\begin{itemize}
 		\item Ska skrivas i Python
-		\item Ska kunna skicka följande signaler:
+		\item Ska kunna skicka fÃ¶ljande signaler:
 		\begin{enumerate}
-			\item motor=L,R (L,R är ints för speed)
-			\item arm=X,Y,Z,P,G (Pitch, Grip (allt är ints))
+			\item motor=L,R (L,R Ã¤r ints fÃ¶r speed)
+			\item arm=X,Y,Z,P,G (Pitch, Grip (allt Ã¤r ints))
 			\item calibrate
 			\item status
 			\item automotor=M (0/1)
 			\item autoarm=A (0/1)
-			\item Arm ska EVENTUELLT styras med 2st 2-D kartor, där man kan välja var man går i varje. Förslagsvis att de uppdelas i XY- och XZ-led.
+			\item Arm ska EVENTUELLT styras med 2st 2-D kartor, dÃ¤r man kan vÃ¤lja var man gÃ¥r i varje. FÃ¶rslagsvis att de uppdelas i XY- och XZ-led.
 		\end{enumerate}
-		\item Ska vara ett GUI (först terminal)
-		\item Ska vara en "overhead" för modulen.
+		\item Ska vara ett GUI (fÃ¶rst terminal)
+		\item Ska vara en "overhead" fÃ¶r modulen.
 		
 		%"commando1=X;commando2;commando3=X,Y,Z"
 	\end{itemize}
@@ -32,24 +32,24 @@
 	\section{Modul}
 	\begin{itemize}
 		\item Ska skrivas i Python
-		\item Är "hjärnan" mellan GUI och BT-förbindelse till DAD
-		\item Ska ha funktion för att ta emot signal från GUI
-		\item Ska ha funktion för att slussa ut en sträng till BT där strängen är en lista på kommandon för vad som ska göras hos DAD (kan vara samma funktion som signalmottagaren)
-		\item Strängen ska skickas via en socket-förbindelse. \\
-		Se https://wiki.python.org/moin/TcpCommunication för mer info.
+		\item Ã„r "hjÃ¤rnan" mellan GUI och BT-fÃ¶rbindelse till DAD
+		\item Ska ha funktion fÃ¶r att ta emot signal frÃ¥n GUI
+		\item Ska ha funktion fÃ¶r att slussa ut en strÃ¤ng till BT dÃ¤r strÃ¤ngen Ã¤r en lista pÃ¥ kommandon fÃ¶r vad som ska gÃ¶ras hos DAD (kan vara samma funktion som signalmottagaren)
+		\item StrÃ¤ngen ska skickas via en socket-fÃ¶rbindelse. \\
+		Se https://wiki.python.org/moin/TcpCommunication fÃ¶r mer info.
 	\end{itemize}
 	\pagebreak
 
-	\centerline{Figur 1: Flödesschema för PC-modul}
+	\centerline{Figur 1: FlÃ¶desschema fÃ¶r PC-modul}
 	\centerline{} %empty line
 	\centerline{\input{PCflowchart}}
 	\pagebreak	
 	
-	\section{Fjärrstyrning}
+	\section{FjÃ¤rrstyrning}
 	\begin{itemize}
-		\item Ska vara en BT-förbindelse mellan PC och DAD.
-		\item Sätts upp via ett PAN (Personal Area Network)
-		\item BT-dongel via USB på Beagleboard
-		\item BT-support finns redan på PC
+		\item Ska vara en BT-fÃ¶rbindelse mellan PC och DAD.
+		\item SÃ¤tts upp via ett PAN (Personal Area Network)
+		\item BT-dongel via USB pÃ¥ Beagleboard
+		\item BT-support finns redan pÃ¥ PC
 	\end{itemize}
-\end{document}
+%\end{document}
