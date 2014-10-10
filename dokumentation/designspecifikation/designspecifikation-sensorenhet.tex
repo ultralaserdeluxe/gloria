@@ -15,10 +15,10 @@ Sensorenheten har till uppgift att läsa in data från robotens sensorer, tolka 
 \end{figure}
 
 \subsection{Reflexsensormodul}
-Reflexsensormodulen består av 11 enheter om en lysdiod och en fototransistor. Fototransistorn har ett analogt utvärde mellan 0 och 5V beroende på hur mycket ljus som fångas upp. Genom att sätta enable för en lysdiod till 1 och sedan läsa av den tillhörande fototransistorn ser vi om underlaget är ljust eller mörkt. Fototransistorn läses av med en AD-omvandling på AVRen. Detta görs för varje lysdiod och på så sätt kan vi detektera tejpens position under sensorn eftersom tejpen är mörkare än golvet i Java \todo{specificera 'Java'}. Eftersom AVRen har ett begränsat antal pinnar med AD-omvandling, MUXar vi fototransistorernas utgångar till en enda pinne på AVRen. Då vi inte vill ha mer än en lysdiod igång samtidigt kommer vi använda ytterligare en mux för att styra enablesignalen till den lysdiod vi vill använda.
+Reflexsensormodulen består av 11 reflexsensorer. En reflexsensor består av en lysdiod och en fototransistor. Fototransistorn har ett analogt utvärde mellan 0 och 5V beroende på hur mycket ljus som fångas upp. Genom att sätta enable för en lysdiod till 1 och sedan läsa av den tillhörande fototransistorn kan vi avgöra om underlaget är ljust eller mörkt. Fototransistorn läses av med en AD-omvandling på AVRen. Detta görs för varje reflexsensor och på så sätt kan vi detektera tejpens position under sensorn eftersom tejpen banan består av får förutsättas ha en annan färg än golvet. Eftersom AVRen har ett begränsat antal pinnar med AD-omvandling, muxar vi fototransistorernas utgångar till en enda pinne på AVRen. Då vi inte vill ha mer än en lysdiod igång samtidigt kommer vi använda ytterligare en mux för att styra en enablesignal till den lysdiod vi vill använda, övriga kommer vara avslagna.
 
 \subsection{Avståndssensor}
-För att kunna detektera paket kommer roboten ha en avståndssensor på vardera sida. Dessa kommer vara av typen GP2D120 och använder IR för att generera en analog signal. Denna signal läses av med en AD-omvandling på AVRen. Denna signal är olinjär så det kommer finnas en tabell innehållandes närmevärden för olika distanser med vilka sensorns uppmätta värde kan jämföras.
+För att kunna detektera paket kommer roboten ha en avståndssensor på höger respektive vänster sida. Dessa kommer vara av typen GP2D120 och använder IR för att generera en analog signal. Denna signal läses av med en AD-omvandling på AVRen. Då sensorns utsignal är olinjär kommer vi under utveckligsfasen ta fram en tabell med närmevärden för olika distanser. Utsignalen jämförs med denna tabell för att estimera det uppmätta avståndet till ett föremål.
 
 \subsection{Hårdvara}
 Till sensorenheten krävs följande hårdvara.
@@ -29,16 +29,19 @@ Till sensorenheten krävs följande hårdvara.
 \item{Två avståndssensorer av typ GP2D120}
 \end{itemize}
 
+\subsection{Mjukvara}
+Sensorenheten kör kontinuerligt en loop där den läser och lagrar data från sensorerna. Då huvudenheten skickar en instruktion till sensorenheten körs en avbrottsrutin där instruktionen tolkas och utförs. Antingen kalibreras sensorerna eller så returnerar sensorenheten data för den adresserade sensorn.
 
-\subsection{Flödesschema}
-Figur \ref{systemskiss:sensorschema} visar flödesschema över mjukvaran i sensormodulen.
+\todo{\\Skulle ett flödesschema ge något här? Mjukvaran är simpel.}
 
-\begin{figure}[h]
-\center
-\includegraphics[scale=0.4]{sensorflow}
-\caption{Flödesschema för sensormodul.} \label{systemskiss:sensorschema}
-\end{figure}
+%Figur \ref{systemskiss:sensorschema} visar flödesschema över mjukvaran i sensormodulen.
 
-\todo{Nya flödescheman för sensorenhet. Avbrottsrutiner osv.}
+%\begin{figure}[h]
+%\center
+%\includegraphics[scale=0.4]{sensorflow}
+%\caption{Flödesschema för sensormodul.} \label{systemskiss:sensorschema}
+%\end{figure}
+
+%\todo{Nya flödescheman för sensorenhet. Avbrottsrutiner osv.}
 
 %\end{document}
