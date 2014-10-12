@@ -29,8 +29,9 @@ Kommunikation mellan PC-enhet och huvudenhet sker via blåtand. En instruktion g
 		\end{tabularx}
 	\caption{Instruktioner från PC-enhet till huvudenhet} \label{protokoll:pc-huvud}
 \end{table}
-\todo{Högre/lägre värden på t.ex X eller P gör vad, precis?}\\
+\todo{Högre/lägre värden på t.ex X eller P gör vad, precis? X och Y =-+38cm,0<=Z<=46 bestäm upplösning}\\
 \todo{Illustrera koordinatsystem m. bild}
+
 
 \subsection{Kommunikation mellan huvudmodul och sensormodul}
 Kommunikation mellan huvudmodul och sensormodul sker via en SPI-buss. Instruktioner från huvudmodulen ges i form av en byte. De fyra första bitarna anger vilken instruktion som skall utföras. De sista fyra anger vilken sensor instruktionen gäller. Tabell \ref{protokoll:huvud-sensor} och \ref{protokoll:huvud-sensor-adress} under avsnitt \ref{designspec:protokoll-huvud-sensor-instr} specificerar de instruktioner som finns respektive vilken adress som avser vilken sensor. \\
@@ -111,7 +112,7 @@ En instruktion består av tre bytes. Den första byten innehåller instruktionen
 			\hline
 			{1000} & {Arm axel 4} \\
 			\hline
-			{1011} & {Arm axel 5} \\ % Gripklo?
+			{1011} & {Arm axel 5(gripper)} \\ % Gripklo?
 			\hline
 			{1100} & {Samtliga motorer} \\
 			\hline
@@ -122,4 +123,4 @@ En instruktion består av tre bytes. Den första byten innehåller instruktionen
 		\end{tabularx}
 	\caption{Adresser för adressering till styrenhet} \label{protokoll:pc-motor-adress-tabell}
 \end{table}
-\todo{Illustrera axel-nummer och vinklar/grader med bild?} \\
+\centerline{\includegraphics[scale=0.4]{robotaxis}}

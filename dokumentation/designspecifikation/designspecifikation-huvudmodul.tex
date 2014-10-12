@@ -1,65 +1,75 @@
-\setcounter{secnumdepth}{5}
 \section{Huvudmodul}
-Huvudmodulen utför alla beräkningar nödvändiga för att roboten ska kunna utföra sina uppgifter. Dessa uppgifter ska huvudmodulen hantera antingen via kommandon från en PC eller skötas helt autonomt. Detta är en kritisk modul då den kommer att utföra mycket uppgifter. Den behöver inte mycket hårdvara men den kommer vara mjukvarutung.
-
+Huvudmodulen kan ses som systemets "hjärna". Här sker alla beräkningar för att roboten ska kunna utföra sina uppgifter. Dessa uppgifter ska huvudmodulen hantera antingen via kommandon från en PC eller skötas helt autonomt. Detta är en kritisk modul då den kommer att utföra mycket uppgifter. Den behöver inte mycket hårdvara men den kommer vara mjukvarutung.
 \subsection{Hårdvara}
 Modulen ska förslagsvis bestå av en enkortsdator av modell Beagleboard. Den har en ARM Cortex-A8 processor som har en klockfrekvens på 1GHz. Denna behöver ett operativsystem för att kunna användas. Den enda hårdvaran som behövs för att kunna använda BB är ett minneskort för operativsystem och en bluetooth-dongel för kommunikationen med PC:n. För kommunikationen med styrenhet och sensorenheten behöver vi 
-\todo{saker?}
-
 \subsection{Mjukvara}
-Mjukvaran som behövs för att implementera all funktionalitet hos huvudmodulen kommer att vara skriven i programspråket Python. Koden för programmet kommer vara trådbaserad och möjligen objektorienterad. 
-\newline
-Programmet ska delas in i 3 trådar. Dessa körs kontinuerligt och delar på två trådsäkra listor: sensorvärden och kommandon. I kommandolistan ligger alla argument till tillhörande kommando från PC och i sensorvärden ligger all data från sensorenheten. Listorna kan trådarna antingen läsa eller skriva till (se nedanstående bild).
+\input{tradar}
+\subsubsection{Autonomt läge}
+När roboten är satt i autonomt läge kommer all styrning skötas av en algoritm i huvudmodulen, med undantag för upphämtning av paket där användaren styr armen. Detta är en väldigt kritisk del då detta är denna algoritm som avgör robotens beteende och som sedan kommer leda till att den kan fullfölja sina uppgifter. Troligtvis kommer en stor del av tiden läggas på att felsöka och optimera algoritmen.
+För att roboten ska kunna färdas framåt smidigt så kommer den behöva någon slags reglering. Förslagsvis ska en PD reglering implementeras som arbetar tidsdiskret. Detta gör att man måste sampla data från linjesensorerna med att visst intervall. Detta intervall är ej bestämt än.
+
+
 
 \begin{figure}[h]
-\scalebox{0.8}{\input{tradar}}
-\caption{Trådarna och listorna de delar på}
+\center
+\includegraphics[scale=0.2]{Styrlogik.png}
+\caption{Flödesschema för huvudmodulens styralgoritm.} \label{systemskiss:autonomtschema}
 \end{figure}
 
-\subsubsection{Huvudtråden}
-I huvudtråden ligger huvudloopen för programmet. Den börjar med att läsa värdet från kommandolistan där manuell eller autonomt läge avgörs och kallar på respektive funktion. Användaren ska alltså kunna växla mellan lägena när denne vill (mellan varje iteration av huvudloopen).
-\paragraph{Autonomt läge}
-\leavevmode
-\newline
-\newline
-Här ska kod för autonom aktivitet hos systemet ligga. Sensorvärdeslistan behöver läsas av varje iteration för att avgöra om systemet befinner sig vid en av- eller upplockningsstation samt om systemet behöver regleras. Om systemet befinner sig vid en upplockningsstation behöver vi läsa av kommandolistan för att få argument om att styra armen. Om systemet befinner sig vid en avplockningsstation ska systemet låsa sig tills paket är avsläppt.
-\newline 
-Om systemet inte befinner sig vid en av- eller upplockningsstation skickas värden till styrenheten att köra roboten framåt. Dessa värden beräknas i slutet av programmet med regleringsalgoritmen utifrån linjesensordata från sensorvärdeslistan. 
-\paragraph{Manuellt läge}
-\leavevmode
-\newline
-\newline
-I manuellt läge läses argumenten från kommandolistan av, tolkar dessa och skickar vidare lämpliga värden till styrenheten.
+Figur \ref{systemskiss:autonomtschema} är en visualisering av hur det autonoma läget kommer att styras. Med hjälp av två stycken flaggor, Upplockning och Avplockning, kan systemet avgöra om den ska plocka upp eller lämna av ett paket eller bara fortsätta köra framåt längs banan. När Upplockning är satt till "Ja" väntar systemet på att användaren ska styra armen och sedan skicka ett "färdigt-kommando".
 
-\begin{figure}[h]
-\centering
-\scalebox{0.6}{\input{huvudtrad}}
-\caption{Flödesschema för huvudtråden}
-\end{figure}
+\subsubsection{Manuellt läge}
+När roboten är satt i manuellt läge väntar huvudmodulen på kommandon från användaren och utför sedan dessa. 
 
-\subsubsection{Sensortråden}
-Sensortrådens uppgift är att uppdatera sensorvärdeslistan med fräscha värden från sensorenheten.
-\subsubsection{PC-tråden}
-PC-tråden delar upp strängen med data från PC och lägger endast in argumenten från de olika kommandona i kommandolistan.
 
 \subsection{Kommunikation}
-\todo{Vad ska ligga i det här avsnittet?}
 \subsubsection{Huvudmodul-PC}
 \subsubsection{Huvudmodul-Styrenhet}
 \subsubsection{Huvudmodul-Sensorenhet}
 \subsection{Reglering}
-För att undvika att roboten hackar sig fram och får en smidig rörelse så ska motorns styrsignaler regleras med en tidsdiskret $PD$-regulator. En $PID$ regulator är onödig då vi inte har något stående fel i teorin. Om roboten är mitt på linjen och står rakt så kommer felet vara noll. I praktiken kommer det antagligen inte att vara så då roboten sannolikt aldrig kommer stå precis rakt på linjen och motorerna troligen körs i olika hastigheter. En $PD$-regulator blir dock tillräckligt bra. En annan anledning till att inte ha med $I$-delen är att det är svårt att implementera det bra i ett tidsdiskret system. $e[n]$ Är felet vid sampling $n$. 
+För att undvika att roboten hackar sig fram och får en smidig rörelse så ska motorns styrsignaler regleras med en tidsdiskret PD-regulator. En PID regulator är onödig då vi inte har något stående fel i teorin. Om roboten är mitt på linjen och står rakt så kommer felet vara noll. I praktiken kommer det inte vara så då roboten troligtvis inte kommer stå rakt på linejn och motorerna kommer säkert åka i olika hastigheter. Dock så blir en PD-regulator tillräckligt bra. En annan anledning till att inte ha med I-delen är att det är svårt att implementera det bra i ett tidsdiskret system. e[n] Är felet vid sampling n. 
 \begin{itemize}
-\item $e[n]$ Är felet vid sampling n
-\item $e[n-1]$ Är felet vid sampling n-1
-\item $u[n]$ är styrsignalen till motorerna
-\item $K_{P}$ är en konstant för den proportionella delen av regleringen
-\item $K_{D}$ är en konstant för den deriverande delen av regleringen
-\item $\Delta T$ är tiden mellan sampling n och n-1
+\item e[n] Är felet vid sampling n
+\item e[n-1] Är felet vid sampling n-1
+\item u[n] är styrsignalen till motorerna
+\item K\_P är en konstant för den proportionella delen av regleringen
+\item K\_D är en konstant för den deriverande delen av regleringen
+\item Delta T är tiden mellan sampling n och n-1
+ 
 \end{itemize}
  $$ u[n] = K_P*e[n] + K_D\frac{e[n]-e[n-1]}{\Delta T}$$
- Roboten är begränsad av hårdvaran hur ofta den kan läsa av data från reflexsensorna. Enligt handledaren \todo{giltig referens?} är en uppdatering på 25 Hertz en rimlig nivå. Det ger $\Delta T = 40ms$.
-\subsection{Hårdvara som behövs}
+ Roboten är begränsade av hårdvaran hur ofta den kan läsa av data från reflexsensorna. Enligt handledaren är en uppdatering på 25 Hertz en rimlig nivå. Så delta T kommer vara 40ms
+ \subsection{Styrning av arm}
+ Omvandlingen från x,y,z koordinater till vinklar för armens servons kommer att ske i huvudmodulen då det är en rätt krävande operation. Tanken är att när roboten stannar vid en station så ska användaren kunna styra robotens arm med en joystick eller från tangentbordet. När användaren beordrar armen att röra sig framåt så ska armen röra sig i positiv y-led i förhållande till roboten. När användaren beodrar roboten att styra åt höger så ska armens ändpunkt röra sig i positivt x-led i förhållande till roboten.
+ \newline
+ \centerline{\input{armdir}}
+\centerline{\input{robotmath}}
+\newline
+ För att detta ska vara möjligt så behöver vi använda lite trionometri. Omvandlingen sker på följande sätt:
+Antag att roboten start i: $$X,Y,Z,GR=0,0,0,\pi/2$$
+Där GR(GripRadian) är vilken vinkel "handen" har till z-axeln.\newline
+Vi omvandlar:$$ X,Y,Z,GR\rightarrow A,W,Z,GR$$ 
+Där A är armens vinkel mot positiva x-axel och W är armens utsträckning.
+$$A=tan^-1(\dfrac{Y}{X}) $$
+$$W=\sqrt{X^2+Y^2}$$
+Genom denna omvandlingen så kan vi göra om detta till ett 2D problem istället för ett 3D problem. Vi får in X,Y,Z,GR och ställer in robotens vinkel mot x-axelns positiva del och sedan ser vi till att roboten bara har rätt utsträckning och höjd.
+$$P_4=(W,Z)$$
+$$P_0=(0,0)$$
+$$W_2=W-cos(GR)*L_3$$
+$$Z_2=Z-sin(GR)*L_3$$
+$$H_L=\sqrt{W_2^2+Z_2^2}$$
+$$H_A=tan^-1(\dfrac{Z_2}{W_2})$$
+Cosinussatsen ger:
+$$A_1=cos^-1(\dfrac{L_1^2+H_L^2-L_2^2}{2*L_1*H_L})+H_A$$
+$$W_1=cos(A_1)*L_1$$
+$$Z_1=sin(A_1)*L_1$$
+$$A_2=tan^-1(\dfrac{Z_2-Z_1}{W_2-W_1})-A_1$$
+$$A_3=GR-D_2-D_3$$
+
+Då har vi alla vinklar vi behöver. Sedan är det upp till styrenheten att omvandla dessa vinklar till positioner på servona på armen.
+Beräkningarna har simulerats i ett eget python-program:
+\includegraphics[scale=0.6]{simulator}
+\subsection{hårdvara som behövs}
 \begin{itemize}
 \item Beagleboard-xm (finns i vanheden)
 \item BT-dongle Belkin f8t016(vi har en)
@@ -67,5 +77,3 @@ För att undvika att roboten hackar sig fram och får en smidig rörelse så ska
 \item Minneskort (Om det inte finns i vanheden så beställ från elfa )
 \item Wifi dongel för utveckling på den (vi har en)
 \end{itemize}
-
-\todo{Fixa kommentarer/referenser i hårdvarulista}

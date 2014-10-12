@@ -17,5 +17,7 @@ I det fall att roboten arbetar i manuellt läge, skickar PC-enheten kommandon ti
 \caption{Flödesschema över kommunikationskanalerna i systemet.}
 \end{figure}
 
-\subsection{Uppgraderbarhet \todo{Se över!}}
-Kommunikation mellan huvudmodulen och PC-enheten kommer att ske över bluetooth och kommer att användas för att sätta upp ett PAN. Över denna sätts en TCP/IP anslutning upp och data skickas över en Python-socket vilket leder till att bluetooth kan bytas ut mot till exempel WIFI eller en ethernetkabel.\\
+\subsection{Uppgraderbarhet}
+Kommunikation mellan huvudmodulen och PC-enheten kommer att ske över bluetooth och kommer att användas för att sätta upp ett PAN. Över denna sätts en TCP/IP anslutning upp och data skickas över en Python-socket vilket leder till att bluetooth kan bytas ut mot till exempel WIFI, en ethernetkabel eller annan överföringskanal som tillåter tcp/ip.\newline
+\newline
+Kommunikationen mellan huvudmodulen och styrenheten samt sensormodulen sker över två I2C bussor över välspecificerade protokoll. Om det önskas kan sensormodulen coh styrmodulen bytas ut mot andra moduler så länge de använder samma protokoll. Styrenheten kommunicerar med servona över UART och använder Trossenrobotics egna protokoll vilket leder till att armen inte kan bytas ut mot någon annan.
