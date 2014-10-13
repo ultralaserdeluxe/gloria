@@ -34,10 +34,8 @@ Till styrenheten krävs följande hårdvara.
 
 \subsection{Mjukvara}
 
-Mjukvaran på Styrenheten kommer att vara främst avbrottsstyrd. Figur \ref{designspec:motor-interrupt-figure} illustrerar programflödet för avbrott. Vid kommando för att sätta register kommer ett servos målposition att uppdateras i ett separat register. Vid instruktion att utföra 
- \\
+Mjukvaran på styrenheten kommer att vara främst avbrottsstyrd. Figur \ref{designspec:motor-interrupt-figure} illustrerar programflödet för avbrott. Vid instruktioner för att uppdatera målposition eller hastighet kommer enheten lägga den i en kö. När enheten ombes utföra alla instruktioner kommer den gå igenom kön och uppdatera målpositioner och hastigheter på servon och motorer enligt tidigare inkomna instruktioner. \\
 När AVRen inte är upptagen med avbrott körs en loop där alla servons hastighet och position läses av, jämförs med dess målposition och uppdateras med en ny hastighet. Figur \ref{designspec:motor-main-figure} illustrerar programflödet. Detta ger robotarmen jämna och mjuka rörelser. \\
-Vid de tillfällen AVRen kommunicerar med servon genom UART bör alla avbrott slås av.  
 
 \begin{figure}
 \centering
