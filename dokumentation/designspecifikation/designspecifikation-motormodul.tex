@@ -1,7 +1,7 @@
 \section{Styrenhet}
 Styrenheten har till uppgift att driva de motorer som driver hjulen och de servon som styr armen. Styrenheten består av en AVR av typ Atmega16, två motorpar och en robotarm av typ Trossenrobotics Reactor. AVRen är ansluten till huvudenheten med en SPI-buss och en busy-pinne. Kommandon från huvudenheten fås enligt protokoll definierat i sektion \ref{protokoll:pc-motor}. 
 
-\begin{figure}[h]
+\begin{figure}[H]
 \center
 \input{styrenhet-blockschema.tex}
 \caption{Blockschema över styrenheten}
@@ -20,7 +20,7 @@ Robotarmen består av 7 servon av modell AX12-A. De är anslutna till AVRen med 
 Mjukvaran på styrenheten kommer att vara främst avbrottsstyrd. Figur \ref{designspec:motor-interrupt-figure} illustrerar programflödet för avbrott. Vid instruktioner för att uppdatera målposition eller hastighet kommer enheten lägga den i en kö. När enheten ombes utföra alla instruktioner kommer den gå igenom kön och uppdatera målpositioner och hastigheter på servon och motorer enligt tidigare inkomna instruktioner. \\
 När AVRen inte är upptagen med avbrott körs en loop där alla servons hastighet och position läses av, jämförs med dess målposition och uppdateras med en ny hastighet. Figur \ref{designspec:motor-main-figure} illustrerar programflödet. Detta ger robotarmen jämna och mjuka rörelser. \\
 
-\begin{figure}
+\begin{figure}[H]
 \centering
 \begin{minipage}[b]{.5\linewidth}
 \centering
@@ -29,7 +29,7 @@ När AVRen inte är upptagen med avbrott körs en loop där alla servons hastigh
 \end{minipage}%
 \begin{minipage}[b]{.5\linewidth}
 \centering
-\scalebox{0.7}{\input{motor-flow-main}}
+\scalebox{0.6}{\input{motor-flow-main}}
 \subcaption{Flödesschema för mainloop}\label{designspec:motor-main-figure}
 \end{minipage}
 \caption{Styrenhetens mjukvara}\label{fig:1}
