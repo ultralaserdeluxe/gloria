@@ -15,25 +15,6 @@ Styrenheten innehåller två motorpar. De är anslutna med två PWM-signaler til
 
 Robotarmen består av 7 servon av modell AX12-A. De är anslutna till AVRen med en UART-buss. Dessa servon styrs genom att en målvinkel sätts (0-1023) med möjlighet att ändra hastighet, vridmoment och styra av/på. Från huvudmodulen får styrenheten målvinklar för varje enskild led. Styrmodulen är ansvarig för att se till att parallella servon körs synkroniserat för att inte slita sönder varandra. Styrmodulen är också ansvarig för att servona accelerar och bromsar något i sina rörelser för att robotarmen skall röra sig mjukt och utan ryck. Så länge robotarmen är i rörelse sätts en busy-flagga. Den låter huvudenheten utföra köade kommandon för robotarmen så snart som det är möjligt. 
 
-\begin{figure}[h]
-\center
-\includegraphics[scale=0.35]{arm}
-\caption{Trossenrobotics Reactor.}
-\todo{Lägg till källhänvisning för bilden}
-\end{figure}
-
-\subsection{Komponenter}
-Följande komponenter är nödvändiga för konstruktion av styrenheten. \\
-\begin{tabularx}{\textwidth}{| l | X |}
-	\hline
-	{\textbf{Komponent}} & {\textbf{Tillgänglighet}} \\\hline
-	{2 hjulpar} & {Tillgänglig} \\\hline
-	{En AVR av typ Atmega16} & {Tillgänglig} \\\hline
-	{En Trossenrobotics Reactor} & {Tillgänglig} \\\hline
-	{En JTAG Ice 3} & {Tillgänglig} \\\hline
-	{En avstudsad tryckknapp} & {Tillgänglig} \\\hline
-\end{tabularx}
-
 \subsection{Mjukvara}
 
 Mjukvaran på styrenheten kommer att vara främst avbrottsstyrd. Figur \ref{designspec:motor-interrupt-figure} illustrerar programflödet för avbrott. Vid instruktioner för att uppdatera målposition eller hastighet kommer enheten lägga den i en kö. När enheten ombes utföra alla instruktioner kommer den gå igenom kön och uppdatera målpositioner och hastigheter på servon och motorer enligt tidigare inkomna instruktioner. \\
@@ -53,3 +34,15 @@ När AVRen inte är upptagen med avbrott körs en loop där alla servons hastigh
 \end{minipage}
 \caption{Styrenhetens mjukvara}\label{fig:1}
 \end{figure}
+
+\subsection{Komponenter}
+Följande komponenter är nödvändiga för konstruktion av styrenheten. \\
+\begin{tabularx}{\textwidth}{| l | X |}
+	\hline
+	{\textbf{Komponent}} & {\textbf{Tillgänglighet}} \\\hline
+	{Två hjulpar} & {Tillgängliga} \\\hline
+	{En AVR av typ Atmega16} & {Tillgänglig} \\\hline
+	{En Trossenrobotics Reactor} & {Tillgänglig} \\\hline
+	{En JTAG Ice 3} & {Tillgänglig} \\\hline
+	{En avstudsad tryckknapp} & {Tillgänglig} \\\hline
+\end{tabularx}

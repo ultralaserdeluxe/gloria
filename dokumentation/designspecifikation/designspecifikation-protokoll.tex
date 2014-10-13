@@ -1,5 +1,11 @@
 \section{Protokoll för kommunikation}
 
+\begin{figure}[h]
+\center
+\scalebox{0.6}{\input{FLOW1.tex}}
+\caption{Flödesschema över kommunikationskanalerna i systemet.}
+\end{figure}
+
 \subsection{Kommunikation mellan PC och huvudmodul}\label{designspec:protokoll}
 
 Kommunikation mellan PC-enhet och huvudenhet sker via Blåtand. En instruktion ges som en sträng på formen $command_{1}=arg_{1},...,arg_{N};command_{2}=arg_{1},...,arg_{N}$ med ett godtyckligt antal instruktioner där antalet argument per instruktion specificeras i avsnitt \ref{designspec-protokoll-pc-huvud-kommandon}.
@@ -40,8 +46,9 @@ $$-3800\leq Y \leq 3800$$
 $$0\leq Z \leq 4600$$
 Begränsningarna på G motsvarar servots input för position
 $$0\leq G \leq 1024$$
-Begränsningarna på P motsvarar vilken vinkel robotens hand kan ha mot XY planet.
+Begränsningarna på P motsvarar vilken vinkel robotens gripklo kan ha mot XY planet.
 $$-90\leq P \leq 90$$
+
 
 \subsection{Kommunikation mellan huvudmodul och sensormodul}
 Kommunikation mellan huvudmodul och sensormodul sker via en SPI-buss. Instruktioner från huvudmodulen ges i form av en byte. De fyra första bitarna anger vilken instruktion som skall utföras. De sista fyra anger vilken sensor instruktionen gäller. Tabell \ref{protokoll:huvud-sensor} och \ref{protokoll:huvud-sensor-adress} under avsnitt \ref{designspec:protokoll-huvud-sensor-instr} specificerar de instruktioner som finns respektive vilken adress som avser vilken sensor. \\
@@ -121,7 +128,7 @@ En instruktion består av tre bytes. Den första byten innehåller instruktionen
 			\hline
 			{1000} & {Arm axel 4} \\
 			\hline
-			{1011} & {Arm axel 5(gripper)} \\ % Gripklo?
+			{1011} & {Arm axel 5 (\textit{gripklo})} \\ % Gripklo?
 			\hline
 			{1100} & {Samtliga motorer} \\
 			\hline
@@ -135,5 +142,5 @@ En instruktion består av tre bytes. Den första byten innehåller instruktionen
 
 \begin{figure}[h]
 \centerline{\includegraphics[scale=0.4]{robotaxis}}
-\caption{\todo{Kaption}}
+\caption{\textit{Till vänster}: Armens frihetsgrader  \textit{Till höger}: Armens koordinatsystem}
 \end{figure}
