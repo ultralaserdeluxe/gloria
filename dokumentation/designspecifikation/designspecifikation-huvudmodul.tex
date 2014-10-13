@@ -69,7 +69,7 @@ För att undvika att roboten hackar sig fram och istället rör sig med smidiga 
  
 \end{itemize}
  $$ u[n] = K_P*e[n] + K_D\frac{e[n]-e[n-1]}{\Delta T}$$
- Roboten är begränsade av hårdvaran hur ofta den kan läsa av data från reflexsensorna. Enligt handledaren är en uppdatering på 25 Hertz en rimlig nivå. Så $\Delta T$ kommer vara 40ms. \todo{Se över detta stycke. "handledaren" rimlig referens?}
+ Roboten är begränsade av hårdvaran hur ofta den kan läsa av data från reflexsensorna. En rimlig uppdateringsfrekvens skulle kunna vara 25 Hz\cite{handledare}. Så $\Delta T$ kommer vara 40ms.
 
  \subsection{Styrning av arm}
  Omvandlingen från x,y,z koordinater till vinklar för armens servons kommer att ske i huvudmodulen då det är en rätt krävande operation. Tanken är att när roboten stannar vid en station så ska användaren kunna styra robotens arm med en joystick eller från tangentbordet. När användaren beordrar armen att röra sig framåt så ska armen röra sig i positiv y-led i förhållande till roboten. När användaren beodrar roboten att styra åt höger så ska armens ändpunkt röra sig i positivt x-led i förhållande till roboten.
