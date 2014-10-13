@@ -1,57 +1,19 @@
-%	\documentclass[10pt,a4paper]{article}
-%\usepackage[latin1]{inputenc}
-%\usepackage[english]{babel}
-%\usepackage{amsmath}
-%\usepackage{amsfonts}
-%\usepackage{amssymb}
-%\usepackage{tikz}
-%\title{Gränssnitt för PC}
-%\author{Daniel Wassing}
-%\begin{document}
-	%\maketitle
 \section{PC-enhet}
-	\subsection{GUI}
-	\begin{itemize}
-		\item Ska skrivas i Python
-		\item Ska kunna skicka följande signaler:
-		\begin{enumerate}
-			\item motor=L,R (L,R är ints för speed)
-			\item arm=X,Y,Z,P,G (Pitch, Grip (allt är ints))
-			\item calibrate
-			\item status
-			\item automotor=M (0/1)
-			\item autoarm=A (0/1)
-			\item Arm ska EVENTUELLT styras med 2st 2-D kartor, där man kan välja var man går i varje. Förslagsvis att de uppdelas i XY- och XZ-led.
-		\end{enumerate}
-		\item Ska vara ett GUI (först terminal)
-		\item Ska vara en "overhead" för modulen.
-		
-		%"commando1=X;commando2;commando3=X,Y,Z"
-	\end{itemize}
-	\pagebreak
-	
-	\subsection{Modul}
-	\begin{itemize}
-		\item Ska skrivas i Python
-		\item Är "hjärnan" mellan GUI och BT-förbindelse till DAD
-		\item Ska ha funktion för att ta emot signal från GUI
-		\item Ska ha funktion för att slussa ut en sträng till BT där strängen är en lista på kommandon för vad som ska göras hos DAD (kan vara samma funktion som signalmottagaren)
-		\item Strängen ska skickas via en socket-förbindelse. \\
-		Se https://wiki.python.org/moin/TcpCommunication för mer info.
-	\end{itemize}
-	\pagebreak
+Programvaran på PC delas in i två komponenter, ett grafiskt gränssnitt som användaren interagerar med, och en samling procedurer som det grafiska gränssnittet använder för att kommunicera med roboten. 
 
-	\begin{figure}[h]
-	\centerline{\input{PCflowchart}}
-	\caption{\todo{Kaption}}
-	\end{figure}
-	\pagebreak	
-	
-	\subsection{Fjärrstyrning}
-	\begin{itemize}
-		\item Ska vara en BT-förbindelse mellan PC och DAD.
-		\item Sätts upp via ett PAN (Personal Area Network)
-		\item BT-dongel via USB på Beagleboard
-		\item BT-support finns redan på PC
-	\end{itemize}
-%\end{document}
+\subsection{libgloria}
+libgloria är en Python-modul som kan importeras av andra program för att möjliggöra kommunikation med huvudenheten i Gloria-systemet. Vid initiering av modulen upprättas en Blåtands-förbindelse mellan PC:n och huvudenheten. Blåtandsförbindelsen sker över TCP via sockets. Efter detta kan modulens funktioner användas för att skicka kommandon till roboten. Formatet på kommandon beskrivs i avsnitt \ref{designspec:protokoll}.
+
+\subsection{GUI}
+Det grafiska gränssnittet ska skrivas i Python med hjälp av mjukvarubiblioteket Tkinter. Gränssnittet ska visa robotens nuvarande status, så som motorhastighet, sensorvärden och armens position. Det ska även innehålla reglage för att välja mellan autonomt och manuellt läge samt för att styra robotens arm och motorer. Gränssnittet ska innehålla så lite logik som möjligt och bara vara ett tunt lager ovanpå libgloria.
+
+\begin{figure}[h]
+  \centerline{\input{PCflowchart}}
+  \caption{\todo{Kaption}}
+\end{figure}
+
+\subsection{Hårdvara}
+\begin{itemize}
+\item En PC med ett JÄVLIGT BRA operativsystem och Python 3 installerat
+\item En Blåtandsdongel till PC:n
+\end{itemize}

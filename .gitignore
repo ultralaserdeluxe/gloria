@@ -38,3 +38,6 @@
 
 # Emacs backup files
 *.*~
+
+# meld/merging files
+*.orig
