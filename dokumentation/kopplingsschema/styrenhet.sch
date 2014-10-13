@@ -291,6 +291,61 @@ Source: avr.lbr</description>
 </deviceset>
 </devicesets>
 </library>
+<library name="con-garry">
+<description>&lt;b&gt;Pin Header Connectors&lt;/b&gt;&lt;p&gt;
+&lt;a href="www.mpe-connector.de"&gt;Menufacturer&lt;/a&gt;&lt;p&gt;
+&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
+<packages>
+<package name="332-02">
+<description>&lt;b&gt;2 Pin - 2mm Dual Row&lt;/b&gt;&lt;p&gt;
+Source: www.mpe-connector.de / garry_shortform_2012.pdf</description>
+<wire x1="-0.85" y1="-1.9" x2="0.85" y2="-1.9" width="0.2032" layer="21"/>
+<wire x1="0.85" y1="-1.9" x2="0.85" y2="-0.4" width="0.2032" layer="21"/>
+<wire x1="0.85" y1="0.4" x2="0.85" y2="1.9" width="0.2032" layer="21"/>
+<wire x1="0.85" y1="1.9" x2="-0.85" y2="1.9" width="0.2032" layer="21"/>
+<wire x1="-0.85" y1="1.9" x2="-0.85" y2="0.4" width="0.2032" layer="21"/>
+<wire x1="-0.85" y1="-0.4" x2="-0.85" y2="-1.9" width="0.2032" layer="21"/>
+<wire x1="-0.85" y1="0.4" x2="-0.85" y2="-0.4" width="0.2032" layer="21" curve="-129.185"/>
+<wire x1="0.85" y1="-0.4" x2="0.85" y2="0.4" width="0.2032" layer="21" curve="-129.185"/>
+<pad name="1" x="0" y="-1" drill="0.9" diameter="1.27"/>
+<pad name="2" x="0" y="1" drill="0.9" diameter="1.27"/>
+<text x="-0.65" y="-1.75" size="0.3048" layer="21" font="vector">1</text>
+<text x="-0.62" y="-3.81" size="1.27" layer="25">&gt;NAME</text>
+<text x="-0.62" y="2.54" size="1.27" layer="27">&gt;VALUE</text>
+<rectangle x1="-0.25" y1="-1.25" x2="0.25" y2="-0.75" layer="51"/>
+<rectangle x1="-0.25" y1="0.75" x2="0.25" y2="1.25" layer="51"/>
+</package>
+</packages>
+<symbols>
+<symbol name="MV">
+<wire x1="1.27" y1="0" x2="0" y2="0" width="0.6096" layer="94"/>
+<text x="2.54" y="-0.762" size="1.524" layer="95">&gt;NAME</text>
+<text x="-0.762" y="1.397" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="S" x="-2.54" y="0" visible="off" length="short" direction="pas"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="332-02" prefix="X">
+<description>&lt;b&gt;2 Pin - 2mm Dual Row&lt;/b&gt;&lt;p&gt;
+Source: www.mpe-connector.de / garry_shortform_2012.pdf</description>
+<gates>
+<gate name="-1" symbol="MV" x="-10.16" y="0" addlevel="always"/>
+<gate name="-2" symbol="MV" x="10.16" y="0" addlevel="always"/>
+</gates>
+<devices>
+<device name="" package="332-02">
+<connects>
+<connect gate="-1" pin="S" pad="1"/>
+<connect gate="-2" pin="S" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -301,19 +356,25 @@ Source: avr.lbr</description>
 </class>
 </classes>
 <parts>
-<part name="IC1" library="atmel" deviceset="MEGA16-P" device=""/>
+<part name="STYRENHET" library="atmel" deviceset="MEGA16-P" device=""/>
 <part name="P+1" library="supply1" deviceset="VCC" device=""/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
+<part name="RESET" library="con-garry" deviceset="332-02" device=""/>
+<part name="MOT" library="con-garry" deviceset="332-02" device=""/>
+<part name="UART" library="con-garry" deviceset="332-02" device=""/>
 </parts>
 <sheets>
 <sheet>
 <plain>
-<text x="-25.4" y="88.9" size="1.778" layer="91">Till knapp</text>
 </plain>
 <instances>
-<instance part="IC1" gate="G$1" x="15.24" y="48.26"/>
+<instance part="STYRENHET" gate="G$1" x="15.24" y="48.26"/>
 <instance part="P+1" gate="VCC" x="-15.24" y="66.04"/>
 <instance part="GND1" gate="1" x="-15.24" y="53.34"/>
+<instance part="RESET" gate="-1" x="-15.24" y="88.9" rot="R180"/>
+<instance part="MOT" gate="-1" x="66.04" y="15.24"/>
+<instance part="MOT" gate="-2" x="76.2" y="12.7"/>
+<instance part="UART" gate="-1" x="66.04" y="5.08"/>
 </instances>
 <busses>
 <bus name="SPI">
@@ -338,7 +399,7 @@ Source: avr.lbr</description>
 <segment>
 <pinref part="P+1" gate="VCC" pin="VCC"/>
 <wire x1="-15.24" y1="63.5" x2="-15.24" y2="60.96" width="0.1524" layer="91"/>
-<pinref part="IC1" gate="G$1" pin="VCC"/>
+<pinref part="STYRENHET" gate="G$1" pin="VCC"/>
 <wire x1="-15.24" y1="60.96" x2="-5.08" y2="60.96" width="0.1524" layer="91"/>
 </segment>
 </net>
@@ -346,86 +407,89 @@ Source: avr.lbr</description>
 <segment>
 <pinref part="GND1" gate="1" pin="GND"/>
 <wire x1="-15.24" y1="55.88" x2="-15.24" y2="58.42" width="0.1524" layer="91"/>
-<pinref part="IC1" gate="G$1" pin="GND"/>
+<pinref part="STYRENHET" gate="G$1" pin="GND"/>
 <wire x1="-15.24" y1="58.42" x2="-5.08" y2="58.42" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$1" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="RESET"/>
+<pinref part="STYRENHET" gate="G$1" pin="RESET"/>
 <wire x1="-5.08" y1="88.9" x2="-12.7" y2="88.9" width="0.1524" layer="91"/>
+<pinref part="RESET" gate="-1" pin="S"/>
 </segment>
 </net>
 <net name="N$2" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="(TCK)PC2"/>
+<pinref part="STYRENHET" gate="G$1" pin="(TCK)PC2"/>
 <wire x1="35.56" y1="30.48" x2="45.72" y2="30.48" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$3" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="(TMS)PC3"/>
+<pinref part="STYRENHET" gate="G$1" pin="(TMS)PC3"/>
 <wire x1="35.56" y1="33.02" x2="45.72" y2="33.02" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$4" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="(TDO)PC4"/>
+<pinref part="STYRENHET" gate="G$1" pin="(TDO)PC4"/>
 <wire x1="35.56" y1="35.56" x2="45.72" y2="35.56" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$5" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="(TDI)PC5"/>
+<pinref part="STYRENHET" gate="G$1" pin="(TDI)PC5"/>
 <wire x1="35.56" y1="38.1" x2="45.72" y2="38.1" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$6" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="(SS)PB4"/>
+<pinref part="STYRENHET" gate="G$1" pin="(SS)PB4"/>
 <wire x1="35.56" y1="58.42" x2="45.72" y2="58.42" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$7" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="(MOSI)PB5"/>
+<pinref part="STYRENHET" gate="G$1" pin="(MOSI)PB5"/>
 <wire x1="35.56" y1="60.96" x2="45.72" y2="60.96" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$8" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="(MISO)PB6"/>
+<pinref part="STYRENHET" gate="G$1" pin="(MISO)PB6"/>
 <wire x1="35.56" y1="63.5" x2="45.72" y2="63.5" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$9" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="(SCK)PB7"/>
+<pinref part="STYRENHET" gate="G$1" pin="(SCK)PB7"/>
 <wire x1="35.56" y1="66.04" x2="45.72" y2="66.04" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SERVOUART" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="(TXD)PD1"/>
+<pinref part="STYRENHET" gate="G$1" pin="(TXD)PD1"/>
 <wire x1="35.56" y1="5.08" x2="40.64" y2="5.08" width="0.1524" layer="91"/>
-<pinref part="IC1" gate="G$1" pin="(RXD)PD0"/>
+<pinref part="STYRENHET" gate="G$1" pin="(RXD)PD0"/>
 <wire x1="40.64" y1="5.08" x2="63.5" y2="5.08" width="0.1524" layer="91"/>
 <wire x1="35.56" y1="2.54" x2="40.64" y2="2.54" width="0.1524" layer="91"/>
 <wire x1="40.64" y1="2.54" x2="40.64" y2="5.08" width="0.1524" layer="91"/>
 <label x="38.1" y="5.08" size="1.778" layer="95"/>
+<pinref part="UART" gate="-1" pin="S"/>
 </segment>
 </net>
 <net name="LEFTMOTOR" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="(OC1A)PD5"/>
+<pinref part="STYRENHET" gate="G$1" pin="(OC1A)PD5"/>
 <wire x1="35.56" y1="15.24" x2="63.5" y2="15.24" width="0.1524" layer="91"/>
 <label x="38.1" y="15.24" size="1.778" layer="95"/>
+<pinref part="MOT" gate="-1" pin="S"/>
 </segment>
 </net>
 <net name="RIGHTMOTOR" class="0">
 <segment>
-<pinref part="IC1" gate="G$1" pin="(OC1B)PD4"/>
-<wire x1="35.56" y1="12.7" x2="63.5" y2="12.7" width="0.1524" layer="91"/>
+<pinref part="STYRENHET" gate="G$1" pin="(OC1B)PD4"/>
+<wire x1="35.56" y1="12.7" x2="73.66" y2="12.7" width="0.1524" layer="91"/>
 <label x="38.1" y="12.7" size="1.778" layer="95"/>
 </segment>
 </net>
