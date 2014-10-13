@@ -14,7 +14,7 @@ Kommunikation mellan PC-enhet och huvudenhet sker via Blåtand. En instruktion g
 			\hline
 			{motor} & {L,R} & {L och R anger hastigheten på det vänstra, respektive högra hjulparet} \\
 			\hline
-			{arm} & {X,Y,Z,P,G} & {X,Y,Z är koordinaten i rummet dit armens hand skall röra sig. Armens fundament är origo, P anger handens vinkel i förhållande till Z-axeln och G anger avståndet mellan handens fingrar.} \\
+			{arm} & {X,Y,Z,P,G} & {X,Y,Z är koordinaten i rummet dit armens gripklo skall röra sig. Armens fundament är origo, P anger handens vinkel i förhållande till XY-planet och G anger avståndet mellan gripklons klor} \\
 			\hline
 			{calibrate} & {} & {Begär kalibrering av robotens sensorer} \\
 			\hline
@@ -42,8 +42,6 @@ Begränsningarna på G motsvarar servots input för position
 $$0\leq G \leq 1024$$
 Begränsningarna på P motsvarar vilken vinkel robotens hand kan ha mot XY planet.
 $$-90\leq P \leq 90$$
-
-\todo{Bygg om}
 
 \subsection{Kommunikation mellan huvudmodul och sensormodul}
 Kommunikation mellan huvudmodul och sensormodul sker via en SPI-buss. Instruktioner från huvudmodulen ges i form av en byte. De fyra första bitarna anger vilken instruktion som skall utföras. De sista fyra anger vilken sensor instruktionen gäller. Tabell \ref{protokoll:huvud-sensor} och \ref{protokoll:huvud-sensor-adress} under avsnitt \ref{designspec:protokoll-huvud-sensor-instr} specificerar de instruktioner som finns respektive vilken adress som avser vilken sensor. \\
