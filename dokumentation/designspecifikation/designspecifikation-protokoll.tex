@@ -2,7 +2,7 @@
 
 \subsection{Kommunikation mellan PC och huvudmodul}
 
-Kommunikation mellan PC-enhet och huvudenhet sker via blåtand. En instruktion ges som en sträng på formen $command1=arg1,...,argN;command2=arg1,...,argN$ med ett godtyckligt antal instruktioner där antalet argument per instruktion specificeras i avsnitt \ref{designspec:protokoll-pc-huvud-kommandon}.
+Kommunikation mellan PC-enhet och huvudenhet sker via Blåtand. En instruktion ges som en sträng på formen $command1=arg1,...,argN;command2=arg1,...,argN$ med ett godtyckligt antal instruktioner där antalet argument per instruktion specificeras i avsnitt \ref{designspec:protokoll-pc-huvud-kommandon}.
 
 \subsubsection{Instruktioner} \label{designspec:protokoll-pc-huvud-kommandon}
 
@@ -18,7 +18,7 @@ Kommunikation mellan PC-enhet och huvudenhet sker via blåtand. En instruktion g
 			\hline
 			{calibrate} & {} & {Begär kalibrering av robotens sensorer} \\
 			\hline
-			{status} & {} & {Begär statusrapport från robot \todo{Format på svar?}} \\
+			{status} & {} & {Begär statusrapport från robot} \\
 			\hline
 			{automotor} & {M} & {Ange om robotens motorer skall styras från PC-enheten (0) eller huvudenheten (1)} \\
 			\hline
@@ -29,9 +29,21 @@ Kommunikation mellan PC-enhet och huvudenhet sker via blåtand. En instruktion g
 		\end{tabularx}
 	\caption{Instruktioner från PC-enhet till huvudenhet} \label{protokoll:pc-huvud}
 \end{table}
-\todo{Högre/lägre värden på t.ex X eller P gör vad, precis? X och Y =-+38cm,0<=Z<=46 bestäm upplösning}\\
-\todo{Illustrera koordinatsystem m. bild}
+%\todo{Högre/lägre värden på t.ex X eller P gör vad, precis? X och Y =-+38cm,0<=Z<=46 bestäm upplösning}\\
+%\todo{Illustrera koordinatsystem m. bild}
+L och R:s begränsningar där 100 representerar maximal hastighet framåt och -100 representerar maximal hastighet bakåt
+$$-100\leq L \leq 100$$
+$$-100\leq R \leq 100$$
+Begränsningar på X,Y,Z motsvarar hur långt roboten kan sträcka sig i varje led
+$$-3800\leq X \leq 3800$$
+$$-3800\leq Y \leq 3800$$
+$$0\leq Z \leq 4600$$
+Begränsningarna på G motsvarar servots input för position
+$$0\leq G \leq 1024$$
+Begränsningarna på P motsvarar vilken vinkel robotens hand kan ha mot XY planet.
+$$-90\leq P \leq 90$$
 
+\todo{Bygg om}
 
 \subsection{Kommunikation mellan huvudmodul och sensormodul}
 Kommunikation mellan huvudmodul och sensormodul sker via en SPI-buss. Instruktioner från huvudmodulen ges i form av en byte. De fyra första bitarna anger vilken instruktion som skall utföras. De sista fyra anger vilken sensor instruktionen gäller. Tabell \ref{protokoll:huvud-sensor} och \ref{protokoll:huvud-sensor-adress} under avsnitt \ref{designspec:protokoll-huvud-sensor-instr} specificerar de instruktioner som finns respektive vilken adress som avser vilken sensor. \\
@@ -72,9 +84,8 @@ Sensorenheten svarar med endast data. En byte per fototransistor i linjesensorn.
 \end{table}
 
 \subsection{Kommunikation mellan huvudenhet och styrenhet} \label{protokoll:pc-motor}
-Kommunikation mellan huvudmodul och motormodul sker via en SPI-buss. Det finns en busy-flagga kopplad huvudmodulen som går låg när armen är i rörelse. \\
+Kommunikation mellan huvudmodul och motormodul sker via en SPI-buss. Det finns en busy-flagga kopplad till huvudmodulen som går låg när armen är i rörelse. \\
 En instruktion består av tre bytes. Den första byten innehåller instruktionen och vilket servo eller vilken motor som avses. De första fyra bitarna av denna byte definierar vilket kommando som skall utföras. De nästkommande fyra vilken enhet det skall utföras av. Tabell \ref{protokoll:pc-motor-tabell} och \ref{protokoll:pc-motor-adress-tabell} i avsnitt \ref{designspec:protokoll-pc-motor-instr} specificerar de instruktioner som finns och vilken adress som avser vilken motor eller servo. Efter instruktions-byten följer alltid två databytes. I de fall där endast en databyte är nödvändig används endast den första av databytesen. Oanvända databytes kasseras utan att tolkas av styrenheten.
-
 
 \subsubsection{Instruktioner} \label{designspec:protokoll-pc-motor-instr}
 
@@ -123,4 +134,8 @@ En instruktion består av tre bytes. Den första byten innehåller instruktionen
 		\end{tabularx}
 	\caption{Adresser för adressering till styrenhet} \label{protokoll:pc-motor-adress-tabell}
 \end{table}
+
+\begin{figure}[h]
 \centerline{\includegraphics[scale=0.4]{robotaxis}}
+\caption{\todo{Kaption}}
+\end{figure}
