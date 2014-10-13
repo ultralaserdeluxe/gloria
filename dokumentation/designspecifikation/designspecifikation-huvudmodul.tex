@@ -1,26 +1,44 @@
+\setcounter{secnumdepth}{5}
 \section{Huvudmodul}
-Huvudmodulen kan ses som systemets "hjärna". Här sker alla beräkningar för att roboten ska kunna utföra sina uppgifter. Dessa uppgifter ska huvudmodulen hantera antingen via kommandon från en PC eller skötas helt autonomt. Detta är en kritisk modul då den kommer att utföra mycket uppgifter. Den behöver inte mycket hårdvara men den kommer vara mjukvarutung.
+Huvudmodulen utför alla beräkningar nödvändiga för att roboten ska kunna utföra sina uppgifter. Dessa uppgifter ska huvudmodulen hantera antingen via kommandon från en PC eller skötas helt autonomt. Detta är en kritisk modul då den kommer att utföra mycket uppgifter. Den behöver inte mycket hårdvara men den kommer vara mjukvarutung.
+
 \subsection{Hårdvara}
 Modulen ska förslagsvis bestå av en enkortsdator av modell Beagleboard. Den har en ARM Cortex-A8 processor som har en klockfrekvens på 1GHz. Denna behöver ett operativsystem för att kunna användas. Den enda hårdvaran som behövs för att kunna använda BB är ett minneskort för operativsystem och en bluetooth-dongel för kommunikationen med PC:n. För kommunikationen med styrenhet och sensorenheten behöver vi 
 \subsection{Mjukvara}
-\input{tradar}
-\subsubsection{Autonomt läge}
-När roboten är satt i autonomt läge kommer all styrning skötas av en algoritm i huvudmodulen, med undantag för upphämtning av paket där användaren styr armen. Detta är en väldigt kritisk del då detta är denna algoritm som avgör robotens beteende och som sedan kommer leda till att den kan fullfölja sina uppgifter. Troligtvis kommer en stor del av tiden läggas på att felsöka och optimera algoritmen.
-För att roboten ska kunna färdas framåt smidigt så kommer den behöva någon slags reglering. Förslagsvis ska en PD reglering implementeras som arbetar tidsdiskret. Detta gör att man måste sampla data från linjesensorerna med att visst intervall. Detta intervall är ej bestämt än.
-
-
+Mjukvaran som behövs för att implementera all funktionalitet hos huvudmodulen kommer att vara skriven i programspråket Python. Koden för programmet kommer vara trådbaserad och möjligen objektorienterad. 
+\newline
+Programmet ska delas in i 3 trådar. Dessa körs kontinuerligt och delar på två trådsäkra listor: sensorvärden och kommandon. I kommandolistan ligger alla argument till tillhörande kommando från PC och i sensorvärden ligger all data från sensorenheten. Listorna kan trådarna antingen läsa eller skriva till (se nedanstående bild).
 
 \begin{figure}[h]
-\center
-\includegraphics[scale=0.2]{Styrlogik.png}
-\caption{Flödesschema för huvudmodulens styralgoritm.} \label{systemskiss:autonomtschema}
+\scalebox{0.8}{\input{tradar}}
+\caption{Trådarna och listorna de delar på}
 \end{figure}
 
-Figur \ref{systemskiss:autonomtschema} är en visualisering av hur det autonoma läget kommer att styras. Med hjälp av två stycken flaggor, Upplockning och Avplockning, kan systemet avgöra om den ska plocka upp eller lämna av ett paket eller bara fortsätta köra framåt längs banan. När Upplockning är satt till "Ja" väntar systemet på att användaren ska styra armen och sedan skicka ett "färdigt-kommando".
+\subsubsection{Huvudtråden}
+I huvudtråden ligger huvudloopen för programmet. Den börjar med att läsa värdet från kommandolistan där manuell eller autonomt läge avgörs och kallar på respektive funktion. Användaren ska alltså kunna växla mellan lägena när denne vill (mellan varje iteration av huvudloopen).
+\paragraph{Autonomt läge}
+\leavevmode
+\newline
+\newline
+Här ska kod för autonom aktivitet hos systemet ligga. Sensorvärdeslistan behöver läsas av varje iteration för att avgöra om systemet befinner sig vid en av- eller upplockningsstation samt om systemet behöver regleras. Om systemet befinner sig vid en upplockningsstation behöver vi läsa av kommandolistan för att få argument om att styra armen. Om systemet befinner sig vid en avplockningsstation ska systemet låsa sig tills paket är avsläppt.
+\newline 
+Om systemet inte befinner sig vid en av- eller upplockningsstation skickas värden till styrenheten att köra roboten framåt. Dessa värden beräknas i slutet av programmet med regleringsalgoritmen utifrån linjesensordata från sensorvärdeslistan. 
+\paragraph{Manuellt läge}
+\leavevmode
+\newline
+\newline
+I manuellt läge läses argumenten från kommandolistan av, tolkar dessa och skickar vidare lämpliga värden till styrenheten.
 
-\subsubsection{Manuellt läge}
-När roboten är satt i manuellt läge väntar huvudmodulen på kommandon från användaren och utför sedan dessa. 
+\begin{figure}[h]
+\centering
+\scalebox{0.6}{\input{huvudtrad}}
+\caption{Flödesschema för huvudtråden}
+\end{figure}
 
+\subsubsection{Sensortråden}
+Sensortrådens uppgift är att uppdatera sensorvärdeslistan med fräscha värden från sensorenheten.
+\subsubsection{PC-tråden}
+PC-tråden delar upp strängen med data från PC och lägger endast in argumenten från de olika kommandona i kommandolistan.
 
 \subsection{Kommunikation}
 \subsubsection{Huvudmodul-PC}
