@@ -1,9 +1,9 @@
 \setcounter{secnumdepth}{5}
 \section{Huvudmodul}
-Huvudmodulen utför alla beräkningar nödvändiga för att roboten ska kunna utföra sina uppgifter. Dessa uppgifter ska huvudmodulen hantera antingen via kommandon från en PC eller skötas helt autonomt. Detta är en kritisk modul då den kommer att utföra mycket uppgifter. Den behöver inte mycket hårdvara men den kommer vara mjukvarutung.
+Huvudmodulen utför de flesta beräkningar nödvändiga för att roboten ska kunna utföra sina uppgifter. Dessa uppgifter ska huvudmodulen hantera antingen via kommandon från en PC eller helt autonomt. Detta är en kritisk modul då den kommer att utföra många uppgifter. Den behöver inte mycket hårdvara men den kommer innehålla majoriteten av robotens programvara.
 
 \subsection{Hårdvara}
-Modulen ska förslagsvis bestå av en enkortsdator av modell Beagleboard. Den har en ARM Cortex-A8 processor som har en klockfrekvens på 1GHz. Denna behöver ett operativsystem för att kunna användas. Den enda hårdvaran som behövs för att kunna använda BB är ett minneskort för operativsystem och en bluetooth-dongel för kommunikationen med PC:n. För kommunikationen med styrenhet och sensorenheten behöver vi 
+Modulen ska förslagsvis bestå av en enkortsdator av modell Beagleboard. Den har en ARM Cortex-A8 processor som har en klockfrekvens på 1GHz. Denna behöver ett operativsystem för att kunna användas. Den enda hårdvaran som behövs för att kunna använda BB är ett minneskort för operativsystem och en bluetooth-dongel för kommunikationen med PC:n. För kommunikationen med styrenhet och sensorenheten behöver vi två stycken levelshifters för att kunna hantera spänningsskillnaden då styr- och sensorenheten jobbar med 5V och BB jobbar med 1.8V. Bussen kommer vara av typ SPI.  
 \subsection{Mjukvara}
 Mjukvaran som behövs för att implementera all funktionalitet hos huvudmodulen kommer att vara skriven i programspråket Python. Koden för programmet kommer vara trådbaserad och möjligen objektorienterad. 
 \newline
@@ -13,6 +13,19 @@ Programmet ska delas in i 3 trådar. Dessa körs kontinuerligt och delar på tv�
 \scalebox{0.8}{\input{tradar}}
 \caption{Trådarna och listorna de delar på}
 \end{figure}
+
+Det som behövs göras på BB innan den kan börja användas är:
+\begin{itemize}
+\item Installera Angstrom operativsystem
+\item uppdatera operativsystem
+\item installera python
+\item konfigurera spi
+\item patcha kärnan för att stödja SPI
+\item installera git
+\item installera eclipse/emacs
+\item installera blåtandsmodulen
+\item sätta upp ett PAN
+\end{itemize}
 
 \subsubsection{Huvudtråden}
 I huvudtråden ligger huvudloopen för programmet. Den börjar med att läsa värdet från kommandolistan där manuell eller autonomt läge avgörs och kallar på respektive funktion. Användaren ska alltså kunna växla mellan lägena när denne vill (mellan varje iteration av huvudloopen).
@@ -40,12 +53,8 @@ Sensortrådens uppgift är att uppdatera sensorvärdeslistan med fräscha värde
 \subsubsection{PC-tråden}
 PC-tråden delar upp strängen med data från PC och lägger endast in argumenten från de olika kommandona i kommandolistan.
 
-\subsection{Kommunikation}
-\subsubsection{Huvudmodul-PC}
-\subsubsection{Huvudmodul-Styrenhet}
-\subsubsection{Huvudmodul-Sensorenhet}
 \subsection{Reglering}
-För att undvika att roboten hackar sig fram och får en smidig rörelse så ska motorns styrsignaler regleras med en tidsdiskret PD-regulator. En PID regulator är onödig då vi inte har något stående fel i teorin. Om roboten är mitt på linjen och står rakt så kommer felet vara noll. I praktiken kommer det inte vara så då roboten troligtvis inte kommer stå rakt på linejn och motorerna kommer säkert åka i olika hastigheter. Dock så blir en PD-regulator tillräckligt bra. En annan anledning till att inte ha med I-delen är att det är svårt att implementera det bra i ett tidsdiskret system. e[n] Är felet vid sampling n. 
+För att undvika att roboten hackar sig fram och får en smidig rörelse så ska motorns styrsignaler regleras med en tidsdiskret PD-regulator. En PID regulator är onödig då vi inte har något stående fel i teorin. Om roboten är mitt på linjen och står rakt så kommer felet vara noll. I praktiken kommer det inte vara så då roboten troligtvis inte kommer stå rakt på linjen och motorerna kommer säkert åka i olika hastigheter. Dock så blir en PD-regulator tillräckligt bra. En annan anledning till att inte ha med I-delen är att det är svårt att implementera det bra i ett tidsdiskret system. e[n] Är felet vid sampling n. 
 \begin{itemize}
 \item e[n] Är felet vid sampling n
 \item e[n-1] Är felet vid sampling n-1
