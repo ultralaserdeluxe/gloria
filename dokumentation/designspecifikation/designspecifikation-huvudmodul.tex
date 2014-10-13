@@ -1,35 +1,35 @@
 \setcounter{secnumdepth}{5}
 \section{Huvudmodul}
-Huvudmodulen utför de flesta beräkningar nödvändiga för att roboten ska kunna utföra sina uppgifter. Dessa uppgifter ska huvudmodulen hantera antingen via kommandon från en PC eller helt autonomt. Detta är en kritisk modul då den kommer att utföra många uppgifter. Den behöver inte mycket hårdvara men den kommer innehålla majoriteten av robotens programvara.
+Huvudmodulen utför de flesta beräkningar nödvändiga för att roboten ska kunna utföra sina uppgifter. Dessa uppgifter ska huvudmodulen hantera antingen via instruktioner från PC-enheten eller helt autonomt. Detta är en kritisk modul då den kommer att utföra många uppgifter. Den behöver inte mycket hårdvara men den kommer innehålla majoriteten av robotens programvara.
 
 \subsection{Hårdvara}
-Modulen ska bestå av en enkortsdator av modell Beagleboard. Den har en ARM Cortex-A8 processor som har en klockfrekvens på 1GHz. Denna behöver ett operativsystem för att kunna användas. Den enda hårdvaran som behövs för att kunna använda BB är ett minneskort för operativsystem och en Blåtands-dongel för kommunikationen med PC:n. Kommunikation med sensorenhet och styrenhet sker över SPI.
+Modulen ska bestå av en enkortsdator av modell Beagleboard-xM. Den har en ARM Cortex-A8 processor som har en klockfrekvens på 1GHz. Denna behöver ett operativsystem för att kunna användas. Den enda hårdvaran som behövs för att kunna använda Beagleboard är ett minneskort för operativsystem och en Blåtandsdongel för kommunikationen med PC-enheten. Kommunikation med sensorenhet och styrenhet sker över SPI.
 
 \subsection{Mjukvara}
 Mjukvaran som behövs för att implementera all funktionalitet hos huvudmodulen kommer att vara skriven i programspråket Python. Koden för programmet kommer vara trådbaserad och möjligen objektorienterad. 
 \newline
-Programmet ska delas in i 3 trådar. Dessa körs kontinuerligt och delar på två trådsäkra listor: sensorvärden och kommandon. I kommandolistan ligger alla argument till tillhörande kommando från PC och i sensorvärden ligger all data från sensorenheten. Listorna kan trådarna antingen läsa eller skriva till (se figur \ref{designspec:huvudmodul-tradar}).
+Programmet ska delas in i 3 trådar. Dessa körs kontinuerligt och delar på två trådsäkra listor: sensorvärden och instruktioner. I instruktionslistanlistan ligger alla argument till tillhörande instruktioner från PC-enheten och i sensorvärden ligger all data från sensorenheten. Listorna kan trådarna antingen läsa eller skriva till (se figur \ref{designspec:huvudmodul-tradar}).
 
 \begin{figure}[h]
 \scalebox{0.8}{\input{tradar}}
 \caption{Trådarna och listorna de delar på} \label{designspec:huvudmodul-tradar}
 \end{figure}
 
-Det som behövs göras på BB innan den kan börja användas är:
+Det som behövs göras på Beagleboard innan den kan börja användas är:
 \begin{itemize}
 \item Installera Angstrom operativsystem
-\item uppdatera operativsystem
-\item installera python
-\item konfigurera spi
-\item patcha kärnan för att stödja SPI
-\item installera git
-\item installera eclipse/emacs
-\item installera blåtandsmodulen
-\item sätta upp ett PAN
+\item Uppdatera operativsystem
+\item Installera Python
+\item Konfigurera SPI
+\item Patcha kärnan för att stödja SPI
+\item Installera Git
+\item Installera utvecklingsmiljö
+\item Installera Blåtandsmodulen
+\item Sätta upp ett PAN
 \end{itemize}
 
 \subsubsection{Huvudtråden}
-I huvudtråden ligger huvudloopen för programmet. Den börjar med att läsa värdet från kommandolistan där manuell eller autonomt läge avgörs och kallar på respektive funktion. Användaren ska alltså kunna växla mellan dessa lägen när denne vill (mellan varje iteration av huvudloopen). Figur \ref{designspec:huvudmodul-huvudtrad} illustrerar programflödet.
+I huvudtråden ligger huvudloopen för programmet. Den börjar med att läsa värdet från instruktionslistan där manuellt eller autonomt läge avgörs och anropar respektive funktion. Användaren ska alltså kunna växla mellan dessa lägen när denne vill (mellan varje iteration av huvudloopen). Figur \ref{designspec:huvudmodul-huvudtrad} illustrerar programflödet.
 
 \begin{figure}[H]
 \centering
@@ -41,7 +41,7 @@ I huvudtråden ligger huvudloopen för programmet. Den börjar med att läsa vä
 \leavevmode
 \newline
 \newline
-Här ska kod för autonom aktivitet hos systemet ligga. Sensorvärdeslistan behöver läsas av varje iteration för att avgöra om systemet befinner sig vid en av- eller upplockningsstation samt om systemet behöver regleras. Om systemet befinner sig vid en upplockningsstation behöver vi läsa av kommandolistan för att få argument om att styra armen. Om systemet befinner sig vid en avplockningsstation ska systemet låsa sig tills paket är avsläppt.
+Här ska kod för autonom aktivitet hos systemet ligga. Sensorvärdeslistan behöver läsas av varje iteration för att avgöra om systemet befinner sig vid en av- eller upplockningsstation samt om systemet behöver regleras. Om systemet befinner sig vid en upplockningsstation behöver vi läsa av instruktionslistan för att få argument om att styra armen. Om systemet befinner sig vid en avplockningsstation ska systemet låsa sig tills paket är avsläppt.
 \newline 
 Om systemet inte befinner sig vid en av- eller upplockningsstation skickas värden till styrenheten att köra roboten framåt. Dessa värden beräknas i slutet av programmet med regleringsalgoritmen utifrån linjesensordata från sensorvärdeslistan. 
 
@@ -49,13 +49,13 @@ Om systemet inte befinner sig vid en av- eller upplockningsstation skickas värd
 \leavevmode
 \newline
 \newline
-I manuellt läge läses argumenten från kommandolistan av, tolkar dessa och skickar vidare lämpliga värden till styrenheten.
+I manuellt läge läses argumenten från instruktionslistan av, tolkar dessa och skickar vidare lämpliga värden till styrenheten.
 
 \subsubsection{Sensortråden}
 Sensortrådens uppgift är att uppdatera sensorvärdeslistan med fräscha värden från sensorenheten.
 
 \subsubsection{PC-tråden}
-PC-tråden delar upp strängen med data från PC och lägger endast in argumenten från de olika kommandona i kommandolistan.
+PC-tråden delar upp strängen med data från PC-enheten och lagrar instruktionerna och deras argument i instruktionslistan.
 
 \subsection{Reglering}
 För att undvika att roboten hackar sig fram och istället rör sig med smidiga rörelser så ska motorns styrsignaler regleras med en tidsdiskret PD-regulator. En PID regulator är onödig då vi inte har något stående fel i teorin. Om roboten är mitt på linjen och står rakt så kommer felet vara noll. I praktiken kommer det inte vara så då roboten troligtvis inte kommer stå rakt på linjen och motorerna kommer säkert åka i olika hastigheter. Dock så blir en PD-regulator tillräckligt bra. En annan anledning till att inte ha med I-delen är att det är svårt att implementera det bra i ett tidsdiskret system. 
@@ -72,12 +72,12 @@ För att undvika att roboten hackar sig fram och istället rör sig med smidiga 
  Roboten är begränsade av hårdvaran hur ofta den kan läsa av data från reflexsensorna. En rimlig uppdateringsfrekvens skulle kunna vara 25 Hz\cite{handledare}. Så $\Delta T$ kommer vara 40ms.
 
  \subsection{Styrning av arm}
- Omvandlingen från x,y,z koordinater till vinklar för armens servons kommer att ske i huvudmodulen då det är en rätt krävande operation. Tanken är att när roboten stannar vid en station så ska användaren kunna styra robotens arm med en joystick eller från tangentbordet. När användaren beordrar armen att röra sig framåt så ska armen röra sig i positiv y-led i förhållande till roboten. När användaren beodrar roboten att styra åt höger så ska armens ändpunkt röra sig i positivt x-led i förhållande till roboten.
+ Omvandlingen från x,y,z koordinater till vinklar för armens servon kommer att ske i huvudenheten då det är en krävande operation. Tanken är att när roboten stannar vid en station så ska användaren kunna styra robotens arm med en joystick eller från tangentbordet. När användaren beordrar armen att röra sig framåt så ska armen röra sig i positiv y-led i förhållande till roboten. När användaren beodrar roboten att styra åt höger så ska armens ändpunkt röra sig i positivt x-led i förhållande till roboten.
  \newline
 
  \begin{figure}[H]
  \centerline{\input{armdir}}
- \caption{Armens koordinatsystem i förhållande till roboten. Upp är robotens färdriktning.}
+ \caption{Armens koordinatsystem i förhållande till roboten. Upp är robotens färdriktning}
  \end{figure}
 
  \begin{figure}[H]
@@ -122,7 +122,7 @@ Följande komponenter är nödvändiga för konstruktion av huvudmodulen.\\
 	{\textbf{Komponent}} & {\textbf{Tillgänglighet}} \\\hline
 	{Beagleboard-xm} & {Tillgänglig} \\\hline
 	{Blåtandsdongel Belkin f8t016} & {Tillgänglig} \\\hline
-	{Minneskort} & {Oklart} \\\hline
-	{Nivåomvandlare Ti TXB0108} & {Ska beställas från electrokit\cite{nivaomvandlare}} \\\hline
+	{Minneskort} & {Skall beställas} \\\hline
+	{Nivåomvandlare Ti TXB0108} & {Skall beställas. Förslagsvis från electrokit\cite{nivaomvandlare}} \\\hline
 	{Wifidongel} & {Tillgänglig} \\\hline
 \end{tabularx}

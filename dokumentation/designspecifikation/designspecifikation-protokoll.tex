@@ -3,10 +3,10 @@
 \begin{figure}[H]
 \center
 \scalebox{0.6}{\input{FLOW1.tex}}
-\caption{Flödesschema över kommunikationskanalerna i systemet.}
+\caption{Flödesschema över kommunikationskanalerna i systemet}
 \end{figure}
 
-\subsection{Kommunikation mellan PC och huvudmodul}\label{designspec:protokoll}
+\subsection{Kommunikation mellan PC-enhet och huvudenhet}\label{designspec:protokoll}
 
 Kommunikation mellan PC-enhet och huvudenhet sker via Blåtand. En instruktion ges som en sträng på formen $command_{1}=arg_{1},...,arg_{N};command_{2}=arg_{1},...,arg_{N}$ med ett godtyckligt antal instruktioner där antalet argument per instruktion specificeras i avsnitt \ref{designspec-protokoll-pc-huvud-kommandon}.
 
@@ -18,7 +18,7 @@ Kommunikation mellan PC-enhet och huvudenhet sker via Blåtand. En instruktion g
 			\hline
 			\textbf{Instruktion} & \textbf{Argument} & \textbf{Beskrivning} \\
 			\hline
-			{motor} & {L,R} & {L och R anger hastigheten på det vänstra, respektive högra hjulparet} \\
+			{motor} & {L,R} & {L och R anger hastigheten på vänster, respektive höger hjulpar} \\
 			\hline
 			{arm} & {X,Y,Z,P,G} & {X,Y,Z är koordinaten i rummet dit armens gripklo skall röra sig. Armens fundament är origo, P anger handens vinkel i förhållande till XY-planet och G anger avståndet mellan gripklons klor} \\
 			\hline
@@ -50,8 +50,8 @@ Begränsningarna på P motsvarar vilken vinkel robotens gripklo kan ha mot XY pl
 $$-90\leq P \leq 90$$
 
 
-\subsection{Kommunikation mellan huvudmodul och sensormodul}
-Kommunikation mellan huvudmodul och sensormodul sker via en SPI-buss. Instruktioner från huvudmodulen ges i form av en byte. De fyra första bitarna anger vilken instruktion som skall utföras. De sista fyra anger vilken sensor instruktionen gäller. Tabell \ref{protokoll:huvud-sensor} och \ref{protokoll:huvud-sensor-adress} under avsnitt \ref{designspec:protokoll-huvud-sensor-instr} specificerar de instruktioner som finns respektive vilken adress som avser vilken sensor. \\
+\subsection{Kommunikation mellan huvudenhet och sensorenhet}
+Kommunikation mellan huvudenhet och sensorenhet sker via en SPI-buss. Instruktioner från huvudenheten ges i form av en byte. De fyra första bitarna anger vilken instruktion som skall utföras. De sista fyra anger vilken sensor instruktionen gäller. Tabell \ref{protokoll:huvud-sensor} och \ref{protokoll:huvud-sensor-adress} under avsnitt \ref{designspec:protokoll-huvud-sensor-instr} specificerar de instruktioner som finns respektive vilken adress som avser vilken sensor. \\
 Sensorenheten svarar med endast data. En byte per fototransistor i linjesensorn. En byte för vardera avståndssensor. I fallet med instruktionen \textit{läs data från alla sensorer} skickas sensorernas data seriellt i följande ordning: 1. Linjesensor, 2: Avståndssensor Höger, 3: Avståndssensor Vänster.
 
 \subsubsection{Instruktioner} \label{designspec:protokoll-huvud-sensor-instr}
@@ -89,7 +89,7 @@ Sensorenheten svarar med endast data. En byte per fototransistor i linjesensorn.
 \end{table}
 
 \subsection{Kommunikation mellan huvudenhet och styrenhet} \label{protokoll:pc-motor}
-Kommunikation mellan huvudmodul och motormodul sker via en SPI-buss. Det finns en busy-flagga kopplad till huvudmodulen som går låg när armen är i rörelse. \\
+Kommunikation mellan huvudenhet och styrenhet sker via en SPI-buss. Det finns en busy-flagga kopplad till huvudenheten som går låg när armen är i rörelse. \\
 En instruktion består av tre bytes. Den första byten innehåller instruktionen och vilket servo eller vilken motor som avses. De första fyra bitarna av denna byte definierar vilket kommando som skall utföras. De nästkommande fyra vilken enhet det skall utföras av. Tabell \ref{protokoll:pc-motor-tabell} och \ref{protokoll:pc-motor-adress-tabell} i avsnitt \ref{designspec:protokoll-pc-motor-instr} specificerar de instruktioner som finns och vilken adress som avser vilken motor eller servo. Efter instruktions-byten följer alltid två databytes. I de fall där endast en databyte är nödvändig används endast den första av databytesen. Oanvända databytes kasseras utan att tolkas av styrenheten.
 
 \subsubsection{Instruktioner} \label{designspec:protokoll-pc-motor-instr}
