@@ -14,7 +14,7 @@ Kommunikation mellan PC-enhet och huvudenhet sker via Blåtand. En instruktion g
 			\hline
 			{motor} & {L,R} & {L och R anger hastigheten på det vänstra, respektive högra hjulparet} \\
 			\hline
-			{arm} & {X,Y,Z,P,G} & {X,Y,Z är koordinaten i rummet dit armens hand skall röra sig. Armens fundament är origo, P anger handens vinkel i förhållande till Z-axeln och G anger avståndet mellan handens fingrar.} \\
+			{arm} & {X,Y,Z,P,G} & {X,Y,Z är koordinaten i rummet dit armens gripklo skall röra sig. Armens fundament är origo, P anger gripklons vinkel i förhållande till Z-axeln och G anger avståndet mellan gripklons fingrar.} \\
 			\hline
 			{calibrate} & {} & {Begär kalibrering av robotens sensorer} \\
 			\hline
@@ -30,7 +30,6 @@ Kommunikation mellan PC-enhet och huvudenhet sker via Blåtand. En instruktion g
 	\caption{Instruktioner från PC-enhet till huvudenhet} \label{protokoll:pc-huvud}
 \end{table}
 %\todo{Högre/lägre värden på t.ex X eller P gör vad, precis? X och Y =-+38cm,0<=Z<=46 bestäm upplösning}\\
-%\todo{Illustrera koordinatsystem m. bild}
 L och R:s begränsningar där 100 representerar maximal hastighet framåt och -100 representerar maximal hastighet bakåt
 $$-100\leq L \leq 100$$
 $$-100\leq R \leq 100$$
@@ -40,7 +39,7 @@ $$-3800\leq Y \leq 3800$$
 $$0\leq Z \leq 4600$$
 Begränsningarna på G motsvarar servots input för position
 $$0\leq G \leq 1024$$
-Begränsningarna på P motsvarar vilken vinkel robotens hand kan ha mot XY planet.
+Begränsningarna på P motsvarar vilken vinkel robotens gripklo kan ha mot XY planet.
 $$-90\leq P \leq 90$$
 
 \todo{Bygg om}
@@ -123,7 +122,7 @@ En instruktion består av tre bytes. Den första byten innehåller instruktionen
 			\hline
 			{1000} & {Arm axel 4} \\
 			\hline
-			{1011} & {Arm axel 5(gripper)} \\ % Gripklo?
+			{1011} & {Arm axel 5 (\textit{gripklo})} \\ % Gripklo?
 			\hline
 			{1100} & {Samtliga motorer} \\
 			\hline
@@ -137,5 +136,5 @@ En instruktion består av tre bytes. Den första byten innehåller instruktionen
 
 \begin{figure}[h]
 \centerline{\includegraphics[scale=0.4]{robotaxis}}
-\caption{\todo{Kaption}}
+\caption{\textit{Till vänster}: Armens frihetsgrader  \textit{Till höger}: Armens koordinatsystem}
 \end{figure}
