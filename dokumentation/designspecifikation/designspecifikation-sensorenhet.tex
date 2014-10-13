@@ -23,15 +23,19 @@ Beroende på vilket underlag roboten arbetar på kommer värdena för golv och t
 \subsection{Avståndssensor}
 För att kunna detektera paket kommer roboten ha en avståndssensor på höger respektive vänster sida. Dessa kommer vara av typen GP2D120 och använder IR för att generera en analog signal. Denna signal läses av med en AD-omvandling på AVRen. Då sensorns utsignal är olinjär kommer vi under utveckligsfasen ta fram en tabell med närmevärden för olika distanser. Utsignalen jämförs med denna tabell för att estimera det uppmätta avståndet till ett föremål.
 
-\subsection{Hårdvara}
-Till sensorenheten krävs följande hårdvara.
-\begin{itemize}
-\item{En AVR av typ Atmega16}
-\item{En Reflexsensormodul}
-\item{Två muxar av typ MC14067B}
-\item{Två avståndssensorer av typ GP2D120}
-\item{En JTAG Ice 3}
-\end{itemize}
+\subsection{Komponenter}
+Följande komponenter är nödvändiga för konstruktion av sensorenheten. \\
+
+\begin{tabularx}{\textwidth}{| l | X |}
+	\hline
+	{\textbf{Komponent}} & {\textbf{Tillgänglighet}} \\\hline
+	{En AVR av typ Atmega16} & {Tillgänglig} \\\hline
+	{En JTAG Ice 3} & {Tillgänglig} \\\hline
+	{En Reflexsensormodul} & {Tillgänlig} \\\hline
+	{Två muxar av typ MC14067B} & {Tillgängliga} \\\hline
+	{Två avsåndssensorer av typ GP2D120} & {Tillgänglig} \\\hline
+	{En avstudsad tryckknapp} & {Tillgänglig} \\\hline
+\end{tabularx}
 
 \subsection{Mjukvara}
 Sensorenheten kör kontinuerligt en loop där den läser och lagrar data från sensorerna. Då huvudenheten skickar en instruktion till sensorenheten körs en avbrottsrutin där instruktionen tolkas och utförs. Antingen kalibreras sensorerna eller så returnerar sensorenheten data för den adresserade sensorn.
