@@ -35,3 +35,6 @@
 
 # Eagle backup files
 *.s#?
+
+# Emacs backup files
+*.*~

@@ -756,37 +756,37 @@ Source: www.mpe-connector.de / garry_shortform_2012.pdf</description>
 </plain>
 <instances>
 <instance part="SENSORENHET" gate="G$1" x="63.5" y="43.18"/>
-<instance part="P+1" gate="VCC" x="25.4" y="60.96"/>
-<instance part="GND1" gate="1" x="25.4" y="48.26"/>
-<instance part="LINEVALUEMUX" gate="A" x="175.26" y="124.46" rot="MR180"/>
-<instance part="LINEENABLEMUX" gate="A" x="109.22" y="124.46" rot="R180"/>
-<instance part="GND2" gate="1" x="160.02" y="91.44"/>
-<instance part="P+2" gate="VCC" x="93.98" y="119.38"/>
-<instance part="RFS" gate="-1" x="129.54" y="139.7"/>
-<instance part="RFS" gate="-2" x="149.86" y="139.7" rot="MR0"/>
-<instance part="RFS" gate="-3" x="129.54" y="137.16"/>
-<instance part="RFS" gate="-4" x="149.86" y="137.16" rot="MR0"/>
-<instance part="RFS" gate="-5" x="129.54" y="134.62"/>
-<instance part="RFS" gate="-6" x="149.86" y="134.62" rot="MR0"/>
-<instance part="RFS" gate="-7" x="129.54" y="132.08"/>
-<instance part="RFS" gate="-8" x="149.86" y="132.08" rot="MR0"/>
-<instance part="RFS" gate="-9" x="129.54" y="129.54"/>
-<instance part="RFS" gate="-10" x="149.86" y="129.54" rot="MR0"/>
-<instance part="RFS" gate="-11" x="129.54" y="127"/>
-<instance part="RFS" gate="-12" x="149.86" y="127" rot="MR0"/>
-<instance part="RFS" gate="-13" x="129.54" y="124.46"/>
-<instance part="RFS" gate="-14" x="149.86" y="124.46" rot="MR0"/>
-<instance part="RFS" gate="-15" x="129.54" y="121.92"/>
-<instance part="RFS" gate="-16" x="149.86" y="121.92" rot="MR0"/>
-<instance part="RFS" gate="-17" x="129.54" y="119.38"/>
-<instance part="RFS" gate="-18" x="149.86" y="119.38" rot="MR0"/>
-<instance part="RFS" gate="-19" x="129.54" y="116.84"/>
-<instance part="RFS" gate="-20" x="149.86" y="116.84" rot="MR0"/>
-<instance part="RFS" gate="-21" x="129.54" y="114.3"/>
-<instance part="RFS" gate="-22" x="149.86" y="114.3" rot="MR0"/>
-<instance part="DIST" gate="-1" x="119.38" y="83.82" rot="R90"/>
-<instance part="DIST" gate="-2" x="124.46" y="86.36" rot="R90"/>
-<instance part="RESET" gate="-1" x="22.86" y="83.82" rot="R180"/>
+<instance part="P+1" gate="VCC" x="38.1" y="60.96"/>
+<instance part="GND1" gate="1" x="38.1" y="48.26"/>
+<instance part="LINEVALUEMUX" gate="A" x="147.32" y="124.46" rot="MR180"/>
+<instance part="LINEENABLEMUX" gate="A" x="91.44" y="124.46" rot="R180"/>
+<instance part="GND2" gate="1" x="132.08" y="91.44"/>
+<instance part="P+2" gate="VCC" x="78.74" y="119.38"/>
+<instance part="RFS" gate="-1" x="109.22" y="139.7"/>
+<instance part="RFS" gate="-2" x="129.54" y="139.7" rot="MR0"/>
+<instance part="RFS" gate="-3" x="109.22" y="137.16"/>
+<instance part="RFS" gate="-4" x="129.54" y="137.16" rot="MR0"/>
+<instance part="RFS" gate="-5" x="109.22" y="134.62"/>
+<instance part="RFS" gate="-6" x="129.54" y="134.62" rot="MR0"/>
+<instance part="RFS" gate="-7" x="109.22" y="132.08"/>
+<instance part="RFS" gate="-8" x="129.54" y="132.08" rot="MR0"/>
+<instance part="RFS" gate="-9" x="109.22" y="129.54"/>
+<instance part="RFS" gate="-10" x="129.54" y="129.54" rot="MR0"/>
+<instance part="RFS" gate="-11" x="109.22" y="127"/>
+<instance part="RFS" gate="-12" x="129.54" y="127" rot="MR0"/>
+<instance part="RFS" gate="-13" x="109.22" y="124.46"/>
+<instance part="RFS" gate="-14" x="129.54" y="124.46" rot="MR0"/>
+<instance part="RFS" gate="-15" x="109.22" y="121.92"/>
+<instance part="RFS" gate="-16" x="129.54" y="121.92" rot="MR0"/>
+<instance part="RFS" gate="-17" x="109.22" y="119.38"/>
+<instance part="RFS" gate="-18" x="129.54" y="119.38" rot="MR0"/>
+<instance part="RFS" gate="-19" x="109.22" y="116.84"/>
+<instance part="RFS" gate="-20" x="129.54" y="116.84" rot="MR0"/>
+<instance part="RFS" gate="-21" x="109.22" y="114.3"/>
+<instance part="RFS" gate="-22" x="129.54" y="114.3" rot="MR0"/>
+<instance part="DIST" gate="-1" x="111.76" y="83.82" rot="R90"/>
+<instance part="DIST" gate="-2" x="116.84" y="86.36" rot="R90"/>
+<instance part="RESET" gate="-1" x="35.56" y="83.82" rot="R180"/>
 </instances>
 <busses>
 <bus name="JTAG">
@@ -807,42 +807,31 @@ Source: www.mpe-connector.de / garry_shortform_2012.pdf</description>
 </bus>
 </busses>
 <nets>
-<net name="N$5" class="0">
-<segment>
-<pinref part="SENSORENHET" gate="G$1" pin="RESET"/>
-<wire x1="43.18" y1="83.82" x2="27.94" y2="83.82" width="0.1524" layer="91"/>
-<wire x1="25.4" y1="83.82" x2="27.94" y2="83.82" width="0.1524" layer="91"/>
-<pinref part="RESET" gate="-1" pin="S"/>
-</segment>
-</net>
 <net name="VCC" class="0">
 <segment>
-<pinref part="SENSORENHET" gate="G$1" pin="VCC"/>
-<wire x1="43.18" y1="55.88" x2="25.4" y2="55.88" width="0.1524" layer="91"/>
 <pinref part="P+1" gate="VCC" pin="VCC"/>
-<wire x1="25.4" y1="55.88" x2="25.4" y2="58.42" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="55.88" x2="38.1" y2="58.42" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="55.88" x2="45.72" y2="55.88" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="LINEENABLEMUX" gate="A" pin="X"/>
-<wire x1="96.52" y1="114.3" x2="93.98" y2="114.3" width="0.1524" layer="91"/>
+<wire x1="78.74" y1="114.3" x2="78.74" y2="116.84" width="0.1524" layer="91"/>
 <pinref part="P+2" gate="VCC" pin="VCC"/>
-<wire x1="93.98" y1="114.3" x2="93.98" y2="116.84" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="GND" class="0">
 <segment>
-<pinref part="SENSORENHET" gate="G$1" pin="GND"/>
-<wire x1="43.18" y1="53.34" x2="25.4" y2="53.34" width="0.1524" layer="91"/>
 <pinref part="GND1" gate="1" pin="GND"/>
-<wire x1="25.4" y1="53.34" x2="25.4" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="53.34" x2="38.1" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="53.34" x2="45.72" y2="53.34" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="GND2" gate="1" pin="GND"/>
-<wire x1="160.02" y1="93.98" x2="160.02" y2="99.06" width="0.1524" layer="91"/>
-<pinref part="LINEVALUEMUX" gate="A" pin="INH"/>
-<wire x1="160.02" y1="99.06" x2="162.56" y2="99.06" width="0.1524" layer="91"/>
 <pinref part="LINEENABLEMUX" gate="A" pin="INH"/>
-<wire x1="121.92" y1="99.06" x2="160.02" y2="99.06" width="0.1524" layer="91"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="INH"/>
+<wire x1="104.14" y1="99.06" x2="132.08" y2="99.06" width="0.1524" layer="91"/>
+<pinref part="GND2" gate="1" pin="GND"/>
+<wire x1="132.08" y1="99.06" x2="134.62" y2="99.06" width="0.1524" layer="91"/>
+<wire x1="132.08" y1="93.98" x2="132.08" y2="99.06" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$1" class="0">
@@ -896,220 +885,236 @@ Source: www.mpe-connector.de / garry_shortform_2012.pdf</description>
 <net name="LINEADDR0" class="0">
 <segment>
 <pinref part="SENSORENHET" gate="G$1" pin="(ADC0)PA0"/>
-<wire x1="83.82" y1="66.04" x2="149.86" y2="66.04" width="0.1524" layer="91"/>
-<wire x1="149.86" y1="66.04" x2="149.86" y2="101.6" width="0.1524" layer="91"/>
-<pinref part="LINEVALUEMUX" gate="A" pin="A"/>
-<wire x1="149.86" y1="101.6" x2="162.56" y2="101.6" width="0.1524" layer="91"/>
-<pinref part="LINEENABLEMUX" gate="A" pin="A"/>
-<wire x1="121.92" y1="101.6" x2="149.86" y2="101.6" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="66.04" x2="127" y2="66.04" width="0.1524" layer="91"/>
 <label x="86.36" y="66.04" size="1.778" layer="95"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="A"/>
+<pinref part="LINEENABLEMUX" gate="A" pin="A"/>
+<wire x1="104.14" y1="101.6" x2="127" y2="101.6" width="0.1524" layer="91"/>
+<wire x1="127" y1="101.6" x2="134.62" y2="101.6" width="0.1524" layer="91"/>
+<wire x1="127" y1="66.04" x2="127" y2="101.6" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINEADDR1" class="0">
 <segment>
 <pinref part="SENSORENHET" gate="G$1" pin="(ADC1)PA1"/>
-<wire x1="83.82" y1="68.58" x2="147.32" y2="68.58" width="0.1524" layer="91"/>
-<wire x1="147.32" y1="68.58" x2="147.32" y2="104.14" width="0.1524" layer="91"/>
-<wire x1="147.32" y1="104.14" x2="165.1" y2="104.14" width="0.1524" layer="91"/>
-<pinref part="LINEENABLEMUX" gate="A" pin="B"/>
-<wire x1="147.32" y1="104.14" x2="121.92" y2="104.14" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="68.58" x2="124.46" y2="68.58" width="0.1524" layer="91"/>
 <label x="86.36" y="68.58" size="1.778" layer="95"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="B"/>
+<pinref part="LINEENABLEMUX" gate="A" pin="B"/>
+<wire x1="104.14" y1="104.14" x2="124.46" y2="104.14" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="104.14" x2="134.62" y2="104.14" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="68.58" x2="124.46" y2="104.14" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINEADDR2" class="0">
 <segment>
 <pinref part="SENSORENHET" gate="G$1" pin="(ADC2)PA2"/>
-<wire x1="83.82" y1="71.12" x2="144.78" y2="71.12" width="0.1524" layer="91"/>
-<wire x1="144.78" y1="71.12" x2="144.78" y2="106.68" width="0.1524" layer="91"/>
-<pinref part="LINEVALUEMUX" gate="A" pin="C"/>
-<wire x1="144.78" y1="106.68" x2="162.56" y2="106.68" width="0.1524" layer="91"/>
-<pinref part="LINEENABLEMUX" gate="A" pin="C"/>
-<wire x1="144.78" y1="106.68" x2="121.92" y2="106.68" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="71.12" x2="121.92" y2="71.12" width="0.1524" layer="91"/>
 <label x="86.36" y="71.12" size="1.778" layer="95"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="C"/>
+<pinref part="LINEENABLEMUX" gate="A" pin="C"/>
+<wire x1="104.14" y1="106.68" x2="121.92" y2="106.68" width="0.1524" layer="91"/>
+<wire x1="121.92" y1="106.68" x2="134.62" y2="106.68" width="0.1524" layer="91"/>
+<wire x1="121.92" y1="71.12" x2="121.92" y2="106.68" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINEADDR3" class="0">
 <segment>
 <pinref part="SENSORENHET" gate="G$1" pin="(ADC3)PA3"/>
-<wire x1="83.82" y1="73.66" x2="142.24" y2="73.66" width="0.1524" layer="91"/>
-<wire x1="142.24" y1="73.66" x2="142.24" y2="109.22" width="0.1524" layer="91"/>
-<pinref part="LINEVALUEMUX" gate="A" pin="D"/>
-<wire x1="142.24" y1="109.22" x2="162.56" y2="109.22" width="0.1524" layer="91"/>
-<pinref part="LINEENABLEMUX" gate="A" pin="D"/>
-<wire x1="142.24" y1="109.22" x2="121.92" y2="109.22" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="73.66" x2="119.38" y2="73.66" width="0.1524" layer="91"/>
 <label x="86.36" y="73.66" size="1.778" layer="95"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="D"/>
+<pinref part="LINEENABLEMUX" gate="A" pin="D"/>
+<wire x1="104.14" y1="109.22" x2="119.38" y2="109.22" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="109.22" x2="134.62" y2="109.22" width="0.1524" layer="91"/>
+<wire x1="119.38" y1="73.66" x2="119.38" y2="109.22" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINEVALUE" class="0">
 <segment>
 <pinref part="LINEVALUEMUX" gate="A" pin="X"/>
-<wire x1="187.96" y1="114.3" x2="190.5" y2="114.3" width="0.1524" layer="91"/>
-<wire x1="190.5" y1="114.3" x2="190.5" y2="76.2" width="0.1524" layer="91"/>
+<wire x1="160.02" y1="114.3" x2="162.56" y2="114.3" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="114.3" x2="162.56" y2="76.2" width="0.1524" layer="91"/>
 <pinref part="SENSORENHET" gate="G$1" pin="(ADC4)PA4"/>
-<wire x1="190.5" y1="76.2" x2="83.82" y2="76.2" width="0.1524" layer="91"/>
+<wire x1="162.56" y1="76.2" x2="83.82" y2="76.2" width="0.1524" layer="91"/>
 <label x="86.36" y="76.2" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="DISTANCELEFT" class="0">
 <segment>
 <pinref part="SENSORENHET" gate="G$1" pin="(ADC7)PA7"/>
-<wire x1="83.82" y1="83.82" x2="124.46" y2="83.82" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="83.82" x2="116.84" y2="83.82" width="0.1524" layer="91"/>
 <label x="86.36" y="83.82" size="1.778" layer="95"/>
+<pinref part="DIST" gate="-2" pin="S"/>
 </segment>
 </net>
 <net name="DISTANCERIGHT" class="0">
 <segment>
 <pinref part="SENSORENHET" gate="G$1" pin="(ADC6)PA6"/>
-<wire x1="83.82" y1="81.28" x2="119.38" y2="81.28" width="0.1524" layer="91"/>
+<wire x1="83.82" y1="81.28" x2="111.76" y2="81.28" width="0.1524" layer="91"/>
 <label x="86.36" y="81.28" size="1.778" layer="95"/>
+<pinref part="DIST" gate="-1" pin="S"/>
 </segment>
 </net>
 <net name="N$10" class="0">
 <segment>
 <pinref part="RFS" gate="-21" pin="S"/>
 <pinref part="LINEENABLEMUX" gate="A" pin="X0"/>
-<wire x1="127" y1="114.3" x2="121.92" y2="114.3" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="114.3" x2="104.14" y2="114.3" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$11" class="0">
 <segment>
 <pinref part="LINEENABLEMUX" gate="A" pin="X1"/>
 <pinref part="RFS" gate="-19" pin="S"/>
-<wire x1="121.92" y1="116.84" x2="127" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="116.84" x2="106.68" y2="116.84" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$12" class="0">
 <segment>
 <pinref part="RFS" gate="-17" pin="S"/>
 <pinref part="LINEENABLEMUX" gate="A" pin="X2"/>
-<wire x1="127" y1="119.38" x2="121.92" y2="119.38" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="119.38" x2="104.14" y2="119.38" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$13" class="0">
 <segment>
 <pinref part="LINEENABLEMUX" gate="A" pin="X3"/>
 <pinref part="RFS" gate="-15" pin="S"/>
-<wire x1="121.92" y1="121.92" x2="127" y2="121.92" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="121.92" x2="106.68" y2="121.92" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$14" class="0">
 <segment>
 <pinref part="RFS" gate="-13" pin="S"/>
 <pinref part="LINEENABLEMUX" gate="A" pin="X4"/>
-<wire x1="127" y1="124.46" x2="121.92" y2="124.46" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$15" class="0">
-<segment>
-<pinref part="LINEENABLEMUX" gate="A" pin="X5"/>
-<wire x1="121.92" y1="127" x2="129.54" y2="127" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="124.46" x2="104.14" y2="124.46" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$16" class="0">
 <segment>
 <pinref part="RFS" gate="-9" pin="S"/>
 <pinref part="LINEENABLEMUX" gate="A" pin="X6"/>
-<wire x1="127" y1="129.54" x2="121.92" y2="129.54" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="129.54" x2="104.14" y2="129.54" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$17" class="0">
 <segment>
 <pinref part="LINEENABLEMUX" gate="A" pin="X7"/>
 <pinref part="RFS" gate="-7" pin="S"/>
-<wire x1="121.92" y1="132.08" x2="127" y2="132.08" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="132.08" x2="106.68" y2="132.08" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$18" class="0">
 <segment>
 <pinref part="RFS" gate="-5" pin="S"/>
 <pinref part="LINEENABLEMUX" gate="A" pin="X8"/>
-<wire x1="127" y1="134.62" x2="121.92" y2="134.62" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="134.62" x2="104.14" y2="134.62" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$19" class="0">
 <segment>
 <pinref part="LINEENABLEMUX" gate="A" pin="X9"/>
 <pinref part="RFS" gate="-3" pin="S"/>
-<wire x1="121.92" y1="137.16" x2="127" y2="137.16" width="0.1524" layer="91"/>
+<wire x1="104.14" y1="137.16" x2="106.68" y2="137.16" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$20" class="0">
 <segment>
 <pinref part="RFS" gate="-1" pin="S"/>
 <pinref part="LINEENABLEMUX" gate="A" pin="X10"/>
-<wire x1="127" y1="139.7" x2="121.92" y2="139.7" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="139.7" x2="104.14" y2="139.7" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$5" class="0">
+<segment>
+<pinref part="RESET" gate="-1" pin="S"/>
+<pinref part="SENSORENHET" gate="G$1" pin="RESET"/>
+<wire x1="38.1" y1="83.82" x2="43.18" y2="83.82" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$15" class="0">
+<segment>
+<pinref part="LINEENABLEMUX" gate="A" pin="X5"/>
+<pinref part="RFS" gate="-11" pin="S"/>
+<wire x1="104.14" y1="127" x2="106.68" y2="127" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$21" class="0">
 <segment>
-<pinref part="RFS" gate="-22" pin="S"/>
-<pinref part="LINEVALUEMUX" gate="A" pin="X0"/>
-<wire x1="152.4" y1="114.3" x2="162.56" y2="114.3" width="0.1524" layer="91"/>
+<pinref part="RFS" gate="-2" pin="S"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="X10"/>
+<wire x1="132.08" y1="139.7" x2="134.62" y2="139.7" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$22" class="0">
 <segment>
-<pinref part="RFS" gate="-20" pin="S"/>
-<pinref part="LINEVALUEMUX" gate="A" pin="X1"/>
-<wire x1="152.4" y1="116.84" x2="162.56" y2="116.84" width="0.1524" layer="91"/>
+<pinref part="RFS" gate="-4" pin="S"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="X9"/>
+<wire x1="132.08" y1="137.16" x2="134.62" y2="137.16" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$23" class="0">
 <segment>
-<pinref part="RFS" gate="-18" pin="S"/>
-<wire x1="152.4" y1="119.38" x2="165.1" y2="119.38" width="0.1524" layer="91"/>
+<pinref part="RFS" gate="-6" pin="S"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="X8"/>
+<wire x1="132.08" y1="134.62" x2="134.62" y2="134.62" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$24" class="0">
 <segment>
-<pinref part="RFS" gate="-16" pin="S"/>
-<wire x1="152.4" y1="121.92" x2="165.1" y2="121.92" width="0.1524" layer="91"/>
+<pinref part="RFS" gate="-8" pin="S"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="X7"/>
+<wire x1="132.08" y1="132.08" x2="134.62" y2="132.08" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$25" class="0">
 <segment>
-<pinref part="RFS" gate="-14" pin="S"/>
-<wire x1="152.4" y1="124.46" x2="165.1" y2="124.46" width="0.1524" layer="91"/>
+<pinref part="RFS" gate="-10" pin="S"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="X6"/>
+<wire x1="132.08" y1="129.54" x2="134.62" y2="129.54" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$26" class="0">
 <segment>
 <pinref part="RFS" gate="-12" pin="S"/>
-<wire x1="152.4" y1="127" x2="165.1" y2="127" width="0.1524" layer="91"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="X5"/>
+<wire x1="132.08" y1="127" x2="134.62" y2="127" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$27" class="0">
 <segment>
-<pinref part="RFS" gate="-10" pin="S"/>
-<pinref part="LINEVALUEMUX" gate="A" pin="X6"/>
-<wire x1="152.4" y1="129.54" x2="162.56" y2="129.54" width="0.1524" layer="91"/>
+<pinref part="RFS" gate="-14" pin="S"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="X4"/>
+<wire x1="132.08" y1="124.46" x2="134.62" y2="124.46" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$28" class="0">
 <segment>
-<pinref part="RFS" gate="-8" pin="S"/>
-<wire x1="152.4" y1="132.08" x2="165.1" y2="132.08" width="0.1524" layer="91"/>
+<pinref part="RFS" gate="-16" pin="S"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="X3"/>
+<wire x1="132.08" y1="121.92" x2="134.62" y2="121.92" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$29" class="0">
 <segment>
-<pinref part="RFS" gate="-6" pin="S"/>
-<pinref part="LINEVALUEMUX" gate="A" pin="X8"/>
-<wire x1="152.4" y1="134.62" x2="162.56" y2="134.62" width="0.1524" layer="91"/>
+<pinref part="RFS" gate="-18" pin="S"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="X2"/>
+<wire x1="132.08" y1="119.38" x2="134.62" y2="119.38" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$30" class="0">
 <segment>
-<pinref part="RFS" gate="-4" pin="S"/>
-<pinref part="LINEVALUEMUX" gate="A" pin="X9"/>
-<wire x1="152.4" y1="137.16" x2="162.56" y2="137.16" width="0.1524" layer="91"/>
+<pinref part="RFS" gate="-20" pin="S"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="X1"/>
+<wire x1="132.08" y1="116.84" x2="134.62" y2="116.84" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$31" class="0">
 <segment>
-<pinref part="RFS" gate="-2" pin="S"/>
-<pinref part="LINEVALUEMUX" gate="A" pin="X10"/>
-<wire x1="152.4" y1="139.7" x2="162.56" y2="139.7" width="0.1524" layer="91"/>
+<pinref part="RFS" gate="-22" pin="S"/>
+<pinref part="LINEVALUEMUX" gate="A" pin="X0"/>
+<wire x1="132.08" y1="114.3" x2="134.62" y2="114.3" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
