@@ -1,7 +1,6 @@
 \setcounter{secnumdepth}{5}
-
 \section{Huvudmodul}
-Huvudmodulen utför alla beräkningar nödvändiga för att roboten ska kunna utföra sina uppgifter. Dessa uppgifter ska huvudmodulen hantera antingen via kommandon från en PC eller skötas helt autonomt. Detta är en kritisk modul då den kommer att utföra mycket uppgifter. Den behöver inte mycket hårdvara men den kommer vara mjukvarutung.
+Huvudmodulen utför de flesta beräkningar nödvändiga för att roboten ska kunna utföra sina uppgifter. Dessa uppgifter ska huvudmodulen hantera antingen via kommandon från en PC eller helt autonomt. Detta är en kritisk modul då den kommer att utföra många uppgifter. Den behöver inte mycket hårdvara men den kommer innehålla majoriteten av robotens programvara.
 
 \subsection{Hårdvara}
 Modulen ska bestå av en enkortsdator av modell Beagleboard. Den har en ARM Cortex-A8 processor som har en klockfrekvens på 1GHz. Denna behöver ett operativsystem för att kunna användas. Den enda hårdvaran som behövs för att kunna använda BB är ett minneskort för operativsystem och en Blåtands-dongel för kommunikationen med PC:n. Kommunikation med sensorenhet och styrenhet sker över SPI.
@@ -15,6 +14,19 @@ Programmet ska delas in i 3 trådar. Dessa körs kontinuerligt och delar på tv�
 \scalebox{0.8}{\input{tradar}}
 \caption{Trådarna och listorna de delar på} \label{designspec:huvudmodul-tradar}
 \end{figure}
+
+Det som behövs göras på BB innan den kan börja användas är:
+\begin{itemize}
+\item Installera Angstrom operativsystem
+\item uppdatera operativsystem
+\item installera python
+\item konfigurera spi
+\item patcha kärnan för att stödja SPI
+\item installera git
+\item installera eclipse/emacs
+\item installera blåtandsmodulen
+\item sätta upp ett PAN
+\end{itemize}
 
 \subsubsection{Huvudtråden}
 I huvudtråden ligger huvudloopen för programmet. Den börjar med att läsa värdet från kommandolistan där manuell eller autonomt läge avgörs och kallar på respektive funktion. Användaren ska alltså kunna växla mellan dessa lägen när denne vill (mellan varje iteration av huvudloopen). Figur \ref{designspec:huvudmodul-huvudtrad} illustrerar programflödet.
