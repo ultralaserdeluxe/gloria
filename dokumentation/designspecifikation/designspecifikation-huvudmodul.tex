@@ -67,13 +67,19 @@ För att undvika att roboten hackar sig fram och istället rör sig med smidiga 
  
 \end{itemize}
  $$ u[n] = K_P*e[n] + K_D\frac{e[n]-e[n-1]}{\Delta T}$$
- Roboten är begränsade av hårdvaran hur ofta den kan läsa av data från reflexsensorna. Enligt handledaren är en uppdatering på 25 Hertz en rimlig nivå. Så delta T kommer vara 40ms
+ Roboten är begränsade av hårdvaran hur ofta den kan läsa av data från reflexsensorna. Enligt handledaren är en uppdatering på 25 Hertz en rimlig nivå. Så $\Delta T$ kommer vara 40ms. \todo{Se över detta stycke. "handledaren" rimlig referens?}
 
  \subsection{Styrning av arm}
  Omvandlingen från x,y,z koordinater till vinklar för armens servons kommer att ske i huvudmodulen då det är en rätt krävande operation. Tanken är att när roboten stannar vid en station så ska användaren kunna styra robotens arm med en joystick eller från tangentbordet. När användaren beordrar armen att röra sig framåt så ska armen röra sig i positiv y-led i förhållande till roboten. När användaren beodrar roboten att styra åt höger så ska armens ändpunkt röra sig i positivt x-led i förhållande till roboten.
  \newline
+ \begin{figure}[h]
  \centerline{\input{armdir}}
+ \caption{\todo{Kaption}}
+ \end{figure}
+ \begin{figure}[h]
 \centerline{\input{robotmath}}
+\caption{\todo{Kaption}}
+\end{figure}
 \newline
  För att detta ska vara möjligt så behöver vi använda lite trionometri. Omvandlingen sker på följande sätt:
 Antag att roboten start i: $$X,Y,Z,GR=0,0,0,\pi/2$$
@@ -98,12 +104,15 @@ $$A_3=GR-D_2-D_3$$
 
 Då har vi alla vinklar vi behöver. Sedan är det upp till styrenheten att omvandla dessa vinklar till positioner på servona på armen.
 Beräkningarna har simulerats i ett eget python-program:
+\begin{figure}[h]
 \includegraphics[scale=0.6]{simulator}
+\caption{\todo{Kaption}}
+\end{figure}
 \subsection{hårdvara som behövs}
 \begin{itemize}
 \item Beagleboard-xm (finns i vanheden)
-\item BT-dongle Belkin f8t016(vi har en)
+\item Blåtandsdongel Belkin f8t016(vi har en)
 \item Nivåomvandlare Ti TXB0108 ("http://www.electrokit.com/nivaomvandlare-8-kanaler.50717")
 \item Minneskort (Om det inte finns i vanheden så beställ från elfa )
-\item Wifi dongel för utveckling på den (vi har en)
+\item Wifidongel för utveckling på den (vi har en)
 \end{itemize}

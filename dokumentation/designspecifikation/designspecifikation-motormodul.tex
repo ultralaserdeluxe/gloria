@@ -1,12 +1,5 @@
-
 \section{Styrenhet}
-
-Styrenheten har till uppgift att driva de motorer som driver hjulen och de servon som styr armen.
-\todo{\\Fixa struktur i den här sektionen, framförallt inledning/övergripande struktur känns märkligt}
-
-\subsection{Övergripande struktur}
-
-Styrenheten består av en AVR av typ Atmega16, två motorpar och en robotarm av typ Trossenrobotics Reactor. AVRen är ansluten till huvudenheten med en SPI-buss och en busy-pinne. Kommandon från huvudenheten fås enligt protokoll definierat i sektion \ref{protokoll:pc-motor}.\\
+Styrenheten har till uppgift att driva de motorer som driver hjulen och de servon som styr armen. Styrenheten består av en AVR av typ Atmega16, två motorpar och en robotarm av typ Trossenrobotics Reactor. AVRen är ansluten till huvudenheten med en SPI-buss och en busy-pinne. Kommandon från huvudenheten fås enligt protokoll definierat i sektion \ref{protokoll:pc-motor}. 
 
 \begin{figure}[h]
 \center
@@ -41,7 +34,10 @@ Till styrenheten krävs följande hårdvara.
 
 \subsection{Mjukvara}
 
-Mjukvaran på Styrenheten kommer att vara främst avbrottsstyrd. Figur \ref{designspec:motor-interrupt-figure} illustrerar programflödet för avbrott. Vid kommando för att sätta register kommer ett servos målposition att uppdateras i ett separat register. \todo{Vid kommando för att utföra kommandon kommer servonas interna register för målposition att uppdateras med den information som de försetts med av föregående avbrott.} \\
+Mjukvaran på Styrenheten kommer att vara främst avbrottsstyrd. Figur \ref{designspec:motor-interrupt-figure} illustrerar programflödet för avbrott. Vid kommando för att sätta register kommer ett servos målposition att uppdateras i ett separat register. Vid instruktion att utföra 
+ \\
+När AVRen inte är upptagen med avbrott körs en loop där alla servons hastighet och position läses av, jämförs med dess målposition och uppdateras med en ny hastighet. Figur \ref{designspec:motor-main-figure} illustrerar programflödet. Detta ger robotarmen jämna och mjuka rörelser. \\
+Vid de tillfällen AVRen kommunicerar med servon genom UART bör alla avbrott slås av.  
 
 \begin{figure}
 \centering
@@ -57,6 +53,3 @@ Mjukvaran på Styrenheten kommer att vara främst avbrottsstyrd. Figur \ref{desi
 \end{minipage}
 \caption{Styrenhetens mjukvara}\label{fig:1}
 \end{figure}
-
-När AVRen inte är upptagen med avbrott körs en loop där alla servons hastighet och position läses av, jämförs med dess målposition och uppdateras med en ny hastighet. Figur \ref{designspec:motor-main-figure} illustrerar programflödet. Detta ger robotarmen jämna och mjuka rörelser. \\
-Vid de tillfällen AVRen kommunicerar med servon genom UART bör alla avbrott slås av.  \\
