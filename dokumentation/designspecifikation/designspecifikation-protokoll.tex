@@ -1,6 +1,6 @@
 \section{Protokoll för kommunikation}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \center
 \scalebox{0.6}{\input{FLOW1.tex}}
 \caption{Flödesschema över kommunikationskanalerna i systemet.}
@@ -94,7 +94,7 @@ En instruktion består av tre bytes. Den första byten innehåller instruktionen
 
 \subsubsection{Instruktioner} \label{designspec:protokoll-pc-motor-instr}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 		\begin{tabularx}{\textwidth}{| l | l | X |}
 			\hline
@@ -110,7 +110,7 @@ En instruktion består av tre bytes. Den första byten innehåller instruktionen
 	\caption{Kommandon från huvudenhet till styrenhet} \label{protokoll:pc-motor-tabell}
 \end{table}
 
-\begin{table}[h]
+\begin{table}[H]
 	\centering
 		\begin{tabularx}{\textwidth}{| l | X |}
 			\hline
@@ -140,7 +140,9 @@ En instruktion består av tre bytes. Den första byten innehåller instruktionen
 	\caption{Adresser för adressering till styrenhet} \label{protokoll:pc-motor-adress-tabell}
 \end{table}
 
-\begin{figure}[h]
+Adresserna Arm axel 1 till 4, refererar till armens frihetsgrader enligt figur \ref{protokoll-arm-axlar}.
+
+\begin{figure}[H]
 \centerline{\includegraphics[scale=0.4]{robotaxis}}
-\caption{\textit{Till vänster}: Armens frihetsgrader  \textit{Till höger}: Armens koordinatsystem}
+\caption{\textit{Till vänster}: Armens frihetsgrader  \textit{Till höger}: Armens koordinatsystem} \label{protokoll-arm-axlar}
 \end{figure}
