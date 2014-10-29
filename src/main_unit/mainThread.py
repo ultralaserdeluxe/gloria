@@ -2,8 +2,9 @@ from sensorThread import *
 from pcThread import *
 from driveUnit import *
 from distance import *
+from arm import Arm
 import Queue
-import copy
+
 
 ################### list #######################
 
@@ -47,10 +48,11 @@ error_margin = 15
 #used for detection stopstations
 timestampstop = 0
 right_station_cnt = 0
-stop_detection_time = 1
+stop_detection_time = 3
 
 #spi init for driveunit
 drive = driveUnit()
+robot_arm=Arm()
 
 command = ["assjammer"]
 
@@ -93,21 +95,42 @@ def check_put_down_left():
                 #print "has current package, put down\n"
                 return True
     return False            
+    
 
+def floor_on_sides():
+    floor_min = calibrateData[0][0]
+    floor_max = calibrateData[0][1]
+    value = sensorList[0][1][0]
+    floor_min2 = calibrateData[10][0]
+    floor_max2 = calibrateData[10][1]
+    value2 = sensorList[0][1][10]
+
+    norm_value = float(value - floor_min) / (floor_max - floor_min)
+    norm_value2 = float(value2 - floor_min2) / (floor_max2 - floor_min2)
+
+    if norm_value < 0.45 and norm_value2 < 0.45:
+        return True
+    return False
 
 #if we have 3 stations without packages in a row??
 def on_stopstation_right():
     global timestampstop
     global right_station_cnt
+    if floor_on_sides():
+        wait_on_floor = False
+    else:
+        wait_on_floor = True
     if timestampstop == 0:
-        timestampstop = time.time()
+        if is_station_right():
+            timestampstop = time.time()
     elif (time.time() - timestampstop) <= stop_detection_time:
         if is_station_right() and right_station_cnt == 2:
             right_station_cnt = 0
             timestampstop = 0
             return True
-        elif is_station_right and right_station_cnt != 2:
+        elif is_station_right() and right_station_cnt != 2 and wait_on_floor == False:
             right_station_cnt += 1
+            #wait_on_floor = True
         else:
             pass
     else:
@@ -188,12 +211,43 @@ def drive_forward():
 
 
 def steer_arm(command):
-    axis_id = 1
-    for data in command[1]:
-        drive.setArmAxis(axis_id,data)
-        axis_id+=1
-    drive.sendAllAxis()
+    robot_arm.updateX(command[1][0])
+    robot_arm.updateY(command[1][1])
+    robot_arm.updateZ(command[1][2])
 
+    #sensor_values=robot_arm.getServoValues()
+    #for i in range(6):
+    limits=[[0,1023],[205,813],[210,940],[180,810],[0,1023],[0,512]]
+    for i in range(len(command[1])):
+        if command[1][i]>limits[i][1]:
+            command[1][i]=limits[i][1]
+        if command[1][i]<limits[i][0]:
+            command[1][i]=limits[i][0]
+    drive.setArmAxis(1,command[1][0])
+    time.sleep(0.01)
+    drive.sendAllAxis()
+    time.sleep(0.01)
+    drive.setArmAxis(2,command[1][1])
+    time.sleep(0.01)
+    drive.sendAllAxis()
+    time.sleep(0.01)
+    drive.setArmAxis(3,command[1][2])
+    time.sleep(0.01)
+    drive.sendAllAxis()
+    time.sleep(0.01)
+    drive.setArmAxis(4,command[1][3])
+    time.sleep(0.01)
+    drive.sendAllAxis()
+    time.sleep(0.01)
+    drive.setArmAxis(5,command[1][4])
+    time.sleep(0.01)
+    drive.sendAllAxis()
+    time.sleep(0.01)
+    #print(command[1][5])
+    drive.setArmAxis(6,command[1][5])
+    time.sleep(0.01)
+    drive.sendAllAxis()
+    time.sleep(0.01)
 
 def calibrate_floor(): 
     #give floor values
@@ -244,9 +298,9 @@ def get_command():
 
 
 #test
-#ommandQueue.put(["start"])
+#commandQueue.put(["start"])
 #commandQueue.put(["autoMotor",[True]])
-#ommandQueue.put(["autoArm",[False]])
+#commandQueue.put(["autoArm",[False]])
 
 sensorthread = sensorThread(sensorList)
 sensorthread.daemon=True
@@ -282,12 +336,10 @@ while True:
         pass
     
     #check if robot is on stopstation, goes into manualmode
-    #if on_stopstation_right():
-        #print "stop station"
-        #drive.setMotorLeft(0x00)
-        #drive.setMotorRight(0x00)
-        #drive.sendAllMotor()
-        #automotor = False
+    if on_stopstation_right():
+        print "stoppstation"
+        set_speed(0x00,0x00)
+        automotor = False
     
     #the steerlogic.
     if automotor == True:
