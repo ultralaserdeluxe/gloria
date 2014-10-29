@@ -3,6 +3,7 @@ import threading
 import time
 
 import sensorUnit
+import distance
 
 updateFreq=200.0 #Hz and must be float
 
@@ -26,13 +27,17 @@ class sensorThread(threading.Thread):
     def updateDistance(self):
         del self.__distanceListLeft[0]
         del self.__distanceListRight[0]
-        self.__distanceListLeft.append(self.__sensorUnit.getLeftDistance())
-        self.__distanceListRight.append(self.__sensorUnit.getRightDistance())
+
+        unfiltered_l = self.__sensorUnit.getLeftDistance()
+        unfiltered_r = self.__sensorUnit.getRightDistance()
+
+        self.__distanceListLeft.append(unfiltered_l)
+        self.__distanceListRight.append(unfiltered_r)
     
         l = filteredValue(self.__distanceListLeft)
         r = filteredValue(self.__distanceListRight)
 
-        self.shared["distance"] = [l , r]
+        self.shared["distance"] = [distance.distance_left(l) , distance.distance_right(r)]
             
     def normalize(self, value, mini, maxi):
         try:
