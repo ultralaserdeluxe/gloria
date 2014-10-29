@@ -22,7 +22,7 @@ shared_stuff = {"lineSensor" : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 "errorCodes" : ["YngveProgrammedMeWrong"],
                 "motorSpeed" : [70, 70],
                 "latestCalibration" : "0000-00-00-15:00",
-                "autoMotor" : True,
+                "autoMotor" : False,
                 "autoArm" : False,
                 "regulator" : [0, 0],
                 "error" : 0}
@@ -81,41 +81,41 @@ command = ["assjammer"]
 
 def check_pick_up_right():
     if is_station_right():
-        print "pick up station to the right found! error", abs(shared_stuff["error"]), is_on_straight()
+        #print "pick up station to the right found! error", abs(shared_stuff["error"]), is_on_straight()
         if has_package_right():
-            print "pick up station has package\n"
+            #print "pick up station has package\n"
             if has_package == False:
-                print "has no current package, pick up\n"
+                #print "has no current package, pick up\n"
                 return True
     return False
 
 def check_pick_up_left():
     if is_station_left():
-        print "pick up station to the left found! error", abs(shared_stuff["error"]), is_on_straight()
+        #print "pick up station to the left found! error", abs(shared_stuff["error"]), is_on_straight()
         if has_package_left():
-            print "pick up station has package\n"
+            #print "pick up station has package\n"
             if has_package == False:
-                print "has no current package, pick up\n"
+                #print "has no current package, pick up\n"
                 return True
     return False           
 
 def check_put_down_right():
     if is_station_right():
-        print "put down station to the right found! error", abs(shared_stuff["error"]), is_on_straight()
+        #print "put down station to the right found! error", abs(shared_stuff["error"]), is_on_straight()
         if not has_package_right():
-            print "put down station has no package\n"
+            #print "put down station has no package\n"
             if has_package == True:
-                print "has current package, put down\n"
+                #print "has current package, put down\n"
                 return True
     return False
 
 def check_put_down_left():
     if is_station_left():
-        print "put down station to the left found! error", abs(shared_stuff["error"]), is_on_straight()
+        #print "put down station to the left found! error", abs(shared_stuff["error"]), is_on_straight()
         if not has_package_left():
-            print "put down station has no package\n"
+            #print "put down station has no package\n"
             if has_package == True:
-                print "has current package, put down\n"
+                #print "has current package, put down\n"
                 return True
     return False            
 
@@ -195,15 +195,18 @@ def stopstation():
     global floor_middle
     global stop_cnt
 
+    # front sensor
     if is_station_left() and floor_left:
         stop_cnt += 1
         floor_left = False
+    elif (not is_station_left()):
+        floor_left = True
+    
+    # middle sensor
     if station_centered() and floor_middle:
         stop_cnt-= 1
         floor_middle = False
-    if (not is_station_left()):
-        floor_left = True
-    if (not station_centered()):
+    elif (not station_centered()):
         floor_middle = True
     if stop_cnt > 2:
         return True
@@ -221,18 +224,21 @@ def station_centered():
     right_value = shared_stuff["middleSensor"][1]
     right_norm_value = float(right_value - right_min) / (right_max -right_min)
 
-    if right_norm_value > 0.8:
-        tape_right = True
-    else:
-        tape_right = False
+    #if right_norm_value > 0.8:
+    #    tape_right = True
+    #else:
+    #    tape_right = False
     if left_norm_value > 0.8:
         tape_left = True
     else:
         tape_left = False
- 
+
+
+    #if tape_left == True:
+        #print "TAPE CENTERED DETECTED"
 #    print "tape_right", tape_right, "floor_left", floor_left, "tape_value", norm_value, "floor_value", norm_value2
 
-    return tape_right or tape_left 
+    return tape_left # or tape_right 
 
 
 
@@ -290,7 +296,7 @@ def is_station_left():
 #check for package on right side
 def has_package_right():
     distance = distance_right(shared_stuff["distance"][0])
-    print "distanceright : ",distance
+    #print "distanceright : ",distance
     if distance >= 6.0 and distance <= 20.0:
         return True
     return False
@@ -299,7 +305,7 @@ def has_package_right():
 #check for package on left side
 def has_package_left():
     distance = distance_left(shared_stuff["distance"][1])
-    print "distanceleft : ",distance
+    #print "distanceleft : ",distance
     if distance >= 6.0 and distance <= 20.0:
         return True
     return False
@@ -427,13 +433,15 @@ while True:
     
     if stopstation():
         if has_package:
-            print "stopstation_left_detected TRUE"
+            #print "stopstation TRUE"
             stopstation_left_detected = True
+            put_down = False
         else:
             set_speed(0x00,0x00)
             automotor = False
     elif stop_cnt == 0:
         #print "stopstation_leftdetected FALSE"
+        #print "stopstation FALSE"
         stopstation_left_detected = False
 
     print stop_cnt
