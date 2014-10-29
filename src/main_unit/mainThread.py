@@ -85,7 +85,8 @@ class Gloria:
             args = _cmd[1:]
             if args:
                 args = _cmd[1]
-            log.debug("Got command \"%s\" and args %s." %(cmd, str(args)))
+            if not cmd == "clearErrors":
+                log.debug("Got command \"%s\" and args %s." %(cmd, str(args)))
             return cmd, args
         return "", []
 

@@ -70,8 +70,10 @@ class Regulator(threading.Thread):
         mask = []
         if self.linedet.all_equal_one(converted_values):
             mask = [0] * 11
-        elif station != sf.NO_STATION:
-            mask = [0] * 4 + [1] * 3 + [0] * 4
+        elif station == sf.LEFT:
+            mask = [0] * 5 + [1] * 2 + [0] * 4
+        elif station == sf.RIGHT:
+            mask = [0] * 4 + [1] * 2 + [0] * 5
         else:
             mask = [1] * 11
 
