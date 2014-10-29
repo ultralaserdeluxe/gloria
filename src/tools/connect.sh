@@ -69,8 +69,8 @@ main() {
 			./connect_ssh.sh $ssh_server $ssh_password
 		else
 			# Connect to ssh
-			echo Connecting over SSH.
-			echo Consider installing Expect (apt-get install expect) to make the process even easier.
+			echo "Connecting over SSH."
+			echo "Consider installing Expect (apt-get install expect) to make the process even easier."
 			ssh $ssh_server
 		fi
 	fi

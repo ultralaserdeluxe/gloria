@@ -125,6 +125,8 @@ class pcModule():
         newList=[]
         data=data.split(";")
         for element in data:
+            if not element:
+                continue
             tempList=[]
             temp=element.split("=")
             tempList.append(temp[0])
