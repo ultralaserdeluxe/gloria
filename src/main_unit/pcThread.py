@@ -113,7 +113,6 @@ class pcThread(threading.Thread):
             if data[0]=="status":
                 ans = convertSensorList(self.__sensorList)
                 sendData(ans)
-                print "pcThread status", ans
 
             elif data[0]=="motorSpeed" or data[0]=="armPosition" or data[0]=="autoMotor" or data[0]=="autoArm":
 
@@ -131,6 +130,8 @@ class pcThread(threading.Thread):
             elif data[0]=="calibrate":
                 self.__commandQueue.put(data)
             elif data[0]=="start":
+                self.__commandQueue.put(data)
+            elif data[0] == "hasPackage":
                 self.__commandQueue.put(data)
             else:
                 pass

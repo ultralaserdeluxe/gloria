@@ -69,41 +69,41 @@ command = ["assjammer"]
 
 def check_pick_up_right():
     if station_right:
-        print "station to the right found! error", abs(shared_stuff["error"]), is_on_straight()
+        print "pick up station to the right found! error", abs(shared_stuff["error"]), is_on_straight()
         if has_package_right():
-            print "station has package\n"
+            print "pick up station has package\n"
             if has_package == False:
-                #print "has no current package, pick up\n"
+                print "has no current package, pick up\n"
                 return True
     return False
 
 def check_pick_up_left():
     if station_left:
-        print "station to the left found! error", abs(shared_stuff["error"]), is_on_straight()
+        print "pick up station to the left found! error", abs(shared_stuff["error"]), is_on_straight()
         if has_package_left():
-            print "station has package\n"
+            print "pick up station has package\n"
             if has_package == False:
-                #print "has no current package, pick up\n"
+                print "has no current package, pick up\n"
                 return True
     return False           
 
 def check_put_down_right():
     if station_right:
-        #print "station to the right found\n"
+        print "put down station to the right found! error", abs(shared_stuff["error"]), is_on_straight()
         if not has_package_right():
-            #print "station has no package\n"
+            print "put down station has no package\n"
             if has_package == True:
-                #print "has current package, put down\n"
+                print "has current package, put down\n"
                 return True
     return False
 
 def check_put_down_left():
     if station_left:
-        #print "station to the left found\n"
+        print "put down station to the left found! error", abs(shared_stuff["error"]), is_on_straight()
         if not has_package_left():
-            #print "station has no package\n"
+            print "put down station has no package\n"
             if has_package == True:
-                #print "has current package, put down\n"
+                print "has current package, put down\n"
                 return True
     return False            
 
@@ -253,9 +253,11 @@ def get_command():
     global autoarm
     global speed
     global new_speed
+    global pick_up
+    global has_package
     if not commandQueue.empty():
         command = commandQueue.get()
-        print str(command)
+        #print str(command)
         if command[0] == "calibrate_floor":
             calibrate_floor()
         elif command[0] == "calibrate_tape":
@@ -273,6 +275,9 @@ def get_command():
                 autoarm = True
             else:
                 autoarm = False
+        elif str(command[0]) == "hasPackage" and pick_up == True:
+            has_package = True
+            pick_up = False
         else:
             pass
 
@@ -301,7 +306,6 @@ while True:
 
     #get latest PC command from queue
     get_command()
-    #print command
     #if we pass a station we have *detection time* to find a package
     if timestamp == 0:
         if is_station_right():
@@ -331,7 +335,6 @@ while True:
 
     #the steerlogic.
     if automotor == True:
-        #print "autonom motor\n"
         if pick_up == False:
             #no need to steer arm, continue
             #check if we want to steer it anyway
@@ -344,6 +347,7 @@ while True:
                     pick_up = True
                     new_speed_left = new_speed_right = 0x00
                 elif check_put_down_right() or check_put_down_left():
+                    print "jajamen"
                     put_down = True
                     new_speed_left = new_speed_right  = 0x00
                 else:
@@ -358,6 +362,7 @@ while True:
                 #put down package... must set put_down to false again
                 print "putting down package..."                        
         else:
+            print "Waiting for hasPackage..."
             #pick_up is true, user have to steer arm. pick_up = false
             if autoarm == False:
                 #steer arm
@@ -366,7 +371,6 @@ while True:
     else:
         #manuell
         if command[0] == "motorSpeed":
-            print "mainThread", command
             new_speed_left = command[1][0]
             new_speed_right = command[1][1]
             if (speed_left != new_speed_left) or (speed_right != new_speed_right):
