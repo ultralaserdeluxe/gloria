@@ -107,7 +107,7 @@ class LineDetector:
         n_front_center = sum(e for e in front_center if e is not None)
         n_front_right = sum(e for e in front_right if e is not None)
 
-        if n_front_center >= 1 and (n_front_left + n_front_right) <= 1:
+        if (n_front_center >= 1 and (n_front_left + n_front_right) <= 1) or self.all_equal_one(front_seq):
             left = center_seq[0]
             right = center_seq[1]
 
