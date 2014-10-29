@@ -9,7 +9,8 @@ class Regulator(threading.Thread):
         self.__e1=0.0
         self.__updateFreq=50.0
         self.__updateTime=1.0/self.__updateFreq
-        self.__P=28.6 # P-max = 37, ocsilleringsperiod = 0.7
+        self.__P=32 # P-max = 37, ocsilleringsperiod = 0.7
+        #self.__P=28.6 # P-max = 37, ocsilleringsperiod = 0.7
         #self.__P=25.6 # P-max = 37, ocsilleringsperiod = 0.7
         self.__D=0.7
         #self.__D=0.5
