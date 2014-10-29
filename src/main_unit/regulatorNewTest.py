@@ -7,7 +7,7 @@ sensorList = [["lineSensor",[0,0,0,0,0,0,0,0,0,0,0]],
               ["distance",[0,0]],
               ["armPosition",[0,0,255,4,5,5]],
               ["errorCodes",["YngveProgrammedMeWrong"]],
-              ["motorSpeed",[50,50]],
+              ["motorSpeed",[70, 70]],
               ["latestCalibration",["0000-00-00-15:00"]],
               ["autoMotor",[True]],
               ["autoArm",[False]]]
@@ -22,13 +22,27 @@ regulator = Regulator(sensorList)
 regulator.daemon = True
 regulator.start()
 
+l, r = 0, 0
+
 while True:
     time.sleep(0.01)
 
-    l, r = sensorList[-1][1]
+    s = raw_input("motor speed <L R> ")
 
-    driver.setMotorLeft(l)
-    time.sleep(0.001)
-    driver.setMotorRight(r)
-    time.sleep(0.001)
-    driver.sendAllMotor()
+    args = s.split()
+
+    if len(args) != 2:
+        print "Your shits fucked up!"
+    else:
+        l = int(args[0])
+        r = int(args[1])
+        print "Setting motor speed to", l, r
+        driver.setMotorLeft(l)
+        time.sleep(0.001)
+        driver.setMotorRight(r)
+        time.sleep(0.001)
+        driver.sendAllMotor()
+
+
+#    l, r = sensorList[-1][1]
+
