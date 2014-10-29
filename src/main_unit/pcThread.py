@@ -133,6 +133,8 @@ class pcThread(threading.Thread):
                 self.__commandQueue.put(data)
             elif data[0] == "hasPackage":
                 self.__commandQueue.put(data)
+            elif data[0] == "halt":
+                self.__commandQueue.put(data)
             else:
                 pass
             

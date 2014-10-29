@@ -64,6 +64,7 @@ class Gloria:
         elif cmd == "autoMotor" and args == True and self.state == MANUAL:
             self.change_state(LINE)
         elif cmd == "autoMotor" and args == False and self.state == LINE:
+            self.set_speed(0, 0)
             self.change_state(MANUAL)
         elif cmd == "":
             pass
@@ -72,7 +73,7 @@ class Gloria:
         self.change_state(HALTED)
 
         while True:
-            time.sleep(0.1)
+            time.sleep(0.005)
             cmd, args = self.get_command()
             self.handle_command(cmd, args)
 
@@ -145,8 +146,8 @@ if __name__ == "__main__":
                     "error" : 0}
 
     # TODO: HANDLE IN A BETTER WAY
-    calibrate_max = [198, 210, 220, 184, 226, 180, 230, 160, 204, 165, 178]
-    calibrate_min = [74, 127, 150, 50, 140, 65, 170, 47, 103, 56, 48]
+    calibrate_max = [213, 206, 232, 180, 232, 174, 237, 183, 199, 177, 178]
+    calibrate_min = [75, 97, 126, 61, 147, 39, 154, 57, 80, 63, 50]
     sensor_thread = sensorThread.sensorThread(shared_stuff)
     sensor_thread.cal_max = calibrate_max
     sensor_thread.cal_min = calibrate_min
@@ -162,6 +163,6 @@ if __name__ == "__main__":
     regulator.daemon=True
     regulator.start()
 
-    log.basicConfig(level=log.INFO)
+    log.basicConfig(level=log.DEBUG)
     gloria = Gloria(shared_stuff, cmd_queue)
     gloria.run()

@@ -28,6 +28,12 @@ class sensorThread(threading.Thread):
             value = self.__sensorUnit.getLineSensor(i)
 
             norm_value = float(value - self.cal_min[i]) / (self.cal_max[i] - self.cal_min[i])
+
+            if norm_value < 0:
+                norm_value = 0
+            elif norm_value > 1:
+                norm_value = 1
+
             self.__sensorList["lineSensor"][i] = norm_value
 
     def updateMiddleSensor(self):
