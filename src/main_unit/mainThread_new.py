@@ -180,7 +180,9 @@ class Gloria:
             self.handle_center_station()
 
     def handle_center_station(self, next_state=STATION_CENTER):
-        if self.is_on_stop() and not self.has_package: self.change_state(HALTED)
+        if self.is_on_stop() and not self.has_package:
+            self.change_state(HALTED)
+            return
 
         if len(self.station_queue) == 0:
             log.error("Found unknown center station!")
