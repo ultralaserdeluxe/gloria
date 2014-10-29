@@ -32,13 +32,13 @@ timestamp = 0
 station_right = False
 station_left = False
 #used for syncing station, package detection
-detection_time = 3 
+detection_time = 1 
 #error marginal for linesensors
-error_margin = 5
+error_margin = 15
 
 #used for detection stopstations
 timestampstop = 0
-station_right_cnt = 0
+right_station_cnt = 0
 stop_detection_time = 1
 
 #spi init for driveunit
@@ -52,7 +52,7 @@ def check_pick_up_right():
         if has_package_right():
             print "station has package\n"
             if has_package == False:
-                print "has no current package, pick up\n"
+                #print "has no current package, pick up\n"
                 return True
     return False
 
@@ -62,33 +62,35 @@ def check_pick_up_left():
         if has_package_left():
             print "station has package\n"
             if has_package == False:
-                print "has no current package, pick up\n"
+                #print "has no current package, pick up\n"
                 return True
     return False           
 
 def check_put_down_right():
     if station_right:
-        print "station to the right found\n"
+        #print "station to the right found\n"
         if not has_package_right():
-            print "station has no package\n"
+            #print "station has no package\n"
             if has_package == True:
-                print "has current package, put down\n"
+                #print "has current package, put down\n"
                 return True
     return False
 
 def check_put_down_left():
     if station_left:
-        print "station to the left found\n"
+        #print "station to the left found\n"
         if not has_package_left():
-            print "station has no package\n"
+            #print "station has no package\n"
             if has_package == True:
-                print "has current package, put down\n"
+                #print "has current package, put down\n"
                 return True
     return False            
 
 
 #if we have 3 stations without packages in a row??
 def on_stopstation_right():
+    global timestampstop
+    global right_station_cnt
     if timestampstop == 0:
         timestampstop = time.time()
     elif (time.time() - timestampstop) <= stop_detection_time:
@@ -107,42 +109,54 @@ def on_stopstation_right():
 
 #check the 3 sensors furthermost to the right
 def is_station_right():
-    answer = False
-    for i in range(8,11):
-        value = sensorList[0][1][i]
-        tape_value = calibrateData[i][1]
-        if value <= (tape_value + error_margin) and value >= (tape_value - error_margin):
-            answer = True
-        else:
-            answer = False
-    for i in range(0,3):
-        value = sensorList[0][1][i]
-        tape_value = calibrateData[i][0]
-        if value <= (tape_value + error_margin) and value >= (tape_value - error_margin):
-            answer = True
-        else:
-            answer = False
-    return answer
+    tape_max = calibrateData[10][1]
+    tape_min = calibrateData[10][0]
+    value = sensorList[0][1][10]
+    norm_value = float(value - tape_min) / (tape_max - tape_min)
+
+    floor_max = calibrateData[0][1]
+    floor_min = calibrateData[0][0]
+    value2 = sensorList[0][1][0]
+    norm_value2 = float(value2 - floor_min) / (floor_max - floor_min)
+
+    if norm_value > 0.8:
+        tape_right = True
+    else:
+        tape_right = False
+    if norm_value2 < 0.45:
+        floor_left = True
+    else:
+        floor_left = False
+ 
+#    print "tape_right", tape_right, "floor_left", floor_left, "tape_value", norm_value, "floor_value", norm_value2
+
+    return tape_right and floor_left
 
 
 #check the 3 sensors furthermost to the left
 def is_station_left():
-    answer = False
-    for i in range(0,3):
-        value = sensorList[0][1][i]
-        tape_value = calibrateData[i][1]
-        if value <= (tape_value + error_margin) and value >= (tape_value - error_margin):
-            answer = True
-        else:
-            answer = False
-    for i in range(8,11):
-        value = sensorList[0][1][i]
-        tape_value = calibrateData[i][0]
-        if value <= (tape_value + error_margin) and value >= (tape_value - error_margin):
-            answer = True
-        else:
-            answer = False
-    return answer
+    tape_min = calibrateData[0][0]
+    tape_max = calibrateData[0][1]
+    value = sensorList[0][1][0]
+    norm_value = float(value - tape_min) / (tape_max - tape_min)
+
+    floor_min = calibrateData[10][0]
+    floor_max = calibrateData[10][1]
+    value2 = sensorList[0][1][10]
+    norm_value2 = float(value2 - floor_min) / (floor_max - floor_min)
+
+    if norm_value > 0.8:
+        tape_left = True
+    else:
+        tape_left = False
+    if norm_value2 < 0.45:
+        floor_right = True
+    else:
+        floor_right= False
+
+#    print "tape_left", tape_left, "floor_right", floor_right, "tape_value", norm_value, "floor_value", norm_value2
+
+    return tape_left and floor_right
 
 
 #check for package on right side
@@ -187,6 +201,8 @@ def calibrate_tape():
 
 def get_command():
     #get latest PC command from queue
+    global automotor
+    global autoarm
     if not commandQueue.empty():
         command = commandQueue.get()
         if command[0] == "calibrate_floor":
@@ -208,15 +224,15 @@ def get_command():
                              
 
 #test
-#commandQueue.put(["start"])
-#commandQueue.put(["autoMotor",[True]])
-#commandQueue.put(["autoArm",[False]])
+commandQueue.put(["start"])
+commandQueue.put(["autoMotor",[True]])
+commandQueue.put(["autoArm",[False]])
 
 sensorthread = sensorThread(sensorList)
 sensorthread.start()
 
-pcthread = pcThread(commandQueue, sensorList)
-pcthread.start()
+#pcthread = pcThread(commandQueue, sensorList)
+#pcthread.start()
 
 while commandQueue.get()[0] != "start":
     pass
@@ -225,7 +241,6 @@ while True:
 
     #get latest PC command from queue
     get_command()
-
     #if we pass a station we have *detection time* to find a package
     if timestamp == 0:
         if is_station_right():
@@ -244,15 +259,16 @@ while True:
         pass
     
     #check if robot is on stopstation, goes into manualmode
-    if on_stopstation_right():
-        drive.setMotorLeft(0x00)
-        drive.setMotorRight(0x00)
-        drive,sendAllMotor()
-        automotor = False
+    #if on_stopstation_right():
+        #print "stop station"
+        #drive.setMotorLeft(0x00)
+        #drive.setMotorRight(0x00)
+        #drive.sendAllMotor()
+        #automotor = False
     
     #the steerlogic.
     if automotor == True:
-        print "autonom motor\n"
+        #print "autonom motor\n"
         if pick_up == False:
             #no need to steer arm, continue
             #check if we want to steer it anyway
@@ -270,7 +286,7 @@ while True:
                 else:
                     pick_up = False
                     put_down = False                    
-                    new_speed = 0x60
+                    new_speed = 0x40
                 if speed != new_speed:
                     speed = new_speed
                     drive.setMotorLeft(speed)
