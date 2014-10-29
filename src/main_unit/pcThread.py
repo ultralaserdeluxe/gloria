@@ -62,20 +62,20 @@ class pcThread(threading.Thread):
                     return False
                 else:
                     return subelement
-        def convertSensorList(list):
-            string=""
-            for element in list:
-                if not string:
-                    string=element[0]+"="+str(element[1][0])
+        def convertSensorList(stuff):
+            s = ""
+
+            for k, v in stuff.iteritems():
+                s += str(k) + "="
+                
+                if isinstance(v, list):
+                    s += ",".join([str(e) for e in v])
                 else:
-                    string=string+";"+element[0]+"="+str(element[1][0])
-                first=True
-                for subElement in element[1]:
-                    if first:
-                        first=False
-                    else:
-                        string=string+","+str(subElement)
-            return string
+                    s += str(v)
+
+                s += ";"
+
+            return s
         
         #a simple function that sends data to the user
         def sendData(data):
@@ -89,16 +89,19 @@ class pcThread(threading.Thread):
         def commandHandler(data):
             temp=0;
             if data[0]=="status":
-                sendData(convertSensorList(self.__sensorList))
+                ans = convertSensorList(self.__sensorList)
+                sendData(ans)
+                print "pcThread status", ans
+
             elif data[0]=="motorSpeed" or data[0]=="armPosition" or data[0]=="autoMotor" or data[0]=="autoArm":
 
-		#print(data)
-                for i in range(len(self.__sensorList)):
-                    if self.__sensorList[i][0]==data[0]:
-                        for j in range(len(data[1])):
-                            self.__sensorList[i][1][j]=checkSubelement(data[1][j])
-                        temp=i
-                self.__commandQueue.put(self.__sensorList[temp][:])
+                if len(data[1]) > 1:
+                    self.__sensorList[data[0]] = [checkSubelement(e) for e in data[1]]
+                else:
+                    self.__sensorList[data[0]] = checkSubelement(data[1][0])
+                
+                self.__commandQueue.put([data[0]] + [self.__sensorList[data[0]]])
+
             elif data[0]=="calibrate":
                 self.__commandQueue.put(data)
             elif data[0]=="start":
