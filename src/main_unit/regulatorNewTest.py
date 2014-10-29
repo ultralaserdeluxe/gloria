@@ -27,22 +27,26 @@ l, r = 0, 0
 while True:
     time.sleep(0.01)
 
-    s = raw_input("motor speed <L R> ")
+    # s = raw_input("motor speed <L R> ")
 
-    args = s.split()
+    # args = s.split()
 
-    if len(args) != 2:
-        print "Your shits fucked up!"
-    else:
-        l = int(args[0])
-        r = int(args[1])
-        print "Setting motor speed to", l, r
-        driver.setMotorLeft(l)
-        time.sleep(0.001)
-        driver.setMotorRight(r)
-        time.sleep(0.001)
-        driver.sendAllMotor()
+    # if len(args) != 2:
+    #     print "Your shits fucked up!"
+    # else:
+    #     l = int(args[0])
+    #     r = int(args[1])
+    #     print "Setting motor speed to", l, r
+    #     driver.setMotorLeft(l)
+    #     time.sleep(0.001)
+    #     driver.setMotorRight(r)
+    #     time.sleep(0.001)
+    #     driver.sendAllMotor()
 
-
-#    l, r = sensorList[-1][1]
+    l, r = sensorList[-1][1]
+    driver.setMotorLeft(l)
+    time.sleep(0.001)
+    driver.setMotorRight(r)
+    time.sleep(0.001)
+    driver.sendAllMotor()
 

@@ -10,14 +10,12 @@ class Regulator(threading.Thread):
         self.__e0=0.0
         self.__e1=0.0
         self.__e2=0.0
-        self.__updateFreq=20.0
+        self.__updateFreq=50.0
         self.__updateTime=1.0/self.__updateFreq
-        self.__P=20.0 # P-max = 37, ocsilleringsperiod = 0.7
+        self.__P=32.0 # P-max = 37, ocsilleringsperiod = 0.7
         self.__I=0.0
-        self.__D=1.0
+        self.__D=1.2
         self.__signalOut=0.0
-        self.__filtersig=0.0
-        self.__oldSignalOuts=[]
         self.cal_floor_1 = [[74,198],[127,210],[150,220],[50,184],[140,226],[65,180],
                                  [170,230],[47,160],[103,204],[56,165],[48,178]]
         self.cal_paper = [[7, 208], [10, 225], [19, 238], [8, 199], [32, 236], [8, 193], [77, 244], [8, 193], [10, 226], [10, 194], [9, 211]]
