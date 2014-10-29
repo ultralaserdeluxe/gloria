@@ -42,7 +42,7 @@ class Arm():
         return angles
     
     
-class RobotArm():
+class robotArm():
     def __init__(self):
         self.arm=Arm()
         self.closed=False

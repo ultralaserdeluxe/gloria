@@ -58,7 +58,13 @@ class pcThread(threading.Thread):
             self.__package_tail=complete_data_set[(complete_data_set.rfind(";")+1):]
             complete_data_set=complete_data_set[:(complete_data_set.rfind(";")+1)]
             return complete_data_set
-        
+	def isNumber(value):
+	    try:
+		int(value)
+		return True
+	    except ValueError:
+		return False        
+
         def isfloat(value):
             try:
                 float(value)
@@ -67,7 +73,7 @@ class pcThread(threading.Thread):
                 return False
         #converts the sensorlist to a string to send to the user as described in the designspecifikation
         def checkSubelement(subelement):
-            if subelement.isdigit():
+            if isNumber(subelement):
                 return int(subelement)
             if isfloat(subelement):
                 return float(subelement)
@@ -111,12 +117,16 @@ class pcThread(threading.Thread):
 
             elif data[0]=="motorSpeed" or data[0]=="armPosition" or data[0]=="autoMotor" or data[0]=="autoArm":
 
+                checked_elements =  [checkSubelement(e) for e in data[1]]
+
                 if len(data[1]) > 1:
-                    self.__sensorList[data[0]] = [checkSubelement(e) for e in data[1]]
+                    if self.__sensorList[data[0]] != checked_elements:
+                        self.__sensorList[data[0]] = checked_elements
+                        self.__commandQueue.put([data[0]] + [self.__sensorList[data[0]]])
                 else:
-                    self.__sensorList[data[0]] = checkSubelement(data[1][0])
-                
-                self.__commandQueue.put([data[0]] + [self.__sensorList[data[0]]])
+                    if self.__sensorList[data[0]] != checked_elements[0]:
+                        self.__sensorList[data[0]] = checked_elements[0]
+                        self.__commandQueue.put([data[0]] + [self.__sensorList[data[0]]])
 
             elif data[0]=="calibrate":
                 self.__commandQueue.put(data)
