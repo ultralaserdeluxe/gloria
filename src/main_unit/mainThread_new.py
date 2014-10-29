@@ -36,6 +36,7 @@ class Station:
 
     @staticmethod
     def create(side, package):
+        log.info("Station.create side=%s package=%s" %(side, package))
         station = None
         
         if side == se.LEFT and package == se.LEFT:
@@ -144,7 +145,7 @@ class Gloria:
             front_station = se.station_front(front_converted)
             package = se.detect_package(*self.shared["distance"])
 
-            if front_station != se.NO_STATION and is_on_straight():
+            if front_station != se.NO_STATION and self.is_on_straight():
                 front_obj = Station.create(front_station, package)
                 log.info("Found front station with empty=%s and left=%s." %(str(front_obj.is_empty()), str(front_obj.is_left())))
                 self.station_queue.append(front_obj)
@@ -155,7 +156,7 @@ class Gloria:
 
             center_station = se.station_center(center_converted)
 
-            if center_station != se.NO_STATION and is_on_straight():
+            if center_station != se.NO_STATION and self.is_on_straight():
                 self.handle_center_station()
         else:
             log.info("Found crossing or break in line.")
@@ -170,6 +171,7 @@ class Gloria:
             self.change_state(next_state)
         elif not self.has_package and current_center.is_full():
             log.info("Current station (left=%s) has package and robot does not. Pick up!" %current_center.is_left())
+            self.set_speed(0, 0)
             self.change_state(MANUAL)
         else:
             log.info("Current station (left=%s) has no package and robot does not either. Move on." %current_center.is_left())
@@ -189,7 +191,7 @@ class Gloria:
         if front_station == se.NO_STATION:
             log.info("Leaving front station.")
             self.change_state(LINE)
-        elif center_station != se.NO_STATION and is_on_straight():
+        elif center_station != se.NO_STATION and self.is_on_straight():
             log.info("Detected center station while on front station.")
             self.handle_center_station(next_state=STATION_BOTH)
 
@@ -206,7 +208,7 @@ class Gloria:
         if center_station == se.NO_STATION:
             log.info("Leaving center station.")
             self.change_state(LINE)
-        elif front_station != se.NO_STATION and is_on_straight():
+        elif front_station != se.NO_STATION and self.is_on_straight():
             front_obj = Station.create(front_station, package)
             log.info("Found front station with empty=%s and left=%s." %(str(front_obj.is_empty()), str(front_obj.is_left())))
             self.station_queue.append(front_obj)
@@ -237,7 +239,7 @@ class Gloria:
             self.change_state(STATION_FRONT)
 
     def go_straight(self):
-        set_speed(50, 50)
+        self.set_speed(50, 50)
 
     def is_on_straight(self):
         return abs(self.shared["error"]) < 3

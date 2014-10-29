@@ -12,9 +12,9 @@ def convert_line_values(seq):
     res = []
     for e in seq:
         if e < LOWER_LINE_LIMIT:
-            res.append(True)
-        elif e > UPPER_LINE_LIMIT:
             res.append(False)
+        elif e > UPPER_LINE_LIMIT:
+            res.append(True)
         else:
             res.append(None)
     return res
