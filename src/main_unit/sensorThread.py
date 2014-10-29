@@ -2,7 +2,7 @@
 import threading
 import sensorUnit
 import time
-updateFreq=20.0 #Hz and must be float
+updateFreq=100.0 #Hz and must be float
 class sensorThread(threading.Thread):
     def __init__(self,sensorList):
         self.__sensorList=sensorList

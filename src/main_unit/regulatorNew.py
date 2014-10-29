@@ -1,8 +1,7 @@
 import threading
 import time
 
-#remember to remove after debugging
-import matplotlib.pyplot as plt
+
 
 class Regulator(threading.Thread):
     
@@ -13,11 +12,12 @@ class Regulator(threading.Thread):
         self.__e0=0.0
         self.__e1=0.0
         self.__e2=0.0
-        self.__updateFreq=5.0
+        self.__updateFreq=20.0
         self.__updateTime=1.0/self.__updateFreq
-        self.__P=1.0
-        self.__I=1.0
-        self.__D=1.0
+	#4.5 works good
+        self.__P=21.5
+        self.__I=0.0
+        self.__D=0.1
         self.__signalOut=0.0
         self.__filtersig=0.0
         self.__oldSignalOuts=[]
@@ -35,13 +35,9 @@ class Regulator(threading.Thread):
     
     #main function
     def run(self):
-        plt.axis([0, 100, -3, 3])
-        plt.ion()
-        plt.show()
-        j=0
         while True:
             #update values if they have changed in sensorlist
-            self.updatePID()
+            #self.updatePID()
             #make sure the pid regulators updates with the freq set in constructor
             time.sleep(self.__updateTime)
             #time -1 becomes -2
@@ -56,11 +52,12 @@ class Regulator(threading.Thread):
             c=self.__D/(self.__updateTime)
             self.__signalOut=self.__signalOut+a*self.__e0+b*self.__e1+c*self.__e2
             #restrict the output signal to be to high
-            if self.__signalOut>3.0:
-                self.__signalOut=3.0
-            if self.__signalOut<-3.0:
-                self.__signalOut=-3.0
+           # if self.__signalOut>3.0:
+           #     self.__signalOut=3.0
+           # if self.__signalOut<-3.0:
+           #     self.__signalOut=-3.0
             #store the output signal
+	    print(self.__signalOut,time.time())
             self.__oldSignalOuts.append(self.__signalOut)
             #calculate the filtered signa
             self.__filtersig=0.0
@@ -71,15 +68,6 @@ class Regulator(threading.Thread):
                 for i in range(10):
                     self.__filtersig=self.__filtersig+self.__oldSignalOuts[i]*divider
                     divider=divider*2
-            #all this is for the plot
-            if abs(self.__e0)<=1.0:
-                plt.scatter(j, self.__e0,color='blue')
-            if abs(self.__signalOut)<=1.0:
-                plt.scatter(j, self.__signalOut,color='red')
-            plt.draw()
-            j=j+1
-            if j%100==0:
-                plt.cla()
             #set the motor
             #if you dont want to use the filtered signal you can use self.setMotors()
             #self.setMotorsFilter()
@@ -89,8 +77,8 @@ class Regulator(threading.Thread):
     def setMotors(self):
         leftCurrent=self.getLeftMotor()
         rightCurrent=self.getRightMotor()
-        left=leftCurrent+int(2.0*leftCurrent*self.__signalOut)
-        right=rightCurrent-int(2.0*rightCurrent*self.__signalOut) 
+        left=leftCurrent+int(1.0*leftCurrent*self.__signalOut)
+        right=rightCurrent-int(1.0*rightCurrent*self.__signalOut) 
         self.setRegMotor(left, right)
     
     #set each motorspeed to motorspeed+-motorspeed*filteredsignal the multiplicator differes because of different strength in motors, try with the same
