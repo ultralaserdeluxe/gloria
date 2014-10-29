@@ -68,6 +68,7 @@ class Gloria:
         self.arm = arm.robotArm()
         self.drive = driveUnit.driveUnit()
         self.current_speed = [None, None]
+        self.linedet = se.LineDetector()
 
         self.state = None
         self.stored_state = None
@@ -159,14 +160,15 @@ class Gloria:
     def line(self):
         self.regulate()
 
-        front_values = self.shared["lineSensor"][:]
-        front_converted = se.convert_line_values(front_values)
-        front_station = se.station_front(front_converted)
         package = se.detect_package(*self.shared["distance"])
 
+        front_values = self.shared["lineSensor"][:]
         center_values = self.shared["middleSensor"][:]
-        center_converted = se.convert_line_values(center_values)
-        center_station = se.station_center(center_converted, front_converted)
+
+        self.linedet.add_values(front_values, center_values)
+
+        front_station = self.linedet.station_front()
+        center_station = self.linedet.station_center()
 
         if front_station != se.NO_STATION:
             front_obj = Station.create(front_station, package)
@@ -206,12 +208,12 @@ class Gloria:
         self.regulate()
 
         front_values = self.shared["lineSensor"][:]
-        front_converted = se.convert_line_values(front_values)
-        front_station = se.station_front(front_converted)
-
         center_values = self.shared["middleSensor"][:]
-        center_converted = se.convert_line_values(center_values)
-        center_station = se.station_center(center_converted, front_converted)
+
+        self.linedet.add_values(front_values, center_values)
+
+        front_station = self.linedet.station_front()
+        center_station = self.linedet.station_center()
 
         if front_station == se.NO_STATION:
             log.info("Leaving front station.")
@@ -223,14 +225,15 @@ class Gloria:
     def station_center(self):
         self.regulate()
 
-        front_values = self.shared["lineSensor"][:]
-        front_converted = se.convert_line_values(front_values)
-        front_station = se.station_front(front_converted)
         package = se.detect_package(*self.shared["distance"])
 
+        front_values = self.shared["lineSensor"][:]
         center_values = self.shared["middleSensor"][:]
-        center_converted = se.convert_line_values(center_values)
-        center_station = se.station_center(center_converted, front_converted)
+
+        self.linedet.add_values(front_values, center_values)
+
+        front_station = self.linedet.station_front()
+        center_station = self.linedet.station_center()
 
         if center_station == se.NO_STATION:
             log.info("Leaving center station.")
@@ -242,17 +245,16 @@ class Gloria:
             log.info([str(e) for e in self.station_queue])
             self.change_state(STATION_BOTH)
 
-
     def station_both(self):
         self.regulate()
 
         front_values = self.shared["lineSensor"][:]
-        front_converted = se.convert_line_values(front_values)
-        front_station = se.station_front(front_converted)
-
         center_values = self.shared["middleSensor"][:]
-        center_converted = se.convert_line_values(center_values)
-        center_station = se.station_center(center_converted, front_converted)
+
+        self.linedet.add_values(front_values, center_values)
+
+        front_station = self.linedet.station_front()
+        center_station = self.linedet.station_center()
 
         if front_station != se.NO_STATION:
             log.info("Leaving front station.")
@@ -346,4 +348,9 @@ if __name__ == "__main__":
 
     log.basicConfig(level=log.INFO)
     gloria = Gloria(shared_stuff, cmd_queue, sensor_thread)
-    gloria.run()
+
+    try:
+        gloria.run()
+    except:
+        gloria.set_speed(0, 0)
+        sys.exit(1)

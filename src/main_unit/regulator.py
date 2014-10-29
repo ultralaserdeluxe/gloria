@@ -14,15 +14,12 @@ class Regulator(threading.Thread):
         self.__D=0.7
         #self.__D=0.5
         self.__signalOut=0.0
+        self.linedet = sf.LineDetector()
         threading.Thread.__init__(self)
 
     def run(self):
         while True:
             time.sleep(self.__updateTime)
-
-            if len(self.__sensorList["pastErrors"]) == 50:
-                self.__sensorList["pastErrors"].pop(0)
-            self.__sensorList["pastErrors"].append(self.__e0)
 
             self.__e1=self.__e0
             self.__e0=self.get_current_error()
@@ -68,10 +65,10 @@ class Regulator(threading.Thread):
 
     def get_current_error(self):
         sensor_values = self.getSensorValues()
-        converted_values = sf.convert_line_values(sensor_values)
-        station = sf.station_front(converted_values)
+        converted_values = self.linedet.convert_line_values(sensor_values)
+        station = self.linedet.station_front_one(converted_values)
         mask = []
-        if sf.all_equal(converted_values):
+        if self.linedet.all_equal_one(converted_values):
             mask = [0] * 11
         elif station != sf.NO_STATION:
             mask = [0] * 4 + [1] * 3 + [0] * 4
