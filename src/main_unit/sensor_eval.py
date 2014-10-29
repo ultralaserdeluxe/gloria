@@ -23,7 +23,7 @@ def all_equal(seq):
     t = seq[0]
 
     for e in seq:
-        if e != t:    if seq[0] == True
+        if e != t:
             return False
     return True
 
