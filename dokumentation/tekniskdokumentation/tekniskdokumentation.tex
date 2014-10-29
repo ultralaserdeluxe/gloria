@@ -28,7 +28,10 @@
 \usepackage{tikz}
 \usepackage{mathtools}
 \usepackage{url}
+\usepackage{dirtree}
 \usetikzlibrary{shapes, arrows}
+
+\DeclareGraphicsExtensions{.eps, .pdf}
 
 \pagenumbering{roman}
 
@@ -60,17 +63,17 @@
 \pagenumbering{arabic}	%Påbörja sidnumrering
 
 % Inledning, översikt osv
-\input{tekdok-inledning}
-\input{tekdok-produkten}
-\input{tekdok-metadokumentation}
-\input{tekdok-systemet}
-\input{tekdok-pcenhet}
-\input{tekdok-huvudenhet}
-\input{tekdok-styrenhet}
-\input{tekdok-sensorenhet}
-\input{tekdok-slutsatser}
-\input{tekdok-referenser}
-
+\input{tex/tekdok-inledning}
+\input{tex/tekdok-produkten}
+\input{tex/tekdok-metadokumentation}
+\input{tex/tekdok-systemet}
+\input{tex/tekdok-pcenhet}
+\input{tex/tekdok-huvudenhet}
+\input{tex/tekdok-styrenhet}
+\input{tex/tekdok-sensorenhet}
+\input{tex/tekdok-slutsatser}
+\newpage
+\input{tex/tekdok-referenser}
 
 \newpage
 \begin{appendices}

@@ -117,6 +117,7 @@ def floor_on_sides():
     return False
 
 
+
 def stopstation_left():
     global on_floor_left
     global left_station_cnt
