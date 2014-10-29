@@ -52,19 +52,9 @@ detection_time = 1
 #error marginal for linesensors
 error_margin = 15
 
-#used for detection stopstations
-timestampstop_left = 0
-timestampstop_right = 0
-right_station_cnt = 0
-left_station_cnt = 0
-stop_detection_time = 2
-on_floor_left = True
-on_floor_right = True
 
-on_floor_middle_left = True
-left_middle_cnt = 0
+
 stopstation_left_detected = False
-
 stop_cnt = 0
 floor_middle = False
 floor_left = False
@@ -119,78 +109,12 @@ def check_put_down_left():
                 return True
     return False            
 
-def stopstation_middle_left():
-    global on_floor_middle_left
-    global left_middle_cnt
-    
-        
-    if (station_centered() and on_floor_middle_left == True):
-        left_middle_cnt += 1
-        on_floor_middle_left = False
-        return False
-
-    elif (not station_centered()):
-        on_floor_middle_left = True
-    elif left_middle_cnt > 2:
-        left_middle_cnt = 0
-        return True
-    return False
-
-
-
-def stopstation_left():
-    global on_floor_left
-    global left_station_cnt
-    #global timestampstop_left        
-
-    #if (time.time() - timestampstop_left) >= stop_detection_time:
-    #    left_station_cnt = 0
-    
-    if (is_station_left() and on_floor_left == True):
-        #if left_station_cnt == 0:
-        #    timestampstop_left = time.time()
-        #if left_station_cnt == 2:
-        #    left_station_cnt = 0
-        #    on_floor_left = False
-        #    return True
-        left_station_cnt += 1
-        on_floor_left = False
-        return False
-
-    elif (not is_station_left()):
-        on_floor_left = True
-    elif left_station_cnt > 2:
-        left_station_cnt = 0
-        return True
-    return False
-
-def stopstation_right():
-    global on_floor_right
-    global right_station_cnt
-    global timestampstop_right
-    
-    if (time.time() - timestampstop_right) >= stop_detection_time:        
-        right_station_cnt = 0
-    if (is_station_right() and on_floor_right == True):
-        if right_station_cnt == 0:
-            timestampstop_right = time.time()
-        elif right_station_cnt == 2:
-            right_station_cnt = 0
-            on_floor_right = False
-            return True
-        right_station_cnt += 1
-        on_floor_right = False
-        return False
-    elif (not is_station_right()):
-        on_floor_right = True
-    return False
 
 def is_on_straight():
     return abs(shared_stuff["error"]) < 3
 
 
-
-def stopstation():
+def stopstation_left():
     global floor_left
     global floor_middle
     global stop_cnt
@@ -199,6 +123,7 @@ def stopstation():
     if is_station_left() and floor_left:
         stop_cnt += 1
         floor_left = False
+        #time.sleep(0.15)
     elif (not is_station_left()):
         floor_left = True
     
@@ -206,6 +131,7 @@ def stopstation():
     if station_centered() and floor_middle:
         stop_cnt-= 1
         floor_middle = False
+        #time.sleep(0.15)
     elif (not station_centered()):
         floor_middle = True
     if stop_cnt > 2:
@@ -243,15 +169,16 @@ def station_centered():
 
 
 #check the sensor furthermost to the right
-def is_station_right():
-    tape_max = calibrateData[10][1]
-    tape_min = calibrateData[10][0]
-    value = shared_stuff["lineSensor"][10]
+def is_station_right():    
+
+    tape_max = calibrateData[8][1]
+    tape_min = calibrateData[8][0]
+    value = shared_stuff["lineSensor"][8]
     norm_value = float(value - tape_min) / (tape_max - tape_min)
 
-    floor_max = calibrateData[0][1]
-    floor_min = calibrateData[0][0]
-    value2 = shared_stuff["lineSensor"][0]
+    floor_max = calibrateData[2][1]
+    floor_min = calibrateData[2][0]
+    value2 = shared_stuff["lineSensor"][2]
     norm_value2 = float(value2 - floor_min) / (floor_max - floor_min)
 
     if norm_value > 0.8:
@@ -270,33 +197,44 @@ def is_station_right():
 
 #check the sensor furthermost to the left
 def is_station_left():
-    tape_min = calibrateData[0][0]
-    tape_max = calibrateData[0][1]
-    value = shared_stuff["lineSensor"][0]
-    norm_value = float(value - tape_min) / (tape_max - tape_min)
 
-    floor_min = calibrateData[10][0]
-    floor_max = calibrateData[10][1]
-    value2 = shared_stuff["lineSensor"][10]
-    norm_value2 = float(value2 - floor_min) / (floor_max - floor_min)
+    left = []
+    right = []
 
-    if norm_value > 0.8:
-        tape_left = True
-    else:
-        tape_left = False
-    if norm_value2 < 0.45:
-        floor_right = True
-    else:
-        floor_right= False
+    for i in range(0,3):
+        tape_min = calibrateData[i][0]
+        tape_max = calibrateData[i][1]
+        value = shared_stuff["lineSensor"][i]
+        norm_value = float(value - tape_min) / (tape_max - tape_min)
+        
+        floor_min = calibrateData[10][0]
+        floor_max = calibrateData[10][1]
+        value2 = shared_stuff["lineSensor"][10]
+        norm_value2 = float(value2 - floor_min) / (floor_max - floor_min)
 
-#    print "tape_left", tape_left, "floor_right", floor_right, "tape_value", norm_value, "floor_value", norm_value2
+        if norm_value > 0.8:
+            left.append(True)
+            #tape_left = True
+        else:
+            left.append(False)
+            #tape_left = False
+        if norm_value2 < 0.45:
+            #right.append(True)
+            floor_right = True
+        else:
+            #right.append(False)
+            floor_right= False
 
-    return tape_left and floor_right and is_on_straight()
+    #print "tape_left", tape_left, "floor_right", floor_right, "tape_value", norm_value, "floor_value", norm_value2
+        
+    #return tape_left and floor_right and is_on_straight()
+    return left[0] and left[1] and left[2] and floor_right
+
 
 #check for package on right side
 def has_package_right():
     distance = distance_right(shared_stuff["distance"][0])
-    #print "distanceright : ",distance
+    print "distanceright : ",distance
     if distance >= 6.0 and distance <= 20.0:
         return True
     return False
@@ -305,7 +243,7 @@ def has_package_right():
 #check for package on left side
 def has_package_left():
     distance = distance_left(shared_stuff["distance"][1])
-    #print "distanceleft : ",distance
+    print "distanceleft : ",distance
     if distance >= 6.0 and distance <= 20.0:
         return True
     return False
@@ -349,6 +287,7 @@ def get_command():
     global has_package
     global is_centered
     
+
     if not commandQueue.empty():
         command = commandQueue.get()
         #print str(command)
@@ -398,11 +337,11 @@ regulator.start()
 
 
 # Print distance sensors
-# while True:
-#     time.sleep(0.5)
-#     #print shared_stuff["distance"]
-#     has_package_left()
-#     has_package_right()
+while True:
+    time.sleep(0.5)
+    #print shared_stuff["distance"]
+    has_package_left()
+    has_package_right()
 
 # # Print middle sensor for debug
 # while True:
@@ -411,52 +350,28 @@ regulator.start()
 
 while str(commandQueue.get()[0]) != "start":
     pass
-
+       
 while True:
 
     #get latest PC command from queue
     get_command()
-        
-    #check if robot is on stopstation, goes into manualmode
-    # if not has_package and stopstation_left():
-    #     set_speed(0x00,0x00)
-    #     automotor = False
-    # elif has_package and stopstation_left():
-    #     stop_station_left_detected = True
-            
+    # if True:    
+    # #if automotor:
+    #     if stopstation_left():
+    #         if has_package:
+    #             stopstation_left_detected = True
+    #             put_down = False
+    #         else:
+    #             set_speed(0x00,0x00)
+    #             automotor = False
+    #     elif stop_cnt == 0:
+    #         stopstation_left_detected = False
 
-    # if stopstation_left_detected and station_middle_left():
-    #     stop_station_left_detected = False
-    #     left_station_cnt = 0
-    
-    
-    
-    if stopstation():
-        if has_package:
-            #print "stopstation TRUE"
-            stopstation_left_detected = True
-            put_down = False
-        else:
-            set_speed(0x00,0x00)
-            automotor = False
-    elif stop_cnt == 0:
-        #print "stopstation_leftdetected FALSE"
-        #print "stopstation FALSE"
-        stopstation_left_detected = False
+    # #print stop_cnt
+    # print has_package
 
-    print stop_cnt
-
-    # if stopstation_right():
-    #     set_speed(0x00,0x00)
-    #     automotor = False
-
-    #print stop_cnt
     #the steerlogic.
     if automotor == True:
-        #if has_package == True:
-         #   check_put_down_right()
-        #else:
-         #   check_pick_up_right()
         if pick_up == False:
             #no need to steer arm, continue
             #check if we want to steer it anyway
@@ -467,15 +382,14 @@ while True:
             if put_down == False:
                 if check_pick_up_right() or check_pick_up_left():
                     pick_up = True
-                    #new_speed_left = new_speed_right = 0x00
                 elif (check_put_down_right() or check_put_down_left()):
-                    if not stopstation_left_detected:
-                        put_down = True
-                    #new_speed_left = new_speed_right = 0x00
+                    #if not stopstation_left_detected:
+                    put_down = True
                 else:
                     pick_up = False
                     put_down = False                    
                     new_speed_left, new_speed_right = shared_stuff["regulator"]
+
                 if (speed_left != new_speed_left) or (speed_right != new_speed_right):
                     speed_left = new_speed_left
                     speed_right = new_speed_right
@@ -487,7 +401,7 @@ while True:
                     is_centered = True
                 if is_centered:
                     #steer arm
-                    print "Center found"
+                    #print "Center found"
                     new_speed_left = new_speed_right = 0x00
                     set_speed(new_speed_left, new_speed_right)
                     fake_command = ["fake_command", shared_stuff["arm_return_pos"]]
@@ -507,7 +421,7 @@ while True:
 
             if is_centered:
                 #steer arm
-                print "Center found"
+                #print "Center found"
                 new_speed_left = new_speed_right = 0x00
                 if autoarm == False and command[0] == "armPosition":
                     print "Waiting for hasPackage..."
