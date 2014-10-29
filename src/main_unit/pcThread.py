@@ -109,6 +109,9 @@ class pcThread(threading.Thread):
 
         #takes in commands from the mainloop and executes them
         def commandHandler(data):
+            if self.__commandQueue.qsize() > 5 and data[0] in ["motorSpeed", "armPosition"]:
+                return
+
             temp=0;
             if data[0]=="status":
                 ans = convertSensorList(self.__sensorList)
