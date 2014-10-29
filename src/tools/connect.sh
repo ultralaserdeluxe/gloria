@@ -57,18 +57,20 @@ main() {
 		echo Already connected!
 	fi
 
-	# Check if connected successfully
+	# Check if connected successfully"
 	local bluetooth="$(ifconfig | egrep $bt_interface)"
 	if [ -z "${bluetooth}" ]; then
 		echo Failed to connect.
 	else
 		# If expect is installed, connect and provide password
 		local expect=$(which expect)
-		if [ -n $expect ]; then
-			sh connect_ssh.sh $ssh_server $ssh_password
+		if [[ ${#expect} > 0 ]]; then
+			# Connect using separate expect script, entering password.
+			./connect_ssh.sh $ssh_server $ssh_password
 		else
 			# Connect to ssh
-			echo ssh-ing.
+			echo Connecting over SSH.
+			echo Consider installing Expect to make the process even easier.
 			ssh $ssh_server
 		fi
 	fi

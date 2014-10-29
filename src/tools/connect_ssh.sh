@@ -5,7 +5,7 @@
 # Usage:
 # connect_ssh.sh <ssh_server> <ssh_password
 
-set timeout 60
+set timeout 30
 
 spawn ssh [lindex $argv 0]
 

@@ -206,10 +206,6 @@ def has_package_left():
     return False
 
 
-def drive_forward():
-    print "keep on truckin..."
-
-
 def steer_arm(command):
     robot_arm.updateX(command[1][0])
     robot_arm.updateY(command[1][1])
@@ -335,9 +331,10 @@ while True:
     else:
         pass
     
+    
     #check if robot is on stopstation, goes into manualmode
     if on_stopstation_right():
-        print "stoppstation"
+        print "stop station"
         set_speed(0x00,0x00)
         automotor = False
     
