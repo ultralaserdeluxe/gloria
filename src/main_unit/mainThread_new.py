@@ -300,26 +300,26 @@ class Gloria:
         pos = self.arm_return_pos[:]
         pos[2] = self.carry_pos[2]
         
-        log.info("Setting arm to" %str(pos))
+        log.info("Setting arm to %s" %str(pos))
         self.steer_arm(*pos)
         time.sleep(3)
 
         pos[2] = self.arm_return_pos[2]
 
-        log.info("Setting arm to" %str(pos))
+        log.info("Setting arm to %s" %str(pos))
         self.steer_arm(*pos)
         time.sleep(3)
 
         pos[2] = self.carry_pos[2]
 
-        log.info("Setting arm to" %str(pos))
+        log.info("Setting arm to %s" %str(pos))
         self.steer_arm(*pos)
         time.sleep(3)
 
         pos[0] = self.carry_pos[0]
         pos[1] = self.carry_pos[1]
 
-        log.info("Setting arm to" %str(pos))
+        log.info("Setting arm to %s" %str(pos))
         self.steer_arm(*pos)
 
         self.has_package = False
@@ -335,6 +335,9 @@ class Gloria:
         if (first.is_left() == second.is_left() == third.is_left() and
             first.is_empty() and second.is_empty() and third.is_empty()):
             log.info("Found stop station.")
+            first.empty = not self.has_package
+            second.empty = not self.has_package
+            third.empty = not self.has_package
             return True
 
     def set_speed(self, left, right):
