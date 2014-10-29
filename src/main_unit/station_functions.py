@@ -52,11 +52,22 @@ def station_front(seq):
         return NO_STATION
 
 
-def station_center(seq):
-    left = seq[0]
-    right = seq[1]
+def station_center(center_seq, front_seq):
+    front_left = front_seq[0:3]
+    front_center = front_seq[4:7]
+    front_right = front_seq[8:]
 
-    return station(left, right)
+    n_front_left = sum(e for e in front_left if e is not None)
+    n_front_center = sum(e for e in front_center if e is not None)
+    n_front_right = sum(e for e in front_right if e is not None)
+
+    if n_front_center >= 1 and (n_front_left + n_front_right) <= 1:
+        left = center_seq[0]
+        right = center_seq[1]
+
+        return station(left, right)
+    else:
+        return station(False, False)
 
 def detect_package(left_value, right_value):
     if distance.distance_left(left_value) <= 20.0:
