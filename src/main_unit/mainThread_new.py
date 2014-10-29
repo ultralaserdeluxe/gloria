@@ -157,34 +157,25 @@ class Gloria:
             self.steer_arm(*args)
 
     def line(self):
+        self.regulate()
+
         front_values = self.shared["lineSensor"][:]
         front_converted = se.convert_line_values(front_values)
+        front_station = se.station_front(front_converted)
+        package = se.detect_package(*self.shared["distance"])
 
         center_values = self.shared["middleSensor"][:]
         center_converted = se.convert_line_values(center_values)
+        center_station = se.station_center(center_converted, front_converted)
 
-        if not se.all_equal(front_converted):
-            front_station = se.station_front(front_converted)
-            package = se.detect_package(*self.shared["distance"])
-
-            if front_station != se.NO_STATION and self.is_on_straight():
-                front_obj = Station.create(front_station, package)
-                log.info("Found front station with empty=%s and left=%s." %(str(front_obj.is_empty()), str(front_obj.is_left())))
-                self.station_queue.append(front_obj)
-                log.info([str(e) for e in self.station_queue])
-                self.change_state(STATION_FRONT)
-            else:
-                left, right = self.shared["regulator"]
-                self.set_speed(left, right)
-
-            center_station = se.station_center(center_converted)
-
-            if center_station != se.NO_STATION and self.is_on_straight():
-                self.handle_center_station()
-                pass
-        else:
-            log.info("Found crossing or break in line.")
-            self.go_straight()
+        if front_station != se.NO_STATION:
+            front_obj = Station.create(front_station, package)
+            log.info("Found front station with empty=%s and left=%s." %(str(front_obj.is_empty()), str(front_obj.is_left())))
+            self.station_queue.append(front_obj)
+            log.info([str(e) for e in self.station_queue])
+            self.change_state(STATION_FRONT)
+        elif center_station != se.NO_STATION:
+            self.handle_center_station()
 
     def handle_center_station(self, next_state=STATION_CENTER):
         if self.is_on_stop() and not self.has_package: self.change_state(HALTED)
@@ -212,7 +203,7 @@ class Gloria:
             self.change_state(next_state)
 
     def station_front(self):
-        self.go_straight()
+        self.regulate()
 
         front_values = self.shared["lineSensor"][:]
         front_converted = se.convert_line_values(front_values)
@@ -220,16 +211,18 @@ class Gloria:
 
         center_values = self.shared["middleSensor"][:]
         center_converted = se.convert_line_values(center_values)
-        center_station = se.station_center(center_converted)
+        center_station = se.station_center(center_converted, front_converted)
 
         if front_station == se.NO_STATION:
             log.info("Leaving front station.")
             self.change_state(LINE)
-        elif center_station != se.NO_STATION and self.is_on_straight():
+        elif center_station != se.NO_STATION:
             log.info("Detected center station while on front station.")
             self.handle_center_station(next_state=STATION_BOTH)
 
     def station_center(self):
+        self.regulate()
+
         front_values = self.shared["lineSensor"][:]
         front_converted = se.convert_line_values(front_values)
         front_station = se.station_front(front_converted)
@@ -237,28 +230,21 @@ class Gloria:
 
         center_values = self.shared["middleSensor"][:]
         center_converted = se.convert_line_values(center_values)
-        center_station = se.station_center(center_converted)
+        center_station = se.station_center(center_converted, front_converted)
 
         if center_station == se.NO_STATION:
             log.info("Leaving center station.")
             self.change_state(LINE)
-        elif front_station != se.NO_STATION and self.is_on_straight():
+        elif front_station != se.NO_STATION:
             front_obj = Station.create(front_station, package)
             log.info("Found front station with empty=%s and left=%s." %(str(front_obj.is_empty()), str(front_obj.is_left())))
             self.station_queue.append(front_obj)
             log.info([str(e) for e in self.station_queue])
             self.change_state(STATION_BOTH)
-        else:
-            if not se.all_equal(front_converted):
-                # left, right = self.shared["regulator"]
-                # self.set_speed(left, right)
-                self.go_straight()
-            else:
-                self.go_straight()
-                log.info("Found a crossing or break in line.")
+
 
     def station_both(self):
-        self.go_straight()
+        self.regulate()
 
         front_values = self.shared["lineSensor"][:]
         front_converted = se.convert_line_values(front_values)
@@ -266,7 +252,7 @@ class Gloria:
 
         center_values = self.shared["middleSensor"][:]
         center_converted = se.convert_line_values(center_values)
-        center_station = se.station_center(center_converted)
+        center_station = se.station_center(center_converted, front_converted)
 
         if front_station != se.NO_STATION:
             log.info("Leaving front station.")
@@ -275,21 +261,10 @@ class Gloria:
             log.info("Leaving center station.")
             self.change_state(STATION_FRONT)
 
-    def go_straight(self):
-        self.set_speed(50, 50)
+    def regulate(self):
+        left, right = self.shared["regulator"]
+        self.set_speed(left, right)
 
-    def avg_error(self):
-        pastErrors = self.shared["pastErrors"][::-1]
-
-        weights = [0.5]
-        for i in range(49): weights.append(weights[-1] / 2)
-
-        return sum(map(lambda x, y: abs(x * y), pastErrors, weights))
-            
-
-    def is_on_straight(self):
-        return True
-        
     def put_down_package(self, station):
         side = ["right", "left"][station.is_left()]
         log.info("Putting down package on %s side." %side)
