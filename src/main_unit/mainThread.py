@@ -76,7 +76,7 @@ class Gloria:
         self.station_queue = []
         
         self.arm_return_pos = None
-        self.carry_pos = [0, 100, 100, 0, 0, 140]
+        self.carry_pos = [0, 100, 130, 0, 0, 140]
 
     def get_command(self):
         if not self.cmd_queue.empty():
@@ -118,7 +118,7 @@ class Gloria:
 	    log.info("Setting has_package to True.")
 
             self.has_package = self.shared["hasPackage"] = True
-            self.arm_return_pos = self.shared["armPosition"]
+            self.arm_return_pos = self.shared["armPosition"][:]
 
             pos = self.arm_return_pos[:]
 
@@ -369,8 +369,8 @@ class Gloria:
         if left != self.current_speed[0] or right != self.current_speed[1]:
             log.debug("set_speed: left=%d right=%d" %(left, right))
 
-            self.current_speed[0] = left
-            self.current_speed[1] = right
+            self.current_speed[0] = self.shared["motorSpeed"][0] = left
+            self.current_speed[1] = self.shared["motorSpeed"][1] = right
 
             self.drive.setMotorLeft(left)
             self.drive.setMotorRight(right)
@@ -382,7 +382,12 @@ class Gloria:
         self.arm.setAll([x, y, z, p, w, g])
         servo_values = self.arm.getServoValues()
 
-        self.shared["armPosition"] = [x, y, z, p, w, g]
+        self.shared["armPosition"][0] = x
+        self.shared["armPosition"][1] = y
+        self.shared["armPosition"][2] = z
+        self.shared["armPosition"][3] = p
+        self.shared["armPosition"][4] = w
+        self.shared["armPosition"][5] = g
 
         for i in range(6):
             self.drive.setArmAxis(i+1, servo_values[i])
