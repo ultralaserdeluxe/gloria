@@ -19,6 +19,14 @@
 % Enkelt kommando som låter mig attgöra-markera text
 \newcommand{\todo}[1] {\textbf{\textcolor{red}{#1}}}
 
+% Nytt \paragraph låter oss ha onumrerade bitar
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+{-3.25ex\@plus -1ex \@minus -.2ex}%
+{1.5ex \@plus .2ex}%
+{\normalfont\normalsize\bfseries}}
+\makeatother
+
 \providecommand{\LIPSlogga}{../mall/Logga1.png}
 \providecommand{\LIPSdatum}{\today}
 

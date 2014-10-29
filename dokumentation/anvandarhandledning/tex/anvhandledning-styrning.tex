@@ -21,7 +21,7 @@ Väl inne i Gui.py så ser du ett antal saker på skärmen (se figur 1).
 	\end{itemize}
 	\item Knapparna i nedre vänstra hörnet på gränssnittet gör följande:
 	\begin{itemize}
-		\item start: Startar Glorias mainloop, behöver göras innan några andra kommandon kan accepteras (markerat 4 i figur 1).
+		\item start: Behöver triggas innan några andra kommandon kan accepteras (markerat 4 i figur 1).
 		\item calibrate tape: Kalibrerar sensorvärdet för tejp (markerat 5 i figur 1).
 		\item calibrate floor: Kalibrerar sensorvärdet för golv (markerat 6 i figur 1).
 		\item auto motor: Sätter motorerna i autonomt läge, vilket får Gloria att köra av sig själv givet sensordata (markerat 7 i figur 1).		
@@ -31,7 +31,7 @@ Väl inne i Gui.py så ser du ett antal saker på skärmen (se figur 1).
 \end{enumerate}
 \subsection{Styrning av Gloria via gränssnittet}
 	\begin{itemize}	
-		\item Motor: Joystick 1 låter användaren köra i alla riktningar. Framåt-tilt får Gloria att accelerera framåt, bakåt-tilt ger samma effekt bakåt. Vänster orsakar en vänstersväng (vänster hjulpar kör långsammare än höger) och höger fungerar på samma sätt.
+		\item Motor: Joystick 1 låter användaren köra i alla riktningar. Framåt-tilt får Gloria att köra framåt, bakåt-tilt ger samma effekt bakåt. Vänster orsakar en vänstersväng (vänster hjulpar kör långsammare än höger) och höger fungerar på samma sätt.
 		\item Arm: Armen (Gripklon) styrs i ett 3D-rum utifrån hur man rör Joystick 2 där gripklon är koordinaten i planet. Rörelserna beräknas automatiskt, så dessa behöver användaren inte ta hänsyn till. 
 		\item Gripklo framåt/bakåt/vänster/höger: Tilta Joysticken i önskad rikting.
 		\item Höj/Sänk Gripklon: Vrid Joysticken åt vänster/höger.
