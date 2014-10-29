@@ -18,9 +18,12 @@ STATION_CENTER = "STATION_CENTER"
 STATION_BOTH = "STATION_BOTH"
 
 class Station:
-    def __init__(self, empty, left):
+    number = 0
+
+    def __init__(self, empty, left, number):
         self.empty = empty
         self.left = left
+        self.number = number
 
     def is_empty(self):
         return self.empty
@@ -35,25 +38,26 @@ class Station:
         return not self.left
 
     def __str__(self):
-        return "(left=%s, empty=%s)" %(str(self.left), str(self.empty))
+        return "(number=%s, left=%s, empty=%s)" %(str(self.number), str(self.left), str(self.empty))
 
-    @staticmethod
-    def create(side, package):
-        log.info("Station.create side=%s package=%s" %(side, package))
+    @classmethod
+    def create(cls, side, package):
+        cls.number += 1
+        log.info("Station.create side=%s package=%s number=%s" %(side, package, str(cls.number)))
         station = None
 
         if side == se.LEFT and package == se.LEFT:
-            station = Station(False, True)
+            station = Station(False, True, cls.number)
         elif side == se.LEFT and package != se.LEFT:
-            station = Station(True, True)
+            station = Station(True, True, cls.number)
         elif side == se.RIGHT and package == se.RIGHT:
-            station = Station(False, False)
+            station = Station(False, False, cls.number)
         elif side == se.RIGHT and package != se.RIGHT:
-            station = Station(True, False)
+            station = Station(True, False, cls.number)
         else:
             log.critical("Tried to create Station with side=\"%s\" and package=\"%s\"!" %(side, package))
 
-        log.debug("Created Station with empty=%s and left=%s." %(str(station.is_empty()), str(station.is_left())))
+        log.debug("Created Station (%s) with empty=%s and left=%s." %(str(station.number), str(station.is_empty()), str(station.is_left())))
         return station
 
 class Gloria:
@@ -66,7 +70,7 @@ class Gloria:
         self.current_speed = [None, None]
 
         self.state = None
-        self.stored_state = none
+        self.stored_state = None
         self.has_package = False
         self.station_queue = []
 
@@ -135,6 +139,9 @@ class Gloria:
                 sys.exit(1)
 
     def halted(self):
+        self.stored_state = None
+        self.has_package = False
+        self.station_queue = []
         self.set_speed(0, 0)
 
     def manual(self, cmd, args):
@@ -156,8 +163,6 @@ class Gloria:
         center_values = self.shared["middleSensor"][:]
         center_converted = se.convert_line_values(center_values)
 
-        log.debug("front=%s center=%s" %(str(front_converted), str(center_converted)))
-
         if not se.all_equal(front_converted):
             front_station = se.station_front(front_converted)
             package = se.detect_package(*self.shared["distance"])
@@ -176,6 +181,7 @@ class Gloria:
 
             if center_station != se.NO_STATION and self.is_on_straight():
                 self.handle_center_station()
+                pass
         else:
             log.info("Found crossing or break in line.")
             self.go_straight()
@@ -244,8 +250,9 @@ class Gloria:
             self.change_state(STATION_BOTH)
         else:
             if not se.all_equal(front_converted):
-                left, right = self.shared["regulator"]
-                self.set_speed(left, right)
+                # left, right = self.shared["regulator"]
+                # self.set_speed(left, right)
+                self.go_straight()
             else:
                 self.go_straight()
                 log.info("Found a crossing or break in line.")
@@ -271,10 +278,17 @@ class Gloria:
     def go_straight(self):
         self.set_speed(50, 50)
 
-    def is_on_straight(self):
-        avg = sum(map(abs, self.shared["pastErrors"])) / len(self.shared["pastErrors"])
+    def avg_error(self):
+        pastErrors = self.shared["pastErrors"][::-1]
 
-        return avg < 3
+        weights = [0.5]
+        for i in range(49): weights.append(weights[-1] / 2)
+
+        return sum(map(lambda x, y: abs(x * y), pastErrors, weights))
+            
+
+    def is_on_straight(self):
+        return True
         
     def put_down_package(self, station):
         side = ["right", "left"][station.is_left()]
