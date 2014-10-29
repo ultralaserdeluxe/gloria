@@ -1,4 +1,5 @@
 import numpy as np
+import logging as log
 from math import atan2,sqrt
 class Arm():     
     def __init__(self):
@@ -43,11 +44,12 @@ class Arm():
     
     
 class robotArm():
-    def __init__(self):
+    def __init__(self, shared):
+        self.shared = shared
         self.arm=Arm()
         self.closed=False
         self.__limits=[[0,1023],[205,813],[210,940],[180,810],[0,1023],[0,512]]
-	self.__totalLimits=[ [-410,410],[-350,400] ,[-71,420],[-90,90],[-240,60],[0,140]]
+	self.__totalLimits=[ [-410,410],[-350,400] ,[-71,420],[-90,90],[0,360],[0,140]]
         self.claw=0
         self.gripperOffset=0
         self.xyz=[100.0,100.0,100.0]
@@ -72,7 +74,9 @@ class robotArm():
                     self.handleError("axis "+str(i+1)+" value too low, set to minimum value instead")
             return temp
     def handleError(self,error):
-        print(error)
+        self.shared["errorCodes"].append(error)
+        log.warning(error)
+
     def setX(self,x):
         if self.checkRobotBounds():
             if (x<self.xyz[0] and self.xyz[0]<0) or (x>self.xyz[0] and self.xyz[0]>0):
@@ -149,6 +153,8 @@ class robotArm():
                 self.__outOfBound=False
             temp=np.around(np.rad2deg(self.arm.get_angles()),2)
             toReturn=[]
+            if self.xyz[0] < 0 and self.xyz[1] < 0:
+                temp[0] = 360 + temp[0]
             toReturn.append(temp[0])
             toReturn.append(temp[1])
             toReturn.append(-temp[2])
@@ -159,7 +165,7 @@ class robotArm():
             toReturn[1]=240-toReturn[1]
             toReturn[2]=240-toReturn[2]
             toReturn[3]=150-toReturn[3]
-            toReturn[4]=240-temp[0]+toReturn[4]
+            toReturn[4]=toReturn[4]
             toReturn[5]=toReturn[5]
             for i in range(len(toReturn)):
                 toReturn[i]=int(toReturn[i]*3.41)
