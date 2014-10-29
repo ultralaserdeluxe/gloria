@@ -1,7 +1,7 @@
 import distance
 
-UPPER_LINE_LIMIT = 0.8
-LOWER_LINE_LIMIT = 0.3
+UPPER_LINE_LIMIT = 0.6
+LOWER_LINE_LIMIT = 0.4
 
 RIGHT = "RIGHT"
 LEFT = "LEFT"
@@ -36,15 +36,26 @@ def station(left, right):
         return NO_STATION
 
 def station_front(seq):
-    left = seq[2]
-    right = seq[8]
+    left = seq[0:3]
+    center = seq[4:7]
+    right = seq[8:]
 
-    return station(left, right)
+    n_left = sum(e for e in left if e is not None)
+    n_center = sum(e for e in center if e is not None)
+    n_right = sum(e for e in right if e is not None)
+
+    if n_left >= 2 and n_center >= 1:
+        return LEFT
+    elif n_right >= 2 and n_center >= 1:
+        return RIGHT
+    else:
+        return NO_STATION
+
 
 def station_center(seq):
     left = seq[0]
     right = seq[1]
-    
+
     return station(left, right)
 
 def detect_package(left_value, right_value):
