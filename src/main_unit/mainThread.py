@@ -65,7 +65,7 @@ class Gloria:
         self.shared = shared_stuff
         self.cmd_queue = cmd_queue
 
-        self.arm = arm.robotArm()
+        self.arm = arm.robotArm(self.shared)
         self.drive = driveUnit.driveUnit()
         self.current_speed = [None, None]
         self.linedet = se.LineDetector()
@@ -91,6 +91,7 @@ class Gloria:
 
     def change_state(self, new_state):
         log.info("Changing state from %s to %s." %(self.state, new_state))
+        self.shared["state"] = new_state
         self.state = new_state
 
     def store_state(self, state = None):
@@ -112,7 +113,9 @@ class Gloria:
         elif cmd == "autoMotor" and args == False and self.state == LINE:
             self.set_speed(0, 0)
             self.change_state(MANUAL)
-        elif cmd == "hasPackage" and self.state == MANUAL and self.stored_state != None:
+        elif cmd == "hasPackage" and args == True and self.state == MANUAL and self.stored_state != None:
+	    log.info("Setting has_package to True.")
+
             self.has_package = True
             self.arm_return_pos = self.shared["armPosition"]
 
@@ -127,6 +130,11 @@ class Gloria:
             self.steer_arm(*pos)
 
             self.restore_state()
+        elif cmd == "clearErrors":
+            self.shared["errorCodes"] = []
+	elif cmd == "hasPackage" and args == False and self.state == MANUAL:
+	    log.info("Setting has_package to False.")
+            self.has_package = False
         elif cmd == "":
             pass
 
@@ -377,14 +385,16 @@ if __name__ == "__main__":
                     "middleCalMin" : middle_cal_min,
                     "middleSensor" : [0, 0],
                     "distance" :  [0, 0],
-                    "armPosition" : [0, 0, 255, 4, 5, 5],
-                    "errorCodes" : ["YngveProgrammedMeWrong"],
+                    "armPosition" : [0, 100, 100, 4, 5, 5],
+                    "errorCodes" : ["Yngve Programmed Me Right"],
                     "motorSpeed" : [70, 70],
                     "latestCalibration" : "0000-00-00-15:00",
                     "autoMotor" : False,
                     "autoArm" : False,
                     "regulator" : [0, 0],
-                    "error" : 0}
+                    "error" : 0,
+                    "state" : None,
+                    "hasPackage" :False}
 
     sensor_thread = sensorThread.sensorThread(shared_stuff)
     sensor_thread.daemon=True
