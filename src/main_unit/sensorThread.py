@@ -30,11 +30,11 @@ class sensorThread(threading.Thread):
     def updateDistance(self):
         del self.__distanceListLeft[0]
         del self.__distanceListRight[0]
-        self.__distanceListRight.append(self.__sensorUnit.getRightDistance())
         self.__distanceListLeft.append(self.__sensorUnit.getLeftDistance())
+        self.__distanceListRight.append(self.__sensorUnit.getRightDistance())
     
-        l = filteredValue(distanceListLeft)
-        r = filteredValue(distanceListRight)
+        l = filteredValue(self.__distanceListLeft)
+        r = filteredValue(self.__distanceListRight)
 
         self.__sensorList["distance"] = [l , r]
             
@@ -53,7 +53,7 @@ class sensorThread(threading.Thread):
 def filteredValue(list):
     divider = 0.5
     sum = 0
-    for i in range(10,-1,-1):
+    for i in range(9,-1,-1):
         sum += (list[i] * divider)
         divider *= 0.5
     return sum

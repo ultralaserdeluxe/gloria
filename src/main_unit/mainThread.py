@@ -234,7 +234,7 @@ def is_station_left():
 #check for package on right side
 def has_package_right():
     distance = distance_right(shared_stuff["distance"][0])
-    print "distanceright : ",distance
+    #print "distanceright : ",distance
     if distance >= 6.0 and distance <= 20.0:
         return True
     return False
@@ -243,7 +243,7 @@ def has_package_right():
 #check for package on left side
 def has_package_left():
     distance = distance_left(shared_stuff["distance"][1])
-    print "distanceleft : ",distance
+    #print "distanceleft : ", distance
     if distance >= 6.0 and distance <= 20.0:
         return True
     return False
@@ -337,11 +337,11 @@ regulator.start()
 
 
 # Print distance sensors
-while True:
-    time.sleep(0.5)
-    #print shared_stuff["distance"]
-    has_package_left()
-    has_package_right()
+# while True:
+#     time.sleep(0.5)
+#     #print shared_stuff["distance"]
+#     has_package_left()
+#     has_package_right()
 
 # # Print middle sensor for debug
 # while True:
