@@ -125,6 +125,14 @@ class robotArm():
     def setGripperRotationOffset(self,rotation):
         self.gripperOffset=rotation
     
+    def setAll(self, servo_values):
+        self.setX(servo_values[0])
+        self.setY(servo_values[1])
+        self.setZ(servo_values[2])
+        self.setGripperAngle(servo_values[3])
+        self.setGripperRotationOffset(servo_values[4])
+        self.setGripper(servo_values[5])
+
     def update_a0_joy(self): 
         self.arm.a[0] =atan2(self.xyz[1],self.xyz[0])
     def update_tw_joy(self):#extension w Slider Event
