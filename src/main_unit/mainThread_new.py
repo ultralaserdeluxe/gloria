@@ -34,6 +34,9 @@ class Station:
     def is_right(self):
         return not self.left
 
+    def __str__(self):
+        return "(left=%s, empty=%s)" %(str(self.left), str(self.empty))
+
     @staticmethod
     def create(side, package):
         log.info("Station.create side=%s package=%s" %(side, package))
@@ -141,6 +144,8 @@ class Gloria:
         center_values = self.shared["middleSensor"][:]
         center_converted = se.convert_line_values(center_values)
 
+        log.debug("front=%s center=%s" %(str(front_converted), str(center_converted)))
+
         if not se.all_equal(front_converted):
             front_station = se.station_front(front_converted)
             package = se.detect_package(*self.shared["distance"])
@@ -149,6 +154,7 @@ class Gloria:
                 front_obj = Station.create(front_station, package)
                 log.info("Found front station with empty=%s and left=%s." %(str(front_obj.is_empty()), str(front_obj.is_left())))
                 self.station_queue.append(front_obj)
+                log.info([str(e) for e in self.station_queue])
                 self.change_state(STATION_FRONT)
             else:
                 left, right = self.shared["regulator"]
@@ -160,21 +166,30 @@ class Gloria:
                 self.handle_center_station()
         else:
             log.info("Found crossing or break in line.")
+            self.go_straight()
 
     def handle_center_station(self, next_state=STATION_CENTER):
         if self.is_on_stop() and not self.has_package: self.change_state(HALTED)
 
+        if len(self.station_queue) == 0:
+            log.error("Found unknown center station!")
+            self.change_state(next_state)
+            return
+
         current_center = self.station_queue.pop(0)
         if self.has_package and not current_center.is_full():
             log.info("Current station (left=%s) has no package but robot does. Put down!" %current_center.is_left())
+            log.info([str(e) for e in self.station_queue])
             self.put_down_packge()
             self.change_state(next_state)
         elif not self.has_package and current_center.is_full():
             log.info("Current station (left=%s) has package and robot does not. Pick up!" %current_center.is_left())
+            log.info([str(e) for e in self.station_queue])
             self.set_speed(0, 0)
             self.change_state(MANUAL)
         else:
-            log.info("Current station (left=%s) has no package and robot does not either. Move on." %current_center.is_left())
+            log.info("Current station (left=%s) package == robot package. Move on." %current_center.is_left())
+            log.info([str(e) for e in self.station_queue])
             self.change_state(next_state)
 
     def station_front(self):
@@ -212,12 +227,14 @@ class Gloria:
             front_obj = Station.create(front_station, package)
             log.info("Found front station with empty=%s and left=%s." %(str(front_obj.is_empty()), str(front_obj.is_left())))
             self.station_queue.append(front_obj)
+            log.info([str(e) for e in self.station_queue])
             self.change_state(STATION_BOTH)
         else:
             if not se.all_equal(front_converted):
                 left, right = self.shared["regulator"]
                 self.set_speed(left, right)
             else:
+                self.go_straight()
                 log.info("Found a crossing or break in line.")
 
     def station_both(self):
@@ -303,9 +320,8 @@ if __name__ == "__main__":
     line_cal_max = [213, 206, 232, 180, 232, 174, 237, 183, 199, 177, 178]
     line_cal_min = [75, 97, 126, 61, 147, 39, 154, 57, 80, 63, 50]
 
-    # TODO: Add better default
-    middle_cal_max = [255, 255]
-    middle_cal_min = [0, 0]
+    middle_cal_max = [250, 250]
+    middle_cal_min = [150, 150]
 
     shared_stuff = {"lineSensor" : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     "lineCalMax" : line_cal_max,
