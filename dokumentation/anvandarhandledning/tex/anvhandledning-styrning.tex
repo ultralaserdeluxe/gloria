@@ -1,31 +1,47 @@
-\section{Styrning av robot}
-\begin{enumerate}
-	\item Om anslutning har etablerats till Gloria så behöver man hitta filen mainThread.py som ligger i home directory, dvs där man hamnar när man väl har ssh:at in (se Användning av Systemet).
-	\item Kommandot för att starta systemet i Gloria är bara en rad: python mainThread.py
-	När detta kommandot körs så sätter systemet igång och Gloria lägger sig i vänteläge.
-	\item Efter att mainThread.py har startats på Gloria så startar man upp en ny terminal lokalt på datorn som Gloria ska styras ifrån och hittar Gui.py. Sedan kör man kommandot: python Gui.py
-	\item Anslut två joysticks via USB (till pc). Klargör vilken som styr motor och vilken som styr arm.
-	\item Styrning av Gloria sker som följer: 
-	\begin{itemize}
-		\item Väl inne i Gui.py, tryck på \textbf{connect arm joystick} för att ansluta joysticken som styr armen.
-		\item Samma procedur gäller för joysticken som styr motorn.
-		\item Ange Glorias statiska IP-adress (192.168.99.1) i connect-fältet och tryck på \textbf{connect}.
-		\item Motor: Joystick 1 låter användaren köra i alla riktningar. Framåt-tilt får Gloria att accelerera framåt, bakåt-tilt ger samma effekt bakåt. Vänster orsakar en vänstersväng (vänster hjulpar kör långsammare än höger) och höger fungerar på samma sätt.
-		\item Arm: Armen styrs i ett 3D-rum utifrån hur man rör Joystick 2 där gripklon är koordinaten i planet. Rörelserna beräknas automatiskt, så dessa behöver användaren inte ta hänsyn till. 
-		\item Gripklo framåt/bakåt/vänster/höger: Tilta Joysticken i önskad rikting.
-		\item Höj/Sänk Gripklon: Vrid Joysticken åt vänster/höger
-		\item Gripklo (släpp, grepp): %todo
-		
-	\end{itemize}
-	\item Knapparna i nedre vänstra hörnet på GUI gör följande:
-	\begin{itemize}
-		\item start: Startar Glorias mainloop, behöver göras innan några andra kommandon kan accepteras.
-		\item calibrate tape: Kalibrerar sensorvärdet för tejp.
-		\item calibrate floor: Kalibrerar sensorvärdet för golv.
-		\item got package: Signalerar till Gloria att man är klar med att plocka upp ett packet med Joysticken.
-		\item auto motor: Sätter motorerna i autonomt läge, vilket får Gloria att köra av sig själv givet sensordata.
-		\item auto arm: Sätter armen i autonomt läge.
-	\end{itemize}
+\section{Användning av det grafiska gränssnittet}
+
+Det grafiska gränssnittet finns där för att underlätta att läsa sensordata från gloria och sända kommandon till gloria.
+
+\begin{figure}[h!]
+	\center
 	\includegraphics[scale=0.6]{Gui.png}
-	%bild på Gui här
+	\endcenter
+	\caption{Gui. Överst visas sensordata (10), i mitten visas gloria (11), till höger visas reglerfel (12) samt errorcodes (13) och nederst visas en terminal (14).}
+\end{figure}
+
+\subsection{Initiering och översikt av gränssnittet}
+
+Väl inne i Gui.py så ser du ett antal saker på skärmen (se figur 1).
+\begin{enumerate}
+	\item Saker som behöver göras innan körning:
+	\begin{itemize}
+		\item Tryck på \textbf{connect arm joystick} för att ansluta joysticken som styr armen (markerat 1 i figur 1).
+		\item Samma procedur gäller för joysticken som styr motorn (markerat 2 i figur 1).
+		\item Ange Glorias statiska IP-adress (192.168.99.1) i connect-fältet och tryck på \textbf{connect} (markerat 3 i figur 1).
+	\end{itemize}
+	\item Knapparna i nedre vänstra hörnet på gränssnittet gör följande:
+	\begin{itemize}
+		\item start: Startar Glorias mainloop, behöver göras innan några andra kommandon kan accepteras (markerat 4 i figur 1).
+		\item calibrate tape: Kalibrerar sensorvärdet för tejp (markerat 5 i figur 1).
+		\item calibrate floor: Kalibrerar sensorvärdet för golv (markerat 6 i figur 1).
+		\item auto motor: Sätter motorerna i autonomt läge, vilket får Gloria att köra av sig själv givet sensordata (markerat 7 i figur 1).		
+		\item no package: Signalerar till gloria att man ej har ett paket längre (markerat 8 i figur 1).
+		\item got package: Signalerar till Gloria att man är klar med att plocka upp ett paket med Joysticken (markerat 9 i figur 1).
+	\end{itemize}
 \end{enumerate}
+\subsection{Styrning av Gloria via gränssnittet}
+	\begin{itemize}	
+		\item Motor: Joystick 1 låter användaren köra i alla riktningar. Framåt-tilt får Gloria att accelerera framåt, bakåt-tilt ger samma effekt bakåt. Vänster orsakar en vänstersväng (vänster hjulpar kör långsammare än höger) och höger fungerar på samma sätt.
+		\item Arm: Armen (Gripklon) styrs i ett 3D-rum utifrån hur man rör Joystick 2 där gripklon är koordinaten i planet. Rörelserna beräknas automatiskt, så dessa behöver användaren inte ta hänsyn till. 
+		\item Gripklo framåt/bakåt/vänster/höger: Tilta Joysticken i önskad rikting.
+		\item Höj/Sänk Gripklon: Vrid Joysticken åt vänster/höger.
+		\item Rotera vristen: Högra spaken bak tiltas från 0 till 1.
+		\item Gripklo (släpp, grepp): Vänster knapp på framsidan av Joysticken regleras från T1 till T2, där T1 innebär att gripklon öppnar sig och T2 att den stänger sig.
+	\end{itemize}
+\subsection{Kalibrering av golv- och tejpsensorvärden}
+	För att Gloria ska kunna köra autonomt längs en bana krävs det att sensorerna har vissa värden för bana (tejp), så att Gloria vet när den börjar hamna utanför banan (golv). För att kunna supporta olika typer av banor så har vi möjligheten att kalibrera sensorvärden.
+\begin{itemize}
+	\item Kalibrering av tejp sker genom att man placerar Gloria över tejpen som den ska följa och trycker på \textbf{calibrate tape} i gränsnittet (markerat 5 i figur 1). Värdet som sensorvärdena får då sparas som tejp i Gloria.
+	\item Kalibrering av golv sker genom att man placerar Gloria över golv och trycker på \textbf{calibrate floor} i gränssnittet (markerat 6 i figur 1). Värdet som sensorvärdena får då sparas som golv i Gloria.
+\end{itemize}
+För att garantera att Gloria ska fungera enligt specifikationerna så krävs det att banreglerna som visas i Appendix A följs.
