@@ -162,6 +162,6 @@ if __name__ == "__main__":
     regulator.daemon=True
     regulator.start()
 
-    log.basicConfig(level=log.DEBUG)
+    log.basicConfig(level=log.INFO)
     gloria = Gloria(shared_stuff, cmd_queue)
     gloria.run()

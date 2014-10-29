@@ -51,24 +51,29 @@ class Regulator(threading.Thread):
     def getSensorValues(self):
         return self.__sensorList["lineSensor"]
 
-    def normalize(self, value, minimum, maximum):
-        return float(value - minimum) / (maximum - minimum)
+    # def normalize(self, value, minimum, maximum):
+    #     return float(value - minimum) / (maximum - minimum)
 
-    def normalize_sensor_values(self, values, calibration_data):
-        norm_values = []
+    # def normalize_sensor_values(self, values, calibration_data):
+    #     norm_values = []
 
-        for i in range(len(values)):
-            minimum = calibration_data[i][0]
-            maximum = calibration_data[i][1]
-            norm_values.append(self.normalize(values[i], minimum, maximum))
+    #     for i in range(len(values)):
+    #         minimum = calibration_data[i][0]
+    #         maximum = calibration_data[i][1]
+    #         norm_values.append(self.normalize(values[i], minimum, maximum))
 
-        return norm_values
+    #     return norm_values
 
     def calc_position(self, norm_values):
         weights = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
+        norm_sum = sum(norm_values)
+
+        if norm_sum == 0:
+            return 6
+
         # From TSEA29 lecture 5 (AVR, sensorer, Beagleboard)
-        center = sum(map(lambda x, y: x*y, norm_values, weights)) / sum(norm_values)
+        center = sum(map(lambda x, y: x*y, norm_values, weights)) / norm_sum
 
         return center
         
@@ -78,7 +83,8 @@ class Regulator(threading.Thread):
 
     def get_current_error(self):
         sensor_values = self.getSensorValues()
-        norm_values = self.normalize_sensor_values(sensor_values, self.calibration_data)
+        #norm_values = self.normalize_sensor_values(sensor_values, self.calibration_data)
+        norm_values = sensor_values
         position = self.calc_position(norm_values)
         error = self.calc_error(position)
         
