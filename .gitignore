@@ -35,3 +35,9 @@
 
 # Eagle backup files
 *.s#?
+
+# Emacs backup files
+*.*~
+
+# meld/merging files
+*.orig

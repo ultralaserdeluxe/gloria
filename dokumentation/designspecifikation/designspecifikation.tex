@@ -4,7 +4,7 @@
 
 % Information nödvändig för generella layout-strukturer
 \newcommand{\LIPSredaktor}{Hannes Snögren}
-\newcommand{\LIPSversion}{0.1}
+\newcommand{\LIPSversion}{0.2}
 \newcommand{\LIPSdokument}{Designspecifikation}
 \newcommand{\LIPSdokumenttyp}{Designspecifikation}
 \newcommand{\LIPSgranskatdatum}{}
@@ -28,6 +28,9 @@
 \usepackage{tikz}
 \usepackage{mathtools}
 \usetikzlibrary{shapes, arrows}
+\usepackage[nottoc]{tocbibind}
+\usepackage[hidelinks]{hyperref}
+\usepackage{float}
 
 \pagenumbering{roman}
 
@@ -52,7 +55,8 @@
 \newpage
 
 \begin{LIPSdokumenthistorik}
-\LIPSversionsinfo{0.1}{}{}{}{}
+\LIPSversionsinfo{0.1}{2014-10-13}{Första utkast}{hansn314}{}
+\LIPSversionsinfo{0.2}{2014-10-28}{Andra utkast}{hansn314}{}
 \end{LIPSdokumenthistorik}
 
 \newpage
@@ -65,16 +69,27 @@
 
 \input{designspecifikation-protokoll}
 
+\input{designspecifikation-PC}
+
 \input{designspecifikation-huvudmodul}
 
 \input{designspecifikation-sensorenhet}
 
 \input{designspecifikation-motormodul}
 
+% Referenser
+\newpage
+\input{designspecifikation-referenser}
+
 \newpage
 \begin{appendices}
 
 % Bilagor
+
+\input{designspecifikation-kopplingsschema-sensorenhet}
+
+\newpage
+\input{designspecifikation-kopplingsschema-styrenhet}
 
 \end{appendices}
 

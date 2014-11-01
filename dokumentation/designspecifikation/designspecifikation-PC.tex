@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 	\documentclass[10pt,a4paper]{article}
 \usepackage[latin1]{inputenc}
 \usepackage[english]{babel}
@@ -16,3 +17,24 @@
 
 	
 %\end{document}
+=======
+\section{PC-enhet}
+Programvaran på PC-enheten delas in i två komponenter, ett grafiskt gränssnitt som användaren interagerar med och en samling procedurer som det grafiska gränssnittet använder för att kommunicera med roboten. 
+
+\subsection{libgloria}
+libgloria är en Python-modul som kan importeras av andra program för att möjliggöra kommunikation med huvudenheten i Gloria-systemet. Vid initiering av modulen upprättas en Blåtands-förbindelse mellan PC-enheten och huvudenheten. Blåtandsförbindelsen sker över TCP via sockets. Efter detta kan modulens funktioner användas för att skicka kommandon till roboten. Formatet på kommandon beskrivs i avsnitt \ref{designspec:protokoll}.
+
+\subsection{GUI}
+Det grafiska gränssnittet ska skrivas i Python med hjälp av mjukvarubiblioteket Tkinter. Gränssnittet ska visa robotens nuvarande status, så som motorhastighet, sensorvärden och armens position. Det ska även innehålla reglage för att välja mellan autonomt och manuellt läge samt för att styra robotens arm och motorer. Gränssnittet ska innehålla så lite logik som möjligt och bara vara ett tunt lager ovanpå libgloria.
+
+\begin{figure}[h]
+  \centerline{\scalebox{0.8}{\input{PCflowchart}}}
+  \caption{Flödesschema över mjukvaran på PC-enheten}
+\end{figure}
+
+\subsection{Komponenter}
+\begin{itemize}
+\item En PC med Python 3 installerat
+\item En Blåtandsdongel
+\end{itemize}
+>>>>>>> 33c75631abaa59d03cfd117ab55be024bc54101e
