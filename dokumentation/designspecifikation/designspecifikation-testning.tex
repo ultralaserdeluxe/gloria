@@ -1,0 +1,11 @@
+\section{Testning av system}
+Tre typer av test kommer att utföras för att försäkra oss om att systemet fungerar som planerat.
+
+\subsection{Test av delsystem}
+Varje delsystem kommer att testas för sig, för att se till att de utför de funktioner vi önskar. Styrmodulen och sensormodulen kommer att testas med hjälp av en JTAG Ice 3. Huvudmodulen har liksom PC-enheten ett ordentligt oprerativsystem installerat, vilket gör att vi kan använda en skärm eller ssh och köra testprogram direkt på enheten. 
+
+\subsection{Test av kommunikationskanaler}
+Varje delsystem kommunicerar med minst en annan enhet. Test utförs för kommunikationen mellan varje par av delsystem. 
+
+\subsection{Integrationstest}
+Integrationstest kommer att utföras i två steg. Först utförs ett test av samtliga system exkluderat PC-enheten. Det vill säga styra motorer, servon och läsa sensordata från huvudmodulen. I sista steget utförs ett fullt integrationstest då roboten styrs från en extern PC.
