@@ -41,3 +41,10 @@
 
 # meld/merging files
 *.orig
+
+# Atmel Studio files
+*.cproj
+*.atsuo
+*.atsln
+src/styrenhet/Debug/
+src/sensorenhet/Debug
