@@ -1,0 +1,88 @@
+\documentclass[titlepage, a4paper]{article}
+
+\usepackage{listings}             % Include the listings-package
+
+\newcommand{\LIPSdokumenttyp}{Kodstandard}
+\newcommand{\LIPSkursnamn}{TSEA29}
+\newcommand{\LIPSprojektnamn}{Lagerrobot}
+\newcommand{\LIPSprojektgrupp}{Grupp 2}
+\newcommand{\LIPSutfardare}{hansn314}	% Vem utfärdar statusrapporten?
+\newcommand{\LIPSlogga}{mall/Logga1.png}
+
+\input{mall/layout.tex}	% Importera generella layout-strukturer
+
+\pagenumbering{roman}	% Sidnumrering
+
+\begin{document}
+{\ }\vspace{5mm}
+
+\centerline{\textbf{\Huge Kodstandard för $C$}}
+\vspace{2mm}
+
+\centerline{\LARGE anno 2014} % MALL = Dagens datum YYYY-MM-DD
+\vspace{5mm}
+
+\section{Bakgrund}
+Då yngve drömmer mardrömmar om fula kodfiler och projektet i TSEA29 innebär att många ska jobba på samma C-filer är en gemensam kodstandard nödvändig.
+
+\section{Funktionsnamn}
+Funktionsnamn skrivs med gemener, understreck separerar orden. Funktionsnamnen skall vara kompletta, inga onödiga förkortningar. T.ex $SPI\_handler()$ är okej, $usr\_cnt()$ är det inte. \\
+Mellanslag mellan funktionsnamnet och dess parametrar existerar inte, utan används endast mellan parametrar såsom det andra exemplet visar.
+
+\begin{lstlisting}
+char convert_int_to_hex(int int_value)
+int multiply(int first_number, int second_number)
+\end{lstlisting}
+
+\section{Variabelnamn}
+Variabelnamn följer samma regler som funktionsnamn, med tillägget att konstanter skrivs med versaler. Om globala variabler nödvändigtvis måste användas, följer de samma regler som vanliga variabler.
+
+\begin{lstlisting}
+int list_length;
+int STANDARD_SPEED;
+\end{lstlisting}
+
+\section{Kommentarer}
+Alla kommentarer skall vara på engelska. I varje fil skall det finnas en header enligt följande.
+
+\begin{lstlisting}
+/*
+ * filename.c
+ *
+ * Created: 2014-11-05
+ * Description: Blablablalalsdlsdklk
+ * 		blablabla
+ */
+\end{lstlisting}
+
+På raden ovanför funktionsdeklarationen skall syftet med funktionen förklaras, koden skall inte upprepas.
+
+\begin{lstlisting}
+/* Returns the length of a given word */
+int word_length(unsigned char word)
+\end{lstlisting}
+
+Om kod finns mitt i koden, skall det vara på raden ovanför den gällande kodraden. I det fall att kodraden innehåller tal i hexadecimal eller binär form, må betydelsen av dessa värden skrivas på samma rad.
+
+\begin{lstlisting}
+/* Send command */
+spi_transmit(0xFE); // Address all servos
+
+\end{lstlisting}
+
+\section{Kodstruktur}
+Mellan slutet av en funktion, och början på nästa skall det vara två tomrader. Om kod struktureras internt i en funktion, separeras delar av en tomrad. Med fördel används även kommentarer för att förklara delmomenten i detta fall. \\
+Indentering skall användas. En tab är 4 tecken lång. Notera att tab skall användas, inte mellanslag. Måsvingar skrivs på ny rad. Om en loop kan skrivas på en rad, kan den göras det. Då görs den så med mellanslag efter loopen och utan måsvingar.
+
+\begin{lstlisting}
+int foo()
+{
+    while(1)
+    {
+        /* Code here */
+    }
+    while(1) dosomething();
+}
+\end{lstlisting}
+
+\end{document}
