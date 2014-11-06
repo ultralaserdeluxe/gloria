@@ -19,10 +19,12 @@
 % Enkelt kommando som låter mig attgöra-markera text
 \newcommand{\todo}[1] {\textbf{\textcolor{red}{#1}}}
 
+\providecommand{\LIPSlogga}{../mall/Logga1.png}
+
 %% Headers och Footers
 \usepackage{fancyhdr}
 \pagestyle{fancy}
-\lhead{\includegraphics[scale=0.12]{../mall/Logga1.png}}
+\lhead{\includegraphics[scale=0.12]{\LIPSlogga}}
 \rhead{\ifdef{\LIPSutfardare}{Utfärdat av \LIPSutfardare \\\today}\today}
 \lfoot{\LIPSkursnamn \\ \LIPSdokumenttyp}
 \cfoot{\thepage}
