@@ -175,7 +175,7 @@
 
 \newcounter{paragrafnummer}
 \addtocounter{paragrafnummer}{1}
-\newcommand{\paragraf}[1]{\item{\textsection \arabic{paragrafnummer}. {#1}}}
+\newcommand{\paragraf}[1]{\item{\textsection \arabic{paragrafnummer}. {#1}}\addtocounter{paragrafnummer}{1}}
 
 % Mall för Statusrapport
 \newenvironment{statusrapport}{

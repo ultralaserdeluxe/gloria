@@ -1,0 +1,56 @@
+\documentclass[titlepage, a4paper]{article}
+\input{../mall/layout.tex}	% Importera generella layout-strukturer
+
+\newcommand{\LIPSdokumenttyp}{Mötesprotokoll}
+\newcommand{\LIPSkursnamn}{TSEA29}
+\newcommand{\LIPSprojektnamn}{Lagerrobot}
+\newcommand{\LIPSprojektgrupp}{Grupp 2}
+\newcommand{\LIPSutfardare}{hansn314} % Vem har utfärdat protokollet?
+
+\pagenumbering{roman}	% Sidnumrering
+
+\begin{document}
+
+\begin{projektmote}{Mötesprotokoll}{2014-11-05}
+% ------------ PARAGRAFER ----------------------
+% Syntax \paragraf{Vi bestämde och kom överens}
+% ----------------------------------------------
+\paragraf{Mötet öppnas i smyg.}
+\paragraf{Ska prata med peter ang. anslutning motorer. Sladd + kontakt.}
+\paragraf{Minsta enhet tid att rapportera är 1h.}
+\paragraf{Vi ska försöka vara två ansvariga på utvecklings-relaterade aktiviteter.}
+\paragraf{Vi går igenom aktiviteter för nästa vecka.}
+\paragraf{Alla vet vad de ska göra nu och nästa vecka}
+\paragraf{Mötet avslutas.}
+\end{projektmote}
+
+% \vspace{15mm}
+% \begin{description}
+% \item[Justerat av]
+% \item[Namnförtydligande] \Large{Alexander Yngve} % Justerare
+% \end{description}
+
+\newpage
+\textbf{\Large Aktuella aktiviteter}
+\begin{center}
+\begin{tabularx}{\textwidth}{| p{4mm} | X | p{13.5mm} | X |}
+	\hline
+	\textbf{Nr} & \textbf{Aktivitet} & \textbf{Ansvar} & \textbf{Status} \\\hline	
+% ------------ Aktuella aktiviteter ------------
+% Syntax {Nr} & {Aktivitet} & {Ansvarig} & {Status} \\\hline
+% ----------------------------------------------
+	{1} & {Implementera buss mellan huvud och styr} & {AY, DL} & {Ej påbörjad} \\\hline
+	{2} & {Koppla ihop huvud och styr} & {AY} & {Ej påbörjad} \\\hline
+	{3} & {Implementera buss mellan huvud och sensor} & {DL, HS} & {Ej påbörjad} \\\hline
+	{4} & {Koppla ihop huvud och sensor} & {AY} & {Ej påbörjad} \\\hline
+	{5} & {Sätta upp utvecklingsmiljö för AVR} & {MS} & {Klar} \\\hline
+	{6} & {Installera mjukvara på huvud} & {MS, PK} & {Klar} \\\hline
+	{7} & {Python-modul för att skicka/ta emot data från huvud} & {DW} & {Påbörjad} \\\hline
+	{8} & {Koppla in linjesensorn på sensorenheten} & {AY, PK} & {Påbörjad} \\\hline
+	{9} & {Koppla in IR-sensor på sensorenheten} & {AY} & {Klar} \\\hline
+	{10} & {Koppla in motorer på styr} & {AY, PK} & {Ej påbörjad} \\\hline
+	{11} & {Koppla in servon på styr} & {AY, PK} & {Ej påbörjad} \\\hline
+\end{tabularx}
+\end{center}
+
+\end{document}
