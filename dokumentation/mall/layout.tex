@@ -20,12 +20,13 @@
 \newcommand{\todo}[1] {\textbf{\textcolor{red}{#1}}}
 
 \providecommand{\LIPSlogga}{../mall/Logga1.png}
+\providecommand{\LIPSdatum}{\today}
 
 %% Headers och Footers
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \lhead{\includegraphics[scale=0.12]{\LIPSlogga}}
-\rhead{\ifdef{\LIPSutfardare}{Utfärdat av \LIPSutfardare \\\today}\today}
+\rhead{\ifdef{\LIPSutfardare}{Utfärdat av \LIPSutfardare \\\LIPSdatum}\LIPSdatum}
 \lfoot{\LIPSkursnamn \\ \LIPSdokumenttyp}
 \cfoot{\thepage}
 \rfoot{\LIPSprojektgrupp \\ \LIPSprojektnamn}
