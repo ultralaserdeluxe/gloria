@@ -1,0 +1,63 @@
+\documentclass[titlepage, a4paper]{article}
+\input{../mall/layout.tex}	% Importera generella layout-strukturer
+
+\newcommand{\LIPSdokumenttyp}{Mötesprotokoll}
+\newcommand{\LIPSkursnamn}{TSEA29}
+\newcommand{\LIPSprojektnamn}{Lagerrobot}
+\newcommand{\LIPSprojektgrupp}{Grupp 2}
+\newcommand{\LIPSutfardare}{hansn314} % Vem har utfärdat protokollet?
+
+\pagenumbering{roman}	% Sidnumrering
+
+\begin{document}
+
+\begin{projektmote}{Mötesprotokoll}{2014-11-07}
+% ------------ PARAGRAFER ----------------------
+% Syntax \paragraf{Vi bestämde och kom överens}
+% ----------------------------------------------
+\paragraf{Mötet öppnas.}
+\paragraf{Närvarande: Hannes Snögren, Pål Kastman, Martin Söderén, Daniel Wassing.}
+\paragraf{Hannes för protokoll.}
+\paragraf{Statusrapport:
+\begin{itemize}
+\item{\textbf{Daniel} Ligger bra till med Pythonmodul. Har funderingar angående aktivitet 'Tejpa testbanor'.}
+\item{\textbf{Martin} BT dör om belastad, kan bli försenad till nästa vecka. GPIO-pinnar på BB fungerar ej. I övrigt väl i fas.}
+\item{\textbf{Pål} Svårt att jobba flera samtidigt på BB, har försökt hjälpa till där möjligt.}
+\item{\textbf{Hannes} Ligger bra till. Implementation av SPI nästan klart. Implementerat UART till servon. Servon kan blinka, men inte köras.}
+\end{itemize}
+}
+\paragraf{Föreslaget att utöka protokoll mellan styr-huvudenhet med en statusförfrågan. Kan ersätta busy-pinne.}
+\paragraf{Pål har haft ett kort möte med Peter.
+\begin{itemize}
+\item{Designspec behöver inte skickas in. Förändringar är främst för vår egen skull.}
+\item{Vi kan överväga att göra kretskort. Vi slipper vira om till ett virkort. LiU betalar.}
+\end{itemize}
+}
+\paragraf{Nästa möte måndag för planering. Skall omplanera tidsplanen, om vi ligger före. Skall se över vem som skall göra vad.}
+\paragraf{Mötet avslutas.}
+\end{projektmote}
+
+\newpage
+\textbf{\Large Aktuella aktiviteter}
+\begin{center}
+\begin{tabularx}{\textwidth}{| p{4mm} | X | p{13.5mm} | X |}
+	\hline
+	\textbf{Nr} & \textbf{Aktivitet} & \textbf{Ansvar} & \textbf{Status} \\\hline	
+% ------------ Aktuella aktiviteter ------------
+% Syntax {Nr} & {Aktivitet} & {Ansvarig} & {Status} \\\hline
+% ----------------------------------------------
+	{1} & {Implementera buss mellan huvud och styr} & {AY, DL} & {Påbörjad, ej testat skicka från AVR} \\\hline
+	{2} & {Koppla ihop huvud och styr} & {AY} & {Klar} \\\hline
+	{3} & {Implementera buss mellan huvud och sensor} & {DL, HS} & {Påbörjad, ej testat skicka från AVR} \\\hline
+	{4} & {Koppla ihop huvud och sensor} & {AY} & {Påbörjad} \\\hline
+	{7} & {Python-modul för att skicka/ta emot data från huvud} & {DW} & {Påbörjad, nästan klart} \\\hline
+	{8} & {Koppla in linjesensorn på sensorenheten} & {AY, PK} & {Klar} \\\hline
+	{10} & {Koppla in motorer på styr} & {AY, PK} & {Klar} \\\hline
+	{11} & {Koppla in servon på styr} & {AY, PK} & {Klar} \\\hline
+	{12} & {Upprätta BT förbindelse mellan huvud och PC} & {MS} & {Påbörjad, finns men är instabil} \\\hline
+	{13} & {Sätta upp utvecklingsmiljö för Beagleboard (wifi)} & {MS} & {Klar} \\\hline
+	{17} & {Implementera styrning av servon} & {HS} & {Påbörjad, UART fungerar} \\\hline
+\end{tabularx}
+\end{center}
+
+\end{document}
