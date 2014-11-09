@@ -12,77 +12,70 @@
 #include "spi.h"
 #include "usart.h"
 #include "command_queue.h"
+#include "armlib.h"
 
 /* Global queue of received commands */
 queue_t *my_queue;
 
-
+uint8_t make_checksum(uint8_t ID, uint8_t length, uint8_t instr, uint8_t para)
+{
+	return ~(ID + length + instr + para);
+}
 
 int main(void)
 {
-	my_queue = new_queue();
+	//my_queue = new_queue();
 	
 	/* port a = output */
-	DDRA = 0xFF;
+	//DDRA = 0xFF;
+	DDRC = 0xFF; //PORTC as output
 		
 	/* Init SPI and enable global interrupts */
-	spi_slave_init();
-	sei();
+	//spi_slave_init();
+	//sei();
 		
 	/* Set baud to clk/16 => 1Mbps */
 	usart_init();
+	uint8_t ID = 0x01;
+	uint8_t length = 0x02;
+	uint8_t instr = 0x01;
+	uint8_t para = 0x00;
+	//uint8_t test;
+	PORTC = usart_receive();
 
 	while(1) 
 		{
-		/* Set move speed */
-		_delay_ms(1000);
-		usart_transmit(0xFF);
-		_delay_ms(1);
-		usart_transmit(0xFF);
-		_delay_ms(1);
-		usart_transmit(0x07); //ID
-		_delay_ms(1);
-		usart_transmit(0x04); //Length
-		_delay_ms(1);
-		usart_transmit(0x04); //INstruction
-		_delay_ms(1);
-		usart_transmit(0x21); //Set speed
-		_delay_ms(1);
-		usart_transmit(0x00); //Max
-		_delay_ms(1);
-		usart_transmit(0xCF);	//checksum	
-
-		/* Set goal position */
-		_delay_ms(5);
-		usart_transmit(0xFF);
-		_delay_ms(1);
-		usart_transmit(0xFF);
-		_delay_ms(1);
-		usart_transmit(0x07); //ID
-		_delay_ms(1);
-		usart_transmit(0x04); //Length
-		_delay_ms(1);
-		usart_transmit(0x04); //Instruction
-		_delay_ms(1);
-		usart_transmit(0x1E);	//Address
-		_delay_ms(1);
-		usart_transmit(0xFF);	//Data
-		_delay_ms(1);
-		usart_transmit(0xD3);
-
-		/* Action */
-		_delay_ms(5);
-		usart_transmit(0xFF);
-		_delay_ms(1);
-		usart_transmit(0xFF);
-		_delay_ms(1);
-		usart_transmit(0xFE); //ID
-		_delay_ms(1);
-		usart_transmit(0x03); //Length
-		_delay_ms(1);
-		usart_transmit(0x05); //Instruction
-		_delay_ms(1);
-		usart_transmit(0xF9);
+			for (uint8_t i = 0; i < 50; i++)
+			{
+				/* read memoryplace i from servo ID 
+					Put on PORTC for debug */
+				_delay_ms(100);
+				usart_transmit(0xFF);
+				_delay_ms(1);
+				usart_transmit(0xFF);
+				_delay_ms(1);
+				usart_transmit(ID); //ID
+				_delay_ms(1);
+				usart_transmit(length); //Length
+				_delay_ms(1);
+				usart_transmit(instr); //INstruction
+				_delay_ms(1);
+				//usart_transmit(i); //Address
+				//_delay_ms(1);
+				//usart_transmit(0x01); //Length
+				//_delay_ms(1);
+				usart_transmit(make_checksum(ID, length, instr, 0));	//checksum
+				
+			/*	PORTC = usart_receive();
+				PORTC = usart_receive();
+				PORTC = usart_receive();
+				PORTC = usart_receive();
+				PORTC = usart_receive();
+				PORTC = usart_receive();
+				PORTC = usart_receive();
+				PORTC = usart_receive(); */
+				
+			}
 	};
 }
 
@@ -91,4 +84,12 @@ void spi_recieve_handler(unsigned int data)
 	/* Take data, put in current command. Create new if current is done.
 		Perform actions if action command */
 	PORTA = SPDR;
+}
+
+arm_instruction_t* recieve_arm_status()
+{
+	while(1)
+	{
+		
+	}
 }

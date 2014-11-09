@@ -161,7 +161,7 @@ int set_command(command_struct_t *command, int chooser, int data)
 			return command->status;
 		default:
 			/* Invalid call */
-			return NULL;
+			return -1;
 	}
 }
 
