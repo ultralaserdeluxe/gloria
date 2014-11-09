@@ -2,9 +2,8 @@
  * styrenhet.c
  *
  * Created: 2014-11-04 15:44:45
- *  Author: Hannes
+ * Description: Software for our sensorunit
  */ 
-
 
 #define F_CPU 16000000UL
 #include <avr/io.h>
@@ -12,6 +11,7 @@
 #include <util/delay.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include "spi.h"
 
 typedef struct sensor_data
 {
@@ -44,7 +44,8 @@ int main(void)
 {
 	sensors = malloc(sizeof(sensor_data_t));
 	
-	DDRB = 0xFF;			// Configure PortB as output
+	/* Configure ADC */
+	//DDRB = 0xFF;			// Configure PortB as output
 	DDRA = 0xF0;			// Configure PortA as input
 							// PA0 is ADC0 input
 	
@@ -53,10 +54,13 @@ int main(void)
 	ADMUX = 0x63;			// Select internal 2.56V as Vref, left justify
 							// data registers and select ADC0 as input channel
 	
-	sei();				// Enable Global Interrupts
-	//ADCSRA |= 1<<ADSC;		// Start Conversion
+	/* Configure SPI */
+	spi_slave_init();
 	
-	int result[8];
+	/* Enable interrupts */
+	sei();
+	
+	//int result[8]; //DEBUG
 	
     while(1)
 	{
@@ -77,7 +81,7 @@ int main(void)
 		_delay_ms(10);
 		
 		/* DEBUG translate values (0-5 of line) to bools and put on PORTB */
-		for (int i = 0; i < 6; i++)
+		/*for (int i = 0; i < 6; i++)
 		{
 			if (sensors->line[i] > 0x80)
 			{
@@ -96,5 +100,49 @@ int main(void)
 		else result[7] = 0;
 		
 		PORTB = (result[0]<<PORTB0)|(result[1]<<PORTB1)|(result[2]<<PORTB2)|(result[3]<<PORTB3)|(result[4]<<PORTB4)|(result[5]<<PORTB5)|(result[6]<<PORTB6)|(result[7]<<PORTB7);
+		*/
+	}
+}
+
+/* UNTESTED */
+void spi_recieve_handler(unsigned int data)
+{
+	switch(data>>4)
+	{
+	case 0:
+		/* Return requested data */
+		switch(data & 0x0F)
+		{
+		case 0:
+			for (int i = 0; i < 11; i++)
+			{
+				spi_slave_transmit(sensors->line[i]);
+			}
+			break;
+		case 2:
+			spi_slave_transmit(sensors->distance[0]);
+			break;
+		case 3:
+			spi_slave_transmit(sensors->distance[1]);
+			break;
+		case 15:
+			for (int i = 0; i < 11; i++)
+			{
+				spi_slave_transmit(sensors->line[i]);
+			}
+			spi_slave_transmit(sensors->distance[0]);
+			spi_slave_transmit(sensors->distance[1]);
+			break;
+		default:
+			break;
+		}
+	case 1:
+		/* Calibrate sensor */
+		break;
+	case 0xFF:
+		/* Transmit slave data */
+		break;
+	default:
+		break;
 	}
 }
