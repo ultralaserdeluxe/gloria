@@ -8,6 +8,10 @@
 #ifndef ARMLIB_H_
 #define ARMLIB_H_
 
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdlib.h>
+
 typedef struct servo_data
 {
 	unsigned int speed;
@@ -25,14 +29,14 @@ typedef struct arm_data
 typedef struct parameter
 {
 	unsigned int current_parameter;
-	parameter *next;
+	struct parameter *next;
 } parameter_t;
 
 typedef struct arm_instruction
 {
 	unsigned int address;
 	unsigned int instruction;
-	parameter *parameters;
+	parameter_t *parameters;
 	/* Number of parameters */
 	int length;
 } arm_instruction_t;

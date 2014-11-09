@@ -5,11 +5,15 @@
  * Description: Functions for the arm
  */ 
 
+
+#include "armlib.h"
+
+
 arm_data_t* new_arm_data(int number_of_servos)
 {
-	arm_data_t *this = malloc(arm_data_t);
+	arm_data_t *this = malloc(sizeof(arm_data_t));
 	this->length = number_of_servos;
-	this->s = malloc(number_of_servos * sizeof(servo_data_t))
+	this->s = malloc(number_of_servos * sizeof(servo_data_t));
 	return this;
 }
 
@@ -21,55 +25,55 @@ void free_arm_data(arm_data_t *arm)
 
 void set_servo_speed(arm_data_t *arm, int servo, unsigned int new_speed)
 {
-	servo_data_t array = *(arm->s);
+	servo_data_t *array = arm->s;
 	array[servo].speed = new_speed;
 }
 
 void set_servo_position(arm_data_t *arm, int servo, unsigned int new_position)
 {
-	servo_data_t array = *(arm->s);
+	servo_data_t *array = arm->s;
 	array[servo].position = new_position;
 }
 
 int get_servo_speed(arm_data_t *arm, int servo)
 {
-	servo_data_t array = *(arm->s);
+	servo_data_t *array = arm->s;
 	return array[servo].speed;
 }
 
 int get_servo_position(arm_data_t *arm, int servo)
 {
-	servo_data_t array = *(arm->s);
+	servo_data_t *array = arm->s;
 	return array[servo].position;
 }
 
 void set_servo_goal_speed(arm_data_t *arm, int servo, unsigned int new_speed)
 {
-	servo_data_t array = *(arm->s);
+	servo_data_t *array = arm->s;
 	array[servo].goal_speed = new_speed;
 }
 
 void set_servo_goal_position(arm_data_t *arm, int servo, unsigned int new_position)
 {
-	servo_data_t array = *(arm->s);
+	servo_data_t *array = arm->s;
 	array[servo].goal_position = new_position;
 }
 
 int get_servo_goal_speed(arm_data_t *arm, int servo)
 {
-	servo_data_t array = *(arm->s);
-	return array[servo].goal_speed
+	servo_data_t *array = arm->s;
+	return array[servo].goal_speed;
 }
 
 int get_servo_goal_position(arm_data_t *arm, int servo)
 {
-	servo_data_t array = *(arm->s);
+	servo_data_t *array = arm->s;
 	return array[servo].goal_position;
 }
 
 arm_instruction_t* create_instruction()
 {
-	arm_instruction_t *this = malloc(arm_instruction_t);
+	arm_instruction_t *this = malloc(sizeof(arm_instruction_t));
 	this->length = 0;
 	return this;
 }
@@ -110,7 +114,7 @@ parameter_t* next_parameter(parameter_t *p)
 
 parameter_t* create_parameter(unsigned int new_parameter)
 {
-	parameter_t *this = malloc(parameter_t);
+	parameter_t *this = malloc(sizeof(parameter_t));
 	this->current_parameter = new_parameter;
 	return this;
 }

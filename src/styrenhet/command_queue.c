@@ -5,10 +5,12 @@
  * Description: Datatype queue, meant to store commands
  */ 
 
+#include "command_queue.h"
+
 /* Create a new queue, with one empty entry */
 queue_t* new_queue()
 {
-	queue_t *this = malloc(queue_t);
+	queue_t *this = malloc(sizeof(queue_t));
 	this->head = NULL;
 	this->last = NULL;
 	return this;
@@ -42,7 +44,7 @@ void put_queue(queue_t *q, queue_node_t *node)
 }
 
 /* Remove and return first entry */
-queue_node_t pop_first(queue_t *q)
+queue_node_t* pop_first(queue_t *q)
 {
 	queue_node_t *node = q->head;
 	q->head = node->next;
@@ -83,24 +85,24 @@ void remove_node(queue_t *q, queue_node_t *node)
 	}
 }
 
-bool empty_queue(queue_t this)
+bool empty_queue(queue_t *this)
 {
 	if (this->head == NULL)
 	{
-		return TRUE;
+		return true;
 	}
 	else
 	{
-		return FALSE;
+		return false;
 	}
 }
 
-queue_node_t* first_node(queue_t this)
+queue_node_t* first_node(queue_t *this)
 {
 	return this->head;
 }
 
-queue_node_t* last_node(queue_t this)
+queue_node_t* last_node(queue_t *this)
 {
 	return this->last;
 }
@@ -114,7 +116,7 @@ queue_node_t* next_node(queue_node_t *node)
 queue_node_t* new_node()
 {
 	queue_node_t *this;
-	this = malloc(queue_node_t);
+	this = malloc(sizeof(queue_node_t));
 	this->command = new_command();
 	return this;
 }
@@ -122,7 +124,7 @@ queue_node_t* new_node()
 /* Frees node and returns pointer to next node */
 queue_node_t* free_node(queue_node_t* this)
 {
-	queue_node_t *next_node = this->next_node;
+	queue_node_t *next_node = this->next;
 	free(this->command);
 	free(this);
 	return next_node;
@@ -141,22 +143,22 @@ int set_node_command(queue_node_t *node, int chooser, int data)
 
 /* Sets a part of command command, chosen with chooser to data. 
 	Returns updated status */
-int set_command(command_struct_t command, int chooser, int data)
+int set_command(command_struct_t *command, int chooser, int data)
 {
 	switch (chooser)
 	{
 		case 0 :
-			command.instruction = data;
-			command.status++;
-			return command.status;
+			command->instruction = data;
+			command->status++;
+			return command->status;
 		case 1 :
-			command.data_1 = data;
-			command.status++
-			return command.status;
+			command->data_1 = data;
+			command->status++;
+			return command->status;
 		case 2 :
-			command.data_2 = data;
-			command.status++
-			return command.status;
+			command->data_2 = data;
+			command->status++;
+			return command->status;
 		default:
 			/* Invalid call */
 			return NULL;
@@ -164,10 +166,10 @@ int set_command(command_struct_t command, int chooser, int data)
 }
 
 /* Returns a new command struct with status = 0, others null */
-command_struct_t new_command()
+command_struct_t* new_command()
 {
 	command_struct_t *this;
-	this = malloc(command_struct_t);
+	this = malloc(sizeof(command_struct_t));
 	this->status = 0;
 	return this;
 }
