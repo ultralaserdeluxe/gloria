@@ -1,0 +1,52 @@
+\documentclass[titlepage, a4paper]{article}
+\input{../mall/layout.tex}	% Importera generella layout-strukturer
+
+\newcommand{\LIPSdokumenttyp}{Mötesprotokoll}
+\newcommand{\LIPSkursnamn}{TSEA29}
+\newcommand{\LIPSprojektnamn}{Lagerrobot}
+\newcommand{\LIPSprojektgrupp}{Grupp 2}
+\newcommand{\LIPSutfardare}{hansn314} % Vem har utfärdat protokollet?
+
+\pagenumbering{roman}	% Sidnumrering
+
+\begin{document}
+
+\begin{projektmote}{Mötesprotokoll}{2014-11-10}
+% ------------ PARAGRAFER ----------------------
+% Syntax \paragraf{Vi bestämde och kom överens}
+% ----------------------------------------------
+\paragraf{Mötet öppnas.}
+\paragraf{Närvarande: Hannes Snögren, Pål Kastman, Martin Söderén, Daniel Wassing, Dennis Ljung, Alexander Yngve.}
+\paragraf{Hannes för protokoll.}
+\paragraf{Yngve förslår att vi ska vira om virkortet. Vi har haft glapp i styrenheten, kontakter sitter på ostrategiska ställen(sladdar för korta) och vi har fortfarande inte den fysiska bussen mellan huvud- och sensorenheterna.}
+\paragraf{Tidsplanen gås igenom.}
+\paragraf{De tre frågorna för tidsrapporten besvaras.}
+\paragraf{Mötet avslutas.}
+\end{projektmote}
+
+\newpage
+\textbf{\Large Aktuella aktiviteter}
+\begin{center}
+\begin{tabularx}{\textwidth}{| p{4mm} | X | p{13.5mm} | X |}
+	\hline
+	\textbf{Nr} & \textbf{Aktivitet} & \textbf{Ansvar} & \textbf{Status} \\\hline	
+% ------------ Aktuella aktiviteter ------------
+% Syntax {Nr} & {Aktivitet} & {Ansvarig} & {Status} \\\hline
+% ----------------------------------------------
+	{1} & {Implementera buss mellan huvud och styr} & {AY, DL} & {Påbörjad, ej testat skicka från AVR} \\\hline
+	{3} & {Implementera buss mellan huvud och sensor} & {DL, HS} & {Påbörjad, ej testat skicka från AVR} \\\hline
+	{4} & {Koppla ihop huvud och sensor} & {AY} & {Påbörjad, Yngve ska vira i natt} \\\hline
+	{7} & {Python-modul för att skicka/ta emot data från huvud} & {DW} & {Påbörjad, nästan klart} \\\hline
+	{12} & {Upprätta BT förbindelse mellan huvud och PC} & {MS} & {Klar} \\\hline
+	{16} & {Implementera styrning av motorer} & {PK, AY} & {Kan styra motorer manuellt} \\\hline
+	{17} & {Implementera styrning av servon} & {HS} & {Påbörjad, UART fungera åt ett håll. Måste ha en tri-state för kommunikation åt båda håll} \\\hline
+	{18} & {Testa och felsöka buss mellan huvud och styr} & {HS,MS} & {Ej påbörjad} \\\hline
+	{19} & {Testa och felsöka buss mellan huvud och sensor} & {HS,MS} & {Ej påbörjad} \\\hline
+	{24} & {Implementera styrlogik} & {DL} & {Ej påbörjad} \\\hline
+	{25} & {Implementera läsning av sensorer} & {HS} & {Påbörjad, behöver finslipas.} \\\hline
+	{31} & {Testa styra servon från styrenheten} & {PK} & {Ej påbörjad} \\\hline
+	{32} & {Testa styra motorer från styrenheten} & {DW} & {Kan testas mer utförligt. Testa svänga höger/vänster osv} \\\hline
+\end{tabularx}
+\end{center}
+
+\end{document}
