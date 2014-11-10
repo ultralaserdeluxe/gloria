@@ -1,0 +1,9 @@
+för linux:
+1.anslut ethernet kabel och boota upp beagle
+2. hitta ip-adress. Alt1: kör "for i in {1..254}; do ping -c 1 -W 1 10.42.0.$i; done" och titta efter en respons. Alt2: koppla in skärmen som ligger under bordet och ett tangentbord. Logga in med user:ubuntu,pass:temppwd. Skriv "ifconfig" i terminalen och kolla "inet addr" under eth0
+3. ssh ubuntu@ip-adressen
+
+kör spi:
+i huvudmappen som du hamnar i (//home/ubuntu/) så finns ett python script "python_spi.py" som borde förklara det mesta.
+
+
