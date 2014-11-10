@@ -24,15 +24,21 @@ except (socket.error, msg):
 s.listen(10) #arbitrary number for amount of queue-able connections, min 0
 
 def main(conn):
-    #may need to re-structure this...
     conn.send("Hi and Welcome to Gloria, issue your command and press ENTER.\n".encode("UTF-8"))
     while True:
-        #Recieving from PC
+        #Recieving from PC, fork depending on data
         data = conn.recv(1024).decode("ISO-8859-1") #1024 = buffer size
-        if "exit" in str(data):
+        parsed_data = str(data)
+        if "exit" in parsed_data:
             break
-        elif "status" in str(data) or "calibrate" in str(data):
+        elif "status" in parsed_data or "calibrate" in parsed_data:
             conn.send("Reply\n".encode("UTF-8")) #To be changed
+        elif "start" in parsed_data:
+            conn.send("Starting...\n".encode("UTF-8"))
+        elif "arm" in parsed_data:
+            split_data = parsed_data.split(';')
+            for elem in split_data:
+                conn.send((elem + "\n").encode("UTF-8"))
         conn.send("Command accepted. Please wait... ".encode("UTF-8"))
         #Gloria does something depending on command
     conn.close()
