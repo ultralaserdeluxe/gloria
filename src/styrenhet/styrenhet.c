@@ -10,79 +10,37 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 #include "spi.h"
-#include "usart.h"
-#include "command_queue.h"
-
-/* Global queue of received commands */
-queue_t *my_queue;
-
 
 
 int main(void)
-{
-	my_queue = new_queue();
-	
+{	
 	/* port a = output */
 	DDRA = 0xFF;
 		
 	/* Init SPI and enable global interrupts */
 	spi_slave_init();
 	sei();
-		
-	/* Set baud to clk/16 => 1Mbps */
-	usart_init();
+	
+	DDRD = 0xFF;
+	TCCR2A = (1<<COM2A1)|(1<<COM2B1)|(1<<WGM20);
+	TCCR2B = (0<<WGM22)|(0<<CS21)|(1<<CS20);
+	
+	OCR2A = OCR2B = 0x00;
+	
+	PORTA = 0x81; // set dir
 
+	uint8_t speed;
+	
 	while(1) 
-		{
-		/* Set move speed */
-		_delay_ms(1000);
-		usart_transmit(0xFF);
-		_delay_ms(1);
-		usart_transmit(0xFF);
-		_delay_ms(1);
-		usart_transmit(0x07); //ID
-		_delay_ms(1);
-		usart_transmit(0x04); //Length
-		_delay_ms(1);
-		usart_transmit(0x04); //INstruction
-		_delay_ms(1);
-		usart_transmit(0x21); //Set speed
-		_delay_ms(1);
-		usart_transmit(0x00); //Max
-		_delay_ms(1);
-		usart_transmit(0xCF);	//checksum	
-
-		/* Set goal position */
-		_delay_ms(5);
-		usart_transmit(0xFF);
-		_delay_ms(1);
-		usart_transmit(0xFF);
-		_delay_ms(1);
-		usart_transmit(0x07); //ID
-		_delay_ms(1);
-		usart_transmit(0x04); //Length
-		_delay_ms(1);
-		usart_transmit(0x04); //Instruction
-		_delay_ms(1);
-		usart_transmit(0x1E);	//Address
-		_delay_ms(1);
-		usart_transmit(0xFF);	//Data
-		_delay_ms(1);
-		usart_transmit(0xD3);
-
-		/* Action */
-		_delay_ms(5);
-		usart_transmit(0xFF);
-		_delay_ms(1);
-		usart_transmit(0xFF);
-		_delay_ms(1);
-		usart_transmit(0xFE); //ID
-		_delay_ms(1);
-		usart_transmit(0x03); //Length
-		_delay_ms(1);
-		usart_transmit(0x05); //Instruction
-		_delay_ms(1);
-		usart_transmit(0xF9);
+	{
+		for(speed = 0; speed < 250; speed++){
+			OCR2A = OCR2B = speed;
+			_delay_ms(10);
+		}
+		for(; speed > 0; speed--){
+			OCR2A = OCR2B = speed;
+			_delay_ms(10);
+		}
 	};
 }
 
@@ -90,5 +48,5 @@ void spi_recieve_handler(unsigned int data)
 {
 	/* Take data, put in current command. Create new if current is done.
 		Perform actions if action command */
-	PORTA = SPDR;
+	PORTA = data;
 }
