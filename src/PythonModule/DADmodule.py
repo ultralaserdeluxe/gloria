@@ -1,16 +1,10 @@
-#To do:
-#Module for communication between DAD and PC
-#Goal: To be able to send a flow of commands via shell that can be interpreted
-#Main while-loop, run until clearly stated exit
-#Keep sending data to socket
-#Make sure buffer doesn't freak out, minimize the bogus data
-#Time / Effort!
+#DAD
 
 import socket
 import sys
 import threading
 
-HOST = ''   # Symbolic name meaning all available interfaces, change to IP later
+HOST = ''   # Symbolic name meaning all available interfaces, change to IP if needed
 PORT = 8888 # Arbitrary non-privileged port. Subject to change
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
