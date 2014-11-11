@@ -1,12 +1,5 @@
-#To do:
-#Module for communication between DAD and PC
-#Goal: To be able to send a flow of commands via shell that can be interpreted
-#Main while-loop, run until clearly stated exit
-#Keep sending data to socket
-#Make sure buffer doesn't freak out, minimize the bogus data
-#Time / Effort!
+#PC
 
-# telnet program example
 import socket, select, string, sys
  
 #main function
