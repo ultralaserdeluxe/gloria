@@ -2,6 +2,12 @@
 
 import socket, select, string, sys, PCGUI
 
+def msg_unchanged(new, old):
+    if new == old:
+        return True
+    else:
+        return False
+
 gui = str(input("Use GUI? (y/n) "))
 
 #main function
@@ -27,7 +33,7 @@ if __name__ == "__main__":
     print("Connected to remote host")
     if gui == 'y': 
         while 1:
-            PCGUI.main() #can run parallell ?
+            PCGUI.main() #can run parallell ? Everything depends on this
             socket_list = [s]
              
             # Get the list sockets which are readable
@@ -48,7 +54,9 @@ if __name__ == "__main__":
                 #Would be best if the GUI could send data across files. BAZINGA
                 file = open("command.txt", "r")
                 msg = str(file.read())
-                while not msg: #wait for GUI to submit something to file
+                old_msg = msg
+                while (not msg or msg_unchanged(msg, old_msg)): #wait for GUI to submit something to file
+                    old_msg = msg
                     msg = str(file.read())
                 file.close()
                 s.send(msg.encode("UTF-8"))
