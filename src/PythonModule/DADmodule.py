@@ -21,16 +21,16 @@ def main(conn):
     conn.send("Hi and Welcome to Gloria, issue your command and press ENTER.\n".encode("UTF-8"))
     while True:
         #Recieving from PC, fork depending on data
-        data = conn.recv(1024).decode("ISO-8859-1") #1024 = buffer size
-        parsed_data = str(data)
-        if "exit" in parsed_data:
+        unparsed_data = conn.recv(1024).decode("ISO-8859-1") #1024 = buffer size
+        data = str(unparsed_data)
+        if "exit" in data:
             break
-        elif "status" in parsed_data or "calibrate" in parsed_data:
+        elif "status" in data or "calibrate" in data:
             conn.send("Reply\n".encode("UTF-8")) #To be changed
-        elif "start" in parsed_data:
+        elif "start" in data:
             conn.send("Starting...\n".encode("UTF-8"))
-        elif "arm" in parsed_data:
-            split_data = parsed_data.split(';')
+        elif "arm" in data:
+            split_data = data.split(';')
             for elem in split_data:
                 conn.send((elem + "\n").encode("UTF-8"))
         conn.send("Command accepted. Please wait... ".encode("UTF-8"))
