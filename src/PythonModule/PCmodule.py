@@ -1,6 +1,6 @@
 #PC
 
-import socket, select, string, sys, PCGUI
+import socket, select, string, sys
 
 def msg_unchanged(new, old):
     if new == old:
