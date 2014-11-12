@@ -21,19 +21,20 @@ typedef struct sensor_data
 
 sensor_data_t *sensors;
 
-/*ADC Conversion Complete Interrupt Service Routine (ISR)*/
+/*ADC Conversion Complete Interrupt Service Routine (ISR)
+	Based on contents in ADMUX, save result from ADC to correct variable*/
 ISR(ADC_vect)
 {
 	switch (ADMUX)
 	{
-	case 0x63:
+	case 0x67:
 		//PORTB = PORTA;
-		sensors->line[PORTA>>4] = ADCH;
+		sensors->line[PORTA & 0x0F] = ADCH;
 		break;
-	case 0x60:
+	case 0x64:
 		sensors->distance[0] = ADCH;
 		break;
-	case 0x61:
+	case 0x65:
 		sensors->distance[1] = ADCH;
 		break;
 	}
@@ -46,13 +47,11 @@ int main(void)
 	
 	/* Configure ADC */
 	//DDRB = 0xFF;			// Configure PortB as output
-	DDRA = 0xF0;			// Configure PortA as input
+	DDRA = 0x0F;			// Configure PortA as input
 							// PA0 is ADC0 input
 	
 	ADCSRA = 0x8F;			// Enable the ADC and its interrupt feature
 							// and set the ACD clock pre-scalar to clk/128
-	ADMUX = 0x63;			// Select internal 2.56V as Vref, left justify
-							// data registers and select ADC0 as input channel
 	
 	/* Configure SPI */
 	spi_slave_init();
@@ -64,19 +63,19 @@ int main(void)
 	
     while(1)
 	{
-		ADMUX = 0x63;	//Choose linesensor ADC
+		ADMUX = 0x67;	//Choose linesensor ADC
 		for (uint8_t i = 0; i < 11; i++)
 		{
-			PORTA = i<<4;
+			PORTA = i & 0x0F;
 			_delay_ms(5);
 			ADCSRA |= 1<<ADSC;		// Start Conversion
 			_delay_ms(10);
 		}
-		ADMUX = 0x60; //Choose distance1
+		ADMUX = 0x64; //Choose distance1
 		ADCSRA |= 1<<ADSC;		// Start Conversion
 		_delay_ms(10);
 		
-		ADMUX = 0x61; //Choose distance1
+		ADMUX = 0x65; //Choose distance2
 		ADCSRA |= 1<<ADSC;		// Start Conversion
 		_delay_ms(10);
 		
