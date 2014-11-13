@@ -13,6 +13,11 @@ void usart_init( void )
 {
 	
 	DDRD = 0xFB; // 11111011
+	
+	/*disconnect rx/tx ports*/
+	DDRB |= 0x03;
+	PORTB |= 0x03;
+
 	/* Set baudrate */
 	UBRR1H = 0x00;
 	UBRR1L = 0x00;
