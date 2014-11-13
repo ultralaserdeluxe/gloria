@@ -17,24 +17,34 @@ except (socket.error, msg):
 
 s.listen(10) #arbitrary number for amount of queue-able connections, min 0
 
-def main(conn):
+def instruction(conn):
+    queued_commands = []
     conn.send("Hi and Welcome to Gloria, issue your command and press ENTER.\n".encode("UTF-8"))
     while True:
-        #Recieving from PC, fork depending on data
-        data = conn.recv(1024).decode("ISO-8859-1") #1024 = buffer size
-        parsed_data = str(data)
-        if "exit" in parsed_data:
-            break
-        elif "status" in parsed_data or "calibrate" in parsed_data:
-            conn.send("Reply\n".encode("UTF-8")) #To be changed
-        elif "start" in parsed_data:
-            conn.send("Starting...\n".encode("UTF-8"))
-        elif "arm" in parsed_data:
-            split_data = parsed_data.split(';')
-            for elem in split_data:
-                conn.send((elem + "\n").encode("UTF-8"))
-        conn.send("Command accepted. Please wait... ".encode("UTF-8"))
+##        #Recieving from PC, fork depending on data
+##        unparsed_data = conn.recv(1024).decode("ISO-8859-1") #1024 = buffer size
+##        data = str(unparsed_data)
+##        if "exit" in data:
+##            break
+##        elif "status" in data or "calibrate" in data:
+##            conn.send("Reply\n".encode("UTF-8")) #To be changed
+##        elif "start" in data:
+##            conn.send("Starting...\n".encode("UTF-8"))
+##        elif "arm" in data:
+##            split_data = data.split(';')
+##            for elem in split_data:
+##                conn.send((elem + "\n").encode("UTF-8"))
+##        conn.send("Command accepted. Please wait... ".encode("UTF-8"))
         #Gloria does something depending on command
+        unparsed_data = conn.recv(1024).decode("ISO-8859-1")
+        data = str(unparsed_data)
+        if "exit" in data:
+            break
+        queued_commands.append(data)
+        conn.send("Queued commands:\n".encode("UTF-8"))
+        for i in queued_commands: #debugger
+            conn.send(i.encode("UTF-8"))
+        
     conn.close()
 
 #Keep talking with PC:
@@ -42,6 +52,6 @@ while True:
     #Wait to accept a connection - blocking call
     conn, addr = s.accept()
     #Start new friend, arg1 = function to be run, arg2 = tuple to function
-    threading.Thread(target=main, args=(conn,)).start()
+    threading.Thread(target=instruction, args=(conn,)).start()
 
 s.close()

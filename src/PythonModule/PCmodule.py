@@ -1,10 +1,18 @@
 #PC
 
 import socket, select, string, sys
- 
+
+def msg_unchanged(new, old):
+    if new == old:
+        return True
+    else:
+        return False
+
+gui = str(input("Use GUI? (y/n) "))
+
 #main function
 if __name__ == "__main__":
-     
+    
     if len(sys.argv) < 3:
         print ('Usage : python telnet.py hostname port')
         sys.exit()
@@ -23,27 +31,56 @@ if __name__ == "__main__":
         sys.exit()
      
     print("Connected to remote host")
-     
-    while 1:
-        #print("Looping")
-        socket_list = [s]
-         
-        # Get the list sockets which are readable
-        read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])
-         
-        for sock in read_sockets:
-            #incoming message from remote server
-            if sock == s:
-                data = sock.recv(4096).decode("ISO-8859-1")
-                if not str(data):
-                    print ("Connection closed")
-                    sys.exit()
-                else:
-                    #print data
-                    print(str(data))
+    if gui == 'y': 
+        while 1:
+            PCGUI.main() #can run parallell ? Everything depends on this
+            socket_list = [s]
              
-            #user entered a message, was indented before, resulting in no talk
-            #msg = "exit"
-            msg = sys.stdin.readline()
-            s.send(msg.encode("UTF-8"))
+            # Get the list sockets which are readable
+            read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])
+             
+            for sock in read_sockets:
+                #incoming message from remote server
+                if sock == s:
+                    unparsed_data = sock.recv(4096).decode("ISO-8859-1")
+                    data = str(unparsed_data)
+                    if not data:
+                        print ("Connection closed")
+                        sys.exit()
+                    else:
+                        print(data)
+                #Need to know what happens in the GUI
+                #COULD code in the entire GUI here, but is a bad idea
+                #Would be best if the GUI could send data across files. BAZINGA
+                file = open("command.txt", "r")
+                msg = str(file.read())
+                old_msg = msg
+                while (not msg or msg_unchanged(msg, old_msg)): #wait for GUI to submit something to file
+                    old_msg = msg
+                    msg = str(file.read())
+                file.close()
+                s.send(msg.encode("UTF-8"))
+    else:
+        #Shell version
+        while 1:
+            socket_list = [s]
+             
+            # Get the list sockets which are readable
+            read_sockets, write_sockets, error_sockets = select.select(socket_list , [], [])
+             
+            for sock in read_sockets:
+                #incoming message from remote server
+                if sock == s:
+                    unparsed_data = sock.recv(4096).decode("ISO-8859-1")
+                    data = str(unparsed_data)
+                    if not data:
+                        print ("Connection closed")
+                        sys.exit()
+                    else:
+                        print(data)
+                 
+                #user entered a message, was indented before, resulting in no talk
+                #msg = "exit"
+                msg = sys.stdin.readline()
+                s.send(msg.encode("UTF-8"))
 
