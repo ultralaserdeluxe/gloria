@@ -118,36 +118,34 @@ int main(void)
 	/* Enable interrupts */
 	//sei();
 	
-	//int result[8]; //DEBUG
+	int result[8]; //DEBUG
 	
 	while(1)
 	{
 		read_sensors();
-		PORTB = !PORTB;
 		/* DEBUG translate values (0-5 of line) to bools and put on PORTB */
-		/*
-		for (int i = 0; i < 8; i++)
+		
+		for (int i = 5; i < 11; i++)
 		{
 			if (sensors->line[i] > 0x80)
 			{
-				result[i] = 1;
+				result[i - 5] = 1;
 			}
 			else
 			{
-				result[i] = 0;
+				result[i - 5] = 0;
 			}
 		}
-		*/
 		
-		//if (sensors->distance[0] > 0x20) result[6] = 1;
-		//else result[6] = 0;
+		if (sensors->distance[0] > 0x20) result[6] = 1;
+		else result[6] = 0;
 		
-		//if (sensors->distance[1] > 0x20) result[7] = 1;
-		//else result[7] = 0;
+		if (sensors->distance[1] > 0x20) result[7] = 1;
+		else result[7] = 0;
 		
 		//PORTB = sensors->line[1];
 		//PORTB = PORTA;
-		//PORTB = (result[0]<<PORTB0)|(result[1]<<PORTB1)|(result[2]<<PORTB2)|(result[3]<<PORTB3)|(result[4]<<PORTB4)|(result[5]<<PORTB5)|(result[6]<<PORTB6)|(result[7]<<PORTB7);
+		PORTB = (result[0]<<PORTB0)|(result[1]<<PORTB1)|(result[2]<<PORTB2)|(result[3]<<PORTB3)|(result[4]<<PORTB4)|(result[5]<<PORTB5)|(result[6]<<PORTB6)|(result[7]<<PORTB7);
 		
 	}
 }

@@ -125,6 +125,7 @@ queue_node_t* new_node()
 queue_node_t* free_node(queue_node_t* this)
 {
 	queue_node_t *next_node = this->next;
+	free_command_data(this->command);
 	free(this->command);
 	free(this);
 	return next_node;
@@ -151,17 +152,10 @@ int set_command(command_struct_t *command, int chooser, int data)
 			command->instruction = data;
 			command->status++;
 			return command->status;
-		case 1 :
-			command->data_1 = data;
+		default :
+			add_command_data(command, data);
 			command->status++;
 			return command->status;
-		case 2 :
-			command->data_2 = data;
-			command->status++;
-			return command->status;
-		default:
-			/* Invalid call */
-			return -1;
 	}
 }
 
@@ -178,4 +172,37 @@ command_struct_t* new_command()
 int command_status(command_struct_t current)
 {
 	return current.status;
+}
+
+command_data_t* new_command_data(uint8_t new_data)
+{
+	command_data_t *this = malloc(sizeof(command_data_t));
+	this->data = new_data;
+	return this;
+}
+
+void add_command_data(command_struct_t *c, uint8_t new_data)
+{
+	command_data_t *current = c->data;
+	if (current == NULL)
+	{
+		c->data = new_command_data(new_data);
+		return;
+	}
+	while (current->next != NULL)
+	{
+		current = current->next;
+	}
+	current->next = new_command_data(new_data);
+}
+
+void free_command_data(command_struct_t *c)
+{
+	command_data_t current = c->data;
+	while (current != NULL)
+	{
+		c->data = current->next;
+		free(current);
+		current = c->data;
+	}
 }
