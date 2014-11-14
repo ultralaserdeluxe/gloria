@@ -32,11 +32,12 @@ typedef struct parameter
 	struct parameter *next;
 } parameter_t;
 
+/* Represents a command recieved from DAD
+	Contains data to be sent to arm to perform said command */
 typedef struct arm_instruction
 {
-	unsigned int address;
-	unsigned int instruction;
-	parameter_t *parameters;
+	parameter_t *first_parameter;
+	parameter_t *last_parameter;
 	/* Number of parameters */
 	int length;
 } arm_instruction_t;
@@ -51,9 +52,11 @@ void set_servo_goal_speed(arm_data_t *arm, int servo, unsigned int new_speed);
 void set_servo_goal_position(arm_data_t *arm, int servo, unsigned int new_position);
 int get_servo_goal_speed(arm_data_t *arm, int servo);
 int get_servo_goal_position(arm_data_t *arm, int servo);
-arm_instruction_t* create_instruction();
-void add_instruction(arm_instruction_t *instr, unsigned int new_instruction);
-void add_address(arm_instruction_t *instr, unsigned int new_address);
+
+arm_instruction_t* create_instructions(int amount);
+arm_instruction_t* concatenate_instructions(arm_instruction_t *t1, arm_instruction_t *t2);
+void free_instruction(arm_instruction_t *t);
+void free_instruction_full(arm_instruction_t *t);
 void add_parameter(arm_instruction_t *instr, unsigned int new_parameter);
 parameter_t* get_parameter(arm_instruction_t *instr);
 parameter_t* next_parameter(parameter_t *p);

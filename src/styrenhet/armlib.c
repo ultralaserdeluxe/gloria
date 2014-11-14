@@ -71,45 +71,35 @@ int get_servo_goal_position(arm_data_t *arm, int servo)
 	return array[servo].goal_position;
 }
 
-arm_instruction_t* create_instruction()
+arm_instruction_t* create_instructions(int amount)
 {
-	arm_instruction_t *this = malloc(sizeof(arm_instruction_t));
+	arm_instruction_t *this = malloc(sizeof(arm_instruction_t)*amount);
 	this->length = 0;
 	return this;
 }
 
-void add_instruction(arm_instruction_t *instr, unsigned int new_instruction)
+arm_instruction_t* concatenate_instructions(arm_instruction_t *t1, arm_instruction_t *t2)
 {
-	instr->instruction = new_instruction;
+	t1->last_parameter->next = t2->first_parameter;
+	t1->last_parameter = t2->last_parameter;
+	free(t2);
 }
 
-void add_address(arm_instruction_t *instr, unsigned int new_address)
+void free_instruction(arm_instruction_t *t)
 {
-	instr->instruction = new_address;
+	free(t);
 }
 
-void add_parameter(arm_instruction_t *instr, unsigned int new_parameter)
+void free_instruction_full(arm_instruction_t *t)
 {
-	if (empty_parameter(instr->parameters))
+	parameter_t *current = t->first_parameter;
+	while(!empty_parameter(current))
 	{
-		instr->parameters = create_parameter(new_parameter);
+		t->first_parameter = current->next;
+		free(current);
+		current = t->first_parameter;
 	}
-	else
-	{
-		parameter_t *last = last_parameter(instr->parameters);
-		last->next = create_parameter(new_parameter);
-	}
-	instr->length++;
-}
-
-parameter_t* get_parameter(arm_instruction_t *instr)
-{
-	return instr->parameters;
-}
-
-parameter_t* next_parameter(parameter_t *p)
-{
-	return p->next;
+	free_instruction(t);
 }
 
 parameter_t* create_parameter(unsigned int new_parameter)
@@ -117,6 +107,30 @@ parameter_t* create_parameter(unsigned int new_parameter)
 	parameter_t *this = malloc(sizeof(parameter_t));
 	this->current_parameter = new_parameter;
 	return this;
+}
+
+void add_parameter(arm_instruction_t *instr, unsigned int new_parameter)
+{
+	if (empty_parameter(instr->first_parameter))
+	{
+		instr->first_parameter = create_parameter(new_parameter);
+	}
+	else
+	{
+		parameter_t *last = last_parameter(instr->first_parameter);
+		last->next = create_parameter(new_parameter);
+	}
+	instr->length++;
+}
+
+parameter_t* get_parameter(arm_instruction_t *instr)
+{
+	return instr->first_parameter;
+}
+
+parameter_t* next_parameter(parameter_t *p)
+{
+	return p->next;
 }
 
 bool empty_parameter(parameter_t *p)

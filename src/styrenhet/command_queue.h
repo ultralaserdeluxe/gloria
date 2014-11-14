@@ -10,12 +10,18 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <avr/io.h>
+
+typedef struct command_data
+{
+	uint8_t data;
+	struct command_data next;
+} command_data_t;
 
 typedef struct command_struct
 {
-	int instruction;
-	int data_1;
-	int data_2;
+	uint8_t instruction;
+	command_data_t data;
 	
 	/* Tells us if the full command has been recieved */
 	int status;
@@ -49,6 +55,10 @@ int set_node_command(queue_node_t *node, int chooser, int data);
 int set_command(command_struct_t *command, int chooser, int data);
 command_struct_t* new_command();
 int command_status(command_struct_t current);
+
+command_data_t* new_command_data(uint8_t new_data);
+void add_command_data(command_struct_t *c, uint8_t new_data);
+void free_command_data(command_struct_t *c)
 
 
 
