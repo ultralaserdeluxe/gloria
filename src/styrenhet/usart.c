@@ -11,8 +11,10 @@
 
 void usart_init( void )
 {
-	
-	DDRD = 0xFB; // 11111011
+	/* Set tx as output. */
+	DDRD |= (1<<PORTD3);
+	/* Set rx as input */
+	DDRD &= 0xFB;
 	
 	/*disconnect rx/tx ports*/
 	DDRB |= 0x03;
@@ -22,29 +24,51 @@ void usart_init( void )
 	UBRR1H = 0x00;
 	UBRR1L = 0x00;
 	/* Enable receiver and transmitter */
-	UCSR1B = (0<<RXEN1)|(1<<TXEN1);
+	UCSR1B = (1<<RXEN1)|(1<<TXEN1);
 	/* Set frame format: 8data, 2stop bit */
 	UCSR1C = (3<<UCSZ10);
 }
 
+
 void usart_transmit( unsigned char data )
 {
-	//UCSR1B = (0<<RXEN1)|(1<<TXEN1);
 	/* Wait for empty transmit buffer */
 	while ( !( UCSR1A & (1<<UDRE1)) )
 	;
 	/* Put data into buffer, sends the data */
 	UDR1 = data;
-	//UCSR1B = (0<<RXEN1)|(0<<TXEN1);
 }
+
 
 unsigned char usart_receive( void )
 {
-	//UCSR1B = (1<<RXEN1)|(0<<TXEN1);
 	/* Wait for data to be received */
 	while ( !(UCSR1A & (1<<RXC1)) )
 	;
 	/* Get and return received data from buffer */
-	//UCSR1B = (0<<RXEN1)|(0<<TXEN1);
 	return UDR1;
+}
+
+
+void usart_set_tx(){
+	/* Turn off rx */
+	PORTB |= 0x01; //00000001
+	/* Turn on tx */
+	PORTB &= 0xFD; //11111101
+}
+
+
+void usart_set_rx(){
+	/* Wait for data to be shifted out */
+	while ( !( UCSR1A & (1<<TXC1)) );
+	/* Turn off tx */
+	PORTB |= 0x02; //00000010
+	/* Turn on rx */
+	PORTB &= 0xFE; //11111110
+}
+
+void usart_disconnect(){
+	/* Wait for data to be shifted out */
+	while ( !( UCSR1A & (1<<TXC1)) );
+	PORTB |= 0x03; //00000011
 }

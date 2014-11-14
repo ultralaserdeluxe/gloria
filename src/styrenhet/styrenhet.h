@@ -1,4 +1,4 @@
-/--- Control Table Address ---
+//--- Control Table Address ---
 //EEPROM AREA
 #define P_MODEL_NUMBER_L 0x00
 #define P_MODOEL_NUMBER_H 0x01
