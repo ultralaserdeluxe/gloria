@@ -1,68 +1,63 @@
 /*
- * armlib.h
+ * servo.h
  *
  * Created: 2014-11-08 17:52:50
- * Description: Functions for arm.
+ * Description: Functions for a servo.
  */ 
 
-#ifndef ARMLIB_H_
-#define ARMLIB_H_
+#ifndef SERVO_H_
+#define SERVO_H_
 
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <avr/io.h>
+#include "ax12a.h"
 
-typedef struct servo_data
+/* Following datatypes represents an instruction, meant to be sent to our servo.
+	The datatype is designed to be sent in a single batch. */
+typedef struct servo_parameter
 {
-	unsigned int speed;
-	unsigned int position;
-	unsigned int goal_speed;
-	unsigned int goal_position;
-} servo_data_t;
+	uint8_t current_parameter;
+	struct servo_parameter *next;
+} servo_parameter_t;
 
-typedef struct arm_data
+typedef struct servo_instruction
 {
-	servo_data_t *s;
-	int length;
-} arm_data_t;
-
-typedef struct parameter
-{
-	unsigned int current_parameter;
-	struct parameter *next;
-} parameter_t;
-
-/* Represents a command recieved from DAD
-	Contains data to be sent to arm to perform said command */
-typedef struct arm_instruction
-{
-	parameter_t *first_parameter;
-	parameter_t *last_parameter;
+	servo_parameter_t *first_parameter;
+	servo_parameter_t *last_parameter;
 	/* Number of parameters */
 	int length;
-} arm_instruction_t;
+} servo_instruction_t;
 
-arm_data_t* new_arm_data(int number_of_servos);
-void free_arm_data(arm_data_t *arm);
-void set_servo_speed(arm_data_t *arm, int servo, unsigned int new_speed);
-void set_servo_position(arm_data_t *arm, int servo, unsigned int new_position);
-int get_servo_speed(arm_data_t *arm, int servo);
-int get_servo_position(arm_data_t *arm, int servo);
-void set_servo_goal_speed(arm_data_t *arm, int servo, unsigned int new_speed);
-void set_servo_goal_position(arm_data_t *arm, int servo, unsigned int new_position);
-int get_servo_goal_speed(arm_data_t *arm, int servo);
-int get_servo_goal_position(arm_data_t *arm, int servo);
+/* Functions performing the actual sending of data to servo via UART */
+void servo_init(int ID);
+void send_servo_instruction(servo_instruction_t *t);
 
-arm_instruction_t* create_instructions(int amount);
-arm_instruction_t* concatenate_instructions(arm_instruction_t *t1, arm_instruction_t *t2);
-void free_instruction(arm_instruction_t *t);
-void free_instruction_full(arm_instruction_t *t);
-void add_parameter(arm_instruction_t *instr, unsigned int new_parameter);
-parameter_t* get_parameter(arm_instruction_t *instr);
-parameter_t* next_parameter(parameter_t *p);
-parameter_t* create_parameter(unsigned int new_parameter);
-bool empty_parameter(parameter_t *p);
-parameter_t* last_parameter(parameter_t *p);
-unsigned int parameter_value(parameter_t *p);
+/* Functions for creating servo instructions from data */
+servo_instruction_t* servo_instruction_packet(int ID, int instr, int reg, servo_parameter_t *parameters);
+uint8_t make_checksum(uint8_t ID, uint8_t length, uint8_t instr, uint8_t parameters);
 
-#endif /* ARMLIB_H_ */
+/* Functions for handling servo_instructions */
+servo_instruction_t* create_instructions(int amount);
+servo_instruction_t* concatenate_instructions(servo_instruction_t *t1, servo_instruction_t *t2);
+void free_instruction(servo_instruction_t *t);
+void free_instruction_full(servo_instruction_t *t);
+
+/* Following functions handle the parameters which are the single bytes
+	an instruction is made up of */
+servo_parameter_t* create_servo_parameter(unsigned int new_parameter);
+void add_servo_parameter(servo_instruction_t *instr, unsigned int new_parameter);
+servo_parameter_t* get_servo_parameter(servo_instruction_t *instr);
+servo_parameter_t* next_servo_parameter(servo_parameter_t *p);
+bool empty_servo_parameter(servo_parameter_t *p);
+servo_parameter_t* last_servo_parameter(servo_parameter_t *p);
+unsigned int servo_parameter_value(servo_parameter_t *p);
+int servo_parameter_sum(servo_parameter_t *p);
+
+/* Functions for handling chains of parameters */
+void add_servo_parameter_chain(servo_parameter_t *t, uint8_t new_data);
+void free_servo_parameter_chain(servo_parameter_t *p);
+int servo_parameter_chain_length(servo_parameter_t *p);
+
+#endif /* SERVO_H_ */

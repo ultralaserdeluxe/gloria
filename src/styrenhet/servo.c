@@ -1,99 +1,129 @@
 /*
- * armlib.c
+ * servo.c
  *
  * Created: 2014-11-08 17:53:04
- * Description: Functions for the arm
+ * Description: Functions for a ax-12a servo.
  */ 
 
+#include "servo.h"
+#include "usart.h"
 
-#include "armlib.h"
-
-
-arm_data_t* new_arm_data(int number_of_servos)
+/* Initialize servo */
+void servo_init(int ID)
 {
-	arm_data_t *this = malloc(sizeof(arm_data_t));
-	this->length = number_of_servos;
-	this->s = malloc(number_of_servos * sizeof(servo_data_t));
-	return this;
+		// Set baud to clk/16 => 1Mbps */
+		usart_init();
+		usart_set_tx();
+		servo_parameter_t *p;
+		
+		add_servo_parameter_chain(p, P_CW_ANGLE_LIMIT_L_INIT);
+		add_servo_parameter_chain(p, P_CW_ANGLE_LIMIT_H_INIT);
+		add_servo_parameter_chain(p, P_CCW_ANGLE_LIMIT_L_INIT);
+		add_servo_parameter_chain(p, P_CCW_ANGLE_LIMIT_H_INIT);
+		send_servo_instruction(
+			servo_instruction_packet(ID, INSTR_WRITE, P_CW_ANGLE_LIMIT_L, p)
+		);
+		
+		free_servo_parameter_chain(p);
+		
+		add_servo_parameter_chain(p, P_CW_COMPLIANCE_MARGIN_INIT);
+		add_servo_parameter_chain(p, P_CCW_COMPLIANCE_MARGIN_INIT);
+		add_servo_parameter_chain(p, P_CW_COMPLIANCE_SLOPE_INIT);
+		add_servo_parameter_chain(p, P_CCW_COMPLIANCE_SLOPE_INIT);
+		send_servo_instruction(
+			servo_instruction_packet(ID, INSTR_WRITE, P_CW_COMPLIANCE_MARGIN_INIT, p)
+		);
+		
+		free_servo_parameter_chain(p);
+		
+		add_servo_parameter_chain(p, P_TORQUE_ENABLE_INIT);
+		send_servo_instruction(
+			servo_instruction_packet(ID, INSTR_WRITE, P_TORQUE_ENABLE, p)
+		);
+		
+		free_servo_parameter_chain(p);
+		
+		add_servo_parameter_chain(p, P_RETURN_LEVEL_INIT);
+		send_servo_instruction(
+			servo_instruction_packet(ID, INSTR_WRITE, P_RETURN_LEVEL, p)
+		);
+		
+		free_servo_parameter_chain(p);
 }
 
-void free_arm_data(arm_data_t *arm)
+/* Does the actual sending of data to servo over UART*/
+void send_servo_instruction(servo_instruction_t *t)
 {
-	free(arm->s);
-	free(arm);
+	servo_parameter_t *current = get_servo_parameter(t);
+	while(!empty_servo_parameter(current))
+	{
+		usart_transmit(current->current_parameter);
+		current = current->next;
+	}
 }
 
-void set_servo_speed(arm_data_t *arm, int servo, unsigned int new_speed)
+/* Returns instruction for given parameters ready to be sent */
+servo_instruction_t* servo_instruction_packet(int ID, int instr, int reg, servo_parameter_t *parameters)
 {
-	servo_data_t *array = arm->s;
-	array[servo].speed = new_speed;
+	int length;
+	if ((instr != INSTR_PING)&(instr != INSTR_ACTION)&(instr != INSTR_RESET))
+	{
+		length = 2; // 2 for instruction, checksum
+	}
+	else
+	{
+		length = servo_parameter_chain_length(parameters) + 3; // 3 for instruction, reg, checksum
+	}
+	servo_instruction_t *t = create_instructions(1);
+	add_servo_parameter(t,0xFF);
+	add_servo_parameter(t,0xFF);
+	add_servo_parameter(t,ID);
+	add_servo_parameter(t,length);
+	add_servo_parameter(t,instr);
+	if ((instr != INSTR_PING)&(instr != INSTR_ACTION)&(instr != INSTR_RESET))
+	{
+		add_servo_parameter(t,reg);
+		servo_parameter_t *current = parameters;
+		while (!empty_servo_parameter(current))
+		{
+			add_servo_parameter(t,servo_parameter_value(current));
+			current = next_servo_parameter(current);
+		}
+	}
+	add_servo_parameter(t,make_checksum(ID, length, instr, (reg + servo_parameter_sum(parameters))));
+	return t;
 }
 
-void set_servo_position(arm_data_t *arm, int servo, unsigned int new_position)
+/* Create checksum asked for from servo */
+uint8_t make_checksum(uint8_t ID, uint8_t length, uint8_t instr, uint8_t parameters)
 {
-	servo_data_t *array = arm->s;
-	array[servo].position = new_position;
+	return ~(ID + length + instr + parameters);
 }
 
-int get_servo_speed(arm_data_t *arm, int servo)
+servo_instruction_t* create_instructions(int amount)
 {
-	servo_data_t *array = arm->s;
-	return array[servo].speed;
-}
-
-int get_servo_position(arm_data_t *arm, int servo)
-{
-	servo_data_t *array = arm->s;
-	return array[servo].position;
-}
-
-void set_servo_goal_speed(arm_data_t *arm, int servo, unsigned int new_speed)
-{
-	servo_data_t *array = arm->s;
-	array[servo].goal_speed = new_speed;
-}
-
-void set_servo_goal_position(arm_data_t *arm, int servo, unsigned int new_position)
-{
-	servo_data_t *array = arm->s;
-	array[servo].goal_position = new_position;
-}
-
-int get_servo_goal_speed(arm_data_t *arm, int servo)
-{
-	servo_data_t *array = arm->s;
-	return array[servo].goal_speed;
-}
-
-int get_servo_goal_position(arm_data_t *arm, int servo)
-{
-	servo_data_t *array = arm->s;
-	return array[servo].goal_position;
-}
-
-arm_instruction_t* create_instructions(int amount)
-{
-	arm_instruction_t *this = malloc(sizeof(arm_instruction_t)*amount);
+	servo_instruction_t *this = malloc(sizeof(servo_instruction_t)*amount);
 	this->length = 0;
 	return this;
 }
 
-arm_instruction_t* concatenate_instructions(arm_instruction_t *t1, arm_instruction_t *t2)
+servo_instruction_t* concatenate_instructions(servo_instruction_t *t1, servo_instruction_t *t2)
 {
 	t1->last_parameter->next = t2->first_parameter;
 	t1->last_parameter = t2->last_parameter;
 	free(t2);
 }
 
-void free_instruction(arm_instruction_t *t)
+void free_instruction(servo_instruction_t *t)
 {
 	free(t);
 }
 
-void free_instruction_full(arm_instruction_t *t)
+/* Free instruction and all parameters belonging to it */
+void free_instruction_full(servo_instruction_t *t)
 {
-	parameter_t *current = t->first_parameter;
-	while(!empty_parameter(current))
+	servo_parameter_t *current = t->first_parameter;
+	while(!empty_servo_parameter(current))
 	{
 		t->first_parameter = current->next;
 		free(current);
@@ -102,49 +132,50 @@ void free_instruction_full(arm_instruction_t *t)
 	free_instruction(t);
 }
 
-parameter_t* create_parameter(unsigned int new_parameter)
+servo_parameter_t* create_servo_parameter(unsigned int new_parameter)
 {
-	parameter_t *this = malloc(sizeof(parameter_t));
+	servo_parameter_t *this = malloc(sizeof(servo_parameter_t));
 	this->current_parameter = new_parameter;
 	return this;
 }
 
-void add_parameter(arm_instruction_t *instr, unsigned int new_parameter)
+/* Add parameter to arm instruction */
+void add_servo_parameter(servo_instruction_t *instr, unsigned int new_parameter)
 {
-	if (empty_parameter(instr->first_parameter))
+	if (empty_servo_parameter(instr->first_parameter))
 	{
-		instr->first_parameter = create_parameter(new_parameter);
+		instr->first_parameter = create_servo_parameter(new_parameter);
 	}
 	else
 	{
-		parameter_t *last = last_parameter(instr->first_parameter);
-		last->next = create_parameter(new_parameter);
+		servo_parameter_t *last = last_servo_parameter(instr->first_parameter);
+		last->next = create_servo_parameter(new_parameter);
 	}
 	instr->length++;
 }
 
-parameter_t* get_parameter(arm_instruction_t *instr)
+servo_parameter_t* get_servo_parameter(servo_instruction_t *instr)
 {
 	return instr->first_parameter;
 }
 
-parameter_t* next_parameter(parameter_t *p)
+servo_parameter_t* next_servo_parameter(servo_parameter_t *p)
 {
 	return p->next;
 }
 
-bool empty_parameter(parameter_t *p)
+bool empty_servo_parameter(servo_parameter_t *p)
 {
 	if (p == NULL) return true;
 	else return false;
 }
 
-parameter_t* last_parameter(parameter_t *p)
+servo_parameter_t* last_servo_parameter(servo_parameter_t *p)
 {
 	if (p->next == NULL) return p;
 	else
 	{
-		parameter_t *current = p;
+		servo_parameter_t *current = p;
 		while (current->next != NULL)
 		{
 			current = current->next;
@@ -153,7 +184,63 @@ parameter_t* last_parameter(parameter_t *p)
 	}
 }
 
-unsigned int parameter_value(parameter_t *p)
+unsigned int servo_parameter_value(servo_parameter_t *p)
 {
 	return p->current_parameter;
+}
+
+/* Return sum of parameters */
+int servo_parameter_sum(servo_parameter_t *p)
+{
+	int sum = 0;
+	servo_parameter_t *current = p;
+	while (!empty_servo_parameter(current))
+	{
+		sum += servo_parameter_value(current);
+		current = next_servo_parameter(current);
+	}
+	return sum;
+}
+
+/* Functions specific for handling chains of parameters not part of a servo_instruction_t */
+/* Add parameter to chain of parameters not part of a servo_instruction_t */
+void add_servo_parameter_chain(servo_parameter_t *t, uint8_t new_data)
+{
+	if (t == NULL)
+	{
+		t = create_servo_parameter(new_data);
+		return;
+	}
+	servo_parameter_t *current = t;
+	while (current->next != NULL)
+	{
+		current = next_servo_parameter(current);
+	}
+	current->next = create_servo_parameter(new_data);
+}
+
+/* Free a chain of parameters not part of a servo_instruction_t */
+void free_servo_parameter_chain(servo_parameter_t *p)
+{
+	servo_parameter_t *current = p;
+	servo_parameter_t *save;
+	while (current != NULL)
+	{
+		save = current->next;
+		free(current);
+		current = save;
+	}
+}
+
+/* Return length of chain of parameters not part of servo_instruction_t */
+int servo_parameter_chain_length(servo_parameter_t *p)
+{
+	int length = 0;
+	servo_parameter_t *current = p;
+	while (current != NULL)
+	{
+		current = current->next;
+		length++;
+	}
+	return length;
 }

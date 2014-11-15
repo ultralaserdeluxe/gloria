@@ -1,5 +1,6 @@
 //--- Control Table Address ---
-//EEPROM AREA
+//EEPROM AREA 
+//--- Addresses ---
 #define P_MODEL_NUMBER_L 0x00
 #define P_MODOEL_NUMBER_H 0x01
 #define P_VERSION 0x02
@@ -51,19 +52,30 @@
 #define P_PUNCH_L 0x30
 #define P_PUNCH_H 0x31
 
-//--- Instruction ---
-#define INST_PING 0x01
-#define INST_READ 0x02
-#define INST_WRITE 0x03
-#define INST_REG_WRITE 0x04
-#define INST_ACTION 0x05
-#define INST_RESET 0x06
-#define INST_DIGITAL_RESET 0x07
-#define INST_SYSTEM_READ 0x0C
-#define INST_SYSTEM_WRITE 0x0D
-#define INST_SYNC_WRITE 0x83
-#define INST_SYNC_REG_WRITE 0x8
+//--- Init values ---
+#define P_CW_ANGLE_LIMIT_L_INIT 0x00
+#define P_CW_ANGLE_LIMIT_H_INIT 0x00
+#define P_CCW_ANGLE_LIMIT_L_INIT 0xFF
+#define P_CCW_ANGLE_LIMIT_H_INIT 0x03
+#define P_CW_COMPLIANCE_MARGIN_INIT 0x00
+#define P_CCW_COMPLIANCE_MARGIN_INIT 0x00
+#define P_CW_COMPLIANCE_SLOPE_INIT 0x20
+#define P_CCW_COMPLIANCE_SLOPE_INIT 0x20
+#define P_TORQUE_ENABLE_INIT OFF
+#define	P_RETURN_LEVEL_INIT 0x02
 
+//--- Instruction ---
+#define INSTR_PING 0x01
+#define INSTR_READ 0x02
+#define INSTR_WRITE 0x03
+#define INSTR_REG_WRITE 0x04
+#define INSTR_ACTION 0x05
+#define INSTR_RESET 0x06
+#define INSTR_DIGITAL_RESET 0x07
+#define INSTR_SYSTEM_READ 0x0C
+#define INSTR_SYSTEM_WRITE 0x0D
+#define INSTR_SYNC_WRITE 0x83
+#define INSTR_SYNC_REG_WRITE 0x8
 
  //--- Servos ---
 #define SERVO_1 0x01
