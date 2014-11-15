@@ -8,190 +8,41 @@
 #include "arm.h"
 
 /* Initializes our arm, its servos and returns a new command_queue */
-command_queue_t* arm_init(int servo)
+void arm_init(int servo)
 {
 	servo_init(servo);
-	return new_queue();
 }
 
-/* Convert command into instruction to arm */
-/* URGENT: Need to be able to make 2 instructions from a command! */
-servo_instruction_t* command_to_arm_instr(command_struct_t *c)
+void update_servo_regs(int address, arm_data_t *d)
 {
-	
+		/* Update servo goal position */
+		servo_parameter_t *p = NULL;
+		uint8_t goal_position_h = d->s[address].goal_position_h;
+		uint8_t goal_position_l = d->s[address].goal_position_l;
+		add_servo_parameter_chain(p, goal_position_l);
+		add_servo_parameter_chain(p, goal_position_h);
+		send_servo_instruction(
+		servo_instruction_packet(address, INSTR_REG_WRITE, P_GOAL_POSITION_L, p)
+		);
+
+		/* Update servo goal speed */
+		free_servo_parameter_chain(p);
+		uint8_t goal_speed_h = d->s[address].goal_speed_h;
+		uint8_t goal_speed_l = d->s[address].goal_speed_l;
+		add_servo_parameter_chain(p, goal_speed_l);
+		add_servo_parameter_chain(p, goal_speed_h);
+		send_servo_instruction(
+		servo_instruction_packet(address, INSTR_REG_WRITE, P_GOAL_SPEED_L, p)
+		);
 }
 
 /* Called when Action detected on SPI */
-void do_action(int address, command_queue_t *q)
-{
-	
-}
-
-/* Create a new queue, with one empty entry */
-command_queue_t* new_queue()
-{
-	command_queue_t *this = malloc(sizeof(command_queue_t));
-	this->head = NULL;
-	this->last = NULL;
-	return this;
-}
-
-void free_queue(command_queue_t *q)
-{
-	command_queue_node_t *current;
-	while(q->head != NULL)
-	{
-		current = q->head;
-		q->head = current->next;
-		free_node(current);
-	}
-	free(q);
-}
-
-/* Add new node to end of queue */
-void put_queue(command_queue_t *q, command_queue_node_t *node)
-{
-	if (empty_queue(q))
-	{
-		q->head = node;
-		q->last = node;
-	}
-	else
-	{
-		q->last->next = node;
-		q->last = node;
-	}
-}
-
-/* Remove and return first entry */
-command_queue_node_t* pop_first(command_queue_t *q)
-{
-	command_queue_node_t *node = q->head;
-	q->head = node->next;
-	return node;
-}
-
-/* Remove node *node from queue */
-void remove_node(command_queue_t *q, command_queue_node_t *node)
-{
-	if (empty_queue(q))
-	{
-		return;
-	}
-	
-	command_queue_node_t *current = q->head;
-	if (node == first_node(q))
-	{
-		q->head = node->next;
-		current = q->head;
-	}
-	else
-	{
-		while (current->next != node)
-		{
-			if (current->next == NULL)
-			{
-				/* Node not in queue */
-				return;
-			}
-			current = current->next;
-		}
-		current->next = node->next;
-	}
-	
-	if (node == last_node(q))
-	{
-		q->last = current;
-	}
-}
-
-bool empty_queue(command_queue_t *this)
-{
-	if (this->head == NULL)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-command_queue_node_t* first_node(command_queue_t *this)
-{
-	return this->head;
-}
-
-command_queue_node_t* last_node(command_queue_t *this)
-{
-	return this->last;
-}
-
-command_queue_node_t* next_node(command_queue_node_t *node)
-{
-	return node->next;
-}
-
-/* Returns a new node */
-command_queue_node_t* new_node()
-{
-	command_queue_node_t *this;
-	this = malloc(sizeof(command_queue_node_t));
-	this->command = new_command();
-	return this;
-}
-
-/* Frees node and returns pointer to next node */
-command_queue_node_t* free_node(command_queue_node_t* this)
-{
-	command_queue_node_t *next_node = this->next;
-	free_servo_parameter_chain(this->command->first_parameter);
-	free(this->command);
-	free(this);
-	return next_node;
-}
-
-command_struct_t* node_data(command_queue_node_t *node)
-{
-	return node->command;
-}
-
-/* Abstraction wrapper for set_command */
-int set_node_command(command_queue_node_t *node, int chooser, int data)
-{
-	return set_command(node->command, chooser, data);
-}
-
-/* Sets a part of command command, chosen with chooser to data. 
-	Returns updated status */
-int set_command(command_struct_t *command, int chooser, uint8_t data)
-{
-	switch (chooser)
-	{
-		case 0 :
-			command->instruction = data;
-			command->status++;
-			return command->status;
-		default :
-			add_servo_parameter_chain(command->first_parameter, data);
-			command->status++;
-			return command->status;
-	}
-}
-
-/* Returns a new command struct with status = 0, others null */
-command_struct_t* new_command()
-{
-	command_struct_t *this;
-	this = malloc(sizeof(command_struct_t));
-	this->status = 0;
-	return this;
-}
-
-/* Returns current status */
-int command_status(command_struct_t current)
-{
-	return current.status;
+void arm_action(int address)
+{	
+	/* Send action command */
+	send_servo_instruction(
+		servo_instruction_packet(address, INSTR_ACTION, 0, 0)
+	);
 }
 
 arm_data_t* new_arm_data(int number_of_servos)
@@ -208,50 +59,59 @@ void free_arm_data(arm_data_t *arm)
 	free(arm);
 }
 
-void set_servo_speed(arm_data_t *arm, int servo, unsigned int new_speed)
+void set_servo_speed(arm_data_t *arm, int servo, uint8_t new_speed_h, uint8_t new_speed_l)
 {
 	servo_data_t *array = arm->s;
-	array[servo].speed = new_speed;
+	array[servo].speed_h = new_speed_h;
+	array[servo].speed_l = new_speed_l;
 }
 
-void set_servo_position(arm_data_t *arm, int servo, unsigned int new_position)
+void set_servo_position(arm_data_t *arm, int servo, uint8_t new_position_h, uint8_t new_position_l)
 {
 	servo_data_t *array = arm->s;
-	array[servo].position = new_position;
+	array[servo].position_h = new_position_h;
+	array[servo].position_l = new_position_l;
 }
 
-int get_servo_speed(arm_data_t *arm, int servo)
+uint16_t get_servo_speed(arm_data_t *arm, int servo)
 {
 	servo_data_t *array = arm->s;
-	return array[servo].speed;
+	return make_int_16(array[servo].speed_h, array[servo].speed_l);
 }
 
-int get_servo_position(arm_data_t *arm, int servo)
+uint16_t get_servo_position(arm_data_t *arm, int servo)
 {
 	servo_data_t *array = arm->s;
-	return array[servo].position;
+	return make_int_16(array[servo].position_h, array[servo].position_l);
 }
 
-void set_servo_goal_speed(arm_data_t *arm, int servo, unsigned int new_speed)
+void set_servo_goal_speed(arm_data_t *arm, int servo, uint8_t new_speed_h, uint8_t new_speed_l)
 {
 	servo_data_t *array = arm->s;
-	array[servo].goal_speed = new_speed;
+	array[servo].goal_speed_h = new_speed_h;
+	array[servo].goal_speed_l = new_speed_l;
 }
 
-void set_servo_goal_position(arm_data_t *arm, int servo, unsigned int new_position)
+void set_servo_goal_position(arm_data_t *arm, int servo, uint8_t new_position_h, uint8_t new_position_l)
 {
 	servo_data_t *array = arm->s;
-	array[servo].goal_position = new_position;
+	array[servo].goal_position_h = new_position_h;
+	array[servo].goal_position_l = new_position_l;
 }
 
-int get_servo_goal_speed(arm_data_t *arm, int servo)
+uint16_t get_servo_goal_speed(arm_data_t *arm, int servo)
 {
 	servo_data_t *array = arm->s;
-	return array[servo].goal_speed;
+	return make_int_16(array[servo].goal_speed_h, array[servo].goal_speed_l);
 }
 
-int get_servo_goal_position(arm_data_t *arm, int servo)
+uint16_t get_servo_goal_position(arm_data_t *arm, int servo)
 {
 	servo_data_t *array = arm->s;
-	return array[servo].goal_position;
+	return make_int_16(array[servo].goal_position_h, array[servo].goal_position_l);
+}
+
+uint16_t make_int_16(uint8_t high, uint8_t low)
+{
+	return (high << 4) + low;
 }

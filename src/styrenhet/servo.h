@@ -2,7 +2,7 @@
  * servo.h
  *
  * Created: 2014-11-08 17:52:50
- * Description: Functions for a servo.
+ * Description: Functions for the servo ax-12a.
  */ 
 
 #ifndef SERVO_H_
