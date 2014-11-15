@@ -18,7 +18,7 @@ transmit_queue_t *transmit_q;
 ISR(SPI_STC_vect)
 {
 	spi_recieve_handler(SPDR);
-	if (!empty_queue(transmit_q))
+	if (!empty_SPI_transmit_queue(transmit_q))
 	{
 		SPDR = pop_transmit_queue_data(transmit_q);
 	}
@@ -48,7 +48,7 @@ void free_transmit_node(transmit_node_t *node)
 
 void add_transmit_queue(transmit_queue_t *q, uint8_t data)
 {
-	if (empty_queue(q))
+	if (empty_SPI_transmit_queue(q))
 	{
 		q->first_node = create_transmit_node(data);
 		q->last_node = q->first_node;
@@ -63,12 +63,12 @@ void add_transmit_queue(transmit_queue_t *q, uint8_t data)
 
 uint8_t pop_transmit_queue_data(transmit_queue_t *q)
 {
-	if (empty_queue(q))	return NULL;
+	if (empty_SPI_transmit_queue(q))	return NULL;
 	transmit_node_t *current = q->first_node;
 	uint8_t data = q->first_node->data;
 	
 	q->first_node = current->next;
-	if (empty_queue(q)) q->last_node = NULL;
+	if (empty_SPI_transmit_queue(q)) q->last_node = NULL;
 	
 	free_transmit_node(current);
 	return data;
@@ -81,7 +81,7 @@ void transmit_queue_init()
 	transmit_q->last_node = NULL;
 }
 
-bool empty_queue(transmit_queue_t *q)
+bool empty_SPI_transmit_queue(transmit_queue_t *q)
 {
 	if (q->first_node == NULL) return true;
 	else return false;

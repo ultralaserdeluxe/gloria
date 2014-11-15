@@ -1,57 +1,23 @@
 /*
- * styrenhet.c
+ * sensorenhet.c
  *
- * Created: 2014-11-04 15:44:45
- * Description: Software for our sensorunit
+ * Created: 2014-11-04
+ * Description: Software for our sensor unit.
  */ 
+
 
 #define F_CPU 16000000UL
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include "spi.h"
+#include "sensors.h"
 
-typedef struct sensor_data
-{
-	uint8_t line[11];
-	uint8_t distance[2];
-} sensor_data_t;
-
-sensor_data_t *sensors;
-
-/*ADC Conversion Complete Interrupt Service Routine (ISR)
-	Based on contents in ADMUX, save result from ADC to correct variable*/
-ISR(ADC_vect)
-{
-	switch (ADMUX)
-	{
-	case 0x67:
-		//PORTB = PORTA;
-		sensors->line[PORTA & 0x0F] = ADCH;
-		break;
-	case 0x64:
-		sensors->distance[0] = ADCH;
-		break;
-	case 0x65:
-		sensors->distance[1] = ADCH;
-		break;
-	}
-	//PORTD = ADCH;		// Output ADCH to PORTD (for debug purposes, ADCH should be saved)
-}
 
 int main(void)
 {
-	sensors = malloc(sizeof(sensor_data_t));
-	
-	/* Configure ADC */
-	//DDRB = 0xFF;			// Configure PortB as output
-	DDRA = 0x0F;			// Configure PortA as input
-							// PA0 is ADC0 input
-	
-	ADCSRA = 0x8F;			// Enable the ADC and its interrupt feature
-							// and set the ACD clock pre-scalar to clk/128
+	sensor_data_t* sensors = sensors_init();
 	
 	/* Configure SPI */
 	spi_slave_init();
@@ -59,57 +25,25 @@ int main(void)
 	/* Enable interrupts */
 	sei();
 	
-	//int result[8]; //DEBUG
-	
-    while(1)
+	/* DEBUG */
+	DDRB = 0xFF;
+	PORTB = 0x00;
+	uint8_t result; //DEBUG	
+	while(1)
 	{
-		ADMUX = 0x67;	//Choose linesensor ADC
-		for (uint8_t i = 0; i < 11; i++)
-		{
-			PORTA = i & 0x0F;
-			_delay_ms(5);
-			ADCSRA |= 1<<ADSC;		// Start Conversion
-			_delay_ms(10);
-		}
-		ADMUX = 0x64; //Choose distance1
-		ADCSRA |= 1<<ADSC;		// Start Conversion
-		_delay_ms(10);
-		
-		ADMUX = 0x65; //Choose distance2
-		ADCSRA |= 1<<ADSC;		// Start Conversion
-		_delay_ms(10);
-		
-		/* DEBUG translate values (0-5 of line) to bools and put on PORTB */
-		/*for (int i = 0; i < 6; i++)
-		{
-			if (sensors->line[i] > 0x80)
-			{
-				result[i] = 1;
-			}
-			else
-			{
-				result[i] = 0;
-			}
-		}
-		
-		if (sensors->distance[0] > 0x20) result[6] = 1;
-		else result[6] = 0;
-		
-		if (sensors->distance[1] > 0x20) result[7] = 1;
-		else result[7] = 0;
-		
-		PORTB = (result[0]<<PORTB0)|(result[1]<<PORTB1)|(result[2]<<PORTB2)|(result[3]<<PORTB3)|(result[4]<<PORTB4)|(result[5]<<PORTB5)|(result[6]<<PORTB6)|(result[7]<<PORTB7);
-		*/
+		read_sensors(sensors);
+		result = (sensors->distance[0] & 0xF0) | ((sensors->distance[1] >> 4) & 0x0F);
+		PORTB = result;
 	}
 }
 
 /* UNTESTED */
 void spi_recieve_handler(unsigned int data)
 {
+	/*
 	switch(data>>4)
 	{
 	case 0:
-		/* Return requested data */
 		switch(data & 0x0F)
 		{
 		case 0:
@@ -136,12 +70,11 @@ void spi_recieve_handler(unsigned int data)
 			break;
 		}
 	case 1:
-		/* Calibrate sensor */
 		break;
 	case 0xFF:
-		/* Transmit slave data */
 		break;
 	default:
 		break;
 	}
+	*/
 }
