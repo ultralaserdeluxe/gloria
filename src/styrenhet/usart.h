@@ -13,6 +13,9 @@
 void usart_init();
 void usart_transmit(unsigned char data);
 unsigned char usart_receive();
+void usart_set_tx();
+void usart_set_rx();
+void usart_disconnect();
 
 
 #endif /* USART_H_ */
