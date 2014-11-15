@@ -22,7 +22,7 @@ class SensorThread(threading.Thread):
     def run(self):
         print "starting sensorthread" 
         while not self.exitFlag:
-            #spi.writebytes([0x0F])
+            spi.writebytes([0x0F]) 
             #time.sleep(self.delay)
             #data = spi.readbytes(13)
             data = testreadbytes()
@@ -34,14 +34,14 @@ class SensorThread(threading.Thread):
         self.exitFlag = status
 
 def testreadbytes():
+    
     temp = []
     for i in range(0,104):
         temp.append(random.choice(boolean)) 
     return temp
 
-
-
 def divide_data(data):
+        
     del line_sensordata[0:]
     for i in data[0:88]:
         line_sensordata.append(i)
@@ -65,7 +65,6 @@ def print_sensordata():
         temp += str(i)
 
     print temp    
-
 
 
 
