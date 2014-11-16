@@ -14,7 +14,7 @@ void servo_init(int ID)
 		// Set baud to clk/16 => 1Mbps */
 		usart_init();
 		usart_set_tx();
-		servo_parameter_t *p;
+		servo_parameter_t *p = NULL;
 		
 		add_servo_parameter_chain(p, P_CW_ANGLE_LIMIT_L_INIT);
 		add_servo_parameter_chain(p, P_CW_ANGLE_LIMIT_H_INIT);
