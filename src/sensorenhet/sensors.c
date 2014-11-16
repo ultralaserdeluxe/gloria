@@ -64,7 +64,7 @@ sensor_data_t* sensors_init(){
 	DDRA = 0x0F;			
 	
 	/* Configure ADC */	
-	ADCSRA = 0x80;			
+	ADCSRA = 0x87;			
 	
 	sensor_data_t* sensor_data = malloc(sizeof(sensor_data_t));
 	
