@@ -1,0 +1,63 @@
+\documentclass[titlepage, a4paper]{article}
+\input{../mall/layout.tex}	% Importera generella layout-strukturer
+
+\newcommand{\LIPSdokumenttyp}{Mötesprotokoll}
+\newcommand{\LIPSkursnamn}{TSEA29}
+\newcommand{\LIPSprojektnamn}{Lagerrobot}
+\newcommand{\LIPSprojektgrupp}{Grupp 2}
+\newcommand{\LIPSutfardare}{hansn314} % Vem har utfärdat protokollet?
+
+\pagenumbering{roman}	% Sidnumrering
+
+\begin{document}
+
+\begin{projektmote}{Mötesprotokoll}{2014-11-15}
+% ------------ PARAGRAFER ----------------------
+% Syntax \paragraf{Vi bestämde och kom överens}
+% ----------------------------------------------
+\paragraf{Mötet öppnas.}
+\paragraf{Närvarande: Pål, Hannes, Dennis, Martin, Yngve}
+\paragraf{Hannes för protokoll.}
+\paragraf{Pål: Testa muxning redan gjord. Styrning av motorer har Yngve gjort. Testa styra servon behöver göras mer. Ska tolka IR-data och skriva testprogram för sensorenheten.}
+\paragraf{Martin: Har skrivit om kommunikation mellan huvud-PC, så den fungerar. Testa och felsöka buss mellan huvud-styr/sensor, är inte klart då vi saknat hårdvara för SPI, hoppas göra klart det idag. Skjuter fram aktivitet aktivitet 38, 39 och börjar på dem redan nästa vecka.}
+\paragraf{Dennis: Har jobbat med styrlogik. Läsning av sensordata är inräknat (aktivitet 35). Ska jobba med kalibreringsfunktion och tolkning av kommandon från PC på huvud. Aktivitet 33, 34 outsourcas till Yngve.}
+\paragraf{Yngve: Har jobbat med en mängd aktiviteter nära AVRerna. Bland annat virat om virkorten. Nästa vecka mäta respons motorer/servon och testa styra servon/motorer (33, 34 från Dennis).}
+\paragraf{Hannes: Har jobbat mycket med mjukvara på styr och sensor. Sensorenheten är i stort sett helt klar. Fortfarande en del jobb kvar på styrenheten. Om inte styrenheten blir klar idag behövs mer timmar nästa vecka. Om tid finns nästa vecka påbörjas den Tekniska Dokumentationen.}
+\paragraf{Nästa möte måndag. Lunchmöte!}
+\paragraf{Mötet avslutas.}
+\end{projektmote}
+
+
+\newpage
+\textbf{\Large Aktuella aktiviteter}
+\begin{center}
+\begin{tabularx}{\textwidth}{| p{4mm} | X | p{13.5mm} | X |}
+	\hline
+	\textbf{Nr} & \textbf{Aktivitet} & \textbf{Ansvar} & \textbf{Status} \\\hline	
+% ------------ Aktuella aktiviteter ------------
+% Syntax {Nr} & {Aktivitet} & {Ansvarig} & {Status} \\\hline
+% ----------------------------------------------
+	{1} & {Implementera buss mellan huvud och styr} & {AY, DL} & {Bör bli klart idag} \\\hline
+	{3} & {Implementera buss mellan huvud och sensor} & {DL, HS} & {Bör bli klart idag} \\\hline
+	{4} & {Koppla ihop huvud och sensor} & {AY} & {Klar} \\\hline
+	{7} & {Python-modul för att skicka/ta emot data från huvud} & {DW} & {Klar} \\\hline
+	{16} & {Implementera styrning av motorer} & {PK, AY} & {Klar} \\\hline
+	{17} & {Implementera styrning av servon} & {HS} & {Påbörjad, } \\\hline
+	{18} & {Testa och felsöka buss mellan huvud och styr} & {HS,MS} & {Påbörjad, bör bli klar idag} \\\hline
+	{19} & {Testa och felsöka buss mellan huvud och sensor} & {HS,MS} & {Påbörjad, bör bli klar idag} \\\hline
+	{24} & {Implementera styrlogik} & {DL} & {Ej påbörjad} \\\hline
+	{25} & {Implementera läsning av sensorer} & {HS} & {Klar} \\\hline
+	{26} & {Mästa respons från motorer och servon} & {AY} & {Ej påbörjad} \\\hline
+	{27} & {Implementera tolkning och utförande av kommandon från PC på huvud} & {DL} & {Klar} \\\hline
+	{31} & {Testa styra servon från styrenheten} & {PK} & {Påbörjad, ej klar} \\\hline
+	{32} & {Testa styra motorer från styrenheten} & {AY} & {Klar} \\\hline
+	{33} & {Testa styra servon från huvud} & {AY} & {Ej påbörjad} \\\hline
+	{34} & {Testa styra motorer från huvud} & {AY} & {Ej påbörjad} \\\hline
+	{35} & {Implementera läsning av sensordata på huvud} & {DL} & {Påbörjad} \\\hline
+	{37} & {Skriva testprogram för linjesensor sensorenheten} & {PK} & {Ej påbörjad} \\\hline
+	{38} & {Implementera och testa X,Y,Z  till servovinkel konvertering} & {MS, HS} & {Ej påbörjad} \\\hline
+	{39} & {Implementera och testa gränser för armen} & {MS} & {Ej påbörjad} \\\hline
+\end{tabularx}
+\end{center}
+
+\end{document}

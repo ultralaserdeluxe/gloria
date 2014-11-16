@@ -60,6 +60,7 @@ void send_servo_instruction(servo_instruction_t *t)
 		usart_transmit(current->current_parameter);
 		current = current->next;
 	}
+	free_instruction_full(t);
 }
 
 /* Returns instruction for given parameters ready to be sent */
@@ -112,6 +113,7 @@ servo_instruction_t* concatenate_instructions(servo_instruction_t *t1, servo_ins
 	t1->last_parameter->next = t2->first_parameter;
 	t1->last_parameter = t2->last_parameter;
 	free(t2);
+	return t1;
 }
 
 void free_instruction(servo_instruction_t *t)
@@ -244,3 +246,4 @@ int servo_parameter_chain_length(servo_parameter_t *p)
 	}
 	return length;
 }
+

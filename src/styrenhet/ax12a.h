@@ -88,6 +88,15 @@
 #define SERVO_8 0x08
 #define SERVO_ALL 0xFE
 
+//--- Joints ---
+#define JOINT_1 0x00
+#define JOINT_2 0x01
+#define JOINT_3 0x02
+#define JOINT_4 0x03
+#define JOINT_5 0x04
+#define JOINT_6 0x05
+
+
 #define ON 0x01
 #define OFF 0x00
 #define _ON 0x00

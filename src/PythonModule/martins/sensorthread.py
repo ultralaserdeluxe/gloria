@@ -7,22 +7,20 @@ import spidev
 boolean = [0,1]
 
 class SensorThread(threading.Thread):
-    def __init__(self, sensorList, delay):
+    def __init__(self, sensorList):
         threading.Thread.__init__(self)
         self.sensorList = sensorList
-        self.delay = delay
         self.exitFlag = 0
-        #self.spi = spidev.SpiDev()
-        #self.spi.open(0,1)
+        self.spi = spidev.SpiDev()
+        self.spi.open(3,0)
 
     def run(self):
         print "starting sensorthread" 
         while not self.exitFlag:
-            #self.spi.writebytes([0x0F]) 
-            #data = self.spi.readbytes(13)
-            data = testreadbytes()
+            self.spi.writebytes([0x0F]) 
+            data = self.spi.readbytes(13)
+            #data = testreadbytes()
             self.divide_data(data)
-            time.sleep(self.delay)
         
     def kill(self, status):
         self.exitFlag = status

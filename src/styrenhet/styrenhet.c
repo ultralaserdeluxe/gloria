@@ -9,11 +9,11 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
-#include "arm.h"
+#include "command_queue.h"
 #include "spi.h"
 #include "ax12a.h"
 #include "huvud_styr_protocol.h"
-//#include "usart.h" //USART communication handled by servo.c
+#include "usart.h" //USART communication handled by servo.c
 
 command_queue_t *gloria_queue;
 
@@ -24,7 +24,8 @@ void spi_recieve_handler(unsigned int data)
 
 int main(void)
 {
-	gloria_queue = arm_init(SERVO_ALL);
+	arm_init(SERVO_ALL);
+	gloria_queue = new_queue();
 
 	int id = SERVO_6;
 	int instruction = INSTR_WRITE;
