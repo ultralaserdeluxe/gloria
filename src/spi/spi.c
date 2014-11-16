@@ -13,15 +13,14 @@
 
 void spi_recieve_handler(unsigned int);
 
-transmit_queue_t *transmit_q;
-
 ISR(SPI_STC_vect)
 {
 	spi_recieve_handler(SPDR);
-	if (!empty_SPI_transmit_queue(transmit_q))
-	{
-		SPDR = pop_transmit_queue_data(transmit_q);
-	}
+	 //BUG SOMEWHERE BELOW ?
+	 //if (!empty_SPI_transmit_queue(transmit_q))
+	 //{
+		 //SPDR = pop_transmit_queue_data(transmit_q);
+	 //}
 }
 
 void spi_slave_init()
@@ -29,7 +28,7 @@ void spi_slave_init()
 	/* Set MISO output, all others input */
 	DDRB = (1<<PORTB6);
 	/* Enable SPI */
-	SPCR = (1<<SPE)|(0<<MSTR)|(1<<SPIE);
+	SPCR = (1<<SPE)|(1<<SPIE);
 	
 	transmit_queue_init();
 }
