@@ -22,6 +22,8 @@ typedef struct transmit_queue
 	transmit_node_t *last_node;
 } transmit_queue_t;
 
+transmit_queue_t *transmit_q;
+
 void spi_slave_init();
 
 transmit_node_t* create_transmit_node(uint8_t data);
