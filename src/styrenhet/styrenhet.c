@@ -14,55 +14,45 @@
 #include "ax12a.h"
 #include "huvud_styr_protocol.h"
 #include "usart.h" //USART communication handled by servo.c
+#include "arm.h"
 
 command_queue_t *gloria_queue;
 
 void spi_recieve_handler(unsigned int data)
 {
-	
+	input_byte(gloria_queue, data);
 }
 
 int main(void)
 {
 	arm_init(SERVO_ALL);
 	gloria_queue = new_queue();
-
-	int id = SERVO_6;
-	int instruction = INSTR_WRITE;
-	uint8_t length = 0x05;
-	uint8_t p1 = P_GOAL_SPEED_L;
-	uint8_t p2 = 0xFF;
-	uint8_t p3 = 0x03;
-	usart_transmit(0xFF);
-	usart_transmit(0xFF);
-	usart_transmit(id);
-	usart_transmit(length);
-	usart_transmit(instruction);
-	usart_transmit(p1);
-	usart_transmit(p2);
-	usart_transmit(p3);
-	usart_transmit(make_checksum(id, length, instruction,
-								p1 + p2 + p3));	
+	system_init(gloria_queue, 2, 8);
+	spi_slave_init();
+	sei();
 	
-	length = 0x05;
-	p1 = P_GOAL_POSITION_L;
-	p2 = 0xff;
-	p3 = 0x02;	
 	while(1){
-	
-		usart_transmit(0xFF);
-		usart_transmit(0xFF);
-		usart_transmit(id);
-		usart_transmit(length);
-		usart_transmit(instruction);
-		usart_transmit(p1);
-		usart_transmit(p2);
-		usart_transmit(p3);
-		usart_transmit(make_checksum(id, length, instruction,
-									p1 + p2 + p3));
-								
-		/*_delay_ms(3000);*/
-	
-		p3 = p3 ^ 0x02;
+		input_byte(gloria_queue, 0x03); // Flytta Axel 6 til 02ff
+		input_byte(gloria_queue, 0x16);
+		input_byte(gloria_queue, 0x02);
+		input_byte(gloria_queue, 0xff);
+		
+		input_byte(gloria_queue, 0x01);
+		input_byte(gloria_queue, 0x36); // Action Axel ALL
+		
+		read_all_commands(gloria_queue);
+		_delay_ms(1500);
+		
+		input_byte(gloria_queue, 0x03); // Flytta Axel 6 til 02ff
+		input_byte(gloria_queue, 0x16);
+		input_byte(gloria_queue, 0x02);
+		input_byte(gloria_queue, 0x0f);
+		
+		input_byte(gloria_queue, 0x01);
+		input_byte(gloria_queue, 0x36); // Action Axel ALL
+		
+		read_all_commands(gloria_queue);
+		_delay_ms(1500);
+		
 	}
 }

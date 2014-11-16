@@ -49,25 +49,33 @@ void servo_init(int ID)
 		);
 		
 		free_servo_parameter_chain(p);
+		
+		add_servo_parameter_chain(p, P_GOAL_SPEED_L_INIT);
+		add_servo_parameter_chain(p, P_GOAL_SPEED_H_INIT);
+		send_servo_instruction(
+		servo_instruction_packet(ID, INSTR_WRITE, P_GOAL_SPEED_L, p)
+		);
+		
+		free_servo_parameter_chain(p);
 }
 
 /* Does the actual sending of data to servo over UART*/
 void send_servo_instruction(servo_instruction_t *t)
 {
 	servo_parameter_t *current = get_servo_parameter(t);
-	while(!empty_servo_parameter(current))
+	while (!empty_servo_parameter(current))
 	{
 		usart_transmit(current->current_parameter);
 		current = current->next;
 	}
-	free_instruction_full(t);
+	//free_instruction_full(t);
 }
 
 /* Returns instruction for given parameters ready to be sent */
 servo_instruction_t* servo_instruction_packet(int ID, int instr, int reg, servo_parameter_t *parameters)
 {
 	int length;
-	if ((instr != INSTR_PING)&(instr != INSTR_ACTION)&(instr != INSTR_RESET))
+	if ((instr == INSTR_PING)||(instr == INSTR_ACTION)||(instr == INSTR_RESET))
 	{
 		length = 2; // 2 for instruction, checksum
 	}
@@ -81,7 +89,7 @@ servo_instruction_t* servo_instruction_packet(int ID, int instr, int reg, servo_
 	add_servo_parameter(t,ID);
 	add_servo_parameter(t,length);
 	add_servo_parameter(t,instr);
-	if ((instr != INSTR_PING)&(instr != INSTR_ACTION)&(instr != INSTR_RESET))
+	if ((instr == INSTR_WRITE)||(instr == INSTR_REG_WRITE)||(instr == INSTR_READ))
 	{
 		add_servo_parameter(t,reg);
 		servo_parameter_t *current = parameters;
@@ -138,6 +146,7 @@ servo_parameter_t* create_servo_parameter(unsigned int new_parameter)
 {
 	servo_parameter_t *this = malloc(sizeof(servo_parameter_t));
 	this->current_parameter = new_parameter;
+	this->next = NULL;
 	return this;
 }
 
@@ -147,11 +156,13 @@ void add_servo_parameter(servo_instruction_t *instr, unsigned int new_parameter)
 	if (empty_servo_parameter(instr->first_parameter))
 	{
 		instr->first_parameter = create_servo_parameter(new_parameter);
+		instr->last_parameter = instr->first_parameter;
 	}
 	else
 	{
 		servo_parameter_t *last = last_servo_parameter(instr->first_parameter);
 		last->next = create_servo_parameter(new_parameter);
+		instr->last_parameter = last->next;
 	}
 	instr->length++;
 }
@@ -225,7 +236,7 @@ void add_servo_parameter_chain(servo_parameter_t *t, uint8_t new_data)
 void free_servo_parameter_chain(servo_parameter_t *p)
 {
 	servo_parameter_t *current = p;
-	servo_parameter_t *save;
+	servo_parameter_t *save = current->next;
 	while (current != NULL)
 	{
 		save = current->next;

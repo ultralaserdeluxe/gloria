@@ -11,8 +11,8 @@
 /* Initialize arm and motor */
 void system_init(command_queue_t *q, int motors, int servos)
 {
-	q->arm = new_arm_data(servos);
-	for (int i = SERVO_1; i <= SERVO_8; i++)
+	q->arm = new_arm_data(servos + 1); //We have one "extra" servo. SERVO_0 (doesnt exist)
+	for (int i = 0; i <= SERVO_8; i++)
 	{
 		q->arm->s[i].ID = i;
 	}
@@ -26,9 +26,14 @@ void system_init(command_queue_t *q, int motors, int servos)
 void input_byte(command_queue_t *q, uint8_t data)
 {
 	// To do, take input byte, decide if data is corrupt or not
-	if (!command_recieved(node_data(last_node(q))))
+	if (empty_queue(q))
 	{
+		put_queue(q, new_node());
 		int status = set_node_command(last_node(q), data);
+	}
+	else if (!command_recieved(node_data(last_node(q))))
+	{
+		set_node_command(last_node(q), data);
 	}
 	else
 	{
@@ -181,16 +186,21 @@ int set_command(command_struct_t *command, uint8_t data)
 		case 0 :
 			command->length = data;
 			command->status++;
-			return command->status;
+			break;
 		case 1 :
 			command->instruction = data;
 			command->status++;
-			return command->status;
+			break;
+		case 2:
+			command->first_parameter = create_servo_parameter(data);
+			command->status++;
+			break;
 		default :
 			add_servo_parameter_chain(command->first_parameter, data);
 			command->status++;
-			return command->status;
+			break;
 	}
+	return command->status;
 }
 
 /* Returns a new command struct with status = 0, others null */
@@ -199,6 +209,7 @@ command_struct_t* new_command()
 	command_struct_t *this;
 	this = malloc(sizeof(command_struct_t));
 	this->status = 0;
+	this->length = 0;
 	return this;
 }
 
@@ -240,7 +251,7 @@ void read_command(command_queue_t *q)
 			arm_action(SERVO_7);
 			break;
 		case ADDRESS_JOINT_6:
-			arm_action(SERVO_7);
+			arm_action(SERVO_8);
 			break;
 		case ADDRESS_MOTOR_ALL:
 			motor_action(MOTOR_ALL, q->motor);
@@ -269,28 +280,37 @@ void read_command(command_queue_t *q)
 			set_servo_goal_position(q->arm, SERVO_6, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			set_servo_goal_position(q->arm, SERVO_7, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			set_servo_goal_position(q->arm, SERVO_8, p->current_parameter, next_servo_parameter(p)->current_parameter);
+			update_servo_regs(q->arm, SERVO_ALL);
 			break;
 		case ADDRESS_JOINT_1:
 			set_servo_goal_position(q->arm, SERVO_1, p->current_parameter, next_servo_parameter(p)->current_parameter);
+			update_servo_regs(q->arm, SERVO_1);
 			break;
 		case ADDRESS_JOINT_2:
 			set_servo_goal_position(q->arm, SERVO_2, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			/* SERVO_3 is same joint as SERVO_2 and has to be its inverse */
 			set_servo_goal_position(q->arm, SERVO_3, ~(p->current_parameter), ~(next_servo_parameter(p)->current_parameter));
+			update_servo_regs(q->arm, SERVO_2);
+			update_servo_regs(q->arm, SERVO_3);
 			break;
 		case ADDRESS_JOINT_3:
 			set_servo_goal_position(q->arm, SERVO_4, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			/* SERVO_5 is same joint as SERVO_4 and has to be its inverse */
 			set_servo_goal_position(q->arm, SERVO_5, ~(p->current_parameter), ~(next_servo_parameter(p)->current_parameter));
+			update_servo_regs(q->arm, SERVO_4);
+			update_servo_regs(q->arm, SERVO_5);
 			break;
 		case ADDRESS_JOINT_4:
 			set_servo_goal_position(q->arm, SERVO_6, p->current_parameter, next_servo_parameter(p)->current_parameter);
+			update_servo_regs(q->arm, SERVO_6);
 			break;
 		case ADDRESS_JOINT_5:
 			set_servo_goal_position(q->arm, SERVO_7, p->current_parameter, next_servo_parameter(p)->current_parameter);
+			update_servo_regs(q->arm, SERVO_7);
 			break;
 		case ADDRESS_JOINT_6:
 			set_servo_goal_position(q->arm, SERVO_8, p->current_parameter, next_servo_parameter(p)->current_parameter);
+			update_servo_regs(q->arm, SERVO_7);
 			break;
 		case ADDRESS_MOTOR_ALL:
 			set_queued_speed_left(q->motor, p->current_parameter, next_servo_parameter(p)->current_parameter);
@@ -342,6 +362,14 @@ void read_command(command_queue_t *q)
 		}
 	}
 	//Todo add functionality for COMMAND_STATUS
+}
+
+void read_all_commands(command_queue_t *q)
+{
+	while (!empty_queue(q)&&command_recieved(node_data(first_node(q))))
+	{
+		read_command(q);
+	}
 }
 
 /* Returns current status */

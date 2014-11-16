@@ -63,6 +63,8 @@
 #define P_CCW_COMPLIANCE_SLOPE_INIT 0x20
 #define P_TORQUE_ENABLE_INIT OFF
 #define	P_RETURN_LEVEL_INIT 0x02
+#define P_GOAL_SPEED_L_INIT 0x01
+#define P_GOAL_SPEED_H_INIT 0x00
 
 //--- Instruction ---
 #define INSTR_PING 0x01

@@ -39,7 +39,8 @@ typedef struct arm_data
 
 /* Core functions for arm */
 void arm_init(int servo);
-void update_servo_reg(int address, arm_data_t *d);
+void update_servo(arm_data_t *d, int address);
+void update_servo_regs(arm_data_t *d, int address);
 void arm_action(int address);
 
 /* Functions for arm_data */
