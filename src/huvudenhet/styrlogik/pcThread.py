@@ -2,7 +2,6 @@
 import threading
 import socket
 import select
-import sys
 import os
 class pcThread(threading.Thread):
     
