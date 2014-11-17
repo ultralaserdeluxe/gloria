@@ -129,5 +129,14 @@ uint16_t get_servo_goal_position(arm_data_t *arm, int servo)
 
 uint16_t make_int_16(uint8_t high, uint8_t low)
 {
-	return (high << 4) + low;
+	uint16_t temp = high;
+	return (temp << 8) + low;
+}
+
+void set_inverse_servo_goal_position(arm_data_t *arm, int servo, uint8_t new_position_h, uint8_t new_position_l)
+{
+	servo_data_t *array = arm->s;
+	uint16_t goal_position = 0x3ff - make_int_16(new_position_h, new_position_l);
+	array[servo].goal_position_h = (goal_position >> 4) & 0x03;
+	array[servo].goal_position_l = goal_position & 0x0F;
 }

@@ -61,10 +61,15 @@
 #define P_CCW_COMPLIANCE_MARGIN_INIT 0x00
 #define P_CW_COMPLIANCE_SLOPE_INIT 0x20
 #define P_CCW_COMPLIANCE_SLOPE_INIT 0x20
-#define P_TORQUE_ENABLE_INIT OFF
+#define P_TORQUE_ENABLE_INIT ON
 #define	P_RETURN_LEVEL_INIT 0x02
-#define P_GOAL_SPEED_L_INIT 0x01
-#define P_GOAL_SPEED_H_INIT 0x00
+#define P_RETURN_DELAY_TIME_INIT 0x0F
+#define P_GOAL_SPEED_L_INIT 0x00
+#define P_GOAL_SPEED_H_INIT 0x01
+#define P_PUNCH_L_INIT 0x0F
+#define P_PUNCH_H_INIT 0x00
+#define P_TORQUE_LIMIT_L_INIT 0xFF
+#define P_TORQUE_LIMIT_H_INIT 0x03
 
 //--- Instruction ---
 #define INSTR_PING 0x01
@@ -90,6 +95,10 @@
 #define SERVO_8 0x08
 #define SERVO_ALL 0xFE
 
+//--- Servo max angle
+#define SERVO_MAX_ANGLE_H 0x03
+#define SERVO_MAX_ANGLE_L 0xff
+
 //--- Joints ---
 #define JOINT_1 0x00
 #define JOINT_2 0x01
@@ -98,8 +107,8 @@
 #define JOINT_5 0x04
 #define JOINT_6 0x05
 
-
 #define ON 0x01
 #define OFF 0x00
 #define _ON 0x00
 #define _OFF 0x01
+

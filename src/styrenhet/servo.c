@@ -43,6 +43,14 @@ void servo_init(int ID)
 		
 		free_servo_parameter_chain(p);
 		
+		add_servo_parameter_chain(p, P_TORQUE_LIMIT_L_INIT);
+		add_servo_parameter_chain(p, P_TORQUE_LIMIT_H_INIT);
+		send_servo_instruction(
+		servo_instruction_packet(ID, INSTR_WRITE, P_TORQUE_LIMIT_L, p)
+		);
+		
+		free_servo_parameter_chain(p);
+		
 		add_servo_parameter_chain(p, P_RETURN_LEVEL_INIT);
 		send_servo_instruction(
 			servo_instruction_packet(ID, INSTR_WRITE, P_RETURN_LEVEL, p)
@@ -54,6 +62,21 @@ void servo_init(int ID)
 		add_servo_parameter_chain(p, P_GOAL_SPEED_H_INIT);
 		send_servo_instruction(
 		servo_instruction_packet(ID, INSTR_WRITE, P_GOAL_SPEED_L, p)
+		);
+		
+		free_servo_parameter_chain(p);
+		
+		add_servo_parameter_chain(p, P_PUNCH_L_INIT);
+		add_servo_parameter_chain(p, P_PUNCH_H_INIT);
+		send_servo_instruction(
+		servo_instruction_packet(ID, INSTR_WRITE, P_PUNCH_L, p)
+		);
+		
+		free_servo_parameter_chain(p);
+		
+		add_servo_parameter_chain(p, P_RETURN_DELAY_TIME_INIT);
+		send_servo_instruction(
+		servo_instruction_packet(ID, INSTR_WRITE, P_RETURN_DELAY_TIME, p)
 		);
 		
 		free_servo_parameter_chain(p);
@@ -257,4 +280,3 @@ int servo_parameter_chain_length(servo_parameter_t *p)
 	}
 	return length;
 }
-

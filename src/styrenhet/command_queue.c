@@ -273,10 +273,10 @@ void read_command(command_queue_t *q)
 			set_servo_goal_position(q->arm, SERVO_1, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			set_servo_goal_position(q->arm, SERVO_2, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			/* SERVO_3 is same joint as SERVO_2 and has to be its inverse */
-			set_servo_goal_position(q->arm, SERVO_3, ~(p->current_parameter), ~(next_servo_parameter(p)->current_parameter));
+			set_inverse_servo_goal_position(q->arm, SERVO_3, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			set_servo_goal_position(q->arm, SERVO_4, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			/* SERVO_5 is same joint as SERVO_4 and has to be its inverse */
-			set_servo_goal_position(q->arm, SERVO_5, ~(p->current_parameter), ~(next_servo_parameter(p)->current_parameter));
+			set_inverse_servo_goal_position(q->arm, SERVO_5, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			set_servo_goal_position(q->arm, SERVO_6, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			set_servo_goal_position(q->arm, SERVO_7, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			set_servo_goal_position(q->arm, SERVO_8, p->current_parameter, next_servo_parameter(p)->current_parameter);
@@ -289,14 +289,15 @@ void read_command(command_queue_t *q)
 		case ADDRESS_JOINT_2:
 			set_servo_goal_position(q->arm, SERVO_2, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			/* SERVO_3 is same joint as SERVO_2 and has to be its inverse */
-			set_servo_goal_position(q->arm, SERVO_3, ~(p->current_parameter), ~(next_servo_parameter(p)->current_parameter));
+			set_inverse_servo_goal_position(q->arm, SERVO_3, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			update_servo_regs(q->arm, SERVO_2);
 			update_servo_regs(q->arm, SERVO_3);
 			break;
 		case ADDRESS_JOINT_3:
+			//set_servo_goal_position(q->arm, SERVO_5, ((SERVO_MAX_ANGLE_H & 0x03) - p->current_parameter), (SERVO_MAX_ANGLE_L - next_servo_parameter(p)->current_parameter));
+			set_inverse_servo_goal_position(q->arm, SERVO_5, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			set_servo_goal_position(q->arm, SERVO_4, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			/* SERVO_5 is same joint as SERVO_4 and has to be its inverse */
-			set_servo_goal_position(q->arm, SERVO_5, ~(p->current_parameter), ~(next_servo_parameter(p)->current_parameter));
 			update_servo_regs(q->arm, SERVO_4);
 			update_servo_regs(q->arm, SERVO_5);
 			break;
@@ -310,7 +311,7 @@ void read_command(command_queue_t *q)
 			break;
 		case ADDRESS_JOINT_6:
 			set_servo_goal_position(q->arm, SERVO_8, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			update_servo_regs(q->arm, SERVO_7);
+			update_servo_regs(q->arm, SERVO_8);
 			break;
 		case ADDRESS_MOTOR_ALL:
 			set_queued_speed_left(q->motor, p->current_parameter, next_servo_parameter(p)->current_parameter);

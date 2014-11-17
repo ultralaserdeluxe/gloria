@@ -60,7 +60,8 @@ void usart_set_tx(){
 
 void usart_set_rx(){
 	/* Wait for data to be shifted out */
-	while ( !( UCSR1A & (1<<TXC1)) );
+	while ( !( UCSR1A & (1<<TXC1)) && !( UCSR1A & (1<<UDRE1)) );
+	UCSR1A |= (1<<TXC1); // Reset flag
 	/* Turn off tx */
 	PORTB |= 0x02; //00000010
 	/* Turn on rx */
