@@ -1,32 +1,58 @@
-from sensorthread import *
-import queue
+#from sensorThread import *
+from pcThread import *
+import Queue
 
- #[start,automotor,autoarm,harpaket,kalibrera]
-commando = [True,True,False,False,True]
+#kalibrerad data [(golv,tejp),..] för varje linjesensor
+linesensor_c_data = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],
+                     [0,0],[0,0],[0,0],[0,0],[0,0]]
 
+sensorList = [["lineSensor",[255,10,4,150,210,215,104,80,5,20,60]],
+              ["distance",[]]]
+
+commandQueue = Queue.Queue()
+
+
+#kommer nog behöva fler
+pick_up = False
+put_down = False  
+automotor = False
+autoarm = False
+has_package = False
+
+                             
 def main():
-
-    #kommer nog behöva fler
-    pick_up = False
-    put_down = False  
     
-    commandQueue = queue.Queue()
-    sensorList = []
-    
-    sensorthread = SensorThread(sensorList)
-    sensorthread.start()
+    #sensorthread = sensorThread(sensorList)
+    #sensorthread.start()
 
-    while commandQueue.get(
+    pcthread = pcThread(sensorList,commandQueue)
+    pcthread.start()
+    
+    while commandQueue.get()[0] != "start":
+        pass
 
     try:
         while True:
-            #autonom motor och inte befinner sig på stoppstation
-            if (commando[1] == True) and not on_stopstation() :
+            #hämta pc kommandot från kön...
+            command = commandQueue.get()
+            if command[0] == "autoMotor":
+                if command[1][0] == True:
+                    automotor = True
+                else:
+                    automotor = False
+            if command[0] == "autoArm":
+                if command[1][0] == True:
+                    autoarm = True
+                else:
+                    autoarm = False
+            
+            #utför
+            if automotor == False and not on_stopstation() :
                 print "autonom motor\n"
                 if pick_up == False:
                     #behöver inte styra armen, fortsätt...
                     #kolla om vi vill styra armen ändå
-                    if commando[2] == False:
+                    if autoarm == False:
                         #styr arm
                         print "waiting for arm input...\n"
                     if put_down == False:
@@ -44,7 +70,7 @@ def main():
                         #sätt ned paket
                         print "putting down package..."                        
                 else:
-                    if commando[2] == False:
+                    if autoarm == False:
                         #styr arm 
                         print "waiting for arm input..."
             else:
@@ -65,7 +91,7 @@ def check_pick_up_right():
         print "station to the right found\n"
         if has_package_right():
             print "station has package\n"
-            if commando[3] == False:
+            if has_package == False:
                 print "has no current package, pick up\n"
                 return True
     return False
@@ -75,7 +101,7 @@ def check_pick_up_left():
         print "station to the left found\n"
         if has_package_left():
             print "station has package\n"
-            if commando[3] == False:
+            if has_package == False:
                 print "has no current package, pick up\n"
                 return True
     return False           
@@ -85,7 +111,7 @@ def check_put_down_right():
         print "station to the right found\n"
         if not has_package_right():
             print "station has no package\n"
-            if commando[3] == True:
+            if has_package == True:
                 print "has current package, put down\n"
                 return True
     return False
@@ -95,15 +121,13 @@ def check_put_down_left():
         print "station to the left found\n"
         if not has_package_left():
             print "station has no package\n"
-            if commando[3] == True:
+            if has_package == True:
                 print "has current package, put down\n"
                 return True
     return False            
 
 def on_stopstation():
     #om vi har haft 3 stationer utan paket på varandra? (med ett visst avstånd)
-    if binary_to_int(line_sensordata) < 300 and binary_to_int(line_sensordata) > 100:
-        return True
     return False
 
 def is_station_right():
@@ -124,8 +148,21 @@ def regulate():
 def drive_forward():
     print "keep on truckin..."
 
-   
-    
 
-main()
+def calibrate(): 
+    
+    calibrate_floor_or_tape(1,0)
+    
+    #nått emellan
+    
+    calibrate_floor_or_tape(0,1)
+
+def calibrate_floor_or_tape(x,y):
+    for i in range(0,11):
+        if i in [0,2,4,6,8,10]:
+            linesensor_c_data[i][x] = sensorList[0][1][i]
+        else:
+            linesensor_c_data[i][y] = sensorList[0][1][i]    
+
+
 
