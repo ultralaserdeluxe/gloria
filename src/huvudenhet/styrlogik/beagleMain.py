@@ -2,7 +2,7 @@
 from pcThread import pcThread
 import Queue
 import time
-#from sensorThread import sensorThread
+from sensorThread import sensorThread
 commandQueue=Queue.Queue()
 sensorList=[["lineSensor",[0,0,20,0,512,0,0,100,0,0,0]],
             ["distance",[30,40]],
@@ -12,9 +12,9 @@ sensorList=[["lineSensor",[0,0,20,0,512,0,0,100,0,0,0]],
             ["latestCalibration",["0000-00-00-15:00"]],
             ["autoMotor",[True]],
             ["autoArm",[False]]]
-#sensorThreadObject=sensorThread(sensorList)
-#sensorThreadObject.daemon=True
-#sensorThreadObject.start()
+sensorThreadObject=sensorThread(sensorList)
+sensorThreadObject.daemon=True
+sensorThreadObject.start()
 pcThreadObject=pcThread(commandQueue,sensorList)
 pcThreadObject.daemon=True
 pcThreadObject.start()
