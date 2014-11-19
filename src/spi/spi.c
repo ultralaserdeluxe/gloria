@@ -27,11 +27,11 @@ void spi_slave_init()
 {
 	/* Set MISO output, all others input */
 	DDRB |= (1<<PORTB6);
-	DDRB &= (0<<PORTB4)|(0<<PORTB5)|(0<<PORTB7);
+	//DDRB &= (0<<PORTB4)|(0<<PORTB5)|(0<<PORTB7);
 	/* Enable SPI */
 	SPCR = (1<<SPE)|(1<<SPIE);
 	
-	transmit_queue_init();
+	//transmit_queue_init();
 }
 
 transmit_node_t* create_transmit_node(uint8_t data)
