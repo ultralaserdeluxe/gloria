@@ -2,7 +2,7 @@
 from pcThread import *
 import Queue
 
-#kalibrerad data [(golv,tejp),..] för varje linjesensor
+#kalibrerad data [[golv,tejp],..] för varje linjesensor
 linesensor_c_data = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],
                      [0,0],[0,0],[0,0],[0,0],[0,0]]
 
@@ -22,12 +22,15 @@ has_package = False
                              
 def main():
     
+    #spi init för styrenheten
+    
+
     #sensorthread = sensorThread(sensorList)
     #sensorthread.start()
 
     pcthread = pcThread(sensorList,commandQueue)
     pcthread.start()
-    
+
     while commandQueue.get()[0] != "start":
         pass
 
@@ -35,12 +38,16 @@ def main():
         while True:
             #hämta pc kommandot från kön...
             command = commandQueue.get()
-            if command[0] == "autoMotor":
+            if command[0] == "calibrate_floor":
+                calibrate_floor()
+            elif command[0] == "calibrate_tape":
+                calibrate_tape()
+            elif command[0] == "autoMotor":
                 if command[1][0] == True:
                     automotor = True
                 else:
                     automotor = False
-            if command[0] == "autoArm":
+            elif command[0] == "autoArm":
                 if command[1][0] == True:
                     autoarm = True
                 else:
@@ -149,20 +156,13 @@ def drive_forward():
     print "keep on truckin..."
 
 
-def calibrate(): 
-    
-    calibrate_floor_or_tape(1,0)
-    
-    #nått emellan
-    
-    calibrate_floor_or_tape(0,1)
-
-def calibrate_floor_or_tape(x,y):
+def calibrate_floor(): 
+    #ge golv värden
     for i in range(0,11):
-        if i in [0,2,4,6,8,10]:
-            linesensor_c_data[i][x] = sensorList[0][1][i]
-        else:
-            linesensor_c_data[i][y] = sensorList[0][1][i]    
+        linesensor_c_data[i][0] = sensorList[0][1][i]
 
-
+def calibrate_tape():
+    #ge tejp värden
+    for i in range(0,11):
+        linesensor_c_data[i][1] = sensorList[0][1][i]
 
