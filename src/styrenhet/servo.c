@@ -7,6 +7,7 @@
 
 #include "servo.h"
 #include "usart.h"
+#include <util/delay.h>
 
 /* Initialize servo */
 void servo_init(int ID)
@@ -16,17 +17,31 @@ void servo_init(int ID)
 		usart_set_tx();
 		servo_parameter_t *p = NULL;
 		
+		p = create_servo_parameter(P_RETURN_DELAY_TIME_INIT);
 		add_servo_parameter_chain(p, P_CW_ANGLE_LIMIT_L_INIT);
 		add_servo_parameter_chain(p, P_CW_ANGLE_LIMIT_H_INIT);
 		add_servo_parameter_chain(p, P_CCW_ANGLE_LIMIT_L_INIT);
 		add_servo_parameter_chain(p, P_CCW_ANGLE_LIMIT_H_INIT);
 		send_servo_instruction(
-			servo_instruction_packet(ID, INSTR_WRITE, P_CW_ANGLE_LIMIT_L, p)
+			servo_instruction_packet(ID, INSTR_WRITE, P_RETURN_DELAY_TIME, p)
 		);
 		
 		free_servo_parameter_chain(p);
+		_delay_ms(1);
 		
-		add_servo_parameter_chain(p, P_CW_COMPLIANCE_MARGIN_INIT);
+		p = create_servo_parameter(P_TORQUE_LIMIT_L_INIT);
+		add_servo_parameter_chain(p, P_TORQUE_LIMIT_H_INIT);
+		add_servo_parameter_chain(p, P_RETURN_LEVEL_INIT);
+		add_servo_parameter_chain(p, P_ALARM_LED_INIT);
+		add_servo_parameter_chain(p, P_ALARM_SHUTDOWN_INIT);
+		send_servo_instruction(
+			servo_instruction_packet(ID, INSTR_WRITE, P_MAX_TORQUE_L, p)
+		);
+
+		free_servo_parameter_chain(p);
+		_delay_ms(1);
+		
+		p = create_servo_parameter(P_CW_COMPLIANCE_MARGIN_INIT);
 		add_servo_parameter_chain(p, P_CCW_COMPLIANCE_MARGIN_INIT);
 		add_servo_parameter_chain(p, P_CW_COMPLIANCE_SLOPE_INIT);
 		add_servo_parameter_chain(p, P_CCW_COMPLIANCE_SLOPE_INIT);
@@ -35,51 +50,36 @@ void servo_init(int ID)
 		);
 		
 		free_servo_parameter_chain(p);
+		_delay_ms(1);
 		
-		add_servo_parameter_chain(p, P_TORQUE_ENABLE_INIT);
+		p = create_servo_parameter(P_TORQUE_ENABLE_INIT);
 		send_servo_instruction(
 			servo_instruction_packet(ID, INSTR_WRITE, P_TORQUE_ENABLE, p)
 		);
 		
 		free_servo_parameter_chain(p);
+		_delay_ms(1);
 		
+		p = create_servo_parameter(P_GOAL_SPEED_L_INIT);
+		add_servo_parameter_chain(p, P_GOAL_SPEED_H_INIT);
 		add_servo_parameter_chain(p, P_TORQUE_LIMIT_L_INIT);
 		add_servo_parameter_chain(p, P_TORQUE_LIMIT_H_INIT);
 		send_servo_instruction(
-		servo_instruction_packet(ID, INSTR_WRITE, P_TORQUE_LIMIT_L, p)
+			servo_instruction_packet(ID, INSTR_WRITE, P_GOAL_SPEED_L, p)
 		);
 		
 		free_servo_parameter_chain(p);
+		_delay_ms(1);
 		
-		add_servo_parameter_chain(p, P_RETURN_LEVEL_INIT);
-		send_servo_instruction(
-			servo_instruction_packet(ID, INSTR_WRITE, P_RETURN_LEVEL, p)
-		);
-		
-		free_servo_parameter_chain(p);
-		
-		add_servo_parameter_chain(p, P_GOAL_SPEED_L_INIT);
-		add_servo_parameter_chain(p, P_GOAL_SPEED_H_INIT);
-		send_servo_instruction(
-		servo_instruction_packet(ID, INSTR_WRITE, P_GOAL_SPEED_L, p)
-		);
-		
-		free_servo_parameter_chain(p);
-		
-		add_servo_parameter_chain(p, P_PUNCH_L_INIT);
+		p = create_servo_parameter(P_PUNCH_L_INIT);
 		add_servo_parameter_chain(p, P_PUNCH_H_INIT);
 		send_servo_instruction(
-		servo_instruction_packet(ID, INSTR_WRITE, P_PUNCH_L, p)
+			servo_instruction_packet(ID, INSTR_WRITE, P_PUNCH_L, p)
 		);
 		
 		free_servo_parameter_chain(p);
+		_delay_ms(1);
 		
-		add_servo_parameter_chain(p, P_RETURN_DELAY_TIME_INIT);
-		send_servo_instruction(
-		servo_instruction_packet(ID, INSTR_WRITE, P_RETURN_DELAY_TIME, p)
-		);
-		
-		free_servo_parameter_chain(p);
 }
 
 /* Does the actual sending of data to servo over UART*/
@@ -156,7 +156,8 @@ void free_instruction(servo_instruction_t *t)
 void free_instruction_full(servo_instruction_t *t)
 {
 	servo_parameter_t *current = t->first_parameter;
-	while(!empty_servo_parameter(current))
+	//free_servo_parameter_chain(t->first_parameter);
+	while(current != NULL)
 	{
 		t->first_parameter = current->next;
 		free(current);
