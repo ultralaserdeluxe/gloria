@@ -1,60 +1,28 @@
-# -*- coding: utf-8 -*-
+"""a thread class that fetches data from the sensorunit and puts it in the list shared with mainthread and pc-thread"""
 import threading
-import random
+import sensorUnit
 import time
-import spidev
-
-boolean = [0,1]
-
-class SensorThread(threading.Thread):
-    def __init__(self, sensorList, delay):
-        threading.Thread.__init__(self)
-        self.sensorList = sensorList
-        self.delay = delay
-        self.exitFlag = 0
-        #self.spi = spidev.SpiDev()
-        #self.spi.open(0,1)
-
+updateFreq=20.0 #Hz and must be float
+class sensorThread(threading.Thread):
+    def __init__(self,sensorList):
+        self.__sensorList=sensorList
+        self.__sensorUnit=sensorUnit.sensorUnit()
+        
     def run(self):
-        print "starting sensorthread" 
-        while not self.exitFlag:
-            #self.spi.writebytes([0x0F]) 
-            #data = self.spi.readbytes(13)
-            data = testreadbytes()
-            self.divide_data(data)
-            time.sleep(self.delay)
-        
-    def kill(self, status):
-        self.exitFlag = status
-
-    def divide_data(self, data):
-        temp = []
-        counter = 0
-        del self.sensorList[0][1][0:]
-        #lägger till linjesensordatan i sensorList 
-        for i in data[0:88]:
-            temp.append(i)
-            counter+=1
-            if counter == 8:
-                self.sensorList[0][1].append(binary_to_int(temp))
-                counter = 0
-                del temp[0:]
-        #lägger till avståndsensordata i sensorList
-        del self.sensorList[1][1][0:]
-        self.sensorList[1][1].append(binary_to_int(data[88:96]))
-        self.sensorList[1][1].append(binary_to_int(data[96:104]))
-        
-
-def testreadbytes():
-    temp = []
-    for i in range(0,104):
-        temp.append(random.choice(boolean)) 
-    return temp
-
-#tar en lista med ett binärtal och gör om det till ett heltal
-def binary_to_int(seq):
-    temp = ""
-    for i in seq:
-        temp += str(i)
-    return int(temp,2) 
-
+        while True:
+            time.sleep(1.0/updateFreq)
+            self.updateDistance()
+            self.updateLineSensor()
+    def updateDistance(self):
+        for i in range(len( self.__sensorList)):
+            if self.__sensorList[i][0]=="distance":
+                self.__sensorList[i][1][0]=self.__sensorUnit.getLeftDistance()
+                self.__sensorList[i][1][1]=self.__sensorUnit.getRightDistance()
+                
+    def updateLineSensor(self):
+        for i in range(len( self.__sensorList)):
+            if self.__sensorList[i][0]=="lineSensor":
+                for j in range(11):
+                    self.__sensorList[i][1][j]=self.__sensorUnit.getLineSensor(j)
+                    
+                    
