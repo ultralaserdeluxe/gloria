@@ -5,11 +5,11 @@
 
 from tkinter import *
 from tkinter import ttk
-from pcModule import pcModule
+#from pcModule import pcModule
 
-gloria=pcModule("localhost")
-gloria.updateSensors()
-gloria.start()
+#gloria=pcModule("localhost")
+#gloria.updateSensors()
+#gloria.start()
 
 def main():
     
@@ -28,10 +28,21 @@ def main():
             pass
         
     def write_motor(L,R):
-        gloria.setMotorSpeed(int(L.get()), int(R.get()))
+        #harcoded inputs are int, rest are py_var (StringVar)
+        if isinstance(L, int) and isinstance(R, int):
+            gloria.setMotorSpeed(L, R)
+        else:
+            gloria.setMotorSpeed(int(L.get()), int(R.get()))
 
     def write_arm(X,Y,Z,P,G):
         gloria.setArmPosition(int(X.get()), int(Y.get()), int(Z.get()), int(P.get()), int(W.get()), int(G.get()))
+
+    def write_single(command):
+        if command == "status":
+            pass
+            
+    def write_auto(M):
+        pass
 
     #mainframe start        
     root = Tk()
@@ -46,7 +57,6 @@ def main():
     mainframe.rowconfigure(0, weight=1)
 
     #motor start
-
     motorL_entry = ttk.Scale(mainframe, from_=-100, to=100)
     motorL_entry.grid(column=1, row=1, sticky=(W, E))
     motorL_entry.pack()
@@ -55,21 +65,24 @@ def main():
     motorR_entry.grid(column=3, row=1, sticky=(W, E))
     motorR_entry.pack()
         
-    ttk.Label(mainframe, textvariable=motorL).grid(column=1, row=3, sticky=(W, E))
-    ttk.Button(mainframe, text="LMotor Val", command=motorL_get).grid(column=1, row=2, sticky=(W))
+    ttk.Label(mainframe, textvariable=motorL).grid(column=1, row=3)
+    ttk.Button(mainframe, text="LMotor Val", command=motorL_get).grid(column=1, row=2)
 
-    ttk.Label(mainframe, textvariable=motorR).grid(column=3, row=3, sticky=(W, E))
-    ttk.Button(mainframe, text="RMotor Val", command=motorR_get).grid(column=3, row=2, sticky=(W))
+    ttk.Label(mainframe, textvariable=motorR).grid(column=3, row=3)
+    ttk.Button(mainframe, text="RMotor Val", command=motorR_get).grid(column=3, row=2)
 
     ttk.Button(mainframe, text="LR drive", command=lambda : write_motor(motorL, motorR)).grid(column=2, row=1)
+    ttk.Button(mainframe, text="Spin left", command=lambda : write_motor(-50, 50)).grid(column=2, row=2)
+    ttk.Button(mainframe, text="Spin right", command=lambda : write_motor(50, -50)).grid(column=2, row=3)
+    ttk.Button(mainframe, text="Left turn", command=lambda : write_motor(50, 100)).grid(column=1, row=4)
+    ttk.Button(mainframe, text="Right turn", command=lambda : write_motor(100, 50)).grid(column=3, row=4)
 
     #arm start
-
     X = StringVar() #any way to assign all these to StringVar at once... ?
     Y = StringVar()
     Z = StringVar()
     P = StringVar()
-    W = StringVar()
+    Wr = StringVar()
     G = StringVar()
 
     X_entry = ttk.Entry(mainframe, width=7, textvariable=X)
@@ -84,14 +97,18 @@ def main():
     P_entry = ttk.Entry(mainframe, width=7, textvariable=P)
     P_entry.grid(column=6, row=4, sticky=(W, E))
     ttk.Label(mainframe, text="P").grid(column=5, row=4, sticky=(W, E))
-    W_entry = ttk.Entry(mainframe, width=7, textvariable=W)
+    W_entry = ttk.Entry(mainframe, width=7, textvariable=Wr)
     W_entry.grid(column=6, row=5, sticky=(W, E))
     ttk.Label(mainframe, text="W").grid(column=5, row=5, sticky=(W, E))
     G_entry = ttk.Entry(mainframe, width=7, textvariable=G)
     G_entry.grid(column=6, row=6, sticky=(W, E))
     ttk.Label(mainframe, text="G").grid(column=5, row=6, sticky=(W, E))
 
-    ttk.Button(mainframe, text="Send to arm", command=lambda : write_arm(X, Y, Z, P, W, G)).grid(column=5, row=7, sticky=(W, E))
+    ttk.Button(mainframe, text="Send to arm", command=lambda : write_arm(X, Y, Z, P, Wr, G)).grid(column=6, row=7)
+
+    #status, calibrate
+
+    #ttk.Button(mainframe, text="Status", command=lambda : write_single("status")).grid(column=  
     
     for child in mainframe.winfo_children():
         child.grid_configure(padx=5, pady=5)
