@@ -1,5 +1,6 @@
-#from sensorThread import *
+from sensorThread import *
 from pcThread import *
+from driveUnit import *
 import Queue
 
 #kalibrerad data [[golv,tejp],..] för varje linjesensor
@@ -12,7 +13,7 @@ sensorList = [["lineSensor",[255,10,4,150,210,215,104,80,5,20,60]],
 commandQueue = Queue.Queue()
 
 
-#kommer nog behöva fler
+#kommer nog behöva fler (speed å sånt)
 pick_up = False
 put_down = False  
 automotor = False
@@ -23,7 +24,7 @@ has_package = False
 def main():
     
     #spi init för styrenheten
-    
+    driveunit = driveUnit.driveUnit()
 
     #sensorthread = sensorThread(sensorList)
     #sensorthread.start()
@@ -82,8 +83,16 @@ def main():
                         print "waiting for arm input..."
             else:
                 #manuellt läge
-                print "waiting for PC input..."
-
+                if command[0] == "motorSpeed":
+                    driveunit.setMotorLeft(command[1][0])
+                    driveunit.setMotorRight(command[1][1])
+                    driveunit.sendAllMotor()
+                elif command[0] == "armPosition":
+                    axis_id = 1
+                    for data in command[1]:
+                        driveunit.setArmAxis(axis_id,data)
+                        axis_id+=1
+                    driveunit.sendAllAxis()
                                             
             print "pick_up? = " + str(pick_up) + "\nput_down? = " + str(put_down)
             time.sleep(1)
@@ -153,7 +162,7 @@ def regulate():
     print "regulating..."
 
 def drive_forward():
-    print "keep on truckin..."
+    
 
 
 def calibrate_floor(): 
