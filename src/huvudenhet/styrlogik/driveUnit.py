@@ -17,8 +17,8 @@ class driveUnit():
         self.__bus.writebytes([0x03])
         #kommandot
         self.__bus.writebytes([0x11])
-        self.__bus.writebytes(direction)
-        self.__bus.writebytes(speed)
+        self.__bus.writebytes([direction])
+        self.__bus.writebytes([abs(speed)])
 
     def setMotorRight(self,speed):
         if speed >= 0:
@@ -30,21 +30,21 @@ class driveUnit():
         self.__bus.writebytes([0x03])
         #kommandot
         self.__bus.writebytes([0x10])
-        self.__bus.writebytes(direction)
-        self.__bus.writebytes(speed)
+        self.__bus.writebytes([direction])
+        self.__bus.writebytes([abs(speed)])
 
     def setArmAxis(self, id, value):
         self.send_startbit()
         #längd
         self.__bus.writebytes([0x03])
         #kommandot
-        self.__bus.writebytes(16+(id+1))
-        self.__bus.writebytes(value)
+        self.__bus.writebytes([16+(id+1)])
+        self.__bus.writebytes([value])
 
     def sendAxis(self,id):
         self.send_startbit()
         self.__bus.writebytes([0x01])
-        self.__bus.writebytes(48+(id+1))
+        self.__bus.writebytes([48+(id+1)])
 
     def sendAllAxis(self):
         self.send_startbit()
