@@ -38,11 +38,18 @@ class pcThread(threading.Thread):
                     if not data:
                         break
             return complete_data_set
-        
+        def isfloat(value):
+  	    try:
+    		float(value)
+    		return True
+  	    except ValueError:
+    		return False
         #converts the sensorlist to a string to send to the user as described in the designspecifikation
         def checkSubelement(subelement):
             if subelement.isdigit():
                 return int(subelement)
+	    if isfloat(subelement)
+		return float(subelement)
             else:
                 if subelement=="True":
                     return True
