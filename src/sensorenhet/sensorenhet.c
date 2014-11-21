@@ -37,7 +37,6 @@ int main(void)
 
 void spi_recieve_handler(unsigned int data)
 {	
-	uint8_t instruction = data >> 4;
 	uint8_t address = data & 0x0F;
 	
 	switch(address)

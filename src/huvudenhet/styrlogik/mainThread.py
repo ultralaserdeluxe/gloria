@@ -1,25 +1,37 @@
-from sensorthread import *
+from sensorThread import *
 from pcThread import *
+from driveUnit import *
+import Queue
 
+#kalibrerad data [[golv,tejp],..] för varje linjesensor
+linesensor_c_data = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],
+                     [0,0],[0,0],[0,0],[0,0],[0,0]]
+
+sensorList = [["lineSensor",[255,10,4,150,210,215,104,80,5,20,60]],
+              ["distance",[]]]
+
+commandQueue = Queue.Queue()
+
+
+#kommer nog behöva fler (speed å sånt)
+pick_up = False
+put_down = False  
+automotor = False
+autoarm = False
+has_package = False
+
+                             
 def main():
+    
+    #spi init för styrenheten
+    driveunit = driveUnit.driveUnit()
 
-    #kommer nog behöva fler
-    pick_up = False
-    put_down = False  
-    automotor = False
-    autoarm = False
-    has_package = False
-    
-    commandQueue = queue.Queue()
-    sensorList = [["lineSensor",[]],
-                  ["distance",[]]]
-    
-    sensorthread = SensorThread(sensorList)
-    sensorthread.start()
+    #sensorthread = sensorThread(sensorList)
+    #sensorthread.start()
 
     pcthread = pcThread(sensorList,commandQueue)
     pcthread.start()
-    
+
     while commandQueue.get()[0] != "start":
         pass
 
@@ -27,12 +39,16 @@ def main():
         while True:
             #hämta pc kommandot från kön...
             command = commandQueue.get()
-            if command[0] == "autoMotor":
+            if command[0] == "calibrate_floor":
+                calibrate_floor()
+            elif command[0] == "calibrate_tape":
+                calibrate_tape()
+            elif command[0] == "autoMotor":
                 if command[1][0] == True:
                     automotor = True
                 else:
                     automotor = False
-            if command[0] == "autoArm":
+            elif command[0] == "autoArm":
                 if command[1][0] == True:
                     autoarm = True
                 else:
@@ -67,8 +83,16 @@ def main():
                         print "waiting for arm input..."
             else:
                 #manuellt läge
-                print "waiting for PC input..."
-
+                if command[0] == "motorSpeed":
+                    driveunit.setMotorLeft(command[1][0])
+                    driveunit.setMotorRight(command[1][1])
+                    driveunit.sendAllMotor()
+                elif command[0] == "armPosition":
+                    axis_id = 1
+                    for data in command[1]:
+                        driveunit.setArmAxis(axis_id,data)
+                        axis_id+=1
+                    driveunit.sendAllAxis()
                                             
             print "pick_up? = " + str(pick_up) + "\nput_down? = " + str(put_down)
             time.sleep(1)
@@ -138,9 +162,16 @@ def regulate():
     print "regulating..."
 
 def drive_forward():
-    print "keep on truckin..."
-
-def calibrate():   
-    print "calibrating..."
     
+
+
+def calibrate_floor(): 
+    #ge golv värden
+    for i in range(0,11):
+        linesensor_c_data[i][0] = sensorList[0][1][i]
+
+def calibrate_tape():
+    #ge tejp värden
+    for i in range(0,11):
+        linesensor_c_data[i][1] = sensorList[0][1][i]
 

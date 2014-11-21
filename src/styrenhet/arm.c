@@ -17,24 +17,20 @@ void update_servo(arm_data_t *d, int address)
 {
 	/* Update servo goal position */
 	uint8_t servo_id = d->s[address].ID;
+	
+	uint8_t goal_speed_h = d->s[address].goal_speed_h;
+	uint8_t goal_speed_l = d->s[address].goal_speed_l;
 	uint8_t goal_position_h = d->s[address].goal_position_h;
 	uint8_t goal_position_l = d->s[address].goal_position_l;
 	servo_parameter_t *p = create_servo_parameter(goal_position_l);
 	add_servo_parameter_chain(p, goal_position_h);
-	send_servo_instruction(
-	servo_instruction_packet(servo_id, INSTR_REG_WRITE, P_GOAL_POSITION_L, p)
-	);
-
-	/* Update servo goal speed */
-	// Todo debug-comment
-	//free_servo_parameter_chain(p);
-	//uint8_t goal_speed_h = d->s[address].goal_speed_h;
-	//uint8_t goal_speed_l = d->s[address].goal_speed_l;
-	//p = create_servo_parameter(goal_speed_l);
+	//add_servo_parameter_chain(p, goal_speed_l);
 	//add_servo_parameter_chain(p, goal_speed_h);
-	//send_servo_instruction(
-	//servo_instruction_packet(address, INSTR_REG_WRITE, P_GOAL_SPEED_L, p)
-	//);
+	send_servo_instruction(
+		servo_instruction_packet(servo_id, INSTR_REG_WRITE, P_GOAL_POSITION_L, p)
+	);
+	
+	free_servo_parameter_chain(p);
 }
 
 void update_servo_regs(arm_data_t *d, int address)
@@ -66,6 +62,11 @@ arm_data_t* new_arm_data(int number_of_servos)
 	arm_data_t *this = malloc(sizeof(arm_data_t));
 	this->length = number_of_servos;
 	this->s = malloc(number_of_servos * sizeof(servo_data_t));
+	//for (int i = 0; i < number_of_servos; i++)
+	//{
+		//this->s[i].goal_speed_l = P_GOAL_SPEED_L_INIT;
+		//this->s[i].goal_speed_h = P_GOAL_SPEED_H_INIT;
+	//}
 	return this;
 }
 
