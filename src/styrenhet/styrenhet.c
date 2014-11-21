@@ -15,8 +15,7 @@
 #include "huvud_styr_protocol.h"
 #include "usart.h" //USART communication handled by servo.c
 #include "arm.h"
-
-command_queue_t *gloria_queue;
+#include "styrenhet.h"
 
 void spi_recieve_handler(unsigned int data)
 {

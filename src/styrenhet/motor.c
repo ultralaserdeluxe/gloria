@@ -8,12 +8,16 @@
 
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include "motor.h"
+#include "styrenhet.h"
 
-void motor_init(){
+void motor_init()
+{
 	/* Set PORTA0 and PORTA1 (direction control) as output. */
 	DDRA |= (1<<PORTA0)|(1<<PORTA1);
-	
+
+	/* Set up timer 2 for PWM generation. */
 	/* Set PORTD6 and PORTD7 (motor PWM) as output. */
 	DDRD |= (1<<PORTD6)|(1<<PORTD7);
 	
@@ -29,6 +33,56 @@ void motor_init(){
 	
 	/* Set initial direction to FORWARD. */
 	set_direction(FORWARD);
+	
+	
+	/* Set up timer 1 (16-bit) for acceleration control. */
+	TCCR1B  = (1<<WGM22); /* CTC mode. */
+	TCCR1B |= (1<<CS22)|(1<<CS20); /* Prescaler clk/1024. */
+	TIMSK1  = (1<<OCIE1A); /* Enable interrupt on OCR1A */
+	OCR1A   = 1562; /* Should give an update period of ~10 Hz. */
+}
+
+ISR(TIMER1_COMPA_vect)
+{
+	/* Left motor. */
+	uint8_t current_speed_left = gloria_queue->motor->s[MOTOR_LEFT].speed;
+	uint8_t goal_speed_left = gloria_queue->motor->s[MOTOR_LEFT].goal_speed;
+	uint8_t current_direction_left = gloria_queue->motor->s[MOTOR_LEFT].direction;
+	uint8_t goal_direction_left = gloria_queue->motor->s[MOTOR_LEFT].goal_direction;
+	
+	if(current_direction_left == goal_direction_left)
+	{
+		uint8_t new_left_speed = current_speed_left + ((goal_speed_left - current_speed_left) / 2);
+		gloria_queue->motor->s[MOTOR_LEFT].speed = new_left_speed;
+		set_speed_left(new_left_speed);
+	}else if(current_speed_left < 0x10){
+		gloria_queue->motor->s[MOTOR_LEFT].direction = goal_direction_left;
+		set_direction_left(goal_direction_left);
+	}else{
+		uint8_t new_left_speed = current_speed_left - (current_speed_left / 3);
+		gloria_queue->motor->s[MOTOR_LEFT].speed = new_left_speed;
+		set_speed_left(new_left_speed);
+	}
+	
+	/* Right motor. */
+	uint8_t current_speed_right = gloria_queue->motor->s[MOTOR_RIGHT].speed;
+	uint8_t goal_speed_right = gloria_queue->motor->s[MOTOR_RIGHT].goal_speed;
+	uint8_t current_direction_right = gloria_queue->motor->s[MOTOR_RIGHT].direction;
+	uint8_t goal_direction_right = gloria_queue->motor->s[MOTOR_RIGHT].goal_direction;
+		
+	if(current_direction_right == goal_direction_right)
+	{
+		uint8_t new_right_speed = current_speed_right + ((goal_speed_right - current_speed_right) / 2);
+		gloria_queue->motor->s[MOTOR_RIGHT].speed = new_right_speed;
+		set_speed_right(new_right_speed);
+		}else if(current_speed_right < 0x10){
+		gloria_queue->motor->s[MOTOR_RIGHT].direction = goal_direction_right;
+		set_direction_right(goal_direction_right);
+		}else{
+		uint8_t new_right_speed = current_speed_right - (current_speed_right / 3);
+		gloria_queue->motor->s[MOTOR_RIGHT].speed = new_right_speed;
+		set_speed_right(new_right_speed);
+	}
 }
 
 motor_data_t* new_motor_data(int number_of_motors)
@@ -83,35 +137,42 @@ void set_queued_speed_right(motor_data_t *d, uint8_t direction, uint8_t speed)
 	d->s[MOTOR_RIGHT].queued_speed = speed;
 }
 	
-void set_speed(uint8_t speed){
-	OCR2A = OCR2B = speed;
-}
-	
-void set_speed_left(uint8_t speed){
+void set_speed_left(uint8_t speed)
+{
 	OCR2A = speed;
 }
 
-void set_speed_right(uint8_t speed){
+void set_speed_right(uint8_t speed)
+{
 	OCR2B = speed;
 }
 
-void set_direction(direction_t direction){
-	switch(direction){
+void set_direction_left(direction_t direction)
+{
+	switch(direction)
+	{
 		case FORWARD:
-		PORTA |= 0x02;
-		PORTA &= 0xFE;
-		break;
+			PORTA |= 0x01;
+			break;
 		case BACKWARD:
-		PORTA |= 0x01;
-		PORTA &= 0xFD;		
-		break;
-		case ROTATE_LEFT:
-		PORTA &= 0xFC;
-		break;
-		case ROTATE_RIGHT:
-		PORTA |= 0x03;
-		break;
+			PORTA &= 0xFE; 
+			break;
 		default:
-		break;
+			break;
+	}
+}
+
+void set_direction_right(direction_t direction)
+{
+	switch(direction)
+	{
+		case FORWARD:
+			PORTA &= 0xFE;	
+			break;
+		case BACKWARD:
+			PORTA |= 0x01;
+			break;
+		default:
+			break;
 	}
 }
