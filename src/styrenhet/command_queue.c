@@ -16,6 +16,7 @@ void system_init(command_queue_t *q, int motors, int servos)
 	{
 		q->arm->s[i].ID = i;
 	}
+	motor_init();
 	q->motor = new_motor_data(motors);
 	for (int i = MOTOR_LEFT; i <= MOTOR_RIGHT; i++)
 	{
@@ -314,14 +315,36 @@ void read_command(command_queue_t *q)
 			update_servo_regs(q->arm, SERVO_8);
 			break;
 		case ADDRESS_MOTOR_ALL:
-			set_queued_speed_left(q->motor, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_queued_speed_right(q->motor, p->current_parameter, next_servo_parameter(p)->current_parameter);
+			if(p->current_parameter == 1)
+			{
+				set_queued_velocity_left(q->motor, FORWARD, next_servo_parameter(p)->current_parameter);
+				set_queued_velocity_right(q->motor, FORWARD, next_servo_parameter(p)->current_parameter);
+			}
+			else
+			{
+				set_queued_velocity_left(q->motor, BACKWARD, next_servo_parameter(p)->current_parameter);
+				set_queued_velocity_right(q->motor, BACKWARD, next_servo_parameter(p)->current_parameter);
+			}
 			break;
 		case ADDRESS_MOTOR_L:
-			set_queued_speed_left(q->motor, p->current_parameter, next_servo_parameter(p)->current_parameter);
+			if(p->current_parameter == 1)
+			{
+				set_queued_velocity_left(q->motor, FORWARD, next_servo_parameter(p)->current_parameter);
+			}
+			else
+			{
+				set_queued_velocity_left(q->motor, BACKWARD, next_servo_parameter(p)->current_parameter);	
+			}
 			break;
 		case ADDRESS_MOTOR_R:
-			set_queued_speed_left(q->motor, p->current_parameter, next_servo_parameter(p)->current_parameter);
+			if(p->current_parameter == 1)
+			{
+				set_queued_velocity_right(q->motor, FORWARD, next_servo_parameter(p)->current_parameter);
+			}
+			else
+			{
+				set_queued_velocity_right(q->motor, BACKWARD, next_servo_parameter(p)->current_parameter);
+			}
 			break;
 		}
 	}

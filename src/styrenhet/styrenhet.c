@@ -24,14 +24,14 @@ void spi_recieve_handler(unsigned int data)
 
 int main(void)
 {
-	arm_init(SERVO_8);
-	arm_init(SERVO_7);
-	arm_init(SERVO_6);
-	arm_init(SERVO_5);
-	arm_init(SERVO_4);
-	arm_init(SERVO_3);
-	arm_init(SERVO_2);
-	arm_init(SERVO_1);
+	//arm_init(SERVO_8);
+	//arm_init(SERVO_7);
+	//arm_init(SERVO_6);
+	//arm_init(SERVO_5);
+	//arm_init(SERVO_4);
+	//arm_init(SERVO_3);
+	//arm_init(SERVO_2);
+	//arm_init(SERVO_1);
 	gloria_queue = new_queue();
 	system_init(gloria_queue, 2, 8);
 	spi_slave_init();
@@ -39,6 +39,27 @@ int main(void)
 	
 	while(1){
 		read_all_commands(gloria_queue);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel 6 til 02ff
+		//input_byte(gloria_queue, 0x1D);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0x55);
+		//
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0x3D); // Action Axel ALL
+		//
+		//read_all_commands(gloria_queue);
+		//_delay_ms(3000);
+		//
+		//input_byte(gloria_queue, 0x03); // Flytta Axel 6 til 02ff
+		//input_byte(gloria_queue, 0x1D);
+		//input_byte(gloria_queue, 0x00);
+		//input_byte(gloria_queue, 0x55);
+		//
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0x3D); // Action Axel ALL
+		//
+		//read_all_commands(gloria_queue);
+		//_delay_ms(3000);
 		
 		//input_byte(gloria_queue, 0x03); // Flytta Axel 6 til 02ff
 		//input_byte(gloria_queue, 0x15);
