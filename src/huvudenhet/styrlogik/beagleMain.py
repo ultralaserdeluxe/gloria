@@ -2,7 +2,7 @@
 from pcThread import pcThread
 import queue
 import time
-from sensorthread import sensorthread
+from sensorThread import sensorThread
 commandQueue=Queue.Queue()
 sensorList=[["lineSensor",[0,0,20,0,512,0,0,100,0,0,0]],
             ["distance",[30,40]],
