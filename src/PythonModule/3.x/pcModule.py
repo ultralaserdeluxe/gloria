@@ -99,15 +99,26 @@ class pcModule():
     def getArmAuto(self):
         for element in self.__sensorsList:
             if element[0]=="autoArm":
-                return element[1][0]=="True"
+                return element[1][0]
         raise SyntaxError("sensor not in list")
     
     #returns a bool that tells if the motors are in auto or not
     def getAutoMotor(self):
         for element in self.__sensorsList:
             if element[0]=="autoMotor":
-                return element[1][0]=="True"
+                return element[1][0]
         raise SyntaxError("sensor not in list")
+            #converts the sensorlist to a string to send to the user as described in the designspecifikation
+    def checkSubelement(self,subelement):
+        if subelement.isdigit():
+            return int(subelement)
+        else:
+            if subelement=="True":
+                return True
+            elif subelement=="False":
+                return False
+            else:
+                return subelement
     
     #converts the string received from the host to a usable list of lists
     def convertSensorList(self,data):
@@ -120,7 +131,7 @@ class pcModule():
             temp=temp[1].split(",")
             tempList.append([])
             for subElement in temp:
-                tempList[1].append(subElement)
+                tempList[1].append(self.checkSubelement(subElement))
             newList.append(tempList)
         return newList
     

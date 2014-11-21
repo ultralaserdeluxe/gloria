@@ -29,21 +29,18 @@
 \begin{statusrapport}
 % ------------ PÅGÅENDE AKTIITETER -------------
 % Syntax \aktivitetstatus{Nr}{Aktivitet}{Kommentar}{Planerad tid}{Nedlagd tid}{Planerad klar}{Beräknad klar}
-  \aktivitetstatus{1}{Implementation av protokoll mellan huvud- och styrenheten}{}{16}{}{2014-11-07}{}
-  \aktivitetstatus{3}{Implementera buss mellan huvud- och sensorenheten}{}{16}{}{2014-11-07}{}
-  \aktivitetstatus{4}{Koppla ihop huvud- och sensorenheten}{}{4}{}{2014-11-07}{}
-  \aktivitetstatus{7}{Python-modul på PC för att skicka/ta emot data från huvudenheten}{}{16}{}{2014-11-14}{}
-  \aktivitetstatus{16}{Implementera styrning av motorer}{10}{8}{}{2014-11-14}{}
   \aktivitetstatus{17}{Implementera styrning av servon}{11}{20}{}{2014-11-14}{}
-  \aktivitetstatus{18}{Testa och felsöka buss mellan huvud- och styrenheten}{1,2,13}{16}{}{2014-11-14}{}
-  \aktivitetstatus{19}{Testa och felsöka buss mellan huvud- och sensorenheten}{3,4,13}{16}{}{2014-11-14}{}
-\end{statusrapport}	% Använd för att skapa sidbrytning i tabellen
-\begin{statusrapport}
   \aktivitetstatus{24}{Implementera styrlogik}{13}{40}{}{2014-12-12}{}
-  \aktivitetstatus{25}{Implementera läsning av sensorer}{15,9}{16}{}{2014-11-21}{}
   \aktivitetstatus{31}{Testa styra servon från styrenheten}{26}{8}{}{2014-11-14}{}
-  \aktivitetstatus{32}{Testa styra motorer från styrenheten}{26}{8}{}{2014-11-14}{}
-
+  \aktivitetstatus{14}{Skriva UI för PC}{7}{20}{}{2014-11-14}{}
+  \aktivitetstatus{26}{Mäta respons från motorer och servon}{16,17}{8}{}{2014-11-21}{}
+  \aktivitetstatus{28}{Tolka IR-sensordata}{25}{8}{}{2014-11-21}{}
+  \aktivitetstatus{29}{Implementera kalibreringsfunktion}{37}{20}{}{2014-11-28}{}
+  \aktivitetstatus{33}{Testa styra servon från huvudenheten}{18,31}{8}{}{2014-11-21}{}
+  \aktivitetstatus{34}{Testa styra motorer från huvudenheten}{18,32}{8}{}{2014-11-21}{}
+  \aktivitetstatus{35}{Implementera läsning av sensordata på huvudenheten}{19,30}{8}{}{2014-11-21}{}
+  \aktivitetstatus{38}{Implementera och testa X,Y,Z till servovinkel, konvertering}{31}{32}{}{2014-12-05}{}
+  \aktivitetstatus{39}{Implementera och testa gränser för armen}{31}{24}{}{2014-11-28}{}
 % ----------------------------------------------
 \end{statusrapport}
 	
@@ -53,41 +50,40 @@
 \begin{statusrapport}
 % ------------ AVSLUTADE AKTIITETER ------------
   \aktivitetstatus{55}{Dokumentation: Designspecifikation}{}{100}{104}{2014-10-07}{2014-10-03}
-  \aktivitetstatus{2}{Koppla ihop huvud- och styrenheten}{}{4}{}{2014-11-07}{}
-  \aktivitetstatus{5}{Sätta upp utvecklingsmiljö för AVR}{}{8}{}{2014-11-07}{}
-  \aktivitetstatus{6}{Installera mjukvara på huvud (OS, Python, drivare)}{}{10}{}{2014-11-07}{}
-  \aktivitetstatus{8}{Koppla in linjesensorer på sensorenheten}{}{10}{}{2014-11-07}{}
-  \aktivitetstatus{9}{Koppla in IR-sensor på sensorenheten}{}{2}{}{2014-11-07}{}
-  \aktivitetstatus{10}{Koppla in motorer och styrenheten}{}{2}{}{2014-11-07}{}
-  \aktivitetstatus{11}{Koppla in servon på styrenheten}{}{2}{}{2014-11-07}{}
-  \aktivitetstatus{12}{Upprätta BT förbindelse mellan huvudenheten och PC}{6}{10}{}{2014-11-07}{}
+  \aktivitetstatus{2}{Koppla ihop huvud- och styrenheten}{}{4}{2}{2014-11-07}{2014-11-07}
+  \aktivitetstatus{5}{Sätta upp utvecklingsmiljö för AVR}{}{8}{10}{2014-11-07}{2014-11-0}
+  \aktivitetstatus{6}{Installera mjukvara på huvud (OS, Python, drivare)}{}{10}{13}{2014-11-07}{2014-11-07}
+  \aktivitetstatus{8}{Koppla in linjesensorer på sensorenheten}{}{10}{5}{2014-11-07}{2014-11-07}
+  \aktivitetstatus{9}{Koppla in IR-sensor på sensorenheten}{}{2}{1}{2014-11-07}{2014-11-07}
+  \aktivitetstatus{10}{Koppla in motorer och styrenheten}{}{2}{2}{2014-11-07}{2014-11-07}
+  \aktivitetstatus{11}{Koppla in servon på styrenheten}{}{2}{1}{2014-11-07}{2014-11-07}
+  \aktivitetstatus{12}{Upprätta BT förbindelse mellan huvudenheten och PC}{6}{10}{8}{2014-11-07}{2014-11-07}
+  \aktivitetstatus{13}{Sätta upp utvecklingsmiljö för BeagleBoard (wifi)}{6}{4}{3}{2014-11-07}{2014-11-07}
+  \aktivitetstatus{15}{Implementera och testa muxning för linjesensor}{8}{8}{9}{2014-11-14}{2014-11-07}
+  \aktivitetstatus{1}{Implementation av protokoll mellan huvud- och styrenheten}{}{16}{9}{2014-11-07}{2014-11-14}
+  \aktivitetstatus{3}{Implementera buss mellan huvud- och sensorenheten}{}{16}{10}{2014-11-07}{2014-11-14}
+  \aktivitetstatus{4}{Koppla ihop huvud- och sensorenheten}{}{4}{1}{2014-11-07}{2014-11-14}
 \end{statusrapport}	% Använd för att skapa sidbrytning i tabellen
 \begin{statusrapport}
-  \aktivitetstatus{13}{Sätta upp utvecklingsmiljö för BeagleBoard (wifi)}{6}{4}{}{2014-11-07}{}
-  \aktivitetstatus{15}{Implementera och testa muxning för linjesensor}{8}{8}{}{2014-11-14}{}
+  \aktivitetstatus{7}{Python-modul på PC för att skicka/ta emot data från huvudenheten}{}{16}{21}{2014-11-14}{2014-11-14}
+  \aktivitetstatus{16}{Implementera styrning av motorer}{10}{8}{9}{2014-11-14}{2014-11-07}
+  \aktivitetstatus{18}{Testa och felsöka buss mellan huvud- och styrenheten}{1,2,13}{16}{15}{2014-11-14}{2014-11-14}
+  \aktivitetstatus{19}{Testa och felsöka buss mellan huvud- och sensorenheten}{3,4,13}{16}{7}{2014-11-14}{2014-11-14}
+  \aktivitetstatus{25}{Implementera läsning av sensorer}{15,9}{16}{10}{2014-11-21}{2014-11-14}
+  \aktivitetstatus{27}{Implementera tolkning och utförande av kommandon från PC på huvudenheten}{14,19}{12}{3}{2014-11-21}{2014-11-14}
+  \aktivitetstatus{30}{Implementera tolkning och utförande av kommandon från huvudenheten på sensorenheten}{19,25}{16}{2}{2014-11-21}{2014-11-14}
+  \aktivitetstatus{32}{Testa styra motorer från styrenheten}{26}{8}{1}{2014-11-14}{2014-11-14}
+  \aktivitetstatus{37}{Skriva testprogram för linjesensor styrenhet}{25}{8}{0}{2014-11-21}{2014-11-14}
 
 % ----------------------------------------------
 \end{statusrapport}
 
+\newpage
 \vspace{7mm}
 \textbf{\Large Nära förstående aktiviteter}
 
 \begin{statusrapport}
 % ------------ NÄRA FÖRSTÅENDE AKTIITETER ------
-  \aktivitetstatus{14}{Skriva UI för PC}{7}{20}{}{2014-11-14}{}
-  \aktivitetstatus{26}{Mäta respons från motorer och servon}{16,17}{8}{}{2014-11-21}{}
-  \aktivitetstatus{27}{Implementera tolkning och utförande av kommandon från PC på huvudenheten}{14,19}{12}{}{2014-11-21}{}
-  \aktivitetstatus{28}{Tolka IR-sensordata}{25}{8}{}{2014-11-21}{}
-  \aktivitetstatus{29}{Implementera kalibreringsfunktion}{37}{20}{}{2014-11-28}{}
-  \aktivitetstatus{30}{Implementera tolkning och utförande av kommandon från huvudenheten på sensorenheten}{19,25}{16}{}{2014-11-21}{}
-  \aktivitetstatus{33}{Testa styra servon från huvudenheten}{18,31}{8}{}{2014-11-21}{}
-  \aktivitetstatus{34}{Testa styra motorer från huvudenheten}{18,32}{8}{}{2014-11-21}{}
-  \aktivitetstatus{35}{Implementera läsning av sensordata på huvudenheten}{19,30}{8}{}{2014-11-21}{}
-  \aktivitetstatus{37}{Skriva testprogram för linjesensor styrenhet}{25}{8}{}{2014-11-21}{}
-\end{statusrapport}	% Använd för att skapa sidbrytning i tabellen
-\begin{statusrapport}
-  \aktivitetstatus{38}{Implementera och testa X,Y,Z till servovinkel, konvertering}{31}{32}{}{2014-12-05}{}
-  \aktivitetstatus{39}{Implementera och testa gränser för armen}{31}{24}{}{2014-11-28}{}
   \aktivitetstatus{40}{Implementera smoothing-funktion för servon och motorer}{32}{16}{}{2014-12-12}{}
   \aktivitetstatus{41}{Implementera paketnersättningsfunktion}{33}{16}{}{2014-11-28}{}
   \aktivitetstatus{42}{Implementera fjärrstyrning från PC}{27,33,34,35}{16}{}{2014-12-05}{}

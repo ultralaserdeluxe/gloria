@@ -1,4 +1,4 @@
-from spi import SPI
+from spi import SPI #wot
 class sensorUnit():
     def __init__(self):
         self.__bus=SPI(3,1)

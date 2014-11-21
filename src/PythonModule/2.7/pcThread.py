@@ -2,7 +2,6 @@
 import threading
 import socket
 import select
-import sys
 import os
 class pcThread(threading.Thread):
     
@@ -41,6 +40,16 @@ class pcThread(threading.Thread):
             return complete_data_set
         
         #converts the sensorlist to a string to send to the user as described in the designspecifikation
+        def checkSubelement(subelement):
+            if subelement.isdigit():
+                return int(subelement)
+            else:
+                if subelement=="True":
+                    return True
+                elif subelement=="False":
+                    return False
+                else:
+                    return subelement
         def convertSensorList(list):
             string=""
             for element in list:
@@ -58,7 +67,7 @@ class pcThread(threading.Thread):
         
         #a simple function that sends data to the user
         def sendData(data):
-            self.__conn.sendall(data.encode())
+            self.__conn.sendall(data)
             
         #a function not used yet but can be used to remotely shutdown the BB
         def shutDown():
@@ -73,7 +82,7 @@ class pcThread(threading.Thread):
                 for i in range(len(self.__sensorList)):
                     if self.__sensorList[i][0]==data[0]:
                         for j in range(len(data[1])):
-                            self.__sensorList[i][1][j]=data[1][j]
+                            self.__sensorList[i][1][j]=checkSubelement(data[1][j])
                         temp=i
                 self.__commandQueue.put(self.__sensorList[temp])
             elif data[0]=="calibrate":

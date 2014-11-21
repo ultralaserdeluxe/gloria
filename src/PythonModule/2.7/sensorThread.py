@@ -7,6 +7,7 @@ class sensorThread(threading.Thread):
     def __init__(self,sensorList):
         self.__sensorList=sensorList
         self.__sensorUnit=sensorUnit.sensorUnit()
+	threading.Thread.__init__(self)
         
     def run(self):
         while True:
