@@ -1,0 +1,68 @@
+\documentclass[titlepage, a4paper]{article}
+\input{../mall/layout.tex}	% Importera generella layout-strukturer
+
+\newcommand{\LIPSdokumenttyp}{Mötesprotokoll}
+\newcommand{\LIPSkursnamn}{TSEA29}
+\newcommand{\LIPSprojektnamn}{Lagerrobot}
+\newcommand{\LIPSprojektgrupp}{Grupp 2}
+\newcommand{\LIPSutfardare}{hansn314} % Vem har utfärdat protokollet?
+
+\pagenumbering{roman}	% Sidnumrering
+
+\begin{document}
+
+\begin{projektmote}{Mötesprotokoll}{2014-11-21}
+% ------------ PARAGRAFER ----------------------
+% Syntax \paragraf{Vi bestämde och kom överens}
+% ----------------------------------------------
+\paragraf{Mötet öppnas.}
+\paragraf{Närvarande: Daniel, Martin, Yngve, Pål, Dennis och Hannes.}
+\paragraf{Hannes är sekreterare.}
+\paragraf{Status:
+\begin{itemize}
+\item{\textbf{Pål} Skulle testa styra motorer och servon och tolka IR-sensordata. En IR-sensor var trasig, så det ska testas i helgen. Motorer och servon skall testas mer i helgen. Aktivitet 37 försvann. Skall implementera paketnedsättnignsfunktion nästa vecka. Eventuellt kan tid behövas för att fortsätta testa styra servon och motorer även nästa vecka.}
+\item{\textbf{Yngve} Skulle implementera styrning av servon, vilket är nära om än inte riktigt helt klart. Skulle också mäta respons från servon och motorer, vilket inte är påbörjat. Behöver tid för det nästa vecka. Skulle testa styra servon från styrenheten vilket har gjorts. Nästa vecka skall regleringsalgoritm implementeras. }
+\item{\textbf{Martin} Skulle implementera X,Y,Z-konvertering och implementera och testa gränser för armen. X,Y,Z-konverteringen är nästan klart, men otestat. Gränser för armen har inte påbörjats och måste skjutas på nästa vecka. Nästa vecka skall regleringsalgoritmen implementeras och fortsätta med X,Y,Z-konvertering. }
+\item{\textbf{Daniel} Skulle skriva GUI hela veckan. Det är till största delen gjort men har stött på lite problem (spi fungerar inte i python 3). Skulle vilja ha tid nästa vecka för att testa implementationen mot beagleboarden.}
+\item{\textbf{Dennis} Skulle implementera kalibreringsfunktion och styrlogik. Kalibreringsfunktionen har en simpel lösning som fungerar. Grunden för styrlogiken är klar, men mycket innehåll saknas. Nästa vecka fortsätts med styrlogiken då kalibreringsfunktionen är klar.}
+\item{\textbf{Hannes} Skulle jobba med styrning av servon, detta har jobbats på. Det är inte klart, men närmar sig. Om inte styrenheten blir klar i helgen skall den fortsättas på nästa vecka.}
+\end{itemize}
+}
+\paragraf{Pål har pratat med Peter. Dels måste vi se till att maila honom om vi inte tänker gå på mötet. Mötestid på Doodle. Peter är även väldigt sugen på att bygga ett kretskort, så vi ska försöka få klart kretsschemat i helgen.}
+\paragraf{Pål påminner om att vi bör jobba asmycket i helgen för att komma upp i de timmar vi planerat den här veckan.}
+
+
+\end{projektmote}
+
+\newpage
+\textbf{\Large Aktuella aktiviteter}
+\begin{center}
+\begin{tabularx}{\textwidth}{| p{4mm} | X | p{13.5mm} | X |}
+	\hline
+	\textbf{Nr} & \textbf{Aktivitet} & \textbf{Ansvar} & \textbf{Status} \\\hline	
+% ------------ Aktuella aktiviteter ------------
+% Syntax {Nr} & {Aktivitet} & {Ansvarig} & {Status} \\\hline
+% ----------------------------------------------
+	{1} & {Implementera buss mellan huvud och styr} & {AY, DL} & {Klar} \\\hline
+	{3} & {Implementera buss mellan huvud och sensor} & {DL, HS} & {Klar} \\\hline
+	{14} & {Skriva UI för PC} & {DW} & {Påbörjat. Har stött på problem med Python 3. Behöver mer tid} \\\hline
+	{17} & {Implementera styrning av servon} & {HS} & {Påbörjad, blir förhoppningsvis klar i helgen} \\\hline
+	{18} & {Testa och felsöka buss mellan huvud och styr} & {HS,MS} & {Klar} \\\hline
+	{19} & {Testa och felsöka buss mellan huvud och sensor} & {HS,MS} & {Klar} \\\hline
+	{24} & {Implementera styrlogik} & {DL} & {Påbörjad} \\\hline
+	{26} & {Mästa respons från motorer och servon} & {AY} & {Ej påbörjad, Försenad} \\\hline
+	{29} & {Implementera kalibreringsfunktion} & {DL} & {Klar} \\\hline
+	{31} & {Testa styra servon från styrenheten} & {PK} & {Påbörjad, ej klar} \\\hline
+	{33} & {Testa styra servon från huvud} & {AY} & {Påbörjad} \\\hline
+	{34} & {Testa styra motorer från huvud} & {AY} & {Påbörjad} \\\hline
+	{35} & {Implementera läsning av sensordata på huvud} & {DL} & {Påbörjad} \\\hline
+	{37} & {Skriva testprogram för linjesensor sensorenheten} & {PK} & {Redundant, gjordes aldrig. Men klar} \\\hline
+	{38} & {Implementera och testa X,Y,Z  till servovinkel konvertering} & {MS, HS} & {Ej testat, annars klart} \\\hline
+	{39} & {Implementera och testa gränser för armen} & {MS} & {Ej påbörjad, skjuts på nästa vecka} \\\hline
+	{41} & {Implementera paketnedsättningsfunktion} & {PK} & {Ej påbörjad} \\\hline
+	{42} & {Implementera fjärrstyrning från PC} & {DW} & {Ej påbörjad, framskjuten.} \\\hline
+	{46} & {Implementera regleringsalgoritm} & {AY, MS} & {Ej påbörjad} \\\hline
+\end{tabularx}
+\end{center}
+
+\end{document}
