@@ -1,8 +1,8 @@
 """a simple testprogram for the pcThread class that is used to connects to a user and receives commands and sends data back"""
 from pcThread import pcThread
-import Queue
+import queue
 import time
-from sensorThread import sensorThread
+from sensorthread import sensorthread
 commandQueue=Queue.Queue()
 sensorList=[["lineSensor",[0,0,20,0,512,0,0,100,0,0,0]],
             ["distance",[30,40]],
