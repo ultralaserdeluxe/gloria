@@ -184,15 +184,24 @@ int set_command(command_struct_t *command, uint8_t data)
 {
 	switch (command->status)
 	{
-		case 0 :
+		case 0:
+		case 1:
+			if (data != 0xff)
+			{
+				command->status = 0;
+				return;
+			}
+			command->status++;
+			break;
+		case 2 :
 			command->length = data;
 			command->status++;
 			break;
-		case 1 :
+		case 3 :
 			command->instruction = data;
 			command->status++;
 			break;
-		case 2:
+		case 4:
 			command->first_parameter = create_servo_parameter(data);
 			command->status++;
 			break;
@@ -404,6 +413,7 @@ int command_status(command_struct_t *current)
 /* Returns true if command has recieved expected amount of parameters */
 bool command_recieved(command_struct_t *c)
 {
-	if (c->status >= c->length + COMMAND_STATUS_LENGTH_OFFSET) return true;
+	if (c->length < 1) return false;
+	else if (c->status >= c->length + COMMAND_STATUS_LENGTH_OFFSET) return true;
 	else return false;
 }

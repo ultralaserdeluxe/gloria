@@ -9,7 +9,7 @@
 #ifndef COMMAND_QUEUE_H_
 #define COMMAND_QUEUE_H_
 
-#define COMMAND_STATUS_LENGTH_OFFSET 0x01
+#define COMMAND_STATUS_LENGTH_OFFSET 0x03
 
 #include <stdbool.h>
 #include <stddef.h>
