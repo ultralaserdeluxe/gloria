@@ -215,10 +215,8 @@ command_struct_t* new_command()
 
 void read_command(command_queue_t *q)
 {
-	if (!command_recieved(node_data(first_node(q))))
-	{
-		return;
-	}
+	if (empty_queue(q)) return;
+	else if (!command_recieved(q->last->command)) return;
 	command_queue_node_t *n = pop_first(q);
 	command_struct_t *c = node_data(n);
 	/* If we have Action, perform action */
@@ -294,7 +292,6 @@ void read_command(command_queue_t *q)
 			update_servo_regs(q->arm, SERVO_3);
 			break;
 		case ADDRESS_JOINT_3:
-			//set_servo_goal_position(q->arm, SERVO_5, ((SERVO_MAX_ANGLE_H & 0x03) - p->current_parameter), (SERVO_MAX_ANGLE_L - next_servo_parameter(p)->current_parameter));
 			set_inverse_servo_goal_position(q->arm, SERVO_5, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			set_servo_goal_position(q->arm, SERVO_4, p->current_parameter, next_servo_parameter(p)->current_parameter);
 			/* SERVO_5 is same joint as SERVO_4 and has to be its inverse */
@@ -362,14 +359,16 @@ void read_command(command_queue_t *q)
 			break;
 		}
 	}
+	free_node(n);
 	//Todo add functionality for COMMAND_STATUS
 }
 
 void read_all_commands(command_queue_t *q)
 {
-	while (!empty_queue(q)&&command_recieved(node_data(first_node(q))))
+	while (!empty_queue(q))
 	{
-		read_command(q);
+		if (command_recieved(node_data(first_node(q)))) read_command(q);
+		else return;
 	}
 }
 

@@ -23,9 +23,9 @@ void servo_init(int ID)
 		add_servo_parameter_chain(p, P_CCW_ANGLE_LIMIT_L_INIT);
 		add_servo_parameter_chain(p, P_CCW_ANGLE_LIMIT_H_INIT);
 
-		servo_instruction_t* t = servo_instruction_packet(ID, INSTR_WRITE, P_RETURN_DELAY_TIME, p);
-		send_servo_instruction(t);
-		free_instruction_full(t);
+		send_servo_instruction(
+			servo_instruction_packet(ID, INSTR_WRITE, P_RETURN_DELAY_TIME, p)
+		);
 		
 		free_servo_parameter_chain(p);
 		_delay_ms(1);
@@ -36,9 +36,9 @@ void servo_init(int ID)
 		add_servo_parameter_chain(p, P_ALARM_LED_INIT);
 		add_servo_parameter_chain(p, P_ALARM_SHUTDOWN_INIT);
 		
-		t = servo_instruction_packet(ID, INSTR_WRITE, P_MAX_TORQUE_L, p);
-		send_servo_instruction(t);
-		free_instruction_full(t);
+		send_servo_instruction(
+			servo_instruction_packet(ID, INSTR_WRITE, P_MAX_TORQUE_L, p)
+		);
 
 		free_servo_parameter_chain(p);
 		_delay_ms(1);
@@ -48,18 +48,18 @@ void servo_init(int ID)
 		add_servo_parameter_chain(p, P_CW_COMPLIANCE_SLOPE_INIT);
 		add_servo_parameter_chain(p, P_CCW_COMPLIANCE_SLOPE_INIT);
 
-		t = servo_instruction_packet(ID, INSTR_WRITE, P_CW_COMPLIANCE_MARGIN_INIT, p);
-		send_servo_instruction(t);
-		free_instruction_full(t);
+		send_servo_instruction(
+			servo_instruction_packet(ID, INSTR_WRITE, P_CW_COMPLIANCE_MARGIN_INIT, p)
+		);
 		
 		free_servo_parameter_chain(p);
 		_delay_ms(1);
 		
 		p = create_servo_parameter(P_TORQUE_ENABLE_INIT);
 
-		t = servo_instruction_packet(ID, INSTR_WRITE, P_TORQUE_ENABLE, p);
-		send_servo_instruction(t);
-		free_instruction_full(t);
+		send_servo_instruction(
+			servo_instruction_packet(ID, INSTR_WRITE, P_TORQUE_ENABLE, p)
+		);
 		
 		free_servo_parameter_chain(p);
 		_delay_ms(1);
@@ -69,19 +69,19 @@ void servo_init(int ID)
 		add_servo_parameter_chain(p, P_TORQUE_LIMIT_L_INIT);
 		add_servo_parameter_chain(p, P_TORQUE_LIMIT_H_INIT);
 
-		t = servo_instruction_packet(ID, INSTR_WRITE, P_GOAL_SPEED_L, p);
-		send_servo_instruction(t);
-		free_instruction_full(t);
+		send_servo_instruction(
+			servo_instruction_packet(ID, INSTR_WRITE, P_GOAL_SPEED_L, p)
+		);
 		
 		free_servo_parameter_chain(p);
 		_delay_ms(1);
 		
 		p = create_servo_parameter(P_PUNCH_L_INIT);
 		add_servo_parameter_chain(p, P_PUNCH_H_INIT);
-		t = servo_instruction_packet(ID, INSTR_WRITE, P_PUNCH_L, p);
-		send_servo_instruction(t);
-		//free_instruction_full(t);
-		//
+		send_servo_instruction(
+			servo_instruction_packet(ID, INSTR_WRITE, P_PUNCH_L, p)
+		);
+		
 		free_servo_parameter_chain(p);
 		_delay_ms(1);
 		
@@ -96,6 +96,7 @@ void send_servo_instruction(servo_instruction_t *t)
 		usart_transmit(current->current_parameter);
 		current = current->next;
 	}
+	free_instruction_full(t);
 }
 
 /* Returns instruction for given parameters ready to be sent */
@@ -137,9 +138,11 @@ uint8_t make_checksum(uint8_t ID, uint8_t length, uint8_t instr, uint8_t paramet
 }
 
 servo_instruction_t* create_instructions(int amount)
-{
+{ 
 	servo_instruction_t *this = malloc(sizeof(servo_instruction_t)*amount);
 	this->length = 0;
+	this->first_parameter = NULL;
+	this->last_parameter = NULL;
 	return this;
 }
 

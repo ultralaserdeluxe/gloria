@@ -33,42 +33,50 @@ int main(void)
 	arm_init(SERVO_3);
 	arm_init(SERVO_2);
 	arm_init(SERVO_1);
-	gloria_queue = new_queue();
-	system_init(gloria_queue, 2, 8);
-	spi_slave_init();
-	sei();
+	//gloria_queue = new_queue();
+	//system_init(gloria_queue, 2, 8);
+	//spi_slave_init();
+	//sei();
+	
+	int id = SERVO_8;
+	int reg = 0x03;
+	servo_parameter_t* p = create_servo_parameter(1);
 	
 	while(1){
-		read_all_commands(gloria_queue);
+		send_servo_instruction(
+			servo_instruction_packet(id, INSTR_READ, reg, p)
+		);
+		_delay_us(10);
+		usart_set_rx();
+		_delay_us(200);
+		usart_set_tx();
 		
+		//read_command(gloria_queue);
 		//input_byte(gloria_queue, 0x03); // Flytta Axel 6 til 02ff
-		//input_byte(gloria_queue, 0x15);
-		//input_byte(gloria_queue, 0x02);
+		//input_byte(gloria_queue, 0x14);
+		//input_byte(gloria_queue, 0x01);
 		//input_byte(gloria_queue, 0xff);
 		
-		//input_byte(gloria_queue, 0x03); // Flytta Axel 5 til 02ff
-		//input_byte(gloria_queue, 0x15);
-		//input_byte(gloria_queue, 0x01);
-		//input_byte(gloria_queue, 0xff);
-		//
-		//input_byte(gloria_queue, 0x01);
-		//input_byte(gloria_queue, 0x3E); // Action Axel ALL
-		//
-		//read_all_commands(gloria_queue);
-		//_delay_us(10);
-		//usart_set_rx();
-		//_delay_ms(1500);
-		//usart_set_tx();
-		
 		//input_byte(gloria_queue, 0x03); // Flytta Axel 6 til 02ff
-		//input_byte(gloria_queue, 0x15);
-		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0x13);
 		//input_byte(gloria_queue, 0x00);
-		
-		//input_byte(gloria_queue, 0x03); // Flytta Axel 5 til 02ff
-		//input_byte(gloria_queue, 0x15);
+		//input_byte(gloria_queue, 0xf0);
+		//
 		//input_byte(gloria_queue, 0x01);
-		//input_byte(gloria_queue, 0x0f);
+		//input_byte(gloria_queue, 0x3E); // Action Axel ALL
+		//
+		//read_all_commands(gloria_queue);
+		//_delay_ms(3000);
+		
+		//input_byte(gloria_queue, 0x03);
+		//input_byte(gloria_queue, 0x14);
+		//input_byte(gloria_queue, 0x02);
+		//input_byte(gloria_queue, 0xf0);
+		
+		//input_byte(gloria_queue, 0x03);
+		//input_byte(gloria_queue, 0x13);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue,0xff);
 		//
 		//input_byte(gloria_queue, 0x01);
 		//input_byte(gloria_queue, 0x3E); // Action Axel ALL
@@ -76,7 +84,7 @@ int main(void)
 		//read_all_commands(gloria_queue);
 		//_delay_us(10);
 		//usart_set_rx();
-		//_delay_ms(1500);
+		//_delay_ms(3000);
 		//usart_set_tx();
 		
 	}
