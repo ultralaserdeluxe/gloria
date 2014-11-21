@@ -1,6 +1,6 @@
 """a simple testprogram for the pcThread class that is used to connects to a user and receives commands and sends data back"""
 from pcThread import pcThread
-import queue
+import Queue
 import time
 from sensorThread import sensorThread
 commandQueue=Queue.Queue()
