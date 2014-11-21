@@ -32,24 +32,17 @@ class pcThread(threading.Thread):
                 while self.__conn not in readable:
                     readable, writable, exceptional = select.select([self.__conn], [self.__conn], [self.__conn])
                 while self.__conn in readable:
-                    data=self.__conn.recv(4096)
+                    data=self.__conn.recv(4096).decode()
                     complete_data_set=complete_data_set+data
                     readable, writable, exceptional = select.select([self.__conn], [self.__conn], [self.__conn])
                     if not data:
                         break
             return complete_data_set
-        def isfloat(value):
-  	    try:
-    		float(value)
-    		return True
-  	    except ValueError:
-    		return False
+        
         #converts the sensorlist to a string to send to the user as described in the designspecifikation
         def checkSubelement(subelement):
             if subelement.isdigit():
                 return int(subelement)
-	    if isfloat(subelement)
-		return float(subelement)
             else:
                 if subelement=="True":
                     return True
