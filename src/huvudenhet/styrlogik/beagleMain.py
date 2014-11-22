@@ -3,6 +3,10 @@ from pcThread import pcThread
 import Queue
 import time
 from sensorThread import sensorThread
+from driveUnit import driveUnit
+from arm import Arm
+driver=driveUnit()
+robot_arm=Arm()
 commandQueue=Queue.Queue()
 sensorList=[["lineSensor",[0,0,20,0,512,0,0,100,0,0,0]],
             ["distance",[30,40]],
@@ -12,14 +16,31 @@ sensorList=[["lineSensor",[0,0,20,0,512,0,0,100,0,0,0]],
             ["latestCalibration",["0000-00-00-15:00"]],
             ["autoMotor",[True]],
             ["autoArm",[False]]]
-sensorThreadObject=sensorThread(sensorList)
-sensorThreadObject.daemon=True
-sensorThreadObject.start()
+#sensorThreadObject=sensorThread(sensorList)
+#sensorThreadObject.daemon=True
+#sensorThreadObject.start()
 pcThreadObject=pcThread(commandQueue,sensorList)
 pcThreadObject.daemon=True
 pcThreadObject.start()
 while True:
-    time.sleep(1)
+    time.sleep(0.0005)
     if not commandQueue.empty():
-        print("executing stuff")
-        print(commandQueue.get())
+        command=commandQueue.get()
+	if command[0]=="motorSpeed":
+		#print(command)
+		left=int(command[1][0])
+		right=int(command[1][1])
+		#print(left,right)
+		driver.setMotorLeft(left)
+		driver.setMotorRight(right)
+		#driver.sendAllMotor()
+	if command[0]=="armPosition":
+		robot_arm.updateX(command[1][0])
+		robot_arm.updateY(command[1][1])
+		robot_arm.updateZ(command[1][2])
+		sensor_values=robot_arm.getServoValues()
+		for i in range(6):
+			driver.setArmAxis(i+1,sensor_values[i])
+		driver.sendAllAxis()
+			
+		
