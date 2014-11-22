@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.1.0">
+<eagle version="6.5.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="no"/>
@@ -8231,9 +8231,6 @@ at 30/07/2012 17:45:58</description>
 <part name="R2" library="resistor" deviceset="R-EU_" device="0204/2V" value="10k"/>
 <part name="GND7" library="supply1" deviceset="GND" device=""/>
 <part name="S2" library="switch-omron" deviceset="31-XX" device=""/>
-<part name="JTAG_STYR" library="con-panduit" deviceset="057-010-" device="1"/>
-<part name="JTAG_SEN" library="con-panduit" deviceset="057-010-" device="1"/>
-<part name="MOTOR" library="con-panduit" deviceset="057-010-" device="1"/>
 <part name="BEAGLEBOARD" library="con-panduit" deviceset="057-020-" device="1"/>
 <part name="LINJESENSOR" library="con-panduit" deviceset="057-026-" device="1"/>
 <part name="GND8" library="supply1" deviceset="GND" device=""/>
@@ -8243,35 +8240,37 @@ at 30/07/2012 17:45:58</description>
 <part name="SERVO_UART" library="con-molex" deviceset="22-23-2031" device=""/>
 <part name="GND9" library="supply1" deviceset="GND" device=""/>
 <part name="P+2" library="supply1" deviceset="VCC" device=""/>
-<part name="GND10" library="supply1" deviceset="GND" device=""/>
-<part name="GND11" library="supply1" deviceset="GND" device=""/>
-<part name="GND12" library="supply1" deviceset="GND" device=""/>
-<part name="P+5" library="supply1" deviceset="VCC" device=""/>
-<part name="P+6" library="supply1" deviceset="VCC" device=""/>
 <part name="GND13" library="supply1" deviceset="GND" device=""/>
 <part name="U1" library="Texas Instruments_By_element14_Batch_1" deviceset="SN74AC245DW" device=""/>
 <part name="U2" library="Texas Instruments_By_element14_Batch_1" deviceset="SN74AC245DW" device=""/>
 <part name="GND14" library="supply1" deviceset="GND" device=""/>
 <part name="P+7" library="supply1" deviceset="VCC" device=""/>
+<part name="JTAG_SEN" library="con-panduit" deviceset="057-010-" device="1"/>
+<part name="GND15" library="supply1" deviceset="GND" device=""/>
+<part name="P+8" library="supply1" deviceset="VCC" device=""/>
+<part name="MOTOR" library="con-panduit" deviceset="057-010-" device="1"/>
+<part name="JTAG_STYR" library="con-panduit" deviceset="057-010-" device="1"/>
+<part name="GND10" library="supply1" deviceset="GND" device=""/>
+<part name="GND12" library="supply1" deviceset="GND" device=""/>
+<part name="P+6" library="supply1" deviceset="VCC" device=""/>
 </parts>
 <sheets>
 <sheet>
 <description>Sensorenhet</description>
 <plain>
-<text x="274.32" y="20.32" size="1.778" layer="91" rot="R90">JTAG_SEN</text>
 <text x="274.32" y="40.64" size="1.778" layer="91" rot="R90">SPI_SEN</text>
 <text x="198.12" y="17.78" size="1.778" layer="91" rot="R90">Saknar EXO 3</text>
-<text x="287.02" y="109.22" size="1.778" layer="91" rot="R90">SENSOR_LINE_ENABLE</text>
+<text x="251.46" y="109.22" size="1.778" layer="91" rot="R90">SENSOR_LINE_ENABLE</text>
 <text x="299.72" y="111.76" size="1.778" layer="91" rot="R90">SENSOR_LINE_OUT</text>
 </plain>
 <instances>
 <instance part="ATMEGA1284P" gate="G$1" x="233.68" y="38.1"/>
 <instance part="P+3" gate="VCC" x="208.28" y="91.44"/>
-<instance part="GND3" gate="1" x="208.28" y="-10.16"/>
+<instance part="GND3" gate="1" x="208.28" y="-15.24"/>
 <instance part="LINEVALUEMUX1" gate="A" x="320.04" y="121.92" rot="MR180"/>
-<instance part="LINEENABLEMUX1" gate="A" x="264.16" y="121.92" rot="R180"/>
+<instance part="LINEENABLEMUX1" gate="A" x="228.6" y="121.92" rot="R180"/>
 <instance part="GND4" gate="1" x="304.8" y="91.44"/>
-<instance part="P+4" gate="VCC" x="251.46" y="116.84"/>
+<instance part="P+4" gate="VCC" x="215.9" y="116.84"/>
 <instance part="C1" gate="G$1" x="198.12" y="81.28" rot="R90"/>
 <instance part="GND5" gate="1" x="190.5" y="81.28" rot="R270"/>
 <instance part="R1" gate="G$1" x="203.2" y="68.58" rot="R90"/>
@@ -8286,6 +8285,18 @@ at 30/07/2012 17:45:58</description>
 <instance part="SENSOR_DISTANCE_2" gate="-3" x="322.58" y="38.1"/>
 <instance part="GND9" gate="1" x="314.96" y="30.48"/>
 <instance part="P+2" gate="VCC" x="307.34" y="63.5"/>
+<instance part="JTAG_SEN" gate="-1" x="294.64" y="17.78"/>
+<instance part="JTAG_SEN" gate="-2" x="317.5" y="17.78"/>
+<instance part="JTAG_SEN" gate="-3" x="294.64" y="12.7"/>
+<instance part="JTAG_SEN" gate="-4" x="317.5" y="12.7"/>
+<instance part="JTAG_SEN" gate="-5" x="294.64" y="7.62"/>
+<instance part="JTAG_SEN" gate="-6" x="317.5" y="7.62"/>
+<instance part="JTAG_SEN" gate="-7" x="294.64" y="2.54"/>
+<instance part="JTAG_SEN" gate="-8" x="317.5" y="2.54"/>
+<instance part="JTAG_SEN" gate="-9" x="294.64" y="-2.54"/>
+<instance part="JTAG_SEN" gate="-10" x="317.5" y="-2.54"/>
+<instance part="GND15" gate="1" x="309.88" y="-12.7"/>
+<instance part="P+8" gate="VCC" x="307.34" y="25.4"/>
 </instances>
 <busses>
 </busses>
@@ -8293,7 +8304,7 @@ at 30/07/2012 17:45:58</description>
 <net name="VCC" class="0">
 <segment>
 <pinref part="LINEENABLEMUX1" gate="A" pin="X"/>
-<wire x1="251.46" y1="111.76" x2="251.46" y2="114.3" width="0.1524" layer="91"/>
+<wire x1="215.9" y1="111.76" x2="215.9" y2="114.3" width="0.1524" layer="91"/>
 <pinref part="P+4" gate="VCC" pin="VCC"/>
 </segment>
 <segment>
@@ -8312,6 +8323,8 @@ at 30/07/2012 17:45:58</description>
 <pinref part="R1" gate="G$1" pin="2"/>
 <wire x1="203.2" y1="73.66" x2="203.2" y2="76.2" width="0.1524" layer="91"/>
 <wire x1="203.2" y1="76.2" x2="208.28" y2="76.2" width="0.1524" layer="91"/>
+<junction x="208.28" y="76.2"/>
+<junction x="208.28" y="81.28"/>
 </segment>
 <segment>
 <pinref part="SENSOR_DISTANCE_2" gate="-2" pin="S"/>
@@ -8323,24 +8336,32 @@ at 30/07/2012 17:45:58</description>
 <wire x1="320.04" y1="55.88" x2="307.34" y2="55.88" width="0.1524" layer="91"/>
 <junction x="307.34" y="55.88"/>
 </segment>
+<segment>
+<pinref part="JTAG_SEN" gate="-4" pin="S"/>
+<wire x1="312.42" y1="12.7" x2="307.34" y2="12.7" width="0.1524" layer="91"/>
+<pinref part="P+8" gate="VCC" pin="VCC"/>
+<wire x1="307.34" y1="12.7" x2="307.34" y2="22.86" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="GND" class="0">
 <segment>
 <pinref part="LINEENABLEMUX1" gate="A" pin="INH"/>
 <pinref part="LINEVALUEMUX1" gate="A" pin="INH"/>
-<wire x1="276.86" y1="96.52" x2="304.8" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="241.3" y1="96.52" x2="304.8" y2="96.52" width="0.1524" layer="91"/>
 <pinref part="GND4" gate="1" pin="GND"/>
 <wire x1="304.8" y1="96.52" x2="307.34" y2="96.52" width="0.1524" layer="91"/>
 <wire x1="304.8" y1="93.98" x2="304.8" y2="96.52" width="0.1524" layer="91"/>
+<junction x="304.8" y="96.52"/>
 </segment>
 <segment>
-<pinref part="GND3" gate="1" pin="GND"/>
-<wire x1="208.28" y1="-7.62" x2="208.28" y2="-5.08" width="0.1524" layer="91"/>
+<pinref part="ATMEGA1284P" gate="G$1" pin="GND@0"/>
+<wire x1="208.28" y1="0" x2="210.82" y2="0" width="0.1524" layer="91"/>
 <pinref part="ATMEGA1284P" gate="G$1" pin="GND@1"/>
 <wire x1="208.28" y1="-5.08" x2="210.82" y2="-5.08" width="0.1524" layer="91"/>
 <wire x1="208.28" y1="-5.08" x2="208.28" y2="0" width="0.1524" layer="91"/>
-<pinref part="ATMEGA1284P" gate="G$1" pin="GND@0"/>
-<wire x1="208.28" y1="0" x2="210.82" y2="0" width="0.1524" layer="91"/>
+<pinref part="GND3" gate="1" pin="GND"/>
+<wire x1="208.28" y1="-12.7" x2="208.28" y2="-5.08" width="0.1524" layer="91"/>
+<junction x="208.28" y="-5.08"/>
 </segment>
 <segment>
 <pinref part="GND5" gate="1" pin="GND"/>
@@ -8354,6 +8375,7 @@ at 30/07/2012 17:45:58</description>
 <pinref part="S1" gate="1" pin="P"/>
 <wire x1="195.58" y1="50.8" x2="195.58" y2="53.34" width="0.1524" layer="91"/>
 <wire x1="195.58" y1="50.8" x2="203.2" y2="50.8" width="0.1524" layer="91"/>
+<junction x="203.2" y="50.8"/>
 </segment>
 <segment>
 <pinref part="SENSOR_DISTANCE_1" gate="-1" pin="S"/>
@@ -8365,45 +8387,58 @@ at 30/07/2012 17:45:58</description>
 <junction x="314.96" y="43.18"/>
 <pinref part="GND9" gate="1" pin="GND"/>
 </segment>
+<segment>
+<pinref part="JTAG_SEN" gate="-10" pin="S"/>
+<wire x1="312.42" y1="-2.54" x2="309.88" y2="-2.54" width="0.1524" layer="91"/>
+<wire x1="309.88" y1="-10.16" x2="309.88" y2="-2.54" width="0.1524" layer="91"/>
+<wire x1="309.88" y1="-2.54" x2="309.88" y2="17.78" width="0.1524" layer="91"/>
+<junction x="309.88" y="-2.54"/>
+<pinref part="JTAG_SEN" gate="-2" pin="S"/>
+<wire x1="309.88" y1="17.78" x2="312.42" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="GND15" gate="1" pin="GND"/>
+</segment>
 </net>
 <net name="LINEADDR0" class="0">
 <segment>
 <pinref part="LINEVALUEMUX1" gate="A" pin="A"/>
 <pinref part="LINEENABLEMUX1" gate="A" pin="A"/>
-<wire x1="276.86" y1="99.06" x2="299.72" y2="99.06" width="0.1524" layer="91"/>
+<wire x1="241.3" y1="99.06" x2="299.72" y2="99.06" width="0.1524" layer="91"/>
 <wire x1="299.72" y1="99.06" x2="307.34" y2="99.06" width="0.1524" layer="91"/>
 <wire x1="299.72" y1="81.28" x2="299.72" y2="99.06" width="0.1524" layer="91"/>
 <pinref part="ATMEGA1284P" gate="G$1" pin="ADC0/PCINT0"/>
 <wire x1="299.72" y1="81.28" x2="256.54" y2="81.28" width="0.1524" layer="91"/>
+<junction x="299.72" y="99.06"/>
 </segment>
 </net>
 <net name="LINEADDR1" class="0">
 <segment>
 <pinref part="LINEVALUEMUX1" gate="A" pin="B"/>
 <pinref part="LINEENABLEMUX1" gate="A" pin="B"/>
-<wire x1="276.86" y1="101.6" x2="297.18" y2="101.6" width="0.1524" layer="91"/>
+<wire x1="241.3" y1="101.6" x2="297.18" y2="101.6" width="0.1524" layer="91"/>
 <wire x1="297.18" y1="101.6" x2="307.34" y2="101.6" width="0.1524" layer="91"/>
 <wire x1="297.18" y1="78.74" x2="297.18" y2="101.6" width="0.1524" layer="91"/>
 <pinref part="ATMEGA1284P" gate="G$1" pin="ADC1/PCINT1"/>
 <wire x1="297.18" y1="78.74" x2="256.54" y2="78.74" width="0.1524" layer="91"/>
+<junction x="297.18" y="101.6"/>
 </segment>
 </net>
 <net name="LINEADDR2" class="0">
 <segment>
 <pinref part="LINEVALUEMUX1" gate="A" pin="C"/>
 <pinref part="LINEENABLEMUX1" gate="A" pin="C"/>
-<wire x1="276.86" y1="104.14" x2="294.64" y2="104.14" width="0.1524" layer="91"/>
+<wire x1="241.3" y1="104.14" x2="294.64" y2="104.14" width="0.1524" layer="91"/>
 <wire x1="294.64" y1="104.14" x2="307.34" y2="104.14" width="0.1524" layer="91"/>
 <wire x1="294.64" y1="76.2" x2="294.64" y2="104.14" width="0.1524" layer="91"/>
 <pinref part="ATMEGA1284P" gate="G$1" pin="ADC2/PCINT2"/>
 <wire x1="294.64" y1="76.2" x2="256.54" y2="76.2" width="0.1524" layer="91"/>
+<junction x="294.64" y="104.14"/>
 </segment>
 </net>
 <net name="LINEADDR3" class="0">
 <segment>
 <wire x1="292.1" y1="73.66" x2="292.1" y2="106.68" width="0.1524" layer="91"/>
 <pinref part="LINEENABLEMUX1" gate="A" pin="D"/>
-<wire x1="292.1" y1="106.68" x2="276.86" y2="106.68" width="0.1524" layer="91"/>
+<wire x1="292.1" y1="106.68" x2="241.3" y2="106.68" width="0.1524" layer="91"/>
 <pinref part="LINEVALUEMUX1" gate="A" pin="D"/>
 <wire x1="292.1" y1="106.68" x2="307.34" y2="106.68" width="0.1524" layer="91"/>
 <junction x="292.1" y="106.68"/>
@@ -8464,82 +8499,58 @@ at 30/07/2012 17:45:58</description>
 <pinref part="ATMEGA1284P" gate="G$1" pin="SS/OC0B/PCINT12"/>
 </segment>
 </net>
-<net name="JTAG_SEN_TCK" class="0">
-<segment>
-<wire x1="256.54" y1="30.48" x2="266.7" y2="30.48" width="0.1524" layer="91"/>
-<pinref part="ATMEGA1284P" gate="G$1" pin="TCK/PCINT18"/>
-</segment>
-</net>
-<net name="JTAG_SEN_TMS" class="0">
-<segment>
-<wire x1="256.54" y1="27.94" x2="266.7" y2="27.94" width="0.1524" layer="91"/>
-<pinref part="ATMEGA1284P" gate="G$1" pin="TMS/PCINT19"/>
-</segment>
-</net>
-<net name="JTAG_SEN_TDO" class="0">
-<segment>
-<wire x1="256.54" y1="25.4" x2="266.7" y2="25.4" width="0.1524" layer="91"/>
-<pinref part="ATMEGA1284P" gate="G$1" pin="TDO/PCINT20"/>
-</segment>
-</net>
-<net name="JTAG_SEN_TDI" class="0">
-<segment>
-<wire x1="256.54" y1="22.86" x2="266.7" y2="22.86" width="0.1524" layer="91"/>
-<pinref part="ATMEGA1284P" gate="G$1" pin="TDI/PCINT21"/>
-</segment>
-</net>
 <net name="LINE_0_E" class="0">
 <segment>
 <pinref part="LINEENABLEMUX1" gate="A" pin="X0"/>
-<wire x1="281.94" y1="111.76" x2="276.86" y2="111.76" width="0.1524" layer="91"/>
+<wire x1="246.38" y1="111.76" x2="241.3" y2="111.76" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINE_3_E" class="0">
 <segment>
 <pinref part="LINEENABLEMUX1" gate="A" pin="X3"/>
-<wire x1="276.86" y1="119.38" x2="281.94" y2="119.38" width="0.1524" layer="91"/>
+<wire x1="241.3" y1="119.38" x2="246.38" y2="119.38" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINE_4_E" class="0">
 <segment>
 <pinref part="LINEENABLEMUX1" gate="A" pin="X4"/>
-<wire x1="281.94" y1="121.92" x2="276.86" y2="121.92" width="0.1524" layer="91"/>
+<wire x1="246.38" y1="121.92" x2="241.3" y2="121.92" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINE_6_E" class="0">
 <segment>
 <pinref part="LINEENABLEMUX1" gate="A" pin="X6"/>
-<wire x1="281.94" y1="127" x2="276.86" y2="127" width="0.1524" layer="91"/>
+<wire x1="246.38" y1="127" x2="241.3" y2="127" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINE_7_E" class="0">
 <segment>
 <pinref part="LINEENABLEMUX1" gate="A" pin="X7"/>
-<wire x1="276.86" y1="129.54" x2="281.94" y2="129.54" width="0.1524" layer="91"/>
+<wire x1="241.3" y1="129.54" x2="246.38" y2="129.54" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINE_8_E" class="0">
 <segment>
 <pinref part="LINEENABLEMUX1" gate="A" pin="X8"/>
-<wire x1="281.94" y1="132.08" x2="276.86" y2="132.08" width="0.1524" layer="91"/>
+<wire x1="246.38" y1="132.08" x2="241.3" y2="132.08" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINE_2_E" class="0">
 <segment>
 <pinref part="LINEENABLEMUX1" gate="A" pin="X2"/>
-<wire x1="281.94" y1="116.84" x2="276.86" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="246.38" y1="116.84" x2="241.3" y2="116.84" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINE_1_E" class="0">
 <segment>
 <pinref part="LINEENABLEMUX1" gate="A" pin="X1"/>
-<wire x1="276.86" y1="114.3" x2="281.94" y2="114.3" width="0.1524" layer="91"/>
+<wire x1="241.3" y1="114.3" x2="246.38" y2="114.3" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINE_5_E" class="0">
 <segment>
 <pinref part="LINEENABLEMUX1" gate="A" pin="X5"/>
-<wire x1="276.86" y1="124.46" x2="281.94" y2="124.46" width="0.1524" layer="91"/>
+<wire x1="241.3" y1="124.46" x2="246.38" y2="124.46" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINE_10_OUT" class="0">
@@ -8619,7 +8630,12 @@ at 30/07/2012 17:45:58</description>
 <wire x1="195.58" y1="63.5" x2="203.2" y2="63.5" width="0.1524" layer="91"/>
 <wire x1="195.58" y1="63.5" x2="185.42" y2="63.5" width="0.1524" layer="91"/>
 <junction x="195.58" y="63.5"/>
-<label x="177.8" y="63.5" size="1.778" layer="95"/>
+<wire x1="185.42" y1="63.5" x2="185.42" y2="-20.32" width="0.1524" layer="91"/>
+<wire x1="185.42" y1="-20.32" x2="307.34" y2="-20.32" width="0.1524" layer="91"/>
+<wire x1="307.34" y1="-20.32" x2="307.34" y2="7.62" width="0.1524" layer="91"/>
+<pinref part="JTAG_SEN" gate="-6" pin="S"/>
+<wire x1="307.34" y1="7.62" x2="312.42" y2="7.62" width="0.1524" layer="91"/>
+<junction x="203.2" y="63.5"/>
 </segment>
 </net>
 <net name="SEN_CLK" class="0">
@@ -8631,13 +8647,49 @@ at 30/07/2012 17:45:58</description>
 <net name="LINE_9_E" class="0">
 <segment>
 <pinref part="LINEENABLEMUX1" gate="A" pin="X9"/>
-<wire x1="276.86" y1="134.62" x2="281.94" y2="134.62" width="0.1524" layer="91"/>
+<wire x1="241.3" y1="134.62" x2="246.38" y2="134.62" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINE_10_E" class="0">
 <segment>
 <pinref part="LINEENABLEMUX1" gate="A" pin="X10"/>
-<wire x1="281.94" y1="137.16" x2="276.86" y2="137.16" width="0.1524" layer="91"/>
+<wire x1="246.38" y1="137.16" x2="241.3" y2="137.16" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$1" class="0">
+<segment>
+<pinref part="ATMEGA1284P" gate="G$1" pin="TDI/PCINT21"/>
+<wire x1="256.54" y1="22.86" x2="271.78" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="271.78" y1="22.86" x2="271.78" y2="-2.54" width="0.1524" layer="91"/>
+<pinref part="JTAG_SEN" gate="-9" pin="S"/>
+<wire x1="271.78" y1="-2.54" x2="289.56" y2="-2.54" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$3" class="0">
+<segment>
+<pinref part="ATMEGA1284P" gate="G$1" pin="TDO/PCINT20"/>
+<wire x1="256.54" y1="25.4" x2="274.32" y2="25.4" width="0.1524" layer="91"/>
+<wire x1="274.32" y1="25.4" x2="274.32" y2="12.7" width="0.1524" layer="91"/>
+<pinref part="JTAG_SEN" gate="-3" pin="S"/>
+<wire x1="274.32" y1="12.7" x2="289.56" y2="12.7" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$4" class="0">
+<segment>
+<pinref part="ATMEGA1284P" gate="G$1" pin="TMS/PCINT19"/>
+<wire x1="256.54" y1="27.94" x2="276.86" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="276.86" y1="27.94" x2="276.86" y2="7.62" width="0.1524" layer="91"/>
+<pinref part="JTAG_SEN" gate="-5" pin="S"/>
+<wire x1="276.86" y1="7.62" x2="289.56" y2="7.62" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$5" class="0">
+<segment>
+<pinref part="ATMEGA1284P" gate="G$1" pin="TCK/PCINT18"/>
+<wire x1="256.54" y1="30.48" x2="279.4" y2="30.48" width="0.1524" layer="91"/>
+<wire x1="279.4" y1="30.48" x2="279.4" y2="17.78" width="0.1524" layer="91"/>
+<pinref part="JTAG_SEN" gate="-1" pin="S"/>
+<wire x1="279.4" y1="17.78" x2="289.56" y2="17.78" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
@@ -8645,8 +8697,7 @@ at 30/07/2012 17:45:58</description>
 <sheet>
 <description>Styrenhet</description>
 <plain>
-<text x="45.72" y="27.94" size="1.778" layer="91" rot="R90">JTAG_STYR</text>
-<text x="48.26" y="45.72" size="1.778" layer="91" rot="R90">SPI_STYR</text>
+<text x="38.1" y="45.72" size="1.778" layer="91" rot="R90">SPI_STYR</text>
 <text x="-22.86" y="25.4" size="1.778" layer="91" rot="R90">Saknar EXO 3</text>
 </plain>
 <instances>
@@ -8665,43 +8716,46 @@ at 30/07/2012 17:45:58</description>
 <instance part="SERVO_UART" gate="-1" x="96.52" y="17.78"/>
 <instance part="SERVO_UART" gate="-2" x="96.52" y="15.24"/>
 <instance part="SERVO_UART" gate="-3" x="96.52" y="12.7"/>
+<instance part="MOTOR" gate="-1" x="149.86" y="58.42"/>
+<instance part="MOTOR" gate="-2" x="172.72" y="58.42"/>
+<instance part="MOTOR" gate="-3" x="149.86" y="53.34"/>
+<instance part="MOTOR" gate="-4" x="172.72" y="53.34"/>
+<instance part="MOTOR" gate="-5" x="149.86" y="48.26"/>
+<instance part="MOTOR" gate="-6" x="172.72" y="48.26"/>
+<instance part="MOTOR" gate="-7" x="149.86" y="43.18"/>
+<instance part="MOTOR" gate="-8" x="172.72" y="43.18"/>
+<instance part="MOTOR" gate="-9" x="149.86" y="38.1"/>
+<instance part="MOTOR" gate="-10" x="172.72" y="38.1"/>
+<instance part="JTAG_STYR" gate="-1" x="88.9" y="68.58"/>
+<instance part="JTAG_STYR" gate="-2" x="111.76" y="68.58"/>
+<instance part="JTAG_STYR" gate="-3" x="88.9" y="63.5"/>
+<instance part="JTAG_STYR" gate="-4" x="111.76" y="63.5"/>
+<instance part="JTAG_STYR" gate="-5" x="88.9" y="58.42"/>
+<instance part="JTAG_STYR" gate="-6" x="111.76" y="58.42"/>
+<instance part="JTAG_STYR" gate="-7" x="88.9" y="53.34"/>
+<instance part="JTAG_STYR" gate="-8" x="111.76" y="53.34"/>
+<instance part="JTAG_STYR" gate="-9" x="88.9" y="48.26"/>
+<instance part="JTAG_STYR" gate="-10" x="111.76" y="48.26"/>
+<instance part="GND10" gate="1" x="137.16" y="38.1"/>
+<instance part="GND12" gate="1" x="101.6" y="40.64"/>
+<instance part="P+6" gate="VCC" x="104.14" y="76.2"/>
 </instances>
 <busses>
 </busses>
 <nets>
-<net name="JTAG_STYR_TDI" class="0">
-<segment>
-<wire x1="33.02" y1="30.48" x2="43.18" y2="30.48" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="JTAG_STYR_TDO" class="0">
-<segment>
-<wire x1="33.02" y1="33.02" x2="43.18" y2="33.02" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="JTAG_STYR_TMS" class="0">
-<segment>
-<wire x1="33.02" y1="35.56" x2="43.18" y2="35.56" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="JTAG_STYR_TCK" class="0">
-<segment>
-<wire x1="33.02" y1="38.1" x2="43.18" y2="38.1" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="SPI_SCK" class="0">
 <segment>
-<wire x1="33.02" y1="48.26" x2="43.18" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="33.02" y1="48.26" x2="35.56" y2="48.26" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SPI_MOSI" class="0">
 <segment>
-<wire x1="33.02" y1="53.34" x2="43.18" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="33.02" y1="53.34" x2="35.56" y2="53.34" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SPI_SS_STYR" class="0">
 <segment>
-<wire x1="33.02" y1="55.88" x2="43.18" y2="55.88" width="0.1524" layer="91"/>
+<wire x1="33.02" y1="55.88" x2="35.56" y2="55.88" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="SERVOUART" class="0">
@@ -8713,12 +8767,16 @@ at 30/07/2012 17:45:58</description>
 <pinref part="IC1" gate="A" pin="O"/>
 <pinref part="IC1" gate="B" pin="I"/>
 <pinref part="SERVO_UART" gate="-3" pin="S"/>
+<junction x="71.12" y="12.7"/>
 </segment>
 </net>
 <net name="MOTOR_PWM_1" class="0">
 <segment>
-<wire x1="33.02" y1="2.54" x2="71.12" y2="2.54" width="0.1524" layer="91"/>
 <label x="35.56" y="0" size="1.778" layer="95"/>
+<wire x1="33.02" y1="2.54" x2="142.24" y2="2.54" width="0.1524" layer="91"/>
+<wire x1="142.24" y1="2.54" x2="142.24" y2="43.18" width="0.1524" layer="91"/>
+<pinref part="MOTOR" gate="-7" pin="S"/>
+<wire x1="142.24" y1="43.18" x2="144.78" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="VCC" class="0">
@@ -8738,6 +8796,14 @@ at 30/07/2012 17:45:58</description>
 <pinref part="R2" gate="G$1" pin="2"/>
 <wire x1="-20.32" y1="81.28" x2="-20.32" y2="83.82" width="0.1524" layer="91"/>
 <wire x1="-20.32" y1="83.82" x2="-15.24" y2="83.82" width="0.1524" layer="91"/>
+<junction x="-15.24" y="88.9"/>
+<junction x="-15.24" y="83.82"/>
+</segment>
+<segment>
+<pinref part="JTAG_STYR" gate="-4" pin="S"/>
+<wire x1="106.68" y1="63.5" x2="104.14" y2="63.5" width="0.1524" layer="91"/>
+<pinref part="P+6" gate="VCC" pin="VCC"/>
+<wire x1="104.14" y1="63.5" x2="104.14" y2="73.66" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -8749,6 +8815,7 @@ at 30/07/2012 17:45:58</description>
 <wire x1="-15.24" y1="7.62" x2="-12.7" y2="7.62" width="0.1524" layer="91"/>
 <pinref part="ATMEGA1284P1" gate="G$1" pin="GND@1"/>
 <wire x1="-15.24" y1="2.54" x2="-12.7" y2="2.54" width="0.1524" layer="91"/>
+<junction x="-15.24" y="2.54"/>
 </segment>
 <segment>
 <pinref part="GND1" gate="1" pin="GND"/>
@@ -8763,11 +8830,28 @@ at 30/07/2012 17:45:58</description>
 <wire x1="-20.32" y1="58.42" x2="-20.32" y2="55.88" width="0.1524" layer="91"/>
 <wire x1="-27.94" y1="60.96" x2="-27.94" y2="58.42" width="0.1524" layer="91"/>
 <wire x1="-27.94" y1="58.42" x2="-20.32" y2="58.42" width="0.1524" layer="91"/>
+<junction x="-20.32" y="58.42"/>
 </segment>
 <segment>
 <pinref part="GND8" gate="1" pin="GND"/>
 <wire x1="93.98" y1="17.78" x2="83.82" y2="17.78" width="0.1524" layer="91"/>
 <pinref part="SERVO_UART" gate="-1" pin="S"/>
+</segment>
+<segment>
+<pinref part="GND10" gate="1" pin="GND"/>
+<wire x1="137.16" y1="40.64" x2="137.16" y2="58.42" width="0.1524" layer="91"/>
+<pinref part="MOTOR" gate="-1" pin="S"/>
+<wire x1="137.16" y1="58.42" x2="144.78" y2="58.42" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="JTAG_STYR" gate="-2" pin="S"/>
+<wire x1="106.68" y1="68.58" x2="101.6" y2="68.58" width="0.1524" layer="91"/>
+<wire x1="101.6" y1="68.58" x2="101.6" y2="48.26" width="0.1524" layer="91"/>
+<pinref part="GND12" gate="1" pin="GND"/>
+<pinref part="JTAG_STYR" gate="-10" pin="S"/>
+<wire x1="101.6" y1="48.26" x2="101.6" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="48.26" x2="101.6" y2="48.26" width="0.1524" layer="91"/>
+<junction x="101.6" y="48.26"/>
 </segment>
 </net>
 <net name="JTAG_STYR_RST" class="0">
@@ -8782,7 +8866,10 @@ at 30/07/2012 17:45:58</description>
 <wire x1="-27.94" y1="71.12" x2="-20.32" y2="71.12" width="0.1524" layer="91"/>
 <wire x1="-27.94" y1="71.12" x2="-43.18" y2="71.12" width="0.1524" layer="91"/>
 <junction x="-27.94" y="71.12"/>
-<label x="-48.26" y="73.66" size="1.778" layer="95"/>
+<wire x1="-43.18" y1="71.12" x2="-43.18" y2="-10.16" width="0.1524" layer="91"/>
+<wire x1="-43.18" y1="-10.16" x2="91.44" y2="-10.16" width="0.1524" layer="91"/>
+<wire x1="91.44" y1="-10.16" x2="91.44" y2="58.42" width="0.1524" layer="91"/>
+<wire x1="91.44" y1="58.42" x2="109.22" y2="58.42" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="UART1TX" class="0">
@@ -8809,27 +8896,35 @@ at 30/07/2012 17:45:58</description>
 </net>
 <net name="SPI_MISO" class="0">
 <segment>
-<wire x1="33.02" y1="50.8" x2="43.18" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="33.02" y1="50.8" x2="35.56" y2="50.8" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="MOTOR_DIR_1" class="0">
 <segment>
 <pinref part="ATMEGA1284P1" gate="G$1" pin="ADC0/PCINT0"/>
-<wire x1="33.02" y1="88.9" x2="45.72" y2="88.9" width="0.1524" layer="91"/>
 <label x="35.56" y="88.9" size="1.778" layer="95"/>
+<wire x1="33.02" y1="88.9" x2="142.24" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="142.24" y1="88.9" x2="142.24" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="142.24" y1="48.26" x2="147.32" y2="48.26" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="MOTOR_PWM_2" class="0">
 <segment>
-<wire x1="33.02" y1="5.08" x2="71.12" y2="5.08" width="0.1524" layer="91"/>
 <label x="35.56" y="5.08" size="1.778" layer="95"/>
+<wire x1="33.02" y1="5.08" x2="165.1" y2="5.08" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="5.08" x2="165.1" y2="43.18" width="0.1524" layer="91"/>
+<pinref part="MOTOR" gate="-8" pin="S"/>
+<wire x1="165.1" y1="43.18" x2="167.64" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="MOTOR_DIR_2" class="0">
 <segment>
 <pinref part="ATMEGA1284P1" gate="G$1" pin="ADC1/PCINT1"/>
-<wire x1="33.02" y1="86.36" x2="45.72" y2="86.36" width="0.1524" layer="91"/>
 <label x="35.56" y="86.36" size="1.778" layer="95"/>
+<wire x1="33.02" y1="86.36" x2="165.1" y2="86.36" width="0.1524" layer="91"/>
+<wire x1="165.1" y1="86.36" x2="165.1" y2="48.26" width="0.1524" layer="91"/>
+<pinref part="MOTOR" gate="-6" pin="S"/>
+<wire x1="165.1" y1="48.26" x2="167.64" y2="48.26" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="STYR_UART_TX_E" class="0">
@@ -8848,6 +8943,50 @@ at 30/07/2012 17:45:58</description>
 <wire x1="63.5" y1="66.04" x2="33.02" y2="66.04" width="0.1524" layer="91"/>
 </segment>
 </net>
+<net name="N$6" class="0">
+<segment>
+<pinref part="ATMEGA1284P1" gate="G$1" pin="TDI/PCINT21"/>
+<wire x1="33.02" y1="30.48" x2="45.72" y2="30.48" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="30.48" x2="45.72" y2="40.64" width="0.1524" layer="91"/>
+<wire x1="45.72" y1="40.64" x2="81.28" y2="40.64" width="0.1524" layer="91"/>
+<wire x1="81.28" y1="40.64" x2="81.28" y2="48.26" width="0.1524" layer="91"/>
+<pinref part="JTAG_STYR" gate="-9" pin="S"/>
+<wire x1="81.28" y1="48.26" x2="83.82" y2="48.26" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$7" class="0">
+<segment>
+<pinref part="ATMEGA1284P1" gate="G$1" pin="TDO/PCINT20"/>
+<wire x1="33.02" y1="33.02" x2="43.18" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="43.18" y1="33.02" x2="43.18" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="43.18" y1="43.18" x2="78.74" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="78.74" y1="43.18" x2="78.74" y2="63.5" width="0.1524" layer="91"/>
+<pinref part="JTAG_STYR" gate="-3" pin="S"/>
+<wire x1="78.74" y1="63.5" x2="83.82" y2="63.5" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$8" class="0">
+<segment>
+<pinref part="ATMEGA1284P1" gate="G$1" pin="TMS/PCINT19"/>
+<wire x1="33.02" y1="35.56" x2="40.64" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="40.64" y1="35.56" x2="40.64" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="40.64" y1="45.72" x2="76.2" y2="45.72" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="45.72" x2="76.2" y2="58.42" width="0.1524" layer="91"/>
+<pinref part="JTAG_STYR" gate="-5" pin="S"/>
+<wire x1="76.2" y1="58.42" x2="83.82" y2="58.42" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$9" class="0">
+<segment>
+<pinref part="ATMEGA1284P1" gate="G$1" pin="TCK/PCINT18"/>
+<wire x1="33.02" y1="38.1" x2="38.1" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="38.1" x2="38.1" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="48.26" x2="73.66" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="73.66" y1="48.26" x2="73.66" y2="68.58" width="0.1524" layer="91"/>
+<pinref part="JTAG_STYR" gate="-1" pin="S"/>
+<wire x1="73.66" y1="68.58" x2="83.82" y2="68.58" width="0.1524" layer="91"/>
+</segment>
+</net>
 </nets>
 </sheet>
 <sheet>
@@ -8856,36 +8995,6 @@ at 30/07/2012 17:45:58</description>
 <text x="-99.06" y="38.1" size="1.778" layer="91">SPI MISO, EJ FÄRDIG</text>
 </plain>
 <instances>
-<instance part="JTAG_STYR" gate="-1" x="10.16" y="91.44"/>
-<instance part="JTAG_STYR" gate="-2" x="33.02" y="91.44"/>
-<instance part="JTAG_STYR" gate="-3" x="10.16" y="86.36"/>
-<instance part="JTAG_STYR" gate="-4" x="33.02" y="86.36"/>
-<instance part="JTAG_STYR" gate="-5" x="10.16" y="81.28"/>
-<instance part="JTAG_STYR" gate="-6" x="33.02" y="81.28"/>
-<instance part="JTAG_STYR" gate="-7" x="10.16" y="76.2"/>
-<instance part="JTAG_STYR" gate="-8" x="33.02" y="76.2"/>
-<instance part="JTAG_STYR" gate="-9" x="10.16" y="71.12"/>
-<instance part="JTAG_STYR" gate="-10" x="33.02" y="71.12"/>
-<instance part="JTAG_SEN" gate="-1" x="83.82" y="91.44"/>
-<instance part="JTAG_SEN" gate="-2" x="106.68" y="91.44"/>
-<instance part="JTAG_SEN" gate="-3" x="83.82" y="86.36"/>
-<instance part="JTAG_SEN" gate="-4" x="106.68" y="86.36"/>
-<instance part="JTAG_SEN" gate="-5" x="83.82" y="81.28"/>
-<instance part="JTAG_SEN" gate="-6" x="106.68" y="81.28"/>
-<instance part="JTAG_SEN" gate="-7" x="83.82" y="76.2"/>
-<instance part="JTAG_SEN" gate="-8" x="106.68" y="76.2"/>
-<instance part="JTAG_SEN" gate="-9" x="83.82" y="71.12"/>
-<instance part="JTAG_SEN" gate="-10" x="106.68" y="71.12"/>
-<instance part="MOTOR" gate="-1" x="152.4" y="91.44"/>
-<instance part="MOTOR" gate="-2" x="175.26" y="91.44"/>
-<instance part="MOTOR" gate="-3" x="152.4" y="86.36"/>
-<instance part="MOTOR" gate="-4" x="175.26" y="86.36"/>
-<instance part="MOTOR" gate="-5" x="152.4" y="81.28"/>
-<instance part="MOTOR" gate="-6" x="175.26" y="81.28"/>
-<instance part="MOTOR" gate="-7" x="152.4" y="76.2"/>
-<instance part="MOTOR" gate="-8" x="175.26" y="76.2"/>
-<instance part="MOTOR" gate="-9" x="152.4" y="71.12"/>
-<instance part="MOTOR" gate="-10" x="175.26" y="71.12"/>
 <instance part="BEAGLEBOARD" gate="-1" x="12.7" y="45.72"/>
 <instance part="BEAGLEBOARD" gate="-2" x="35.56" y="45.72"/>
 <instance part="BEAGLEBOARD" gate="-3" x="12.7" y="40.64"/>
@@ -8932,11 +9041,6 @@ at 30/07/2012 17:45:58</description>
 <instance part="LINJESENSOR" gate="-24" x="137.16" y="-10.16"/>
 <instance part="LINJESENSOR" gate="-25" x="114.3" y="-15.24"/>
 <instance part="LINJESENSOR" gate="-26" x="137.16" y="-15.24"/>
-<instance part="GND10" gate="1" x="-7.62" y="60.96"/>
-<instance part="GND11" gate="1" x="68.58" y="60.96"/>
-<instance part="GND12" gate="1" x="132.08" y="60.96"/>
-<instance part="P+5" gate="VCC" x="63.5" y="101.6"/>
-<instance part="P+6" gate="VCC" x="-15.24" y="99.06"/>
 <instance part="GND13" gate="1" x="93.98" y="-25.4"/>
 <instance part="U1" gate="A" x="-35.56" y="33.02"/>
 <instance part="U2" gate="A" x="-33.02" y="-25.4"/>
@@ -8946,63 +9050,7 @@ at 30/07/2012 17:45:58</description>
 <busses>
 </busses>
 <nets>
-<net name="MOTOR_DIR_1" class="0">
-<segment>
-<pinref part="MOTOR" gate="-5" pin="S"/>
-<wire x1="147.32" y1="81.28" x2="139.7" y2="81.28" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="MOTOR_PWM_1" class="0">
-<segment>
-<pinref part="MOTOR" gate="-7" pin="S"/>
-<wire x1="147.32" y1="76.2" x2="139.7" y2="76.2" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="MOTOR_PWM_2" class="0">
-<segment>
-<pinref part="MOTOR" gate="-8" pin="S"/>
-<wire x1="170.18" y1="76.2" x2="167.64" y2="76.2" width="0.1524" layer="91"/>
-<wire x1="167.64" y1="76.2" x2="167.64" y2="73.66" width="0.1524" layer="91"/>
-<wire x1="167.64" y1="73.66" x2="139.7" y2="73.66" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="JTAG_STYR_TCK" class="0">
-<segment>
-<pinref part="JTAG_STYR" gate="-1" pin="S"/>
-<wire x1="5.08" y1="91.44" x2="-2.54" y2="91.44" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="GND" class="0">
-<segment>
-<pinref part="JTAG_STYR" gate="-10" pin="S"/>
-<wire x1="27.94" y1="71.12" x2="27.94" y2="68.58" width="0.1524" layer="91"/>
-<wire x1="27.94" y1="68.58" x2="-7.62" y2="68.58" width="0.1524" layer="91"/>
-<pinref part="JTAG_STYR" gate="-2" pin="S"/>
-<wire x1="27.94" y1="91.44" x2="27.94" y2="88.9" width="0.1524" layer="91"/>
-<wire x1="27.94" y1="88.9" x2="-7.62" y2="88.9" width="0.1524" layer="91"/>
-<wire x1="-7.62" y1="88.9" x2="-7.62" y2="68.58" width="0.1524" layer="91"/>
-<wire x1="-7.62" y1="68.58" x2="-7.62" y2="63.5" width="0.1524" layer="91"/>
-<junction x="-7.62" y="68.58"/>
-<pinref part="GND10" gate="1" pin="GND"/>
-</segment>
-<segment>
-<pinref part="JTAG_SEN" gate="-10" pin="S"/>
-<wire x1="101.6" y1="71.12" x2="101.6" y2="68.58" width="0.1524" layer="91"/>
-<wire x1="101.6" y1="68.58" x2="68.58" y2="68.58" width="0.1524" layer="91"/>
-<pinref part="JTAG_SEN" gate="-2" pin="S"/>
-<wire x1="101.6" y1="91.44" x2="101.6" y2="88.9" width="0.1524" layer="91"/>
-<wire x1="101.6" y1="88.9" x2="68.58" y2="88.9" width="0.1524" layer="91"/>
-<wire x1="68.58" y1="88.9" x2="68.58" y2="68.58" width="0.1524" layer="91"/>
-<wire x1="68.58" y1="68.58" x2="68.58" y2="63.5" width="0.1524" layer="91"/>
-<junction x="68.58" y="68.58"/>
-<pinref part="GND11" gate="1" pin="GND"/>
-</segment>
-<segment>
-<wire x1="132.08" y1="91.44" x2="132.08" y2="63.5" width="0.1524" layer="91"/>
-<pinref part="MOTOR" gate="-1" pin="S"/>
-<wire x1="147.32" y1="91.44" x2="132.08" y2="91.44" width="0.1524" layer="91"/>
-<pinref part="GND12" gate="1" pin="GND"/>
-</segment>
 <segment>
 <pinref part="LINJESENSOR" gate="-2" pin="S"/>
 <wire x1="132.08" y1="45.72" x2="132.08" y2="43.18" width="0.1524" layer="91"/>
@@ -9046,27 +9094,7 @@ at 30/07/2012 17:45:58</description>
 <junction x="-60.96" y="40.64"/>
 </segment>
 </net>
-<net name="JTAG_STYR_TDO" class="0">
-<segment>
-<pinref part="JTAG_STYR" gate="-3" pin="S"/>
-<wire x1="5.08" y1="86.36" x2="-2.54" y2="86.36" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="VCC" class="0">
-<segment>
-<pinref part="JTAG_STYR" gate="-4" pin="S"/>
-<wire x1="27.94" y1="86.36" x2="27.94" y2="83.82" width="0.1524" layer="91"/>
-<wire x1="27.94" y1="83.82" x2="-15.24" y2="83.82" width="0.1524" layer="91"/>
-<pinref part="P+6" gate="VCC" pin="VCC"/>
-<wire x1="-15.24" y1="83.82" x2="-15.24" y2="96.52" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="JTAG_SEN" gate="-4" pin="S"/>
-<wire x1="101.6" y1="86.36" x2="101.6" y2="83.82" width="0.1524" layer="91"/>
-<wire x1="101.6" y1="83.82" x2="63.5" y2="83.82" width="0.1524" layer="91"/>
-<pinref part="P+5" gate="VCC" pin="VCC"/>
-<wire x1="63.5" y1="83.82" x2="63.5" y2="99.06" width="0.1524" layer="91"/>
-</segment>
 <segment>
 <pinref part="U2" gate="A" pin="VCC"/>
 <wire x1="-50.8" y1="-10.16" x2="-53.34" y2="-10.16" width="0.1524" layer="91"/>
@@ -9077,82 +9105,6 @@ at 30/07/2012 17:45:58</description>
 <wire x1="-53.34" y1="-15.24" x2="-53.34" y2="-10.16" width="0.1524" layer="91"/>
 <junction x="-53.34" y="-10.16"/>
 <pinref part="P+7" gate="VCC" pin="VCC"/>
-</segment>
-</net>
-<net name="JTAG_STYR_TMS" class="0">
-<segment>
-<pinref part="JTAG_STYR" gate="-5" pin="S"/>
-<wire x1="5.08" y1="81.28" x2="-2.54" y2="81.28" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="JTAG_STYR_RST" class="0">
-<segment>
-<pinref part="JTAG_STYR" gate="-6" pin="S"/>
-<wire x1="27.94" y1="81.28" x2="27.94" y2="78.74" width="0.1524" layer="91"/>
-<wire x1="27.94" y1="78.74" x2="-2.54" y2="78.74" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$11" class="0">
-<segment>
-<pinref part="JTAG_STYR" gate="-7" pin="S"/>
-<wire x1="5.08" y1="76.2" x2="-2.54" y2="76.2" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$13" class="0">
-<segment>
-<pinref part="JTAG_STYR" gate="-8" pin="S"/>
-<wire x1="27.94" y1="76.2" x2="27.94" y2="73.66" width="0.1524" layer="91"/>
-<wire x1="27.94" y1="73.66" x2="-2.54" y2="73.66" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="JTAG_STYR_TDI" class="0">
-<segment>
-<pinref part="JTAG_STYR" gate="-9" pin="S"/>
-<wire x1="5.08" y1="71.12" x2="-2.54" y2="71.12" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="JTAG_SEN_TCK" class="0">
-<segment>
-<pinref part="JTAG_SEN" gate="-1" pin="S"/>
-<wire x1="78.74" y1="91.44" x2="73.66" y2="91.44" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="JTAG_SEN_TDO" class="0">
-<segment>
-<pinref part="JTAG_SEN" gate="-3" pin="S"/>
-<wire x1="78.74" y1="86.36" x2="73.66" y2="86.36" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="JTAG_SEN_TMS" class="0">
-<segment>
-<pinref part="JTAG_SEN" gate="-5" pin="S"/>
-<wire x1="78.74" y1="81.28" x2="73.66" y2="81.28" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="JTAG_SEN_RST" class="0">
-<segment>
-<pinref part="JTAG_SEN" gate="-6" pin="S"/>
-<wire x1="101.6" y1="81.28" x2="101.6" y2="78.74" width="0.1524" layer="91"/>
-<wire x1="101.6" y1="78.74" x2="73.66" y2="78.74" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$12" class="0">
-<segment>
-<pinref part="JTAG_SEN" gate="-7" pin="S"/>
-<wire x1="78.74" y1="76.2" x2="73.66" y2="76.2" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="N$14" class="0">
-<segment>
-<pinref part="JTAG_SEN" gate="-8" pin="S"/>
-<wire x1="101.6" y1="76.2" x2="101.6" y2="73.66" width="0.1524" layer="91"/>
-<wire x1="101.6" y1="73.66" x2="73.66" y2="73.66" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="JTAG_SEN_TDI" class="0">
-<segment>
-<pinref part="JTAG_SEN" gate="-9" pin="S"/>
-<wire x1="78.74" y1="71.12" x2="73.66" y2="71.12" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="LINE_0_E" class="0">
@@ -9296,14 +9248,6 @@ at 30/07/2012 17:45:58</description>
 <segment>
 <pinref part="LINJESENSOR" gate="-25" pin="S"/>
 <wire x1="109.22" y1="-15.24" x2="101.6" y2="-15.24" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="MOTOR_DIR_2" class="0">
-<segment>
-<pinref part="MOTOR" gate="-6" pin="S"/>
-<wire x1="170.18" y1="81.28" x2="167.64" y2="81.28" width="0.1524" layer="91"/>
-<wire x1="167.64" y1="81.28" x2="167.64" y2="78.74" width="0.1524" layer="91"/>
-<wire x1="167.64" y1="78.74" x2="139.7" y2="78.74" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="VCC_BEAGLEBOARD" class="0">
