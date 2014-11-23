@@ -6,7 +6,7 @@
 <setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
-<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="yes" altdistance="0.01" altunitdist="inch" altunit="inch"/>
+<grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
 <layer number="2" name="Route2" color="1" fill="3" visible="no" active="no"/>
@@ -8174,6 +8174,61 @@ Source: http://www.nxp.com/documents/data_sheet/74ABT125.pdf</description>
 </deviceset>
 </devicesets>
 </library>
+<library name="special">
+<description>&lt;b&gt;Special Devices&lt;/b&gt;&lt;p&gt;
+7-segment displays, switches, heatsinks, crystals, transformers, etc.&lt;p&gt;
+&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
+<packages>
+<package name="QS">
+<description>&lt;B&gt;CRYSTAL&lt;/B&gt;</description>
+<wire x1="-3.429" y1="-2.286" x2="3.429" y2="-2.286" width="0.1524" layer="21"/>
+<wire x1="3.429" y1="2.286" x2="-3.429" y2="2.286" width="0.1524" layer="21"/>
+<wire x1="-3.429" y1="-1.778" x2="3.429" y2="-1.778" width="0.0508" layer="21"/>
+<wire x1="3.429" y1="1.778" x2="-3.429" y2="1.778" width="0.0508" layer="21"/>
+<wire x1="3.429" y1="1.778" x2="3.429" y2="-1.778" width="0.0508" layer="21" curve="-180"/>
+<wire x1="3.429" y1="2.286" x2="3.429" y2="-2.286" width="0.1524" layer="21" curve="-180"/>
+<wire x1="-3.429" y1="2.286" x2="-3.429" y2="-2.286" width="0.1524" layer="21" curve="180"/>
+<wire x1="-3.429" y1="1.778" x2="-3.429" y2="-1.778" width="0.0508" layer="21" curve="180"/>
+<pad name="1" x="-2.54" y="0" drill="0.6096" shape="long" rot="R90"/>
+<pad name="2" x="2.54" y="0" drill="0.6096" shape="long" rot="R90"/>
+<text x="-5.08" y="-3.937" size="1.27" layer="27" ratio="10">&gt;VALUE</text>
+<text x="-5.08" y="2.667" size="1.27" layer="25" ratio="10">&gt;NAME</text>
+</package>
+</packages>
+<symbols>
+<symbol name="XTAL">
+<wire x1="-1.27" y1="2.54" x2="1.397" y2="2.54" width="0.4064" layer="94"/>
+<wire x1="1.397" y1="2.54" x2="1.397" y2="-2.54" width="0.4064" layer="94"/>
+<wire x1="1.397" y1="-2.54" x2="-1.27" y2="-2.54" width="0.4064" layer="94"/>
+<wire x1="-1.27" y1="2.54" x2="-1.27" y2="-2.54" width="0.4064" layer="94"/>
+<wire x1="2.3368" y1="2.54" x2="2.3368" y2="-2.54" width="0.4064" layer="94"/>
+<wire x1="-2.286" y1="2.54" x2="-2.286" y2="-2.54" width="0.4064" layer="94"/>
+<text x="-5.08" y="3.81" size="1.778" layer="95">&gt;NAME</text>
+<text x="-5.08" y="-5.08" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="2" x="5.08" y="0" visible="pad" length="short" direction="pas" swaplevel="1" rot="R180"/>
+<pin name="1" x="-5.08" y="0" visible="pad" length="short" direction="pas" swaplevel="1"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="XTAL/S" prefix="Q" uservalue="yes">
+<description>&lt;B&gt;CRYSTAL&lt;/B&gt;</description>
+<gates>
+<gate name="G$1" symbol="XTAL" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="QS">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -8227,6 +8282,14 @@ Source: http://www.nxp.com/documents/data_sheet/74ABT125.pdf</description>
 <part name="X" library="con-panduit" deviceset="057-020-" device="1"/>
 <part name="P+5" library="supply1" deviceset="VCC" device=""/>
 <part name="GND11" library="supply1" deviceset="GND" device=""/>
+<part name="Q1" library="special" deviceset="XTAL/S" device=""/>
+<part name="C5" library="rcl" deviceset="C-EU" device="C1206" value="22p"/>
+<part name="C6" library="rcl" deviceset="C-EU" device="C1206" value="22p"/>
+<part name="GND13" library="supply1" deviceset="GND" device=""/>
+<part name="C7" library="rcl" deviceset="C-EU" device="025-050X050" value="22p"/>
+<part name="C8" library="rcl" deviceset="C-EU" device="025-050X050" value="22p"/>
+<part name="Q2" library="special" deviceset="XTAL/S" device=""/>
+<part name="GND14" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -8293,6 +8356,10 @@ Source: http://www.nxp.com/documents/data_sheet/74ABT125.pdf</description>
 <instance part="SENSOR_LINE" gate="-24" x="281.94" y="172.72" rot="R180"/>
 <instance part="SENSOR_LINE" gate="-25" x="264.16" y="175.26" rot="MR180"/>
 <instance part="SENSOR_LINE" gate="-26" x="281.94" y="177.8" rot="R180"/>
+<instance part="Q1" gate="G$1" x="205.74" y="30.48" rot="R270"/>
+<instance part="C5" gate="G$1" x="198.12" y="35.56" rot="R90"/>
+<instance part="C6" gate="G$1" x="200.66" y="25.4" rot="R270"/>
+<instance part="GND13" gate="1" x="193.04" y="17.78"/>
 </instances>
 <busses>
 </busses>
@@ -8415,6 +8482,16 @@ Source: http://www.nxp.com/documents/data_sheet/74ABT125.pdf</description>
 <pinref part="JTAG_SEN" gate="-2" pin="S"/>
 <wire x1="314.96" y1="15.24" x2="312.42" y2="15.24" width="0.1524" layer="91"/>
 <pinref part="GND15" gate="1" pin="GND"/>
+</segment>
+<segment>
+<pinref part="GND13" gate="1" pin="GND"/>
+<wire x1="193.04" y1="20.32" x2="193.04" y2="25.4" width="0.1524" layer="91"/>
+<pinref part="C5" gate="G$1" pin="1"/>
+<wire x1="193.04" y1="25.4" x2="193.04" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="193.04" y1="35.56" x2="195.58" y2="35.56" width="0.1524" layer="91"/>
+<pinref part="C6" gate="G$1" pin="2"/>
+<wire x1="193.04" y1="25.4" x2="195.58" y2="25.4" width="0.1524" layer="91"/>
+<junction x="193.04" y="25.4"/>
 </segment>
 </net>
 <net name="LINEADDR0" class="0">
@@ -8785,6 +8862,26 @@ Source: http://www.nxp.com/documents/data_sheet/74ABT125.pdf</description>
 <label x="256.54" y="48.26" size="1.778" layer="95"/>
 </segment>
 </net>
+<net name="N$41" class="0">
+<segment>
+<pinref part="C6" gate="G$1" pin="1"/>
+<pinref part="Q1" gate="G$1" pin="2"/>
+<wire x1="203.2" y1="25.4" x2="205.74" y2="25.4" width="0.1524" layer="91"/>
+<pinref part="ATMEGA1284P" gate="G$1" pin="XTAL2"/>
+<wire x1="205.74" y1="25.4" x2="210.82" y2="25.4" width="0.1524" layer="91"/>
+<junction x="205.74" y="25.4"/>
+</segment>
+</net>
+<net name="N$43" class="0">
+<segment>
+<pinref part="C5" gate="G$1" pin="2"/>
+<pinref part="Q1" gate="G$1" pin="1"/>
+<wire x1="203.2" y1="35.56" x2="205.74" y2="35.56" width="0.1524" layer="91"/>
+<pinref part="ATMEGA1284P" gate="G$1" pin="XTAL1"/>
+<wire x1="205.74" y1="35.56" x2="210.82" y2="35.56" width="0.1524" layer="91"/>
+<junction x="205.74" y="35.56"/>
+</segment>
+</net>
 </nets>
 </sheet>
 <sheet>
@@ -8794,9 +8891,9 @@ Source: http://www.nxp.com/documents/data_sheet/74ABT125.pdf</description>
 <instances>
 <instance part="ATMEGA1284P1" gate="G$1" x="10.16" y="45.72"/>
 <instance part="P+1" gate="VCC" x="-15.24" y="101.6"/>
-<instance part="GND1" gate="1" x="-30.48" y="88.9" rot="R270"/>
+<instance part="GND1" gate="1" x="-33.02" y="88.9" rot="R270"/>
 <instance part="GND2" gate="1" x="-15.24" y="-2.54"/>
-<instance part="C3" gate="G$1" x="-22.86" y="88.9" rot="R90"/>
+<instance part="C3" gate="G$1" x="-25.4" y="88.9" rot="R90"/>
 <instance part="C4" gate="G$1" x="-20.32" y="66.04"/>
 <instance part="R2" gate="G$1" x="-20.32" y="76.2" rot="R90"/>
 <instance part="GND7" gate="1" x="-20.32" y="53.34"/>
@@ -8830,6 +8927,10 @@ Source: http://www.nxp.com/documents/data_sheet/74ABT125.pdf</description>
 <instance part="GND10" gate="1" x="137.16" y="53.34"/>
 <instance part="GND12" gate="1" x="114.3" y="38.1" rot="MR0"/>
 <instance part="P+6" gate="VCC" x="111.76" y="73.66" rot="MR0"/>
+<instance part="C7" gate="G$1" x="-27.94" y="43.18" rot="R90"/>
+<instance part="C8" gate="G$1" x="-27.94" y="33.02" rot="R90"/>
+<instance part="Q2" gate="G$1" x="-17.78" y="38.1" rot="R270"/>
+<instance part="GND14" gate="1" x="-35.56" y="27.94"/>
 </instances>
 <busses>
 </busses>
@@ -8846,15 +8947,6 @@ Source: http://www.nxp.com/documents/data_sheet/74ABT125.pdf</description>
 <junction x="71.12" y="12.7"/>
 </segment>
 </net>
-<net name="MOTOR_PWM_1" class="0">
-<segment>
-<label x="35.56" y="0" size="1.778" layer="95"/>
-<wire x1="33.02" y1="2.54" x2="142.24" y2="2.54" width="0.1524" layer="91"/>
-<wire x1="142.24" y1="2.54" x2="142.24" y2="43.18" width="0.1524" layer="91"/>
-<pinref part="MOTOR" gate="-7" pin="S"/>
-<wire x1="142.24" y1="43.18" x2="144.78" y2="43.18" width="0.1524" layer="91"/>
-</segment>
-</net>
 <net name="VCC" class="0">
 <segment>
 <pinref part="ATMEGA1284P1" gate="G$1" pin="VCC"/>
@@ -8868,7 +8960,7 @@ Source: http://www.nxp.com/documents/data_sheet/74ABT125.pdf</description>
 <wire x1="-12.7" y1="78.74" x2="-15.24" y2="78.74" width="0.1524" layer="91"/>
 <wire x1="-15.24" y1="78.74" x2="-15.24" y2="83.82" width="0.1524" layer="91"/>
 <pinref part="C3" gate="G$1" pin="2"/>
-<wire x1="-17.78" y1="88.9" x2="-15.24" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="-20.32" y1="88.9" x2="-15.24" y2="88.9" width="0.1524" layer="91"/>
 <pinref part="R2" gate="G$1" pin="2"/>
 <wire x1="-20.32" y1="81.28" x2="-20.32" y2="83.82" width="0.1524" layer="91"/>
 <wire x1="-20.32" y1="83.82" x2="-15.24" y2="83.82" width="0.1524" layer="91"/>
@@ -8896,7 +8988,7 @@ Source: http://www.nxp.com/documents/data_sheet/74ABT125.pdf</description>
 <segment>
 <pinref part="GND1" gate="1" pin="GND"/>
 <pinref part="C3" gate="G$1" pin="1"/>
-<wire x1="-27.94" y1="88.9" x2="-25.4" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="-30.48" y1="88.9" x2="-27.94" y2="88.9" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="C4" gate="G$1" pin="2"/>
@@ -8914,12 +9006,6 @@ Source: http://www.nxp.com/documents/data_sheet/74ABT125.pdf</description>
 <pinref part="SERVO_UART" gate="-1" pin="S"/>
 </segment>
 <segment>
-<pinref part="GND10" gate="1" pin="GND"/>
-<wire x1="137.16" y1="55.88" x2="137.16" y2="58.42" width="0.1524" layer="91"/>
-<pinref part="MOTOR" gate="-1" pin="S"/>
-<wire x1="137.16" y1="58.42" x2="144.78" y2="58.42" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="JTAG_STYR" gate="-2" pin="S"/>
 <wire x1="109.22" y1="66.04" x2="114.3" y2="66.04" width="0.1524" layer="91"/>
 <wire x1="114.3" y1="66.04" x2="114.3" y2="45.72" width="0.1524" layer="91"/>
@@ -8928,6 +9014,22 @@ Source: http://www.nxp.com/documents/data_sheet/74ABT125.pdf</description>
 <wire x1="114.3" y1="45.72" x2="114.3" y2="40.64" width="0.1524" layer="91"/>
 <wire x1="109.22" y1="45.72" x2="114.3" y2="45.72" width="0.1524" layer="91"/>
 <junction x="114.3" y="45.72"/>
+</segment>
+<segment>
+<pinref part="GND10" gate="1" pin="GND"/>
+<wire x1="137.16" y1="55.88" x2="137.16" y2="58.42" width="0.1524" layer="91"/>
+<pinref part="MOTOR" gate="-1" pin="S"/>
+<wire x1="137.16" y1="58.42" x2="144.78" y2="58.42" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="GND14" gate="1" pin="GND"/>
+<wire x1="-35.56" y1="30.48" x2="-35.56" y2="33.02" width="0.1524" layer="91"/>
+<pinref part="C8" gate="G$1" pin="1"/>
+<wire x1="-35.56" y1="33.02" x2="-30.48" y2="33.02" width="0.1524" layer="91"/>
+<wire x1="-35.56" y1="33.02" x2="-35.56" y2="43.18" width="0.1524" layer="91"/>
+<junction x="-35.56" y="33.02"/>
+<pinref part="C7" gate="G$1" pin="1"/>
+<wire x1="-35.56" y1="43.18" x2="-30.48" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="JTAG_STYR_RST" class="0">
@@ -8963,34 +9065,6 @@ Source: http://www.nxp.com/documents/data_sheet/74ABT125.pdf</description>
 <wire x1="48.26" y1="35.56" x2="48.26" y2="15.24" width="0.1524" layer="91"/>
 <pinref part="ATMEGA1284P1" gate="G$1" pin="RXD1/INT0/PCINT26"/>
 <wire x1="48.26" y1="15.24" x2="33.02" y2="15.24" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="MOTOR_DIR_1" class="0">
-<segment>
-<pinref part="ATMEGA1284P1" gate="G$1" pin="ADC0/PCINT0"/>
-<label x="35.56" y="88.9" size="1.778" layer="95"/>
-<wire x1="33.02" y1="88.9" x2="142.24" y2="88.9" width="0.1524" layer="91"/>
-<wire x1="142.24" y1="88.9" x2="142.24" y2="48.26" width="0.1524" layer="91"/>
-<wire x1="142.24" y1="48.26" x2="147.32" y2="48.26" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="MOTOR_PWM_2" class="0">
-<segment>
-<label x="35.56" y="5.08" size="1.778" layer="95"/>
-<wire x1="33.02" y1="5.08" x2="170.18" y2="5.08" width="0.1524" layer="91"/>
-<wire x1="170.18" y1="5.08" x2="170.18" y2="40.64" width="0.1524" layer="91"/>
-<pinref part="MOTOR" gate="-8" pin="S"/>
-<wire x1="170.18" y1="40.64" x2="167.64" y2="40.64" width="0.1524" layer="91"/>
-</segment>
-</net>
-<net name="MOTOR_DIR_2" class="0">
-<segment>
-<pinref part="ATMEGA1284P1" gate="G$1" pin="ADC1/PCINT1"/>
-<label x="35.56" y="86.36" size="1.778" layer="95"/>
-<wire x1="33.02" y1="86.36" x2="170.18" y2="86.36" width="0.1524" layer="91"/>
-<wire x1="170.18" y1="86.36" x2="170.18" y2="45.72" width="0.1524" layer="91"/>
-<pinref part="MOTOR" gate="-6" pin="S"/>
-<wire x1="170.18" y1="45.72" x2="167.64" y2="45.72" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="STYR_UART_TX_E" class="0">
@@ -9081,10 +9155,66 @@ Source: http://www.nxp.com/documents/data_sheet/74ABT125.pdf</description>
 <label x="33.02" y="55.88" size="1.778" layer="95"/>
 </segment>
 </net>
+<net name="N$9" class="0">
+<segment>
+<pinref part="ATMEGA1284P1" gate="G$1" pin="OC2A/PCINT31"/>
+<wire x1="33.02" y1="2.54" x2="142.24" y2="2.54" width="0.1524" layer="91"/>
+<wire x1="142.24" y1="2.54" x2="142.24" y2="43.18" width="0.1524" layer="91"/>
+<pinref part="MOTOR" gate="-7" pin="S"/>
+<wire x1="142.24" y1="43.18" x2="144.78" y2="43.18" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$34" class="0">
+<segment>
+<pinref part="ATMEGA1284P1" gate="G$1" pin="ADC0/PCINT0"/>
+<wire x1="33.02" y1="88.9" x2="142.24" y2="88.9" width="0.1524" layer="91"/>
+<pinref part="MOTOR" gate="-5" pin="S"/>
+<wire x1="142.24" y1="48.26" x2="144.78" y2="48.26" width="0.1524" layer="91"/>
+<wire x1="142.24" y1="88.9" x2="142.24" y2="48.26" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$40" class="0">
+<segment>
+<pinref part="ATMEGA1284P1" gate="G$1" pin="ADC1/PCINT1"/>
+<wire x1="33.02" y1="86.36" x2="170.18" y2="86.36" width="0.1524" layer="91"/>
+<wire x1="170.18" y1="86.36" x2="170.18" y2="45.72" width="0.1524" layer="91"/>
+<pinref part="MOTOR" gate="-6" pin="S"/>
+<wire x1="170.18" y1="45.72" x2="167.64" y2="45.72" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$42" class="0">
+<segment>
+<pinref part="ATMEGA1284P1" gate="G$1" pin="OC2B/ICP/PCINT30"/>
+<wire x1="33.02" y1="5.08" x2="170.18" y2="5.08" width="0.1524" layer="91"/>
+<wire x1="170.18" y1="5.08" x2="170.18" y2="40.64" width="0.1524" layer="91"/>
+<pinref part="MOTOR" gate="-8" pin="S"/>
+<wire x1="167.64" y1="40.64" x2="170.18" y2="40.64" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$44" class="0">
+<segment>
+<pinref part="C8" gate="G$1" pin="2"/>
+<pinref part="Q2" gate="G$1" pin="2"/>
+<wire x1="-22.86" y1="33.02" x2="-17.78" y2="33.02" width="0.1524" layer="91"/>
+<pinref part="ATMEGA1284P1" gate="G$1" pin="XTAL2"/>
+<wire x1="-17.78" y1="33.02" x2="-12.7" y2="33.02" width="0.1524" layer="91"/>
+<junction x="-17.78" y="33.02"/>
+</segment>
+</net>
+<net name="N$45" class="0">
+<segment>
+<pinref part="C7" gate="G$1" pin="2"/>
+<pinref part="Q2" gate="G$1" pin="1"/>
+<wire x1="-22.86" y1="43.18" x2="-17.78" y2="43.18" width="0.1524" layer="91"/>
+<pinref part="ATMEGA1284P1" gate="G$1" pin="XTAL1"/>
+<wire x1="-17.78" y1="43.18" x2="-12.7" y2="43.18" width="0.1524" layer="91"/>
+<junction x="-17.78" y="43.18"/>
+</segment>
+</net>
 </nets>
 </sheet>
 <sheet>
-<description>SPI</description>
+<description>Allmänt</description>
 <plain>
 </plain>
 <instances>
