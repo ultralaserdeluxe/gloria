@@ -32,13 +32,40 @@ def main():
         if isinstance(L, int) and isinstance(R, int):
             gloria.setMotorSpeed(L, R)
         else:
+            #could probably be written better but it works
+            Ltemp = int(motorL_entry.get())
+            L.set(Ltemp)
+            Rtemp = int(motorR_entry.get())
+            R.set(Rtemp)
             gloria.setMotorSpeed(int(L.get()), int(R.get()))
         gloria.updateSensors()
+        mainframe.focus_set()
+
+    def keybind_motor(event=None):
+        #if time permits implement a dictionary instead
+        button_pressed = event.char
+        if button_pressed == 'w':
+            gloria.setMotorSpeed(50, 50)
+        elif button_pressed == 'a':
+            gloria.setMotorSpeed(50, 100)
+        elif button_pressed == 'd':
+            gloria.setMotorSpeed(100, 50)
+        elif button_pressed == 's':
+            gloria.setMotorSpeed(0, 0)
+        elif button_pressed == 'q':
+            gloria.setMotorSpeed(-50, 50)
+        elif button_pressed == 'e':
+            gloria.setMotorSpeed(50, -50)
+        else:
+            pass
+        gloria.updateSensors()
+        mainframe.focus_set()
 
     def write_arm(X,Y,Z,P,W,G):
         #gloria.setArmPosition(100, 100, 100, 100, 100, 100)
         gloria.setArmPosition(int(X.get()), int(Y.get()), int(Z.get()), int(P.get()), int(W.get()), int(G.get()))
         gloria.updateSensors()
+        mainframe.focus_set()
         
     def write_single(command,arg):
         if command == "status":
@@ -82,13 +109,11 @@ def main():
             else:
                 gloria.setAutoArm(False)
         gloria.updateSensors()
+        mainframe.focus_set()
                 
     #mainframe
     root = Tk()
     root.title("Gloria GUI command centre")
-
-    motorL = StringVar()
-    motorR = StringVar()
 
     mainframe = ttk.Frame(root, padding="3 3 12 12")
     mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
@@ -96,6 +121,9 @@ def main():
     mainframe.rowconfigure(0, weight=1)
 
     #motor
+    motorL = StringVar()
+    motorR = StringVar()
+    
     motorL_entry = ttk.Scale(mainframe, from_=-100, to=100)
     motorL_entry.grid(column=1, row=1, sticky=(W, E))
     motorL_entry.pack()
@@ -111,11 +139,11 @@ def main():
     ttk.Button(mainframe, text="RMotor Val", command=motorR_get).grid(column=3, row=2)
 
     ttk.Button(mainframe, text="LR drive", command=lambda : write_motor(motorL, motorR)).grid(column=2, row=1)
-    ttk.Button(mainframe, text="Spin left", command=lambda : write_motor(-50, 50)).grid(column=2, row=2)
-    ttk.Button(mainframe, text="Spin right", command=lambda : write_motor(50, -50)).grid(column=2, row=3)
-    ttk.Button(mainframe, text="Left turn", command=lambda : write_motor(50, 100)).grid(column=1, row=4)
-    ttk.Button(mainframe, text="Right turn", command=lambda : write_motor(100, 50)).grid(column=3, row=4)
-    ttk.Button(mainframe, text="Stop", command=lambda : write_motor(0, 0)).grid(column=2, row=4)
+    ttk.Button(mainframe, text="Spin left (Q)", command=lambda : write_motor(-50, 50)).grid(column=2, row=2)
+    ttk.Button(mainframe, text="Spin right (E)", command=lambda : write_motor(50, -50)).grid(column=2, row=3)
+    ttk.Button(mainframe, text="Left turn (A)", command=lambda : write_motor(50, 100)).grid(column=1, row=4)
+    ttk.Button(mainframe, text="Right turn (D)", command=lambda : write_motor(100, 50)).grid(column=3, row=4)
+    ttk.Button(mainframe, text="Stop (S)", command=lambda : write_motor(0, 0)).grid(column=2, row=4)
 
     #arm
     X = StringVar() #any way to assign all these to StringVar at once... ?
@@ -146,20 +174,20 @@ def main():
 
     ttk.Button(mainframe, text="Send to arm", command=lambda : write_arm(X, Y, Z, P, Wr, G)).grid(column=6, row=7)
 
-    #status, calibrate
-    errorCodes = StringVar()
-    lineSensor = StringVar()
-    leftDistance = StringVar()
-    rightDistance = StringVar()
-    armX = StringVar()
-    armY = StringVar()
-    armZ = StringVar()
-    armP = StringVar()
-    armW = StringVar()
-    armG = StringVar()
-    calibration = StringVar()
-    motorBool = StringVar()
-    armBool = StringVar()
+    #status, calibrate, following lines needed?
+##    errorCodes = StringVar()
+##    lineSensor = StringVar()
+##    leftDistance = StringVar()
+##    rightDistance = StringVar()
+##    armX = StringVar()
+##    armY = StringVar()
+##    armZ = StringVar()
+##    armP = StringVar()
+##    armW = StringVar()
+##    armG = StringVar()
+##    calibration = StringVar()
+##    motorBool = StringVar()
+##    armBool = StringVar()
 
     ttk.Button(mainframe, text="Status", command=lambda : write_single("status",0)).grid(column=1, row=5)
     ttk.Button(mainframe, text="Calibrate", command=lambda : write_single("calibrate",0)).grid(column=2, row=5)
@@ -172,6 +200,12 @@ def main():
     
     for child in mainframe.winfo_children():
         child.grid_configure(padx=5, pady=5)
+
+    #keybindings
+    mainframe.focus_set()
+    mainframe.bind("<Key>", keybind_motor)
+    mainframe.pack()
+    #to be cont
 
     root.mainloop()
 
