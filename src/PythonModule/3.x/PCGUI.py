@@ -32,6 +32,11 @@ def main():
         if isinstance(L, int) and isinstance(R, int):
             gloria.setMotorSpeed(L, R)
         else:
+            #could probably be written better but it works
+            Ltemp = int(motorL_entry.get())
+            L.set(Ltemp)
+            Rtemp = int(motorR_entry.get())
+            R.set(Rtemp)
             gloria.setMotorSpeed(int(L.get()), int(R.get()))
         gloria.updateSensors()
 
