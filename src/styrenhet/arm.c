@@ -5,12 +5,20 @@
  * Description: Functions for handling our arm.
  */ 
 
+#define F_CPU 16000000UL
 #include "arm.h"
+#include <util/delay.h>
 
 /* Initializes our arm */
-void arm_init(int servo)
+void arm_init(arm_data_t *arm)
 {
-	servo_init(servo);
+	for (int i = SERVO_1; i <= SERVO_8; i++)
+	{
+		servo_init(i);
+		arm->s[i].goal_speed_h = P_GOAL_SPEED_H_INIT;
+		arm->s[i].goal_speed_l = P_GOAL_SPEED_L_INIT;
+		arm->s[i].ID = i;
+	}
 }
 
 void update_servo(arm_data_t *d, int address)
@@ -42,6 +50,9 @@ void update_servo_regs(arm_data_t *d, int address)
 		for (int i = 0; i < d->length; i++)
 		{
 			update_servo(d, i);
+			/* Todo: Delay to ensure that the servo has time to accept instruction 
+			* Should this be here? */
+			_delay_us(500);
 		}
 	}
 	else

@@ -5,6 +5,7 @@
  * Description: Functions for a ax-12a servo.
  */ 
 
+#define F_CPU 16000000UL
 #include "servo.h"
 #include "usart.h"
 #include <util/delay.h>
@@ -82,8 +83,7 @@ void servo_init(int ID)
 			servo_instruction_packet(ID, INSTR_WRITE, P_PUNCH_L, p)
 		);
 		
-		free_servo_parameter_chain(p);
-		_delay_ms(1);
+		//free_servo_parameter_chain(p);
 		
 }
 

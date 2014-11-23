@@ -24,52 +24,103 @@ void spi_recieve_handler(unsigned int data)
 
 int main(void)
 {
-	//arm_init(SERVO_8);
-	//arm_init(SERVO_7);
-	//arm_init(SERVO_6);
-	//arm_init(SERVO_5);
-	//arm_init(SERVO_4);
-	//arm_init(SERVO_3);
-	//arm_init(SERVO_2);
-	//arm_init(SERVO_1);
 	gloria_queue = new_queue();
 	system_init(gloria_queue, 2, 8);
-	spi_slave_init();
+	//arm_init(gloria_queue->arm);
+	servo_init(SERVO_1);
+	servo_init(SERVO_2);
+	servo_init(SERVO_3);
+	servo_init(SERVO_4);
+	servo_init(SERVO_5);
+	servo_init(SERVO_6);
+	servo_init(SERVO_7);
+	servo_init(SERVO_8);
+	//spi_slave_init();
 	sei();
 	
-	while(1){
-		read_all_commands(gloria_queue);
-		motor_action(MOTOR_ALL, gloria_queue->motor);
+	//int id = SERVO_1;
+	////arm_init(gloria_queue->arm);
+	//servo_init(id);
+	//set_servo_goal_speed(gloria_queue->arm, id, 0x00, 0xff);
 
-		//input_byte(gloria_queue, 0xff);
-		//input_byte(gloria_queue, 0xff);
-		//input_byte(gloria_queue, 0x03); // Flytta Axel 6 til 02ff
-		//input_byte(gloria_queue, 0x10);
-		//input_byte(gloria_queue, 0x01);
-		//input_byte(gloria_queue, 0x55);
-		//
-		//input_byte(gloria_queue, 0xff);
-		//input_byte(gloria_queue, 0xff);
-		//input_byte(gloria_queue, 0x01);
-		//input_byte(gloria_queue, 0x30); // Action Axel ALL
-		//
-		//read_all_commands(gloria_queue);
-		//_delay_ms(3000);
-		//
-		//input_byte(gloria_queue, 0xff);
-		//input_byte(gloria_queue, 0xff);
-		//input_byte(gloria_queue, 0x03); // Flytta Axel 6 til 02ff
-		//input_byte(gloria_queue, 0x10);
-		//input_byte(gloria_queue, 0x00);
-		//input_byte(gloria_queue, 0x55);
-		//
-		//input_byte(gloria_queue, 0xff);
-		//input_byte(gloria_queue, 0xff);
-		//input_byte(gloria_queue, 0x01);
-		//input_byte(gloria_queue, 0x30); // Action Axel ALL
-		//
-		//read_all_commands(gloria_queue);
-		//_delay_ms(3000);
+	while(1){
 		
+		//read_all_commands(gloria_queue);
+		//motor_action(MOTOR_ALL, gloria_queue->motor);
+
+		/* Debug 1 - Simulate input from SPI */
+		input_byte(gloria_queue, 0xff);
+		input_byte(gloria_queue, 0xff);
+		input_byte(gloria_queue, 0x03); // Flytta Axel
+		input_byte(gloria_queue, 0x14);
+		input_byte(gloria_queue, 0x00);
+		input_byte(gloria_queue, 0xff);
+		
+		input_byte(gloria_queue, 0xff);
+		input_byte(gloria_queue, 0xff);
+		input_byte(gloria_queue, 0x03); // Flytta Axel
+		input_byte(gloria_queue, 0x14);
+		input_byte(gloria_queue, 0x00);
+		input_byte(gloria_queue, 0xff);
+		
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Ändra hastighet
+		//input_byte(gloria_queue, 0x23);
+		//input_byte(gloria_queue, 0x00);
+		//input_byte(gloria_queue, 0x20);
+		
+		input_byte(gloria_queue, 0xff);
+		input_byte(gloria_queue, 0xff);
+		input_byte(gloria_queue, 0x01);
+		input_byte(gloria_queue, 0x3E); // Action
+		
+		read_all_commands(gloria_queue);
+		//set_goal_velocity_right(gloria_queue->motor, BACKWARD, 0x60);
+		//motor_action(MOTOR_ALL, gloria_queue->motor);
+		_delay_ms(4000);
+		
+		input_byte(gloria_queue, 0xff);
+		input_byte(gloria_queue, 0xff);
+		input_byte(gloria_queue, 0x03); // Flytta Axel
+		input_byte(gloria_queue, 0x14);
+		input_byte(gloria_queue, 0x02);
+		input_byte(gloria_queue, 0xff);
+		
+		input_byte(gloria_queue, 0xff);
+		input_byte(gloria_queue, 0xff);
+		input_byte(gloria_queue, 0x03); // Flytta Axel
+		input_byte(gloria_queue, 0x14);
+		input_byte(gloria_queue, 0x02);
+		input_byte(gloria_queue, 0xff);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Ändra hastighet
+		//input_byte(gloria_queue, 0x23);
+		//input_byte(gloria_queue, 0x00);
+		//input_byte(gloria_queue, 0x20);
+		//
+		input_byte(gloria_queue, 0xff);
+		input_byte(gloria_queue, 0xff);
+		input_byte(gloria_queue, 0x01);
+		input_byte(gloria_queue, 0x3E); // Action
+		
+		read_all_commands(gloria_queue);
+		//set_goal_velocity_right(gloria_queue->motor, FORWARD, 0x60);
+		//motor_action(MOTOR_ALL, gloria_queue->motor);
+		_delay_ms(4000);
+		
+		
+		/* Debug 2 - Do what read_command does */
+		//set_inverse_servo_goal_position(gloria_queue->arm, id, 0x00, 0x50);
+		//update_servo_regs(gloria_queue->arm, id);
+		//arm_action(id);
+		//_delay_ms(1000);
+		//
+		//set_servo_goal_position(gloria_queue->arm, id, 0x00, 0x50);
+		//update_servo_regs(gloria_queue->arm, id);
+		//arm_action(id);
+		//_delay_ms(1000);
 	}
 }

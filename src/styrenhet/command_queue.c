@@ -26,7 +26,6 @@ void system_init(command_queue_t *q, int motors, int servos)
 
 void input_byte(command_queue_t *q, uint8_t data)
 {
-	// To do, take input byte, decide if data is corrupt or not
 	if (empty_queue(q))
 	{
 		put_queue(q, new_node());
@@ -83,6 +82,10 @@ void put_queue(command_queue_t *q, command_queue_node_t *node)
 command_queue_node_t* pop_first(command_queue_t *q)
 {
 	command_queue_node_t *node = q->head;
+	if (q->head == q->last)
+	{
+		q->last = node->next;
+	}
 	q->head = node->next;
 	return node;
 }
@@ -189,7 +192,7 @@ int set_command(command_struct_t *command, uint8_t data)
 			if (data != 0xff)
 			{
 				command->status = 0;
-				return;
+				return command->status;
 			}
 			command->status++;
 			break;
@@ -391,7 +394,7 @@ void read_command(command_queue_t *q)
 			break;
 		}
 	}
-	free_node(n);
+	//free_node(n);
 	//Todo add functionality for COMMAND_STATUS
 }
 
