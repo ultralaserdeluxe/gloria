@@ -53,8 +53,36 @@ int main(void)
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x12);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0xff);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x13);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0xff);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x14);
+		//input_byte(gloria_queue, 0x02);
+		//input_byte(gloria_queue, 0xff);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x15);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0xff);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
 		//input_byte(gloria_queue, 0x16);
-		//input_byte(gloria_queue, 0x00);
+		//input_byte(gloria_queue, 0x02);
 		//input_byte(gloria_queue, 0xff);
 		//
 		//input_byte(gloria_queue, 0xff);
@@ -66,22 +94,8 @@ int main(void)
 		//
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0xff);
-		//input_byte(gloria_queue, 0x03); // Flytta Axel
-		//input_byte(gloria_queue, 0x1D);
-		//input_byte(gloria_queue, 0x00);
-		//input_byte(gloria_queue, 0xff);
-		//
-		//input_byte(gloria_queue, 0xff);
-		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0x01);
 		//input_byte(gloria_queue, 0x3F); // Action
-		//
-		//input_byte(gloria_queue, 0xff);
-		//input_byte(gloria_queue, 0xff);
-		//input_byte(gloria_queue, 0x03); // Flytta Axel
-		//input_byte(gloria_queue, 0x16);
-		//input_byte(gloria_queue, 0x01);
-		//input_byte(gloria_queue, 0xff);
 		//
 		//read_all_commands(gloria_queue);
 		//_delay_ms(2500);
@@ -89,15 +103,43 @@ int main(void)
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0x03); // Flytta Axel
-		//input_byte(gloria_queue, 0x17);
+		//input_byte(gloria_queue, 0x12);
 		//input_byte(gloria_queue, 0x00);
 		//input_byte(gloria_queue, 0xff);
 		//
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0x03); // Flytta Axel
-		//input_byte(gloria_queue, 0x1D);
+		//input_byte(gloria_queue, 0x13);
 		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0x30);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x14);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0xff);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x15);
+		//input_byte(gloria_queue, 0x03);
+		//input_byte(gloria_queue, 0x00);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x16);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0xff);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x17);
+		//input_byte(gloria_queue, 0x00);
 		//input_byte(gloria_queue, 0xff);
 		//
 		//input_byte(gloria_queue, 0xff);
