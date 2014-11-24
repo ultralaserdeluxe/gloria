@@ -3,31 +3,43 @@ from pcThread import *
 from driveUnit import *
 import Queue
 
-#kalibrerad data [[golv,tejp],..] för varje linjesensor
-linesensor_c_data = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],
-                     [0,0],[0,0],[0,0],[0,0],[0,0]]
+################### list #######################
 
-sensorList = [["lineSensor",[255,10,4,150,210,215,104,80,5,20,60]],
-              ["distance",[]]]
+#calibrated data [[floor,tape],..] for every linesensor
+linesensor_c_data = [[54,201],[122,225],[141,238],[66,177],[136,231],[76,185],
+                     [171,228],[44,175],[97,195],[60,173],[43,168]]
 
+
+#gets fresh values from sensorthread
+sensorList = [["lineSensor",[0,0,0,0,0,0,0,0,0,0,0]],
+              ["distance",[0,0]]]
+
+#commandos from PC
 commandQueue = Queue.Queue()
 
+################### variables #####################
 
-#kommer nog behöva fler (speed å sånt)
+#may need more...
 pick_up = False
 put_down = False  
 automotor = False
 autoarm = False
 has_package = False
-
+#used for syncing station, package detection
+timestamp = 0
+detection_time = 3 
+is_station_right = False
+is_station_left = False
+#error marginal for linesensors
+error_margin = 5
                              
 def main():
     
-    #spi init för styrenheten
-    driveunit = driveUnit.driveUnit()
+    #spi init for driveunit
+    driveunit = driveUnit()
 
-    #sensorthread = sensorThread(sensorList)
-    #sensorthread.start()
+    sensorthread = sensorThread(sensorList)
+    sensorthread.start()
 
     pcthread = pcThread(sensorList,commandQueue)
     pcthread.start()
@@ -37,7 +49,7 @@ def main():
 
     try:
         while True:
-            #hämta pc kommandot från kön...
+            #get latest PC commando from queue
             command = commandQueue.get()
             if command[0] == "calibrate_floor":
                 calibrate_floor()
@@ -53,16 +65,35 @@ def main():
                     autoarm = True
                 else:
                     autoarm = False
+            else:
+                pass
+
+            #if we pass a station we have *detection time to find a package
+            if timestamp == 0:
+                if is_station_right():
+                    is_station_right = True
+                    timestamp = time.time()
+                elif is_station_left():
+                    is_station_left = True
+                    timestamp = time.time()
+                else:
+                    pass
+            elif (time.time() - timestamp) >= detection_time:
+                is_station_right = False
+                is_station_left = False
+                timestamp = 0
+            else:
+                pass
             
-            #utför
             if automotor == False and not on_stopstation() :
                 print "autonom motor\n"
                 if pick_up == False:
-                    #behöver inte styra armen, fortsätt...
-                    #kolla om vi vill styra armen ändå
+                    #no need to steer arm, continue
+                    #check if we want to steer it anyway
                     if autoarm == False:
-                        #styr arm
-                        print "waiting for arm input...\n"
+                        #steer arm
+                        if command[0] == "armPosition":
+                            steer_arm(command)
                     if put_down == False:
                         if check_pick_up_right() or check_pick_up_left():
                             pick_up = True
@@ -75,24 +106,24 @@ def main():
                             regulate()
                             drive_forward()
                     else:
-                        #sätt ned paket
+                        #put down package...
                         print "putting down package..."                        
                 else:
+                    #pick_up is true, user have to steer arm
                     if autoarm == False:
-                        #styr arm 
-                        print "waiting for arm input..."
+                        #steer arm
+                        if command[0] == "armPosition":
+                            steer_arm(command)
             else:
-                #manuellt läge
+                #manuell
                 if command[0] == "motorSpeed":
                     driveunit.setMotorLeft(command[1][0])
                     driveunit.setMotorRight(command[1][1])
                     driveunit.sendAllMotor()
                 elif command[0] == "armPosition":
-                    axis_id = 1
-                    for data in command[1]:
-                        driveunit.setArmAxis(axis_id,data)
-                        axis_id+=1
-                    driveunit.sendAllAxis()
+                    steer_arm(command)
+                else:
+                    pass
                                             
             print "pick_up? = " + str(pick_up) + "\nput_down? = " + str(put_down)
             time.sleep(1)
@@ -101,9 +132,8 @@ def main():
         pass
 
 
-
 def check_pick_up_right():
-    if is_station_right():
+    if is_station_right:
         print "station to the right found\n"
         if has_package_right():
             print "station has package\n"
@@ -113,7 +143,7 @@ def check_pick_up_right():
     return False
 
 def check_pick_up_left():
-    if is_station_left():
+    if is_station_left:
         print "station to the left found\n"
         if has_package_left():
             print "station has package\n"
@@ -123,7 +153,7 @@ def check_pick_up_left():
     return False           
 
 def check_put_down_right():
-    if is_station_right():
+    if is_station_right:
         print "station to the right found\n"
         if not has_package_right():
             print "station has no package\n"
@@ -133,7 +163,7 @@ def check_put_down_right():
     return False
 
 def check_put_down_left():
-    if is_station_left():
+    if is_station_left:
         print "station to the left found\n"
         if not has_package_left():
             print "station has no package\n"
@@ -143,14 +173,32 @@ def check_put_down_left():
     return False            
 
 def on_stopstation():
-    #om vi har haft 3 stationer utan paket på varandra? (med ett visst avstånd)
+    #if we have 3 stations without packages in a row??
     return False
 
+#check the 3 sensors furthermost to the right
 def is_station_right():
-    return True
+    answer = False
+    for i in range(0,3):
+        value = sensorList[0][1][i]
+        tape_value = linesensor_c_data[i][1]
+        if value <= (tape_value + error_margin) and value >= (tape_value - error_margin):
+            answer = True
+        else:
+            answer = False
+    return answer
 
+#check the 3 sensors furthermost to the left
 def is_station_left():
-    return False
+    answer = False
+    for i in range(8,11):
+        value = sensorList[0][1][i]
+        tape_value = linesensor_c_data[i][1]
+        if value <= (tape_value + error_margin) and value >= (tape_value - error_margin):
+            answer = True
+        else:
+            answer = False
+    return answer
 
 def has_package_right():
     return True
@@ -162,16 +210,22 @@ def regulate():
     print "regulating..."
 
 def drive_forward():
-    
+    print "keep on truckin..."
 
+def steer_arm(command):
+    axis_id = 1
+    for data in command[1]:
+        driveunit.setArmAxis(axis_id,data)
+        axis_id+=1
+    driveunit.sendAllAxis()
 
 def calibrate_floor(): 
-    #ge golv värden
+    #give floor values
     for i in range(0,11):
         linesensor_c_data[i][0] = sensorList[0][1][i]
 
 def calibrate_tape():
-    #ge tejp värden
+    #give tape values
     for i in range(0,11):
         linesensor_c_data[i][1] = sensorList[0][1][i]
 

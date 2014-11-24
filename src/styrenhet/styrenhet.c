@@ -26,16 +26,16 @@ int main(void)
 {
 	gloria_queue = new_queue();
 	system_init(gloria_queue, 2, 8);
-	//arm_init(gloria_queue->arm);
-	servo_init(SERVO_1);
-	servo_init(SERVO_2);
-	servo_init(SERVO_3);
-	servo_init(SERVO_4);
-	servo_init(SERVO_5);
-	servo_init(SERVO_6);
-	servo_init(SERVO_7);
-	servo_init(SERVO_8);
-	//spi_slave_init();
+	arm_init(gloria_queue->arm);
+	//servo_init(SERVO_1);
+	//servo_init(SERVO_2);
+	//servo_init(SERVO_3);
+	//servo_init(SERVO_4);
+	//servo_init(SERVO_5);
+	//servo_init(SERVO_6);
+	//servo_init(SERVO_7);
+	//servo_init(SERVO_8);
+	spi_slave_init();
 	sei();
 	
 	//int id = SERVO_1;
@@ -45,71 +45,110 @@ int main(void)
 
 	while(1){
 		
-		//read_all_commands(gloria_queue);
+		read_all_commands(gloria_queue);
 		//motor_action(MOTOR_ALL, gloria_queue->motor);
 
 		/* Debug 1 - Simulate input from SPI */
-		input_byte(gloria_queue, 0xff);
-		input_byte(gloria_queue, 0xff);
-		input_byte(gloria_queue, 0x03); // Flytta Axel
-		input_byte(gloria_queue, 0x14);
-		input_byte(gloria_queue, 0x00);
-		input_byte(gloria_queue, 0xff);
-		
-		input_byte(gloria_queue, 0xff);
-		input_byte(gloria_queue, 0xff);
-		input_byte(gloria_queue, 0x03); // Flytta Axel
-		input_byte(gloria_queue, 0x14);
-		input_byte(gloria_queue, 0x00);
-		input_byte(gloria_queue, 0xff);
 		
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0xff);
-		//input_byte(gloria_queue, 0x03); // Ändra hastighet
-		//input_byte(gloria_queue, 0x23);
-		//input_byte(gloria_queue, 0x00);
-		//input_byte(gloria_queue, 0x20);
-		
-		input_byte(gloria_queue, 0xff);
-		input_byte(gloria_queue, 0xff);
-		input_byte(gloria_queue, 0x01);
-		input_byte(gloria_queue, 0x3E); // Action
-		
-		read_all_commands(gloria_queue);
-		//set_goal_velocity_right(gloria_queue->motor, BACKWARD, 0x60);
-		//motor_action(MOTOR_ALL, gloria_queue->motor);
-		_delay_ms(4000);
-		
-		input_byte(gloria_queue, 0xff);
-		input_byte(gloria_queue, 0xff);
-		input_byte(gloria_queue, 0x03); // Flytta Axel
-		input_byte(gloria_queue, 0x14);
-		input_byte(gloria_queue, 0x02);
-		input_byte(gloria_queue, 0xff);
-		
-		input_byte(gloria_queue, 0xff);
-		input_byte(gloria_queue, 0xff);
-		input_byte(gloria_queue, 0x03); // Flytta Axel
-		input_byte(gloria_queue, 0x14);
-		input_byte(gloria_queue, 0x02);
-		input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x12);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0xff);
 		//
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0xff);
-		//input_byte(gloria_queue, 0x03); // Ändra hastighet
-		//input_byte(gloria_queue, 0x23);
-		//input_byte(gloria_queue, 0x00);
-		//input_byte(gloria_queue, 0x20);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x13);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0xff);
 		//
-		input_byte(gloria_queue, 0xff);
-		input_byte(gloria_queue, 0xff);
-		input_byte(gloria_queue, 0x01);
-		input_byte(gloria_queue, 0x3E); // Action
-		
-		read_all_commands(gloria_queue);
-		//set_goal_velocity_right(gloria_queue->motor, FORWARD, 0x60);
-		//motor_action(MOTOR_ALL, gloria_queue->motor);
-		_delay_ms(4000);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x14);
+		//input_byte(gloria_queue, 0x02);
+		//input_byte(gloria_queue, 0xff);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x15);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0xff);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x16);
+		//input_byte(gloria_queue, 0x02);
+		//input_byte(gloria_queue, 0xff);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x17);
+		//input_byte(gloria_queue, 0x00);
+		//input_byte(gloria_queue, 0x00);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0x3F); // Action
+		//
+		//read_all_commands(gloria_queue);
+		//_delay_ms(2500);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x12);
+		//input_byte(gloria_queue, 0x00);
+		//input_byte(gloria_queue, 0xff);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x13);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0x30);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x14);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0xff);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x15);
+		//input_byte(gloria_queue, 0x03);
+		//input_byte(gloria_queue, 0x00);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x16);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0xff);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03); // Flytta Axel
+		//input_byte(gloria_queue, 0x17);
+		//input_byte(gloria_queue, 0x00);
+		//input_byte(gloria_queue, 0xff);
+		//
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0x3F); // Action
+		//
+		//read_all_commands(gloria_queue);
+		//_delay_ms(2500);
 		
 		
 		/* Debug 2 - Do what read_command does */
