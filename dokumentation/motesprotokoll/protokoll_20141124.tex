@@ -1,0 +1,52 @@
+\documentclass[titlepage, a4paper]{article}
+\input{../mall/layout.tex}	% Importera generella layout-strukturer
+
+\newcommand{\LIPSdokumenttyp}{Mötesprotokoll}
+\newcommand{\LIPSkursnamn}{TSEA29}
+\newcommand{\LIPSprojektnamn}{Lagerrobot}
+\newcommand{\LIPSprojektgrupp}{Grupp 2}
+\newcommand{\LIPSutfardare}{hansn314} % Vem har utfärdat protokollet?
+
+\pagenumbering{roman}	% Sidnumrering
+
+\begin{document}
+
+\begin{projektmote}{Mötesprotokoll}{MALL}
+% ------------ PARAGRAFER ----------------------
+% Syntax \paragraf{Vi bestämde och kom överens}
+% ----------------------------------------------
+\paragraf{Mötet öppnas.}
+\paragraf{Närvarande: Pål, Dennis, Daniel, Martin, Yngve och Hannes.}
+\paragraf{Hannes för protokoll.}
+\paragraf{Vi diskuterar detaljer i tidsrapporten.}
+\paragraf{Bortsett från förseningen i implementationen av armen så ligger vi bra till.}
+\paragraf{Mötet avslutas.}
+\end{projektmote}
+
+\newpage
+\textbf{\Large Aktuella aktiviteter}
+\begin{center}
+\begin{tabularx}{\textwidth}{| p{4mm} | X | p{13.5mm} | X |}
+	\hline
+	\textbf{Nr} & \textbf{Aktivitet} & \textbf{Ansvar} & \textbf{Status} \\\hline	
+% ------------ Aktuella aktiviteter ------------
+% Syntax {Nr} & {Aktivitet} & {Ansvarig} & {Status} \\\hline
+% ----------------------------------------------
+	{14} & {Skriva UI för PC} & {DW} & {En första iteration färdig.} \\\hline
+	{17} & {Implementera styrning av servon} & {HS} & {Kan styra servon, men fortfarande inte läsa servon.} \\\hline
+	{24} & {Implementera styrlogik} & {DL} & {Påbörjad} \\\hline
+	{26} & {Mästa respons från motorer och servon} & {AY} & {Ej påbörjad, Försenad} \\\hline
+	{28} & {Tolka IR-sensordata} & {PK} & {Påbörjad} \\\hline
+	{31} & {Testa styra servon från styrenheten} & {PK} & {Påbörjad, ej klar} \\\hline
+	{33} & {Testa styra servon från huvud} & {AY} & {Påbörjad} \\\hline
+	{34} & {Testa styra motorer från huvud} & {AY} & {Påbörjad} \\\hline
+	{35} & {Implementera läsning av sensordata på huvud} & {DL} & {Påbörjad} \\\hline
+	{38} & {Implementera och testa X,Y,Z  till servovinkel konvertering} & {MS, HS} & {Ej testat, annars klart} \\\hline
+	{39} & {Implementera och testa gränser för armen} & {MS} & {Ej påbörjad, skjuts på nästa vecka} \\\hline
+	{41} & {Implementera paketnedsättningsfunktion} & {PK} & {Ej påbörjad} \\\hline
+	{42} & {Implementera fjärrstyrning från PC} & {DW} & {Ej påbörjad, framskjuten.} \\\hline
+	{46} & {Implementera regleringsalgoritm} & {AY, MS} & {Ej påbörjad} \\\hline
+\end{tabularx}
+\end{center}
+
+\end{document}
