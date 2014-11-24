@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 from spi import SPI
 class driveUnit():
     def __init__(self):
@@ -13,9 +10,9 @@ class driveUnit():
         else:
             direction = 0
         self.send_startbit()
-        #längd
+        #length
         self.__bus.writebytes([0x03])
-        #kommandot
+        #commando
         self.__bus.writebytes([0x11])
         self.__bus.writebytes([direction])
         self.__bus.writebytes([abs(speed)])
@@ -26,18 +23,18 @@ class driveUnit():
         else:
             direction = 0
         self.send_startbit()
-        #längd
+        #length
         self.__bus.writebytes([0x03])
-        #kommandot
+        #commando
         self.__bus.writebytes([0x10])
         self.__bus.writebytes([direction])
         self.__bus.writebytes([abs(speed)])
 
     def setArmAxis(self, id, value):
         self.send_startbit()
-        #längd
+        #length
         self.__bus.writebytes([0x03])
-        #kommandot
+        #commando
         self.__bus.writebytes([16+(id+1)])
         self.__bus.writebytes([value])
 
@@ -53,7 +50,7 @@ class driveUnit():
         
     def sendAllMotor(self):
         self.send_startbit()
-        #längd
+        #length
         self.__bus.writebytes([0x01])
         #action
         self.__bus.writebytes([0x3D])
