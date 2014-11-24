@@ -47,7 +47,7 @@ void update_servo_regs(arm_data_t *d, int address)
 {
 	if (address == SERVO_ALL)
 	{
-		for (int i = 0; i < d->length; i++)
+		for (int i = 1; i < d->length; i++)
 		{
 			update_servo(d, i);
 			/* Todo: Delay to ensure that the servo has time to accept instruction 
@@ -66,7 +66,7 @@ void arm_action(int address)
 {	
 	/* Send action command */
 	send_servo_instruction(
-		servo_instruction_packet(address, INSTR_ACTION, 0, 0)
+		servo_instruction_packet(address, INSTR_ACTION, 0, NULL)
 	);
 }
 
@@ -74,7 +74,8 @@ arm_data_t* new_arm_data(int number_of_servos)
 {
 	arm_data_t *this = malloc(sizeof(arm_data_t));
 	this->length = number_of_servos;
-	this->s = malloc(number_of_servos * sizeof(servo_data_t));
+	/* Since our servos are in the range 1-n, we get an empty servo in the beginning */
+	this->s = malloc((number_of_servos + 1) * sizeof(servo_data_t));
 	//for (int i = 0; i < number_of_servos; i++)
 	//{
 		//this->s[i].goal_speed_l = P_GOAL_SPEED_L_INIT;

@@ -27,6 +27,8 @@ void usart_init( void )
 	UCSR1B = (1<<RXEN1)|(1<<TXEN1);
 	/* Set frame format: 8data, 2stop bit */
 	UCSR1C = (3<<UCSZ10);
+	
+	// Todo: /* We want timer so we dont get stuck while waiting for UART response */
 }
 
 

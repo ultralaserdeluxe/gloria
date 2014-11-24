@@ -82,11 +82,16 @@ void put_queue(command_queue_t *q, command_queue_node_t *node)
 command_queue_node_t* pop_first(command_queue_t *q)
 {
 	command_queue_node_t *node = q->head;
+	/* q->head == q->last only if theres only one element */
 	if (q->head == q->last)
 	{
-		q->last = node->next;
+		q->last = NULL;
+		q->head = NULL;
 	}
-	q->head = node->next;
+	else
+	{
+		q->head = node->next;
+	}
 	return node;
 }
 
@@ -157,6 +162,7 @@ command_queue_node_t* new_node()
 	command_queue_node_t *this;
 	this = malloc(sizeof(command_queue_node_t));
 	this->command = new_command();
+	this->next = NULL;
 	return this;
 }
 
@@ -172,7 +178,8 @@ command_queue_node_t* free_node(command_queue_node_t* this)
 
 command_struct_t* node_data(command_queue_node_t *node)
 {
-	return node->command;
+	if (node == NULL) return NULL;
+	else return node->command;
 }
 
 /* Abstraction wrapper for set_command */
@@ -223,13 +230,14 @@ command_struct_t* new_command()
 	this = malloc(sizeof(command_struct_t));
 	this->status = 0;
 	this->length = 0;
+	this->first_parameter = NULL;
 	return this;
 }
 
 void read_command(command_queue_t *q)
 {
 	if (empty_queue(q)) return;
-	else if (!command_recieved(q->last->command)) return;
+	else if (!command_recieved(q->head->command)) return;
 	command_queue_node_t *n = pop_first(q);
 	command_struct_t *c = node_data(n);
 	/* If we have Action, perform action */
@@ -394,7 +402,7 @@ void read_command(command_queue_t *q)
 			break;
 		}
 	}
-	//free_node(n);
+	free_node(n);
 	//Todo add functionality for COMMAND_STATUS
 }
 
@@ -416,7 +424,7 @@ int command_status(command_struct_t *current)
 /* Returns true if command has recieved expected amount of parameters */
 bool command_recieved(command_struct_t *c)
 {
-	if (c->length < 1) return false;
+	if (c == NULL) return true;
 	else if (c->status >= c->length + COMMAND_STATUS_LENGTH_OFFSET) return true;
 	else return false;
 }
