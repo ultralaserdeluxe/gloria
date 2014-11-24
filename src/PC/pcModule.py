@@ -10,7 +10,7 @@ class pcModule():
         self.__s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.__port=1337
         self.__ip_adress=ip_adress
-        self.__package_size=4096
+        self.__package_size=512
         self.__s.connect((self.__ip_adress , self.__port))
         self.__s.setblocking(0)
         self.__sensorsList=[]
@@ -24,7 +24,7 @@ class pcModule():
                 readable, writable, exceptional = select.select([self.__s], [self.__s], [self.__s])
             if self.__s in readable:
                 while self.__s in readable:
-                    complete_data_set=complete_data_set+self.__s.recv(4096)
+                    complete_data_set=complete_data_set+self.__s.recv(self.__package_size)
                     readable, writable, exceptional = select.select([self.__s], [self.__s], [self.__s])
         return complete_data_set
     
