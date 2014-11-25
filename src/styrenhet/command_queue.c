@@ -7,6 +7,8 @@
  */ 
 
 #include "command_queue.h"
+#include <util/atomic.h>
+#include <stdbool.h>
 
 /* Initialize arm and motor */
 void system_init(command_queue_t *q, int motors, int servos)
@@ -29,7 +31,7 @@ void input_byte(command_queue_t *q, uint8_t data)
 	if (empty_queue(q))
 	{
 		put_queue(q, new_node());
-		int status = set_node_command(last_node(q), data);
+		set_node_command(last_node(q), data);
 	}
 	else if (!command_recieved(node_data(last_node(q))))
 	{
@@ -38,7 +40,7 @@ void input_byte(command_queue_t *q, uint8_t data)
 	else
 	{
 		put_queue(q, new_node());
-		int status = set_node_command(last_node(q), data);
+		set_node_command(last_node(q), data);
 	}
 }
 
@@ -66,15 +68,18 @@ void free_queue(command_queue_t *q)
 /* Add new node to end of queue */
 void put_queue(command_queue_t *q, command_queue_node_t *node)
 {
-	if (empty_queue(q))
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
 	{
-		q->head = node;
-		q->last = node;
-	}
-	else
-	{
-		q->last->next = node;
-		q->last = node;
+		if (empty_queue(q))
+		{
+			q->head = node;
+			q->last = node;
+		}
+		else
+		{
+			q->last->next = node;
+			q->last = node;
+		}
 	}
 }
 
@@ -83,14 +88,17 @@ command_queue_node_t* pop_first(command_queue_t *q)
 {
 	command_queue_node_t *node = q->head;
 	/* q->head == q->last only if theres only one element */
-	if (q->head == q->last)
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
 	{
-		q->last = NULL;
-		q->head = NULL;
-	}
-	else
-	{
-		q->head = node->next;
+		if (q->head == q->last)
+		{
+			q->last = NULL;
+			q->head = NULL;
+		}
+		else
+		{
+			q->head = node->next;
+		}
 	}
 	return node;
 }
@@ -234,10 +242,12 @@ command_struct_t* new_command()
 	return this;
 }
 
-void read_command(command_queue_t *q)
+/* If the first node in queue contains valid command, perform it and return true
+ * else return false */
+bool read_command(command_queue_t *q)
 {
-	if (empty_queue(q)) return;
-	else if (!command_recieved(q->head->command)) return;
+	if (empty_queue(q)) return false;
+	else if (!command_recieved(q->head->command)) return false;
 	command_queue_node_t *n = pop_first(q);
 	command_struct_t *c = node_data(n);
 	/* If we have Action, perform action */
@@ -402,17 +412,15 @@ void read_command(command_queue_t *q)
 			break;
 		}
 	}
+	//Todo: add functionality for COMMAND_STATUS
 	free_node(n);
-	//Todo add functionality for COMMAND_STATUS
+	return true;
 }
 
+/* While read_command has valid commands to perform, perform them */
 void read_all_commands(command_queue_t *q)
 {
-	while (!empty_queue(q))
-	{
-		if (command_recieved(node_data(first_node(q)))) read_command(q);
-		else return;
-	}
+	while (read_command(q));
 }
 
 /* Returns current status */
@@ -421,7 +429,7 @@ int command_status(command_struct_t *current)
 	return current->status;
 }
 
-/* Returns true if command has recieved expected amount of parameters */
+/* Returns true if command contains expected amount of parameters */
 bool command_recieved(command_struct_t *c)
 {
 	if (c == NULL) return true;
