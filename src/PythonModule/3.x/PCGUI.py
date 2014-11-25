@@ -10,6 +10,7 @@ from pcModule import pcModule
 gloria=pcModule("localhost")
 gloria.updateSensors()
 gloria.start()
+speed = 0
 
 def main():
     
@@ -28,6 +29,7 @@ def main():
             pass
         
     def write_motor(L,R):
+        #primarily a debugger now, not used for keybinds
         #harcoded inputs are int, rest are py_var (StringVar)
         if isinstance(L, int) and isinstance(R, int):
             gloria.setMotorSpeed(L, R)
@@ -42,20 +44,42 @@ def main():
         mainframe.focus_set()
 
     def keybind_motor(event=None):
+        global speed
         #if time permits implement a dictionary instead
         button_pressed = event.char
-        if button_pressed == 'w':
-            gloria.setMotorSpeed(50, 50)
+        if button_pressed == 'w' and speed < 100:
+            speed += 10
+            gloria.setMotorSpeed(speed, speed) #faster
+            motorL.set(speed)
+            motorR.set(speed)
         elif button_pressed == 'a':
-            gloria.setMotorSpeed(50, 100)
+            gloria.setMotorSpeed((speed//2), speed) #left turn
+            motorL.set(speed//2)
+            motorR.set(speed)
         elif button_pressed == 'd':
-            gloria.setMotorSpeed(100, 50)
-        elif button_pressed == 's':
-            gloria.setMotorSpeed(0, 0)
+            gloria.setMotorSpeed(speed, (speed//2)) #right turn
+            motorL.set(speed)
+            motorR.set(speed//2)
+        elif button_pressed == 's' and speed > -100:
+            speed -= 10
+            gloria.setMotorSpeed(speed, speed) #slower
+            motorL.set(speed)
+            motorR.set(speed)
+        elif button_pressed == 'r':
+            gloria.setMotorSpeed(0, 0) #stop
+            speed = 0
+            motorL.set(0)
+            motorR.set(0)
         elif button_pressed == 'q':
-            gloria.setMotorSpeed(-50, 50)
+            gloria.setMotorSpeed(-50, 50) #could also be -speed, speed
+            #Might be nice for the motor, however it would require us to move
+            #before we can spin. A separate function could be implemented for this.
+            motorL.set(-50)
+            motorR.set(50)
         elif button_pressed == 'e':
-            gloria.setMotorSpeed(50, -50)
+            gloria.setMotorSpeed(50, -50) #same as above
+            motorL.set(50)
+            motorR.set(-50)
         else:
             pass
         gloria.updateSensors()
@@ -143,7 +167,7 @@ def main():
     ttk.Button(mainframe, text="Spin right (E)", command=lambda : write_motor(50, -50)).grid(column=2, row=3)
     ttk.Button(mainframe, text="Left turn (A)", command=lambda : write_motor(50, 100)).grid(column=1, row=4)
     ttk.Button(mainframe, text="Right turn (D)", command=lambda : write_motor(100, 50)).grid(column=3, row=4)
-    ttk.Button(mainframe, text="Stop (S)", command=lambda : write_motor(0, 0)).grid(column=2, row=4)
+    ttk.Button(mainframe, text="Stop (R)", command=lambda : write_motor(0, 0)).grid(column=2, row=4)
 
     #arm
     X = StringVar() #any way to assign all these to StringVar at once... ?
