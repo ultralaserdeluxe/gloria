@@ -29,6 +29,7 @@ def main():
             pass
         
     def write_motor(L,R):
+        #primarily a debugger now, not used for keybinds
         #harcoded inputs are int, rest are py_var (StringVar)
         if isinstance(L, int) and isinstance(R, int):
             gloria.setMotorSpeed(L, R)
@@ -46,28 +47,42 @@ def main():
         global speed
         #if time permits implement a dictionary instead
         button_pressed = event.char
-        if button_pressed == 'w':
+        if button_pressed == 'w' and speed < 100:
             speed += 10
             gloria.setMotorSpeed(speed, speed) #faster
+            motorL.set(speed)
+            motorR.set(speed)
         elif button_pressed == 'a':
-            gloria.setMotorSpeed((speed/2), speed) #left turn
+            gloria.setMotorSpeed((speed//2), speed) #left turn
+            motorL.set(speed//2)
+            motorR.set(speed)
         elif button_pressed == 'd':
-            gloria.setMotorSpeed(speed, (speed/2)) #right turn
-        elif button_pressed == 's':
+            gloria.setMotorSpeed(speed, (speed//2)) #right turn
+            motorL.set(speed)
+            motorR.set(speed//2)
+        elif button_pressed == 's' and speed > -100:
             speed -= 10
             gloria.setMotorSpeed(speed, speed) #slower
+            motorL.set(speed)
+            motorR.set(speed)
         elif button_pressed == 'r':
             gloria.setMotorSpeed(0, 0) #stop
+            speed = 0
+            motorL.set(0)
+            motorR.set(0)
         elif button_pressed == 'q':
             gloria.setMotorSpeed(-50, 50) #could also be -speed, speed
             #Might be nice for the motor, however it would require us to move
             #before we can spin. A separate function could be implemented for this.
+            motorL.set(-50)
+            motorR.set(50)
         elif button_pressed == 'e':
             gloria.setMotorSpeed(50, -50) #same as above
+            motorL.set(50)
+            motorR.set(-50)
         else:
             pass
         gloria.updateSensors()
-        print("Current speed: ", speed)
         mainframe.focus_set()
 
     def write_arm(X,Y,Z,P,W,G):
