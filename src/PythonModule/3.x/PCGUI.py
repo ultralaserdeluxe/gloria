@@ -10,6 +10,7 @@ from pcModule import pcModule
 gloria=pcModule("localhost")
 gloria.updateSensors()
 gloria.start()
+speed = 0
 
 def main():
     
@@ -42,23 +43,31 @@ def main():
         mainframe.focus_set()
 
     def keybind_motor(event=None):
+        global speed
         #if time permits implement a dictionary instead
         button_pressed = event.char
         if button_pressed == 'w':
-            gloria.setMotorSpeed(50, 50)
+            speed += 10
+            gloria.setMotorSpeed(speed, speed) #faster
         elif button_pressed == 'a':
-            gloria.setMotorSpeed(50, 100)
+            gloria.setMotorSpeed((speed/2), speed) #left turn
         elif button_pressed == 'd':
-            gloria.setMotorSpeed(100, 50)
+            gloria.setMotorSpeed(speed, (speed/2)) #right turn
         elif button_pressed == 's':
-            gloria.setMotorSpeed(0, 0)
+            speed -= 10
+            gloria.setMotorSpeed(speed, speed) #slower
+        elif button_pressed == 'r':
+            gloria.setMotorSpeed(0, 0) #stop
         elif button_pressed == 'q':
-            gloria.setMotorSpeed(-50, 50)
+            gloria.setMotorSpeed(-50, 50) #could also be -speed, speed
+            #Might be nice for the motor, however it would require us to move
+            #before we can spin. A separate function could be implemented for this.
         elif button_pressed == 'e':
-            gloria.setMotorSpeed(50, -50)
+            gloria.setMotorSpeed(50, -50) #same as above
         else:
             pass
         gloria.updateSensors()
+        print("Current speed: ", speed)
         mainframe.focus_set()
 
     def write_arm(X,Y,Z,P,W,G):
@@ -143,7 +152,7 @@ def main():
     ttk.Button(mainframe, text="Spin right (E)", command=lambda : write_motor(50, -50)).grid(column=2, row=3)
     ttk.Button(mainframe, text="Left turn (A)", command=lambda : write_motor(50, 100)).grid(column=1, row=4)
     ttk.Button(mainframe, text="Right turn (D)", command=lambda : write_motor(100, 50)).grid(column=3, row=4)
-    ttk.Button(mainframe, text="Stop (S)", command=lambda : write_motor(0, 0)).grid(column=2, row=4)
+    ttk.Button(mainframe, text="Stop (R)", command=lambda : write_motor(0, 0)).grid(column=2, row=4)
 
     #arm
     X = StringVar() #any way to assign all these to StringVar at once... ?
