@@ -72,7 +72,7 @@ int set_node_command(command_queue_node_t *node, int data);
 /* Functions for command */
 int set_command(command_struct_t *command, uint8_t data);
 command_struct_t* new_command();
-void read_command(command_queue_t *q);
+bool read_command(command_queue_t *q);
 void read_all_commands(command_queue_t *q);
 int command_status(command_struct_t *current);
 bool command_recieved(command_struct_t *c);

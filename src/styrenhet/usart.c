@@ -27,10 +27,10 @@ void usart_init( void )
 	UCSR1C = (3<<UCSZ10);
 	
 	// Todo: /* We want timer so we dont get stuck while waiting for UART response */
-	TCCR0B  = (1<<WGM02); /* CTC mode. */
-	TCCR0B |= (1<<CS02)|(1<<CS00); /* Prescaler clk/1024. */
-	TIMSK0  = (0<<OCIE0A); /* Enable interrupt on OCR1A */
-	OCR0A   = 0xffff; /* Should give an update period of ~10 Hz. */
+	TCCR0A	= 0x00; /* OC0A/B as normal, no waveform generation */
+	TCCR0B	= (1<<CS02)|(1<<CS00); /* Prescaler clk/1024. */
+	TIMSK0  = 0x00; /* No interrupts on this timer */
+	OCR0A   = 0xff; /* Should (hopefully) give a timeout of 1/61s = ~16ms. */
 }
 
 void usart_transmit( unsigned char data )
@@ -44,9 +44,15 @@ void usart_transmit( unsigned char data )
 
 unsigned char usart_receive( void )
 {
+	/* Reset counter and counter-flag */
+	TCNT0 = 0x00;
+	TIFR0 = (1<<OCF0A);
 	/* Wait for data to be received */
 	while ( !(UCSR1A & (1<<RXC1)) )
-	;
+	{
+		/* If time out, return NULL */
+		if (OCF0A == 1) return 0;
+	}
 	/* Get and return received data from buffer */
 	return UDR1;
 }
