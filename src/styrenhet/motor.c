@@ -28,15 +28,6 @@ void motor_init()
 	
 	TCCR2B = (1<<CS20);    /* No prescaling. */
 	
-	/* Set initial speed to 0. */
-	set_speed_left(0x00);
-	set_speed_right(0x00);
-	
-	/* Set initial direction to FORWARD. */
-	set_direction_left(FORWARD);
-	set_direction_right(FORWARD);
-	
-	
 	/* Set up timer 1 (16-bit) for acceleration control. */
 	TCCR1B  = (1<<WGM22); /* CTC mode. */
 	TCCR1B |= (1<<CS22)|(1<<CS20); /* Prescaler clk/1024. */
