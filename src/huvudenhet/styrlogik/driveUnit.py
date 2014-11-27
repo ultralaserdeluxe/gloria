@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+import time
 from spi import SPI
 class driveUnit():
     def __init__(self):
@@ -13,12 +13,17 @@ class driveUnit():
         else:
             direction = 0
         self.send_startbit()
+	#time.sleep(0.001)
         #längd
         self.__bus.writebytes([0x03])
+	#time.sleep(0.001)
         #kommandot
-        self.__bus.writebytes([0x11])
+        self.__bus.writebytes([0x10])
+	#time.sleep(0.001)
         self.__bus.writebytes([direction])
+	#time.sleep(0.001)
         self.__bus.writebytes([abs(speed)])
+	#time.sleep(0.001)
 
     def setMotorRight(self,speed):
         if speed >= 0:
@@ -29,7 +34,7 @@ class driveUnit():
         #längd
         self.__bus.writebytes([0x03])
         #kommandot
-        self.__bus.writebytes([0x10])
+        self.__bus.writebytes([0x11])
         self.__bus.writebytes([direction])
         self.__bus.writebytes([abs(speed)])
 
@@ -53,10 +58,13 @@ class driveUnit():
         
     def sendAllMotor(self):
         self.send_startbit()
+	#time.sleep(0.001)
         #längd
         self.__bus.writebytes([0x01])
+	#time.sleep(0.001)
         #action
         self.__bus.writebytes([0x3D])
+	#time.sleep(0.001)
 
     def sendMotorRight(self):
         self.send_startbit()
@@ -70,4 +78,5 @@ class driveUnit():
 
     def send_startbit(self):
         self.__bus.writebytes([0xFF])
+	#time.sleep(0.001)
         self.__bus.writebytes([0xFF])
