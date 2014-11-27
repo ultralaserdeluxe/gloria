@@ -112,7 +112,7 @@ class Arm():
         toReturn.append(temp[1])
         toReturn.append(-temp[2])
         toReturn.append(-temp[3])
-        toReturn.append(90-temp[0]+self.wrist_rotation)
+        toReturn.append(90-temp[0]+self.wrist_angle)
         toReturn.append(self.gripper)
         return toReturn
     

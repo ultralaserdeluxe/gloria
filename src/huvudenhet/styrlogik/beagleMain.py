@@ -10,7 +10,7 @@ robot_arm=Arm()
 commandQueue=Queue.Queue()
 sensorList=[["lineSensor",[0,0,20,0,512,0,0,100,0,0,0]],
             ["distance",[30,40]],
-            ["armPosition",[1,2,3,4,5,5]],
+            ["armPosition",[0,0,255,4,5,5]],
             ["errorCodes",["YngveProgrammedMeWrong"]],
             ["motorSpeed",[50,50]],
             ["latestCalibration",["0000-00-00-15:00"]],
@@ -23,24 +23,38 @@ pcThreadObject=pcThread(commandQueue,sensorList)
 pcThreadObject.daemon=True
 pcThreadObject.start()
 while True:
+
     time.sleep(0.0005)
+
     if not commandQueue.empty():
         command=commandQueue.get()
 	if command[0]=="motorSpeed":
 		#print(command)
 		left=int(command[1][0])
 		right=int(command[1][1])
-		#print(left,right)
+
+		if left>0 and left<70:
+			left=80
+		if right>0 and right<70:
+			right=80
+		if left<0 and left>(-70):
+			left=-80
+		if right<0 and right>(-70):
+			right=-80
+		print(left,right)
 		driver.setMotorLeft(left)
 		driver.setMotorRight(right)
-		#driver.sendAllMotor()
+		driver.sendAllMotor()
+
 	if command[0]=="armPosition":
 		robot_arm.updateX(command[1][0])
 		robot_arm.updateY(command[1][1])
 		robot_arm.updateZ(command[1][2])
+
 		sensor_values=robot_arm.getServoValues()
 		for i in range(6):
 			driver.setArmAxis(i+1,sensor_values[i])
 		driver.sendAllAxis()
+
 			
 		

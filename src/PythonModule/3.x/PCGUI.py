@@ -38,7 +38,6 @@ def main():
             R = StringVar()
             L.set(Ltemp)
             R.set(Rtemp)
-            #gloria.setMotorSpeed(L, R)
         else:
             #could probably be written better but it works
             Ltemp = int(motorL_entry.get())
@@ -268,7 +267,6 @@ def main():
     mainframe.focus_set()
     mainframe.bind("<Key>", keybind_motor)
     mainframe.pack()
-    #to be cont
 
     root.mainloop()
 
