@@ -50,6 +50,7 @@ typedef struct command_queue
 
 /* Core functions for command_queue */
 void system_init(command_queue_t *q, int motors, int servos);
+int servo_remaining_time(arm_data_t *a, int id); //Todo: move to arm.c
 void input_byte(command_queue_t *q, uint8_t data);
 
 /* Functions for queue */
