@@ -68,7 +68,7 @@ def main():
             else:
                 pass
 
-            #if we pass a station we have *detection time to find a package
+            #if we pass a station we have *detection time* to find a package
             if timestamp == 0:
                 if is_station_right():
                     is_station_right = True
@@ -85,6 +85,7 @@ def main():
             else:
                 pass
             
+            #the steerlogic...
             if automotor == False and not on_stopstation() :
                 print "autonom motor\n"
                 if pick_up == False:
@@ -97,19 +98,18 @@ def main():
                     if put_down == False:
                         if check_pick_up_right() or check_pick_up_left():
                             pick_up = True
-                        else:
-                            pick_up = False
-                        if check_put_down_right() or check_put_down_left():
+                        elif check_put_down_right() or check_put_down_left():
                             put_down = True
                         else:
+                            pick_up = False
                             put_down = False
                             regulate()
                             drive_forward()
                     else:
-                        #put down package...
+                        #put down package... must set put_down to false again
                         print "putting down package..."                        
                 else:
-                    #pick_up is true, user have to steer arm
+                    #pick_up is true, user have to steer arm. pick_up has to be set to false again
                     if autoarm == False:
                         #steer arm
                         if command[0] == "armPosition":
@@ -179,7 +179,7 @@ def on_stopstation():
 #check the 3 sensors furthermost to the right
 def is_station_right():
     answer = False
-    for i in range(0,3):
+    for i in range(8,11):
         value = sensorList[0][1][i]
         tape_value = linesensor_c_data[i][1]
         if value <= (tape_value + error_margin) and value >= (tape_value - error_margin):
@@ -191,7 +191,7 @@ def is_station_right():
 #check the 3 sensors furthermost to the left
 def is_station_left():
     answer = False
-    for i in range(8,11):
+    for i in range(0,3):
         value = sensorList[0][1][i]
         tape_value = linesensor_c_data[i][1]
         if value <= (tape_value + error_margin) and value >= (tape_value - error_margin):
@@ -201,7 +201,7 @@ def is_station_left():
     return answer
 
 def has_package_right():
-    return True
+    return False
 
 def has_package_left():
     return False
@@ -228,4 +228,12 @@ def calibrate_tape():
     #give tape values
     for i in range(0,11):
         linesensor_c_data[i][1] = sensorList[0][1][i]
+
+def kastman(x):
+    z = (x-41)/25
+    return (0.093*z**6) - (0.77*z**5) + (2.4*z**4) - (3.9*z**3) + (4.7*z**2) - (7.4*z) + 13
+
+
+for x in range(0,110):
+    print kastman(x)
 
