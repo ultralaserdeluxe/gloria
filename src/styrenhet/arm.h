@@ -38,7 +38,7 @@ typedef struct arm_data
 } arm_data_t;
 
 /* Core functions for arm */
-void arm_init(int servo);
+void arm_init(arm_data_t *arm);
 void update_servo(arm_data_t *d, int address);
 void update_servo_regs(arm_data_t *d, int address);
 void arm_action(int address);
@@ -58,6 +58,8 @@ uint16_t get_servo_goal_position(arm_data_t *arm, int servo);
 /* Unrelated */
 uint16_t make_int_16(uint8_t high, uint8_t low);
 
-void set_inverse_servo_goal_position(arm_data_t *arm, int servo, uint8_t new_speed_h, uint8_t new_speed_l);
+void set_inverse_servo_goal_position(arm_data_t *arm, int servo, uint8_t new_position_h, uint8_t new_position_l);
+
+void update_servo_status(arm_data_t *arm, int id);
 
 #endif /* ARM_H_ */

@@ -39,7 +39,7 @@ servo_instruction_t* servo_instruction_packet(int ID, int instr, int reg, servo_
 uint8_t make_checksum(uint8_t ID, uint8_t length, uint8_t instr, uint8_t parameters);
 
 /* Functions for handling servo_instructions */
-servo_instruction_t* create_instructions(int amount);
+servo_instruction_t* create_instruction();
 servo_instruction_t* concatenate_instructions(servo_instruction_t *t1, servo_instruction_t *t2);
 void free_instruction(servo_instruction_t *t);
 void free_instruction_full(servo_instruction_t *t);

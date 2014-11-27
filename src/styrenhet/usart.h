@@ -9,6 +9,7 @@
 #ifndef USART_H_
 #define USART_H_
 
+#include <stdbool.h>
 
 void usart_init();
 void usart_transmit(unsigned char data);
