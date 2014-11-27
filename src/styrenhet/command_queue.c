@@ -483,3 +483,12 @@ bool command_recieved(command_struct_t *c)
 	else if (c->status >= c->length + COMMAND_STATUS_LENGTH_OFFSET) return true;
 	else return false;
 }
+
+/* Read current position and speed from servo and store in arm-struct */
+void update_status(command_queue_t *q, int first_servo, int last_servo)
+{
+	for (int i = first_servo; i <= last_servo; i++)
+	{
+		update_servo_status(q->arm, i);
+	}
+}

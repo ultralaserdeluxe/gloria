@@ -164,17 +164,19 @@ void update_status(arm_data_t *arm, int id)
 	send_servo_instruction(
 		servo_instruction_packet(id, INSTR_READ, P_PRESENT_POSITION_L, p)
 	);
+	_delay_us(10); //Wait for last command to send properly
 	usart_set_rx();
-	_delay_us(10);
+	usart_receive(); //Todo: Why is this random byte necessary?
 	usart_receive(); //0xff
 	usart_receive(); //0xff
 	usart_receive(); //id
 	usart_receive(); //length
+	
 	arm->s[id].status = usart_receive();
 	arm->s[id].position_l = usart_receive();
 	arm->s[id].position_h = usart_receive();
-	arm->s[id].speed_h = usart_receive();
 	arm->s[id].speed_l = usart_receive();
+	arm->s[id].speed_h = usart_receive();
 	usart_receive(); //checksum
 	usart_set_tx();
 	

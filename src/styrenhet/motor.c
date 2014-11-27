@@ -36,7 +36,7 @@ void motor_init()
 }
 
 ISR(TIMER1_COMPA_vect)
-{
+{	
 	/* Left motor. */
 	uint8_t current_speed_left = gloria_queue->motor->s[MOTOR_LEFT].speed;
 	uint8_t goal_speed_left = gloria_queue->motor->s[MOTOR_LEFT].goal_speed;
