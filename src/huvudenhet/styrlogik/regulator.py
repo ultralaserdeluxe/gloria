@@ -1,35 +1,113 @@
-class regulator():
+import threading
+import time
+from scipy.integrate import simps
+import numpy as np
+class Regulator(threading.Thread):
     
     #a constructor for the class
-    def __init__(self):
+    def __init__(self,sensorList):
         #self.__calibrateData=calibrate_data
         self.__calibrateData=[[0,255],[0,255],[0,255],[0,255],[0,255],[0,255],[0,255],[0,255],[0,255],[0,255],[0,255]]
         #self.__sensorList=sensorList
+        
         self.__position=0.0
-        self.__sensorList=[["lineSensor",[0,0,20,0,255,128,0,100,0,0,0]],
-            ["distance",[30,40]],
-            ["armPosition",[1,2,3,4,5,5]],
-            ["errorCodes",["YngveProgrammedMeWrong"]],
-            ["motorSpeed",[50,50]],
-            ["latestCalibration",["0000-00-00-15:00"]],
-            ["autoMotor",[True]],
-            ["autoArm",[False]]]
+        self.__sensorList=sensorList
+        self.__sensorList.append(["regulator",[0,0]])
+        #print(self.__sensorList)
+        self.__weights=np.array([0.0, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45])
         self.__previousValues=[]
+        self.__P=1.0
+        self.__I=1.0
+        self.__integratedValue=0.0
+        self.__proportional=0.0
         self.__currentPosition=0.0
+        self.__error=0.0
+        self.__filteredValues=[]
+        self.__derivatedValue = 0.0
+        self.__D = 1.0
+        threading.Thread.__init__(self)
+    def run(self):
+        while True:
+            time.sleep(0.05)
+            self.calculatePosition()
+            if len(self.__previousValues)>=10:
+                self.filterValues()
+                if len(self.__filteredValues)>=10:
+                    self.updatePID()
+                    self.integrate()
+                    self.proportional()
+                    self.derivate()
+                    self.piReg()
+                    self.setMotors()
+                    #print(self.__P,self.__I,self.__D)
+                    
+    def updatePID(self):
+        for i in range(len(self.__sensorList)):
+            if self.__sensorList[i][0]=="PID":
+                self.__P=self.__sensorList[i][1][0]
+                self.__I=self.__sensorList[i][1][1]
+                self.__D=self.__sensorList[i][1][2]
+                return
+        raise SyntaxError("sensor not in list")
+        
+    def setMotors(self):
+        left=self.getLeftMotor()-int(self.getLeftMotor()*self.__error)
+        right=self.getRightMotor()+int(self.getRightMotor()*self.__error)
+        if left>255:
+            left=255
+        if left<-255:
+            left=-255
+        if right>255:
+            right=255
+        if right<-255:
+            right=-255
+        self.setRegMotor(left, right)
+    def piReg(self):
+        self.__error=self.__P*self.__proportional+self.__I*self.__integratedValue+self.__D*self.__derivatedValue
+    def integrate(self):
+        y = np.array([v - 0.5 for v in self.__filteredValues])
+        self.__integratedValue = simps(y, self.__weights)
+        
+    def proportional(self):
+        self.__proportional=self.__currentPosition-0.5
+        
+    def derivate(self):
+        y = np.array([v - 0.5 for v in self.__filteredValues])
+        self.__derivatedValue = np.average(np.diff(y) / self.__weights[1])
         
     def calibrate(self,calibrateData):
         self.__calibrateData=calibrateData
         
     def getSensorValues(self):
-        for i in range(11):
+        for i in range(len(self.__sensorList)):
             if self.__sensorList[i][0]=="lineSensor":
                 return self.__sensorList[i][1]
         raise SyntaxError("sensor not in list")
     
+    def setRegMotor(self,left,right):
+        for i in range(len(self.__sensorList)):
+            if self.__sensorList[i][0]=="regulator":
+                self.__sensorList[i][1][0]=left
+                self.__sensorList[i][1][1]=right
+                return
+        raise SyntaxError("sensor not in list")
+        
+    def getLeftMotor(self):
+        for i in range(len(self.__sensorList)):
+            if self.__sensorList[i][0]=="motorSpeed":
+                return self.__sensorList[i][1][0]
+        raise SyntaxError("sensor not in list")
+    def getRightMotor(self):
+        for i in range(len(self.__sensorList)):
+            if self.__sensorList[i][0]=="motorSpeed":
+                return self.__sensorList[i][1][1]
+        raise SyntaxError("sensor not in list")
+    
+    
     def filterValues(self):
         self.calculatePosition()
         if len(self.__previousValues)<10:
-            return self.__previousValues[-1]
+            self.__currentPosition= self.__previousValues[-1]
         while len(self.__previousValues)>10:
             del self.__previousValues[0]
         value=0.0
@@ -37,7 +115,11 @@ class regulator():
         for i in range(10):
             value=value+self.__previousValues[i]*divider
             divider=divider*2
+        self.__filteredValues.append(value)
+        while len(self.__filteredValues)>10:
+            del self.__filteredValues[0]
         self.__currentPosition=value
+    
             
                 
     def calculatePosition(self):
