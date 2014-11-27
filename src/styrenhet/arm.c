@@ -157,24 +157,26 @@ void set_inverse_servo_goal_position(arm_data_t *arm, int servo, uint8_t new_pos
 	array[servo].goal_position_l = goal_position & 0xFF;
 }
 
-void update_status(arm_data_t *arm, int id)
+void update_servo_status(arm_data_t *arm, int id)
 {
 	/* Tell servo id that we want to read 4 regs, present position l/h, speed l/h */
 	servo_parameter_t *p = create_servo_parameter(4);
 	send_servo_instruction(
 		servo_instruction_packet(id, INSTR_READ, P_PRESENT_POSITION_L, p)
 	);
+	_delay_us(10); //Wait for last command to send properly
 	usart_set_rx();
-	_delay_us(10);
+	usart_receive(); //Todo: Why is this random byte necessary?
 	usart_receive(); //0xff
 	usart_receive(); //0xff
 	usart_receive(); //id
 	usart_receive(); //length
+	
 	arm->s[id].status = usart_receive();
 	arm->s[id].position_l = usart_receive();
 	arm->s[id].position_h = usart_receive();
-	arm->s[id].speed_h = usart_receive();
 	arm->s[id].speed_l = usart_receive();
+	arm->s[id].speed_h = usart_receive();
 	usart_receive(); //checksum
 	usart_set_tx();
 	

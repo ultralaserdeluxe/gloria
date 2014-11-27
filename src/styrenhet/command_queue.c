@@ -13,17 +13,25 @@
 /* Initialize arm and motor */
 void system_init(command_queue_t *q, int motors, int servos)
 {
-	q->arm = new_arm_data(servos + 1); //We have one "extra" servo. SERVO_0 (doesnt exist)
+	/* Create and give servos their IDs
+	 * We have one "extra" servo. SERVO_0 (doesnt exist) */
+	q->arm = new_arm_data(servos + 1);
 	for (int i = 0; i <= SERVO_8; i++)
 	{
 		q->arm->s[i].ID = i;
 	}
 	motor_init();
+	
+	/* Create and give motors their IDs */
 	q->motor = new_motor_data(motors);
 	for (int i = MOTOR_LEFT; i <= MOTOR_RIGHT; i++)
 	{
 		q->motor->s[i].ID = i;
 	}
+	
+	/* Set initial goal velocity */
+	set_goal_velocity_left(q->motor, FORWARD, 0x00);
+	set_goal_velocity_right(q->motor, FORWARD, 0x00);
 }
 
 void input_byte(command_queue_t *q, uint8_t data)
@@ -412,7 +420,46 @@ bool read_command(command_queue_t *q)
 			break;
 		}
 	}
-	//Todo: add functionality for COMMAND_STATUS
+	else if ((c->instruction & COMMAND_INSTRUCTION_MASK) == COMMAND_STATUS)
+	{
+		switch (c->instruction & COMMAND_ADDRESS_MASK)
+		{
+		/* Todo: Actually return all values over SPI */
+		case ADDRESS_ALL:
+			/* Return all values */
+			break;
+		case ADDRESS_ARM:
+			/* Return values for arm */
+			break;
+		case ADDRESS_JOINT_1:
+			/* Return values for JOINT 1 */
+			break;
+		case ADDRESS_JOINT_2:
+			/* Return values for JOINT 2 */
+			break;
+		case ADDRESS_JOINT_3:
+			/* Return values for JOINT 3 */
+			break;
+		case ADDRESS_JOINT_4:
+			/* Return values for JOINT 4 */
+			break;
+		case ADDRESS_JOINT_5:
+			/* Return values for JOINT 5 */
+			break;
+		case ADDRESS_JOINT_6:
+			/* Return values for JOINT 6 */
+			break;
+		case ADDRESS_MOTOR_ALL:
+			/* Return values for all motors */
+			break;
+		case ADDRESS_MOTOR_R:
+			/* Return values for MOTOR R */
+			break;
+		case ADDRESS_MOTOR_L:
+			/* Return values for MOTOR L */
+			break;
+		}
+	}
 	free_node(n);
 	return true;
 }
@@ -435,4 +482,13 @@ bool command_recieved(command_struct_t *c)
 	if (c == NULL) return true;
 	else if (c->status >= c->length + COMMAND_STATUS_LENGTH_OFFSET) return true;
 	else return false;
+}
+
+/* Read current position and speed from servo and store in arm-struct */
+void update_status(command_queue_t *q, int first_servo, int last_servo)
+{
+	for (int i = first_servo; i <= last_servo; i++)
+	{
+		update_servo_status(q->arm, i);
+	}
 }

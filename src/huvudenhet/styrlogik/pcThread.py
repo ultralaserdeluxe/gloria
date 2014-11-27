@@ -34,7 +34,7 @@ class pcThread(threading.Thread):
                     readable, writable, exceptional = select.select([self.__conn], [self.__conn], [self.__conn])
 		complete_data_set=self.__package_tail
                 while self.__conn in readable:
-                    data=self.__conn.recv(4096)
+                    data=self.__conn.recv(512)
                     complete_data_set=complete_data_set+data
                     readable, writable, exceptional = select.select([self.__conn], [self.__conn], [self.__conn])
                     if not data:
@@ -91,7 +91,8 @@ class pcThread(threading.Thread):
             if data[0]=="status":
                 sendData(convertSensorList(self.__sensorList))
             elif data[0]=="motorSpeed" or data[0]=="armPosition" or data[0]=="autoMotor" or data[0]=="autoArm":
-		print(data)
+
+		#print(data)
                 for i in range(len(self.__sensorList)):
                     if self.__sensorList[i][0]==data[0]:
                         for j in range(len(data[1])):
