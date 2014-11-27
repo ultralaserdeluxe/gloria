@@ -157,7 +157,7 @@ void set_inverse_servo_goal_position(arm_data_t *arm, int servo, uint8_t new_pos
 	array[servo].goal_position_l = goal_position & 0xFF;
 }
 
-void update_status(arm_data_t *arm, int id)
+void update_servo_status(arm_data_t *arm, int id)
 {
 	/* Tell servo id that we want to read 4 regs, present position l/h, speed l/h */
 	servo_parameter_t *p = create_servo_parameter(4);
