@@ -60,4 +60,6 @@ uint16_t make_int_16(uint8_t high, uint8_t low);
 
 void set_inverse_servo_goal_position(arm_data_t *arm, int servo, uint8_t new_position_h, uint8_t new_position_l);
 
+void update_servo_status(arm_data_t *arm, int id);
+
 #endif /* ARM_H_ */

@@ -26,12 +26,13 @@ void update_servo(arm_data_t *d, int address)
 	/* Update servo goal position */
 	uint8_t servo_id = d->s[address].ID;
 	
-	//uint8_t goal_speed_h = d->s[address].goal_speed_h;
-	//uint8_t goal_speed_l = d->s[address].goal_speed_l;
+	uint8_t goal_speed_h = d->s[address].goal_speed_h;
+	uint8_t goal_speed_l = d->s[address].goal_speed_l;
 	uint8_t goal_position_h = d->s[address].goal_position_h;
 	uint8_t goal_position_l = d->s[address].goal_position_l;
-	uint8_t goal_speed_l = P_GOAL_SPEED_L_INIT;
-	uint8_t goal_speed_h = P_GOAL_SPEED_H_INIT;
+	// Todo: Debug
+	//uint8_t goal_speed_l = P_GOAL_SPEED_L_INIT;
+	//uint8_t goal_speed_h = P_GOAL_SPEED_H_INIT;
 	servo_parameter_t *p = create_servo_parameter(goal_position_l);
 	add_servo_parameter_chain(p, goal_position_h);
 	add_servo_parameter_chain(p, goal_speed_l);
@@ -47,7 +48,7 @@ void update_servo_regs(arm_data_t *d, int address)
 {
 	if (address == SERVO_ALL)
 	{
-		for (int i = 0; i < d->length; i++)
+		for (int i = 1; i < d->length; i++)
 		{
 			update_servo(d, i);
 			/* Todo: Delay to ensure that the servo has time to accept instruction 
@@ -66,7 +67,7 @@ void arm_action(int address)
 {	
 	/* Send action command */
 	send_servo_instruction(
-		servo_instruction_packet(address, INSTR_ACTION, 0, 0)
+		servo_instruction_packet(address, INSTR_ACTION, 0, NULL)
 	);
 }
 
@@ -74,7 +75,8 @@ arm_data_t* new_arm_data(int number_of_servos)
 {
 	arm_data_t *this = malloc(sizeof(arm_data_t));
 	this->length = number_of_servos;
-	this->s = malloc(number_of_servos * sizeof(servo_data_t));
+	/* Since our servos are in the range 1-n, we get an empty servo in the beginning */
+	this->s = malloc((number_of_servos + 1) * sizeof(servo_data_t));
 	//for (int i = 0; i < number_of_servos; i++)
 	//{
 		//this->s[i].goal_speed_l = P_GOAL_SPEED_L_INIT;
@@ -153,4 +155,29 @@ void set_inverse_servo_goal_position(arm_data_t *arm, int servo, uint8_t new_pos
 	uint16_t goal_position = 0x3ff - make_int_16(new_position_h, new_position_l);
 	array[servo].goal_position_h = (goal_position >> 8) & 0x03;
 	array[servo].goal_position_l = goal_position & 0xFF;
+}
+
+void update_servo_status(arm_data_t *arm, int id)
+{
+	/* Tell servo id that we want to read 4 regs, present position l/h, speed l/h */
+	servo_parameter_t *p = create_servo_parameter(4);
+	send_servo_instruction(
+		servo_instruction_packet(id, INSTR_READ, P_PRESENT_POSITION_L, p)
+	);
+	_delay_us(10); //Wait for last command to send properly
+	usart_set_rx();
+	usart_receive(); //Todo: Why is this random byte necessary?
+	usart_receive(); //0xff
+	usart_receive(); //0xff
+	usart_receive(); //id
+	usart_receive(); //length
+	
+	arm->s[id].status = usart_receive();
+	arm->s[id].position_l = usart_receive();
+	arm->s[id].position_h = usart_receive();
+	arm->s[id].speed_l = usart_receive();
+	arm->s[id].speed_h = usart_receive();
+	usart_receive(); //checksum
+	usart_set_tx();
+	
 }

@@ -7,21 +7,31 @@
  */ 
 
 #include "command_queue.h"
+#include <util/atomic.h>
+#include <stdbool.h>
 
 /* Initialize arm and motor */
 void system_init(command_queue_t *q, int motors, int servos)
 {
-	q->arm = new_arm_data(servos + 1); //We have one "extra" servo. SERVO_0 (doesnt exist)
+	/* Create and give servos their IDs
+	 * We have one "extra" servo. SERVO_0 (doesnt exist) */
+	q->arm = new_arm_data(servos + 1);
 	for (int i = 0; i <= SERVO_8; i++)
 	{
 		q->arm->s[i].ID = i;
 	}
 	motor_init();
+	
+	/* Create and give motors their IDs */
 	q->motor = new_motor_data(motors);
 	for (int i = MOTOR_LEFT; i <= MOTOR_RIGHT; i++)
 	{
 		q->motor->s[i].ID = i;
 	}
+	
+	/* Set initial goal velocity */
+	set_goal_velocity_left(q->motor, FORWARD, 0x00);
+	set_goal_velocity_right(q->motor, FORWARD, 0x00);
 }
 
 void input_byte(command_queue_t *q, uint8_t data)
@@ -29,7 +39,7 @@ void input_byte(command_queue_t *q, uint8_t data)
 	if (empty_queue(q))
 	{
 		put_queue(q, new_node());
-		int status = set_node_command(last_node(q), data);
+		set_node_command(last_node(q), data);
 	}
 	else if (!command_recieved(node_data(last_node(q))))
 	{
@@ -38,7 +48,7 @@ void input_byte(command_queue_t *q, uint8_t data)
 	else
 	{
 		put_queue(q, new_node());
-		int status = set_node_command(last_node(q), data);
+		set_node_command(last_node(q), data);
 	}
 }
 
@@ -66,15 +76,18 @@ void free_queue(command_queue_t *q)
 /* Add new node to end of queue */
 void put_queue(command_queue_t *q, command_queue_node_t *node)
 {
-	if (empty_queue(q))
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
 	{
-		q->head = node;
-		q->last = node;
-	}
-	else
-	{
-		q->last->next = node;
-		q->last = node;
+		if (empty_queue(q))
+		{
+			q->head = node;
+			q->last = node;
+		}
+		else
+		{
+			q->last->next = node;
+			q->last = node;
+		}
 	}
 }
 
@@ -82,11 +95,19 @@ void put_queue(command_queue_t *q, command_queue_node_t *node)
 command_queue_node_t* pop_first(command_queue_t *q)
 {
 	command_queue_node_t *node = q->head;
-	if (q->head == q->last)
+	/* q->head == q->last only if theres only one element */
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
 	{
-		q->last = node->next;
+		if (q->head == q->last)
+		{
+			q->last = NULL;
+			q->head = NULL;
+		}
+		else
+		{
+			q->head = node->next;
+		}
 	}
-	q->head = node->next;
 	return node;
 }
 
@@ -157,6 +178,7 @@ command_queue_node_t* new_node()
 	command_queue_node_t *this;
 	this = malloc(sizeof(command_queue_node_t));
 	this->command = new_command();
+	this->next = NULL;
 	return this;
 }
 
@@ -172,7 +194,8 @@ command_queue_node_t* free_node(command_queue_node_t* this)
 
 command_struct_t* node_data(command_queue_node_t *node)
 {
-	return node->command;
+	if (node == NULL) return NULL;
+	else return node->command;
 }
 
 /* Abstraction wrapper for set_command */
@@ -223,13 +246,16 @@ command_struct_t* new_command()
 	this = malloc(sizeof(command_struct_t));
 	this->status = 0;
 	this->length = 0;
+	this->first_parameter = NULL;
 	return this;
 }
 
-void read_command(command_queue_t *q)
+/* If the first node in queue contains valid command, perform it and return true
+ * else return false */
+bool read_command(command_queue_t *q)
 {
-	if (empty_queue(q)) return;
-	else if (!command_recieved(q->last->command)) return;
+	if (empty_queue(q)) return false;
+	else if (!command_recieved(q->head->command)) return false;
 	command_queue_node_t *n = pop_first(q);
 	command_struct_t *c = node_data(n);
 	/* If we have Action, perform action */
@@ -394,17 +420,54 @@ void read_command(command_queue_t *q)
 			break;
 		}
 	}
-	//free_node(n);
-	//Todo add functionality for COMMAND_STATUS
+	else if ((c->instruction & COMMAND_INSTRUCTION_MASK) == COMMAND_STATUS)
+	{
+		switch (c->instruction & COMMAND_ADDRESS_MASK)
+		{
+		/* Todo: Actually return all values over SPI */
+		case ADDRESS_ALL:
+			/* Return all values */
+			break;
+		case ADDRESS_ARM:
+			/* Return values for arm */
+			break;
+		case ADDRESS_JOINT_1:
+			/* Return values for JOINT 1 */
+			break;
+		case ADDRESS_JOINT_2:
+			/* Return values for JOINT 2 */
+			break;
+		case ADDRESS_JOINT_3:
+			/* Return values for JOINT 3 */
+			break;
+		case ADDRESS_JOINT_4:
+			/* Return values for JOINT 4 */
+			break;
+		case ADDRESS_JOINT_5:
+			/* Return values for JOINT 5 */
+			break;
+		case ADDRESS_JOINT_6:
+			/* Return values for JOINT 6 */
+			break;
+		case ADDRESS_MOTOR_ALL:
+			/* Return values for all motors */
+			break;
+		case ADDRESS_MOTOR_R:
+			/* Return values for MOTOR R */
+			break;
+		case ADDRESS_MOTOR_L:
+			/* Return values for MOTOR L */
+			break;
+		}
+	}
+	free_node(n);
+	return true;
 }
 
+/* While read_command has valid commands to perform, perform them */
 void read_all_commands(command_queue_t *q)
 {
-	while (!empty_queue(q))
-	{
-		if (command_recieved(node_data(first_node(q)))) read_command(q);
-		else return;
-	}
+	while (read_command(q));
 }
 
 /* Returns current status */
@@ -413,10 +476,19 @@ int command_status(command_struct_t *current)
 	return current->status;
 }
 
-/* Returns true if command has recieved expected amount of parameters */
+/* Returns true if command contains expected amount of parameters */
 bool command_recieved(command_struct_t *c)
 {
-	if (c->length < 1) return false;
+	if (c == NULL) return true;
 	else if (c->status >= c->length + COMMAND_STATUS_LENGTH_OFFSET) return true;
 	else return false;
+}
+
+/* Read current position and speed from servo and store in arm-struct */
+void update_status(command_queue_t *q, int first_servo, int last_servo)
+{
+	for (int i = first_servo; i <= last_servo; i++)
+	{
+		update_servo_status(q->arm, i);
+	}
 }

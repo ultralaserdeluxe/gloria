@@ -83,8 +83,7 @@ void servo_init(int ID)
 			servo_instruction_packet(ID, INSTR_WRITE, P_PUNCH_L, p)
 		);
 		
-		//free_servo_parameter_chain(p);
-		
+		free_servo_parameter_chain(p);
 }
 
 /* Does the actual sending of data to servo over UART*/
@@ -111,7 +110,7 @@ servo_instruction_t* servo_instruction_packet(int ID, int instr, int reg, servo_
 	{
 		length = servo_parameter_chain_length(parameters) + 3; // 3 for instruction, reg, checksum
 	}
-	servo_instruction_t *t = create_instructions(1);
+	servo_instruction_t *t = create_instruction();
 	add_servo_parameter(t,0xFF);
 	add_servo_parameter(t,0xFF);
 	add_servo_parameter(t,ID);
@@ -137,9 +136,9 @@ uint8_t make_checksum(uint8_t ID, uint8_t length, uint8_t instr, uint8_t paramet
 	return ~(ID + length + instr + parameters);
 }
 
-servo_instruction_t* create_instructions(int amount)
+servo_instruction_t* create_instruction()
 { 
-	servo_instruction_t *this = malloc(sizeof(servo_instruction_t)*amount);
+	servo_instruction_t *this = malloc(sizeof(servo_instruction_t));
 	this->length = 0;
 	this->first_parameter = NULL;
 	this->last_parameter = NULL;
@@ -253,6 +252,7 @@ void add_servo_parameter_chain(servo_parameter_t *t, uint8_t new_data)
 	if (t == NULL)
 	{
 		t = create_servo_parameter(new_data);
+		//t->next = NULL;
 		return;
 	}
 	servo_parameter_t *current = t;
@@ -261,13 +261,14 @@ void add_servo_parameter_chain(servo_parameter_t *t, uint8_t new_data)
 		current = next_servo_parameter(current);
 	}
 	current->next = create_servo_parameter(new_data);
+	//current->next->next = NULL;
 }
 
 /* Free a chain of parameters not part of a servo_instruction_t */
 void free_servo_parameter_chain(servo_parameter_t *p)
 {
 	servo_parameter_t *current = p;
-	servo_parameter_t *save = current->next;
+	servo_parameter_t *save;
 	while (current != NULL)
 	{
 		save = current->next;
@@ -279,12 +280,16 @@ void free_servo_parameter_chain(servo_parameter_t *p)
 /* Return length of chain of parameters not part of servo_instruction_t */
 int servo_parameter_chain_length(servo_parameter_t *p)
 {
-	int length = 0;
+	int length = 1;
 	servo_parameter_t *current = p;
 	while (current != NULL)
 	{
-		current = current->next;
+		current = next_servo_parameter(current);
 		length++;
+		if (current->next == NULL)
+		{
+			return length;
+		}
 	}
 	return length;
 }

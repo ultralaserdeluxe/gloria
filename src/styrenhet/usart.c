@@ -5,9 +5,7 @@
  * Description: Functions for working with USART.
  */ 
 
-
 #include <avr/io.h>
-
 
 void usart_init( void )
 {
@@ -27,8 +25,13 @@ void usart_init( void )
 	UCSR1B = (1<<RXEN1)|(1<<TXEN1);
 	/* Set frame format: 8data, 2stop bit */
 	UCSR1C = (3<<UCSZ10);
+	
+	/* Timer0 is used for timeout for usart_recieve */
+	TCCR0A	= 0x00; /* OC0A/B as normal, no waveform generation */
+	/* Prescaler clk/1024. 
+	 * We use the overflow flag, which gives us about 1/61Hz = 16ms */
+	TCCR0B	= (1<<CS02)|(1<<CS00);
 }
-
 
 void usart_transmit( unsigned char data )
 {
@@ -39,16 +42,24 @@ void usart_transmit( unsigned char data )
 	UDR1 = data;
 }
 
-
 unsigned char usart_receive( void )
 {
+	/* Reset counter and counter-flag */
+	TCNT0 = 0x00;
+	TIFR0 |= (1<<TOV0);
 	/* Wait for data to be received */
 	while ( !(UCSR1A & (1<<RXC1)) )
-	;
+	{
+		/* If time out, return NULL */
+		if (TIFR0 & (1<<TOV0))
+		{
+			return 0;
+		}
+			
+	}
 	/* Get and return received data from buffer */
 	return UDR1;
 }
-
 
 void usart_set_tx(){
 	/* Turn off rx */
@@ -56,7 +67,6 @@ void usart_set_tx(){
 	/* Turn on tx */
 	PORTB &= 0xFD; //11111101
 }
-
 
 void usart_set_rx(){
 	/* Wait for data to be shifted out */
