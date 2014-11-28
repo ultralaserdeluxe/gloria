@@ -34,8 +34,22 @@ void system_init(command_queue_t *q, int motors, int servos)
 	set_goal_velocity_right(q->motor, FORWARD, 0x00);
 }
 
+int servo_remaining_time(arm_data_t *a, int id)
+{
+	servo_data_t s = a->s[id];
+	uint16_t distance = make_int_16(s.goal_position_h, s.goal_position_l) - make_int_16(s.position_h, s.position_l);
+	uint16_t speed = make_int_16(s.speed_h, s.speed_l);
+	if (speed == 0)
+	{
+		if (distance == 0) return 0;
+		else return 0xff;
+	}
+	return distance / speed;
+}
+
 void input_byte(command_queue_t *q, uint8_t data)
 {
+	//int status = 0;
 	if (empty_queue(q))
 	{
 		put_queue(q, new_node());
@@ -50,6 +64,33 @@ void input_byte(command_queue_t *q, uint8_t data)
 		put_queue(q, new_node());
 		set_node_command(last_node(q), data);
 	}
+	/*
+	if (status == 4)
+	{
+		if ((data & COMMAND_INSTRUCTION_MASK) == COMMAND_STATUS)
+		{
+			switch (data & COMMAND_ADDRESS_MASK)
+			{
+			case ADDRESS_JOINT_1:
+				SPDR = 
+				break;
+			case ADDRESS_JOINT_2:
+				SPDR =
+				break;
+			case ADDRESS_JOINT_3:
+				SPDR =
+				break;
+			case ADDRESS_JOINT_4:
+				SPDR =
+				break;
+			case ADDRESS_JOINT_5:
+				SPDR =
+				break;
+			case ADDRESS_JOINT_6:
+				SPDR =
+				break;
+			}
+		}*/
 }
 
 /* Create a new queue, with one empty entry */
@@ -417,46 +458,6 @@ bool read_command(command_queue_t *q)
 			break;
 		case ADDRESS_JOINT_6:
 			set_servo_goal_speed(q->arm, SERVO_8, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			break;
-		}
-	}
-	else if ((c->instruction & COMMAND_INSTRUCTION_MASK) == COMMAND_STATUS)
-	{
-		switch (c->instruction & COMMAND_ADDRESS_MASK)
-		{
-		/* Todo: Actually return all values over SPI */
-		case ADDRESS_ALL:
-			/* Return all values */
-			break;
-		case ADDRESS_ARM:
-			/* Return values for arm */
-			break;
-		case ADDRESS_JOINT_1:
-			/* Return values for JOINT 1 */
-			break;
-		case ADDRESS_JOINT_2:
-			/* Return values for JOINT 2 */
-			break;
-		case ADDRESS_JOINT_3:
-			/* Return values for JOINT 3 */
-			break;
-		case ADDRESS_JOINT_4:
-			/* Return values for JOINT 4 */
-			break;
-		case ADDRESS_JOINT_5:
-			/* Return values for JOINT 5 */
-			break;
-		case ADDRESS_JOINT_6:
-			/* Return values for JOINT 6 */
-			break;
-		case ADDRESS_MOTOR_ALL:
-			/* Return values for all motors */
-			break;
-		case ADDRESS_MOTOR_R:
-			/* Return values for MOTOR R */
-			break;
-		case ADDRESS_MOTOR_L:
-			/* Return values for MOTOR L */
 			break;
 		}
 	}
