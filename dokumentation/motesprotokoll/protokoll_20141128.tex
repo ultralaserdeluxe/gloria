@@ -1,0 +1,80 @@
+\documentclass[titlepage, a4paper]{article}
+\input{../mall/layout.tex}	% Importera generella layout-strukturer
+
+\newcommand{\LIPSdokumenttyp}{Mötesprotokoll}
+\newcommand{\LIPSkursnamn}{TSEA29}
+\newcommand{\LIPSprojektnamn}{Lagerrobot}
+\newcommand{\LIPSprojektgrupp}{Grupp 2}
+\newcommand{\LIPSutfardare}{hansn314} % Vem har utfärdat protokollet?
+
+\pagenumbering{roman}	% Sidnumrering
+
+\begin{document}
+
+\begin{projektmote}{Mötesprotokoll}{2014-11-28}
+% ------------ PARAGRAFER ----------------------
+% Syntax \paragraf{Vi bestämde och kom överens}
+% ----------------------------------------------
+\paragraf{Mötet öppnas.}
+\paragraf{Närvarande: Hannes, Martin, Daniel, Dennis och Pål.}
+\paragraf{Vi hanterar inkomna frågor från beställaren.
+\begin{itemize}
+\item{\textbf{Vilken funktionalitet har roboten idag?} \newline Roboten kan läsa och kalibrera sensordata, styra motorer från PC, följa en linje autonomt, styra alla servon från styrenheten, ta emot kommandon från och skicka debugdata till en PC via BlueTooth trådlöst.}
+\item{\textbf{Vilken funktionalitet återstår?} \newline Styra servon från PC. Detektion av paket, plockstation, korsning, avbrott i banan. Regleringsalgoritmen är inte färdig.}
+\item{\textbf{Hur mycket tid har ni kvar av era budgeterade timmar?} \newline Frågan bordlägges till måndagens möte vi har helgens timmar redovisade.}
+\item{\textbf{Hur många timmar har respektive projektmedlem kvar att leverera och hur ska dessa timmar fördelas över de kvarvarande veckorna? Redovisa i en tabell i statusrapporten hur många timmar detta blir per person och vecka. Redovisa också vilka aktiviteter som respektive person ska arbeta med.} \newline Liksom föregående bordlägges frågan till måndag då vi har helgens timmar redovisade.}
+\item{\textbf{Är arbetsbelastningen jämn i gruppen? Om ej, ange orsak och vilken åtgärd ni vidtar.} \newline Vi upplever att arbetsbelastnignen var ojämnare för ett par veckor sedan och att det sedan har jämnat ut sig. Vi räknar med att fördela arbetet på ett sådant sätt att det ytterligare jämnar ut sig.}
+\item{\textbf{Beskriv era tekniska problem?} \newline Motorerna verkar ha ett högt tröskelvärde. Vi har haft problem att få igång servona, framförallt mottagning av data från servon. De levelshifters vi fick var ej funktionsdugliga, Martin beställde egna.}
+\item{\textbf{Beskriv eventuella samarbetsproblem?} \newline Alla har inte tillgång till alla skåp. Ett sätt att lösa det hade varit om alla hade haft nyckel till samma skåp, och i det skåpet har man en nyckel till det andra skåpet så att alla har tillgång till båda skåpen. I allmänhet har samarbetet inom gruppen fungerat bra.}
+\end{itemize}
+}
+
+\paragraf{Mötet öppnas!}
+\paragraf{Hannes för protokoll}
+\paragraf{Status:
+\begin{itemize}
+\item{\textbf{Dennis} Den här veckan skulle detektion av paket och plockstationer göras. Det är inte klart, problem finnes med avståndssensorerna. Arbetet med styrlogiken fortskrider. Kalibreringsfunktion är klar. }
+\item{\textbf{Daniel} Skulle ha gjort fjärrstyrning av PCn. Det har påbörjats men är inte klart då det inte har testats. Arbetet med detta fortsätter nästa vecka. Även testbanor bör tejpas snarast.}
+\item{\textbf{Hannes} Skulle ha jobbat vidare med styrenheten. Det har gjorts, den behöver testas från huvudenheten men allt ska finnas implementerat. Nästa vecka är tanken att den tekniska dokumentationen skall påbörjas.}
+\item{\textbf{Martin} X, Y, Z-konvertering är implementerat men fortfarande otestat. Gränser för armen är inte implementerat. Skulle ha implementerat regleringsalgoritm. Den är implementerad, men behöver finjusteras. Skall jobba med X,Y,Z-konvertering, gränser för armen och regleringsalgoritm även nästa vecka.}
+\item{\textbf{Pål} Skulle tolka IR-sensordata vilket har gjorts. De funktioner som gjorts fungerar dock inte som förväntat. Paketnedsättningsfunktionen är ej påbörjad, den behöver skjutas på nästa vecka. Skall jobba med detektion av paket och paketnedsättning nästa vecka.}
+\end{itemize}
+}
+\paragraf{Vi noterar att Milstolpe 3 har blivit försenad. Milstole 4 är inte helt testad (kurvor otestade) men kan anses som uppfylld.}
+\paragraf{Mötet avslutas.}
+\end{projektmote}
+
+\newpage
+\textbf{\Large Aktuella aktiviteter}
+\begin{center}
+\begin{tabularx}{\textwidth}{| p{4mm} | X | p{13.5mm} | X |}
+	\hline
+	\textbf{Nr} & \textbf{Aktivitet} & \textbf{Ansvar} & \textbf{Status} \\\hline	
+% ------------ Aktuella aktiviteter ------------
+% Syntax {Nr} & {Aktivitet} & {Ansvarig} & {Status} \\\hline
+% ----------------------------------------------
+	{14} & {Skriva UI för PC} & {DW} & {En första iteration färdig} \\\hline
+	{17} & {Implementera styrning av servon} & {HS} & {Kan både styra och läsa servon på styrenheten. Behöver testas mer} \\\hline
+	{24} & {Implementera styrlogik} & {DL} & {Påbörjad} \\\hline
+	{26} & {Mäta respons från motorer och servon} & {AY} & {Ej påbörjad, Försenad} \\\hline
+	{28} & {Tolka IR-sensordata} & {PK} & {Påbörjad} \\\hline
+	{29} & {Implementera kalibrerinsfunktion} & {DL} & {Klar} \\\hline
+	{31} & {Testa styra servon från styrenheten} & {PK} & {Klar} \\\hline
+	{33} & {Testa styra servon från huvud} & {AY} & {Påbörjad} \\\hline
+	{34} & {Testa styra motorer från huvud} & {AY} & {Klar} \\\hline
+	{35} & {Implementera läsning av sensordata på huvud} & {DL} & {Påbörjad} \\\hline
+	{38} & {Implementera och testa X,Y,Z  till servovinkel konvertering} & {MS, HS} & {Ej testat, annars klart} \\\hline
+	{39} & {Implementera och testa gränser för armen} & {MS} & {Ej påbörjad, försenad} \\\hline
+	{40} & {Implementera smoothing-funktion för servon och motorer} & {DL} & {Ej påbörjad} \\\hline
+	{41} & {Implementera paketnedsättningsfunktion} & {PK} & {Ej påbörjad, försenad} \\\hline
+	{42} & {Implementera fjärrstyrning från PC} & {DW} & {Påbörjad} \\\hline
+	{43} & {Implementera detektion av stoppmarkering} & {} & {påbörjad} \\\hline
+	{44} & {Implementera detektion av paket} & {} & {Påbörjad} \\\hline
+	{45} & {Implementera detektion av stationer} & {} & {Påbörjad} \\\hline
+	{46} & {Implementera regleringsalgoritm} & {AY, MS} & {Implementerad, behöver finjusteras} \\\hline
+	{54} & {Tejpa testbanor} & {DW} & {Ej påbörjad} \\\hline
+	
+\end{tabularx}
+\end{center}
+
+\end{document}

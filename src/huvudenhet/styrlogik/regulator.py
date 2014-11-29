@@ -7,7 +7,9 @@ class Regulator(threading.Thread):
     #a constructor for the class
     def __init__(self,sensorList):
         #self.__calibrateData=calibrate_data
-        self.__calibrateData=[[0,255],[0,255],[0,255],[0,255],[0,255],[0,255],[0,255],[0,255],[0,255],[0,255],[0,255]]
+        #self.__calibrateData=[[0,255],[0,255],[0,255],[0,255],[0,255],[0,255],[0,255],[0,255],[0,255],[0,255],[0,255]]
+        self.__calibrateData=[[54,201],[122,225],[141,238],[66,177],[136,231],[76,185],
+                     [171,228],[44,175],[97,195],[60,173],[43,168]]
         #self.__sensorList=sensorList
         
         self.__position=0.0
@@ -28,7 +30,7 @@ class Regulator(threading.Thread):
         threading.Thread.__init__(self)
     def run(self):
         while True:
-            time.sleep(0.05)
+            time.sleep(0.001)
             self.calculatePosition()
             if len(self.__previousValues)>=10:
                 self.filterValues()
@@ -39,6 +41,7 @@ class Regulator(threading.Thread):
                     self.derivate()
                     self.piReg()
                     self.setMotors()
+                    #print(self.__sensorList[0])
                     #print(self.__P,self.__I,self.__D)
                     
     def updatePID(self):
@@ -51,8 +54,8 @@ class Regulator(threading.Thread):
         raise SyntaxError("sensor not in list")
         
     def setMotors(self):
-        left=self.getLeftMotor()-int(self.getLeftMotor()*self.__error)
-        right=self.getRightMotor()+int(self.getRightMotor()*self.__error)
+        left=self.getLeftMotor()+int(self.getLeftMotor()*self.__error)
+        right=self.getRightMotor()-int(self.getRightMotor()*self.__error)
         if left>255:
             left=255
         if left<-255:
@@ -102,7 +105,6 @@ class Regulator(threading.Thread):
             if self.__sensorList[i][0]=="motorSpeed":
                 return self.__sensorList[i][1][1]
         raise SyntaxError("sensor not in list")
-    
     
     def filterValues(self):
         self.calculatePosition()
