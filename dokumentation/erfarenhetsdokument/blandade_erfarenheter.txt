@@ -4,3 +4,5 @@ Borde inte bestämma vem som ska göra vilken aktivitet redan innan utvecklingen
 
 Aktiviteter borde vara mer specificerade. Typ ha kriterier för när en aktivitet kan ses som klar. Test av enskilda funktioner borde ingå i implementationen av den enheten. T.ex test av sensorenheten borde ingå i implementation av läsning av sensorer.
 
+Undvika att en ensam person designar och implementerar otrivial kod. Är bra om det är mer än en person som kan debugga en kodbas.
+

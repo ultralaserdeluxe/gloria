@@ -27,6 +27,8 @@ typedef struct wheel_data
 	uint8_t goal_speed;
 	direction_t queued_direction;
 	uint8_t queued_speed;
+	
+	int iteration;
 } wheel_data_t;
 
 typedef struct motor_data

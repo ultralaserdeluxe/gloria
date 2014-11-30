@@ -27,15 +27,15 @@ int main(void)
 	gloria_queue = new_queue();
 	system_init(gloria_queue, 2, 8);
 	arm_init(gloria_queue->arm);
-	//spi_slave_init();
-	//sei();
+	spi_slave_init();
+	sei();
 	
-	DDRA = 0xff;
+	//DDRA = 0xff;
 	
 	while(1){
 		
 		read_all_commands(gloria_queue);
-		update_status(gloria_queue, SERVO_1, SERVO_8);
+		//update_status(gloria_queue, SERVO_1, SERVO_8);
 
 		/* Servo read debug */
 		//usart_set_tx();
@@ -84,13 +84,21 @@ int main(void)
 		//input_byte(gloria_queue, 0x00);
 		//input_byte(gloria_queue, 0x00);
 		//
+		
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0xff);
+		//input_byte(gloria_queue, 0x03);
+		//input_byte(gloria_queue, 0x10);
+		//input_byte(gloria_queue, 0x01);
+		//input_byte(gloria_queue, 0x30);
+		//
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0x01);
 		//input_byte(gloria_queue, 0x3F); // Action
 		//
 		//read_all_commands(gloria_queue);
-		//_delay_ms(8000);
+		//_delay_ms(1000);
 		//
 		//update_status(gloria_queue->arm, SERVO_7);
 		//PORTA = gloria_queue->arm->s[SERVO_7].speed_l;
@@ -130,7 +138,7 @@ int main(void)
 		//input_byte(gloria_queue, 0x16);
 		//input_byte(gloria_queue, 0x00);
 		//input_byte(gloria_queue, 0x50);
-		
+		//
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0x03); // Flytta Axel
@@ -138,13 +146,14 @@ int main(void)
 		//input_byte(gloria_queue, 0x00);
 		//input_byte(gloria_queue, 0xff);
 		//
+		
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0x01);
 		//input_byte(gloria_queue, 0x3F); // Action
 		//
 		//read_all_commands(gloria_queue);
-		//_delay_ms(8000);
+		//_delay_ms(1000);
 		
 		/* Debug 2 - Do what read_command does */
 		//set_inverse_servo_goal_position(gloria_queue->arm, id, 0x00, 0x50);

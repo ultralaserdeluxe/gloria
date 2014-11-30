@@ -11,6 +11,7 @@
 #include <avr/interrupt.h>
 #include "motor.h"
 #include "styrenhet.h"
+#include <math.h>
 
 void motor_init()
 {
@@ -43,47 +44,53 @@ ISR(TIMER1_COMPA_vect)
 	uint8_t current_direction_left = gloria_queue->motor->s[MOTOR_LEFT].direction;
 	uint8_t goal_direction_left = gloria_queue->motor->s[MOTOR_LEFT].goal_direction;
 	
-	if(current_direction_left == goal_direction_left)
-	{
-		uint8_t new_left_speed = current_speed_left + ((goal_speed_left - current_speed_left) / 2);
-		gloria_queue->motor->s[MOTOR_LEFT].speed = new_left_speed;
-		set_speed_left(new_left_speed);
-	}
-	else if(current_speed_left < 0x10)
-	{
-		gloria_queue->motor->s[MOTOR_LEFT].direction = goal_direction_left;
-		set_direction_left(goal_direction_left);
-	}
-	else
-	{
-		uint8_t new_left_speed = current_speed_left - (current_speed_left / 3);
-		gloria_queue->motor->s[MOTOR_LEFT].speed = new_left_speed;
-		set_speed_left(new_left_speed);
-	}
-	
+	//if(current_direction_left == goal_direction_left)
+	//{
+		//uint8_t new_left_speed = current_speed_left + ((goal_speed_left - current_speed_left) / 2);
+		//gloria_queue->motor->s[MOTOR_LEFT].speed = new_left_speed;
+		//set_speed_left(new_left_speed);
+	//}
+	//else if(current_speed_left < 0x10)
+	//{
+		//gloria_queue->motor->s[MOTOR_LEFT].direction = goal_direction_left;
+		//set_direction_left(goal_direction_left);
+	//}
+	//else
+	//{
+		//uint8_t new_left_speed = current_speed_left - (current_speed_left / 3);
+		//gloria_queue->motor->s[MOTOR_LEFT].speed = new_left_speed;
+		//set_speed_left(new_left_speed);
+	//}
+	//
 	/* Right motor. */
 	uint8_t current_speed_right = gloria_queue->motor->s[MOTOR_RIGHT].speed;
 	uint8_t goal_speed_right = gloria_queue->motor->s[MOTOR_RIGHT].goal_speed;
 	uint8_t current_direction_right = gloria_queue->motor->s[MOTOR_RIGHT].direction;
 	uint8_t goal_direction_right = gloria_queue->motor->s[MOTOR_RIGHT].goal_direction;
 		
-	if(current_direction_right == goal_direction_right)
-	{
-		uint8_t new_right_speed = current_speed_right + ((goal_speed_right - current_speed_right) / 2);
-		gloria_queue->motor->s[MOTOR_RIGHT].speed = new_right_speed;
-		set_speed_right(new_right_speed);
-	}
-	else if(current_speed_right < 0x10)
-	{
-		gloria_queue->motor->s[MOTOR_RIGHT].direction = goal_direction_right;
-		set_direction_right(goal_direction_right);
-	}
-	else
-	{
-		uint8_t new_right_speed = current_speed_right - (current_speed_right / 3);
-		gloria_queue->motor->s[MOTOR_RIGHT].speed = new_right_speed;
-		set_speed_right(new_right_speed);
-	}
+	//if(current_direction_right == goal_direction_right)
+	//{
+		//uint8_t new_right_speed = current_speed_right + ((goal_speed_right - current_speed_right) / 2);
+		//gloria_queue->motor->s[MOTOR_RIGHT].speed = new_right_speed;
+		//set_speed_right(new_right_speed);
+	//}
+	//else if(current_speed_right < 0x10)
+	//{
+		//gloria_queue->motor->s[MOTOR_RIGHT].direction = goal_direction_right;
+		//set_direction_right(goal_direction_right);
+	//}
+	//else
+	//{
+		//uint8_t new_right_speed = current_speed_right - (current_speed_right / 3);
+		//gloria_queue->motor->s[MOTOR_RIGHT].speed = new_right_speed;
+		//set_speed_right(new_right_speed);
+	//}
+	
+	/* Temp function w/o acceleration */
+	set_speed_left(goal_speed_left);
+	set_speed_right(goal_speed_right);
+	set_direction_left(goal_direction_left);
+	set_direction_right(goal_direction_right);
 }
 
 motor_data_t* new_motor_data(int number_of_motors)
@@ -116,14 +123,20 @@ void motor_action(int ID, motor_data_t *d)
 
 void set_goal_velocity_left(motor_data_t *d, direction_t direction, uint8_t speed)
 {
+	//set_speed_left(speed);
+	//set_direction_left(direction);
 	d->s[MOTOR_LEFT].goal_direction = direction;
 	d->s[MOTOR_LEFT].goal_speed = speed;
+	d->s[MOTOR_LEFT].iteration = 1;
 }
 
 void set_goal_velocity_right(motor_data_t *d, direction_t direction, uint8_t speed)
 {
+	//set_speed_right(speed);
+	//set_direction_right(direction);
 	d->s[MOTOR_RIGHT].goal_direction = direction;
 	d->s[MOTOR_RIGHT].goal_speed = speed;
+	d->s[MOTOR_RIGHT].iteration = 1;
 }
 
 void set_queued_velocity_left(motor_data_t *d, direction_t direction, uint8_t speed)
