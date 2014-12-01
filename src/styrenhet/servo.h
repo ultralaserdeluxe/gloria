@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <avr/io.h>
 #include "ax12a.h"
+#include "usart.h"
 
 /* Following datatypes represents an instruction, meant to be sent to our servo.
 	The datatype is designed to be sent in a single batch. */

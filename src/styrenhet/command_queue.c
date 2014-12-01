@@ -37,34 +37,39 @@ void system_init(command_queue_t *q, int motors, int servos)
 int servo_remaining_time(arm_data_t *a, int id)
 {
 	servo_data_t s = a->s[id];
-	uint16_t distance = make_int_16(s.goal_position_h, s.goal_position_l) - make_int_16(s.position_h, s.position_l);
-	uint16_t speed = make_int_16(s.speed_h, s.speed_l);
-	if (speed == 0)
-	{
-		if (distance == 0) return 0;
-		else return 0xff;
-	}
-	return distance / speed;
+	uint16_t goal_position = make_int_16(s.goal_position_h, s.goal_position_l);
+	uint16_t position = make_int_16(s.position_h, s.position_l);
+	uint16_t distance;
+	if (goal_position > position) distance = goal_position - position;
+	else distance = position - goal_position;
+	//uint16_t speed = make_int_16(s.speed_h, s.speed_l);
+	//if (speed <= 0x10)
+	//{
+		//if (distance <= 0x10) return 0;
+		//else return 0xff;
+	//}
+	//uint16_t time = (distance) / (speed >> 4);
+	//return (distance >> 2) & 0xff;
+	return s.speed_l;
 }
 
 void input_byte(command_queue_t *q, uint8_t data)
 {
-	//int status = 0;
+	int status = 0;
 	if (empty_queue(q))
 	{
 		put_queue(q, new_node());
-		set_node_command(last_node(q), data);
+		status = set_node_command(last_node(q), data);
 	}
 	else if (!command_recieved(node_data(last_node(q))))
 	{
-		set_node_command(last_node(q), data);
+		status = set_node_command(last_node(q), data);
 	}
 	else
 	{
 		put_queue(q, new_node());
-		set_node_command(last_node(q), data);
+		status = set_node_command(last_node(q), data);
 	}
-	/*
 	if (status == 4)
 	{
 		if ((data & COMMAND_INSTRUCTION_MASK) == COMMAND_STATUS)
@@ -72,25 +77,26 @@ void input_byte(command_queue_t *q, uint8_t data)
 			switch (data & COMMAND_ADDRESS_MASK)
 			{
 			case ADDRESS_JOINT_1:
-				SPDR = 
+				SPDR = servo_remaining_time(q->arm, SERVO_1);
 				break;
 			case ADDRESS_JOINT_2:
-				SPDR =
+				SPDR = servo_remaining_time(q->arm, SERVO_2);
 				break;
 			case ADDRESS_JOINT_3:
-				SPDR =
+				SPDR = servo_remaining_time(q->arm, SERVO_4);
 				break;
 			case ADDRESS_JOINT_4:
-				SPDR =
+				SPDR = servo_remaining_time(q->arm, SERVO_6);
 				break;
 			case ADDRESS_JOINT_5:
-				SPDR =
+				SPDR = servo_remaining_time(q->arm, SERVO_7);
 				break;
 			case ADDRESS_JOINT_6:
-				SPDR =
+				SPDR = servo_remaining_time(q->arm, SERVO_8);
 				break;
 			}
-		}*/
+		}
+	}
 }
 
 /* Create a new queue, with one empty entry */
@@ -117,18 +123,15 @@ void free_queue(command_queue_t *q)
 /* Add new node to end of queue */
 void put_queue(command_queue_t *q, command_queue_node_t *node)
 {
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	if (empty_queue(q))
 	{
-		if (empty_queue(q))
-		{
-			q->head = node;
-			q->last = node;
-		}
-		else
-		{
-			q->last->next = node;
-			q->last = node;
-		}
+		q->head = node;
+		q->last = node;
+	}
+	else
+	{
+		q->last->next = node;
+		q->last = node;
 	}
 }
 
@@ -137,17 +140,14 @@ command_queue_node_t* pop_first(command_queue_t *q)
 {
 	command_queue_node_t *node = q->head;
 	/* q->head == q->last only if theres only one element */
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	if (q->head == q->last)
 	{
-		if (q->head == q->last)
-		{
-			q->last = NULL;
-			q->head = NULL;
-		}
-		else
-		{
-			q->head = node->next;
-		}
+		q->last = NULL;
+		q->head = NULL;
+	}
+	else
+	{
+		q->head = node->next;
 	}
 	return node;
 }
@@ -249,6 +249,17 @@ int set_node_command(command_queue_node_t *node, int data)
 	Returns updated status */
 int set_command(command_struct_t *command, uint8_t data)
 {
+	if (command->status > 10) 
+	{
+		command->status = 0xff;
+		return command->status;
+	}
+	else if (command->status > 4)
+	{
+		 add_servo_parameter_chain(command->first_parameter, data);
+		 command->status++;
+		 return command->status;
+	}
 	switch (command->status)
 	{
 		case 0:
@@ -295,9 +306,13 @@ command_struct_t* new_command()
  * else return false */
 bool read_command(command_queue_t *q)
 {
-	if (empty_queue(q)) return false;
-	else if (!command_recieved(q->head->command)) return false;
-	command_queue_node_t *n = pop_first(q);
+	command_queue_node_t *n;
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	{
+		if (empty_queue(q)) return false;
+		else if (!command_recieved(q->head->command)) return false;
+		n = pop_first(q);
+	}
 	command_struct_t *c = node_data(n);
 	/* If we have Action, perform action */
 	if ((c->instruction & COMMAND_INSTRUCTION_MASK) == COMMAND_ACTION)

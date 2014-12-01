@@ -13,7 +13,7 @@
 #include "spi.h"
 #include "ax12a.h"
 #include "huvud_styr_protocol.h"
-#include "usart.h" //Todo: USART communication should be handled by servo.c
+//#include "usart.h" //Todo: USART communication should be handled by servo.c
 #include "arm.h"
 #include "styrenhet.h"
 
@@ -34,8 +34,16 @@ int main(void)
 	
 	while(1){
 		
-		read_all_commands(gloria_queue);
-		//update_status(gloria_queue, SERVO_1, SERVO_8);
+		//usart_set_rx();
+		//_delay_us(20);
+		//usart_set_tx();
+		//_delay_us(20);
+		
+		//for (int i = SERVO_1; i <= SERVO_8; i++)
+		//{
+			read_all_commands(gloria_queue);
+			//update_servo_status(gloria_queue->arm, i);
+			//}
 
 		/* Servo read debug */
 		//usart_set_tx();
@@ -98,7 +106,7 @@ int main(void)
 		//input_byte(gloria_queue, 0x3F); // Action
 		//
 		//read_all_commands(gloria_queue);
-		//_delay_ms(1000);
+		//_delay_ms(5000);
 		//
 		//update_status(gloria_queue->arm, SERVO_7);
 		//PORTA = gloria_queue->arm->s[SERVO_7].speed_l;
@@ -153,7 +161,7 @@ int main(void)
 		//input_byte(gloria_queue, 0x3F); // Action
 		//
 		//read_all_commands(gloria_queue);
-		//_delay_ms(1000);
+		//_delay_ms(5000);
 		
 		/* Debug 2 - Do what read_command does */
 		//set_inverse_servo_goal_position(gloria_queue->arm, id, 0x00, 0x50);

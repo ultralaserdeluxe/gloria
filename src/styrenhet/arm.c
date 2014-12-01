@@ -7,7 +7,9 @@
 
 #define F_CPU 16000000UL
 #include "arm.h"
+#include "usart.h"
 #include <util/delay.h>
+#include <util/atomic.h>
 
 /* Initializes our arm */
 void arm_init(arm_data_t *arm)
@@ -164,20 +166,31 @@ void update_servo_status(arm_data_t *arm, int id)
 	send_servo_instruction(
 		servo_instruction_packet(id, INSTR_READ, P_PRESENT_POSITION_L, p)
 	);
+	free_servo_parameter_chain(p);
 	_delay_us(10); //Wait for last command to send properly
 	usart_set_rx();
-	usart_receive(); //Todo: Why is this random byte necessary?
+	////usart_receive(); //Todo: Why is this random byte necessary?
 	usart_receive(); //0xff
 	usart_receive(); //0xff
 	usart_receive(); //id
 	usart_receive(); //length
 	
-	arm->s[id].status = usart_receive();
-	arm->s[id].position_l = usart_receive();
-	arm->s[id].position_h = usart_receive();
-	arm->s[id].speed_l = usart_receive();
-	arm->s[id].speed_h = usart_receive();
+	int new_status = usart_receive();
+	int new_position_l = usart_receive();
+	int new_position_h = usart_receive();
+	int new_speed_l = usart_receive();
+	int new_speed_h = usart_receive();
 	usart_receive(); //checksum
+	
 	usart_set_tx();
 	
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	{
+		// Todo: Possible to return NULL or -1?
+		if (new_status > 0)		arm->s[id].status = new_status;
+		if (new_position_l > 0)	arm->s[id].position_l = new_position_l;
+		if (new_position_h > 0)	arm->s[id].position_h = new_position_h;
+		if (new_speed_l > 0)	arm->s[id].speed_l = new_speed_l;
+		if (new_speed_h > 0)	arm->s[id].speed_h = new_speed_h;
+	}
 }

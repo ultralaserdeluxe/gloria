@@ -17,6 +17,6 @@ unsigned char usart_receive();
 void usart_set_tx();
 void usart_set_rx();
 void usart_disconnect();
-
+void usart_flush_rx();
 
 #endif /* USART_H_ */

@@ -9,6 +9,7 @@
 #include "servo.h"
 #include "usart.h"
 #include <util/delay.h>
+#include <util/atomic.h>
 
 /* Initialize servo */
 void servo_init(int ID)
@@ -89,13 +90,16 @@ void servo_init(int ID)
 /* Does the actual sending of data to servo over UART*/
 void send_servo_instruction(servo_instruction_t *t)
 {
-	servo_parameter_t *current = get_servo_parameter(t);
-	while (!empty_servo_parameter(current))
-	{
-		usart_transmit(current->current_parameter);
-		current = current->next;
-	}
-	free_instruction_full(t);
+	//ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	//{
+		servo_parameter_t *current = get_servo_parameter(t);
+		while (!empty_servo_parameter(current))
+		{
+			usart_transmit(current->current_parameter);
+			current = current->next;
+		}
+		free_instruction_full(t);
+	//}
 }
 
 /* Returns instruction for given parameters ready to be sent */
@@ -190,9 +194,8 @@ void add_servo_parameter(servo_instruction_t *instr, unsigned int new_parameter)
 	}
 	else
 	{
-		servo_parameter_t *last = last_servo_parameter(instr->first_parameter);
-		last->next = create_servo_parameter(new_parameter);
-		instr->last_parameter = last->next;
+		instr->last_parameter->next = create_servo_parameter(new_parameter);
+		instr->last_parameter = instr->last_parameter->next;
 	}
 	instr->length++;
 }
@@ -251,7 +254,7 @@ void add_servo_parameter_chain(servo_parameter_t *t, uint8_t new_data)
 {
 	if (t == NULL)
 	{
-		t = create_servo_parameter(new_data);
+		//t = create_servo_parameter(new_data);
 		//t->next = NULL;
 		return;
 	}
@@ -261,7 +264,6 @@ void add_servo_parameter_chain(servo_parameter_t *t, uint8_t new_data)
 		current = next_servo_parameter(current);
 	}
 	current->next = create_servo_parameter(new_data);
-	//current->next->next = NULL;
 }
 
 /* Free a chain of parameters not part of a servo_instruction_t */
