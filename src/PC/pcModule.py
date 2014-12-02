@@ -37,7 +37,7 @@ class pcModule():
         readable, writable, exceptional = select.select([self.__s], [self.__s], [])
         while self.__s not in writable:
             readable, writable, exceptional = select.select([self.__s], [self.__s], [])
-        self.__s.sendall(data)
+        self.__s.sendall(data.encode()) #needs decoding for python3.4
         
     #returns the errorscodes if any as a list of strings
     def getErrorCodes(self):
