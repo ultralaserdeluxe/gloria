@@ -85,3 +85,7 @@ eagle.epf
 *.info
 
 *.eps
+
+# Python files
+*.pyc
+

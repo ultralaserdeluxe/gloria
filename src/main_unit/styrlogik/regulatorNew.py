@@ -83,7 +83,7 @@ class Regulator:
             self.setRegMotor(left, rightCurrent)
         else:
             self.setRegMotor(leftCurrent, right)
-    
+
     #puts the calculated motorspeeds in the sensorlist
     def setRegMotor(self,left,right):
         for i in range(len(self.sensor_list)):
@@ -112,6 +112,3 @@ class Regulator:
             if self.sensor_list[i][0]=="lineSensor":
                 return self.sensor_list[i][1]
         raise SyntaxError("sensor not in list")
-
-
-
