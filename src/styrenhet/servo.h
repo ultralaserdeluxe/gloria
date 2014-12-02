@@ -8,21 +8,10 @@
 #ifndef SERVO_H_
 #define SERVO_H_
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdlib.h>
-#include <avr/io.h>
-#include "ax12a.h"
-#include "usart.h"
+#include "parameter_chain.h"
 
-/* Following datatypes represents an instruction, meant to be sent to our servo.
-	The datatype is designed to be sent in a single batch. */
-typedef struct servo_parameter
-{
-	uint8_t current_parameter;
-	struct servo_parameter *next;
-} servo_parameter_t;
-
+/* Following datatype is an instruction that is easy to iterate over 
+	and send to a servo. */
 typedef struct servo_instruction
 {
 	servo_parameter_t *first_parameter;
@@ -45,20 +34,8 @@ servo_instruction_t* concatenate_instructions(servo_instruction_t *t1, servo_ins
 void free_instruction(servo_instruction_t *t);
 void free_instruction_full(servo_instruction_t *t);
 
-/* Following functions handle the parameters which are the single bytes
-	an instruction is made up of */
-servo_parameter_t* create_servo_parameter(unsigned int new_parameter);
+/* Following functions handle the servo_instruction_t */
 void add_servo_parameter(servo_instruction_t *instr, unsigned int new_parameter);
 servo_parameter_t* get_servo_parameter(servo_instruction_t *instr);
-servo_parameter_t* next_servo_parameter(servo_parameter_t *p);
-bool empty_servo_parameter(servo_parameter_t *p);
-servo_parameter_t* last_servo_parameter(servo_parameter_t *p);
-unsigned int servo_parameter_value(servo_parameter_t *p);
-int servo_parameter_sum(servo_parameter_t *p);
-
-/* Functions for handling chains of parameters */
-void add_servo_parameter_chain(servo_parameter_t *t, uint8_t new_data);
-void free_servo_parameter_chain(servo_parameter_t *p);
-int servo_parameter_chain_length(servo_parameter_t *p);
 
 #endif /* SERVO_H_ */
