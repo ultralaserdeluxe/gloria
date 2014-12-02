@@ -1,13 +1,14 @@
 from sensorThread import *
 from pcThread import *
 from driveUnit import *
+from distance import *
 import Queue
 
 ################### list #######################
 
 #calibrated data [[floor,tape],..] for every linesensor
-linesensor_c_data = [[54,201],[122,225],[141,238],[66,177],[136,231],[76,185],
-                     [171,228],[44,175],[97,195],[60,173],[43,168]]
+calibrateData=[[74,198],[127,210],[150,220],[50,184],[140,226],[65,180],
+                     [170,230],[47,160],[103,204],[56,165],[48,178]
 
 
 #gets fresh values from sensorthread
@@ -44,29 +45,30 @@ def main():
     pcthread = pcThread(sensorList,commandQueue)
     pcthread.start()
 
-    while commandQueue.get()[0] != "start":
+    while not commandQueue.empty() and commandQueue.get()[0] != "start":
         pass
 
     try:
         while True:
             #get latest PC commando from queue
-            command = commandQueue.get()
-            if command[0] == "calibrate_floor":
-                calibrate_floor()
-            elif command[0] == "calibrate_tape":
-                calibrate_tape()
-            elif command[0] == "autoMotor":
-                if command[1][0] == True:
-                    automotor = True
+            if not commandQueue.empty():
+                command = commandQueue.get()
+                if command[0] == "calibrate_floor":
+                    calibrate_floor()
+                elif command[0] == "calibrate_tape":
+                    calibrate_tape()
+                elif command[0] == "autoMotor":
+                    if command[1][0] == True:
+                        automotor = True
+                    else:
+                        automotor = False
+                elif command[0] == "autoArm":
+                    if command[1][0] == True:
+                        autoarm = True
+                    else:
+                        autoarm = False
                 else:
-                    automotor = False
-            elif command[0] == "autoArm":
-                if command[1][0] == True:
-                    autoarm = True
-                else:
-                    autoarm = False
-            else:
-                pass
+                    pass
 
             #if we pass a station we have *detection time* to find a package
             if timestamp == 0:
@@ -181,7 +183,7 @@ def is_station_right():
     answer = False
     for i in range(8,11):
         value = sensorList[0][1][i]
-        tape_value = linesensor_c_data[i][1]
+        tape_value = calibrateData[i][1]
         if value <= (tape_value + error_margin) and value >= (tape_value - error_margin):
             answer = True
         else:
@@ -193,7 +195,7 @@ def is_station_left():
     answer = False
     for i in range(0,3):
         value = sensorList[0][1][i]
-        tape_value = linesensor_c_data[i][1]
+        tape_value = calibrateData[i][1]
         if value <= (tape_value + error_margin) and value >= (tape_value - error_margin):
             answer = True
         else:
@@ -201,13 +203,16 @@ def is_station_left():
     return answer
 
 def has_package_right():
+    distance = distance_right(sensorList[1][1][0])
+    if distance >= 6.0 and distance <= 20.0:
+        return True
     return False
 
 def has_package_left():
+    distance = distance_left(sensorList[1][1][1])
+    if distance >= 6.0 and distance <= 20.0:
+        return True
     return False
-
-def regulate():
-    print "regulating..."
 
 def drive_forward():
     print "keep on truckin..."
@@ -222,18 +227,10 @@ def steer_arm(command):
 def calibrate_floor(): 
     #give floor values
     for i in range(0,11):
-        linesensor_c_data[i][0] = sensorList[0][1][i]
+        calibrateData[i][0] = sensorList[0][1][i]
 
 def calibrate_tape():
     #give tape values
     for i in range(0,11):
-        linesensor_c_data[i][1] = sensorList[0][1][i]
-
-def kastman(x):
-    z = (x-41)/25
-    return (0.093*z**6) - (0.77*z**5) + (2.4*z**4) - (3.9*z**3) + (4.7*z**2) - (7.4*z) + 13
-
-
-for x in range(0,110):
-    print kastman(x)
+        calibrateData[i][1] = sensorList[0][1][i]
 
