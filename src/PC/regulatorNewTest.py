@@ -45,7 +45,7 @@ class Joystick():
         pygame.event.pump()
         return self.joystick.get_hat(0)
 sensorList=[["lineSensor",[67, 122, 152, 53, 181, 186, 184, 60, 100, 77, 56]],
-            ["distance",[10,10]],
+            ["distance",[15,15]],
             ["armPosition",[1,2,3,4,5,5]],
             ["errorCodes",["YngveProgrammedMeWrong"]],
             ["motorSpeed",[10,10]],
@@ -82,14 +82,16 @@ def getRegulator():
         if sensorList[i][0]=="regulator":
             return (sensorList[i][1])
     return []
-P=1.32
-I=0.3
-D=0.01
+#testa 1.0,0.009999,1.02 with reverse signalout
+#working values: 1.38,0.2,0.2
+P=3.8
+I=0
+D=0.5
 setPID(0, P)
 setPID(1, I)
 setPID(2, D)
 while True:
-    time.sleep(0.05)
+    time.sleep(0.01)
     transferLinesensor()
     if (joy.get_button_2()):
         P=P+joy.get_hat()[1]*0.01
@@ -126,13 +128,13 @@ while True:
                         
     temp=list(getRegulator())
     if temp[0]>0:
-        temp[0]=temp[0]+60
+        temp[0]=temp[0]+53
     if temp[0]<0:
-        temp[0]=temp[0]-60
+        temp[0]=temp[0]-53
     if temp[1]>0:
-        temp[1]=temp[1]+60
+        temp[1]=temp[1]+53
     if temp[1]<0:
-        temp[1]=temp[1]-60
+        temp[1]=temp[1]-53
     if temp[0]>255:
         temp[0]=255
     if temp[0]<-255:
