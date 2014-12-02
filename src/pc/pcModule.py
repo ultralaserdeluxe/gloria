@@ -24,7 +24,7 @@ class pcModule():
                 readable, writable, exceptional = select.select([self.__s], [self.__s], [self.__s])
             if self.__s in readable:
                 while self.__s in readable:
-                    complete_data_set=complete_data_set+self.__s.recv(self.__package_size)
+                    complete_data_set=complete_data_set+self.__s.recv(self.__package_size) #decode MIGHT be needed here
                     readable, writable, exceptional = select.select([self.__s], [self.__s], [self.__s])
         return complete_data_set
     
@@ -37,7 +37,7 @@ class pcModule():
         readable, writable, exceptional = select.select([self.__s], [self.__s], [])
         while self.__s not in writable:
             readable, writable, exceptional = select.select([self.__s], [self.__s], [])
-        self.__s.sendall(data)
+        self.__s.sendall(data.encode()) #needs decoding for python3.4
         
     #returns the errorscodes if any as a list of strings
     def getErrorCodes(self):
