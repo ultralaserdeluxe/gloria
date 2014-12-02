@@ -1,8 +1,4 @@
-import threading
 import time
-
-#remember to remove after debugging
-import matplotlib.pyplot as plt
 
 class Regulator:
     def __init__(self, sensor_list):
@@ -17,6 +13,7 @@ class Regulator:
         self.calibration_data = [(74, 198), (127, 210), (150, 220), (50, 184), (140, 226), (65, 180),
                                  (170, 230), (47, 160), (103, 204), (56, 165), (48, 178)]
         self.out = 0.0
+        self.last_time = 0
         threading.Thread.__init__(self)
 
         
@@ -30,11 +27,15 @@ class Regulator:
                 return
         raise SyntaxError("sensor not in list")
     
-    def regulate(self, delta_seconds):
+    def regulate(self):
         self.updatePID()
 
         self.e1 = self.e0
         self.e0 = self.get_current_error()
+
+        current_time = time.time()
+        delta_seconds = current_time - self.last_time
+        self.last_time = current_time
 
         self.out = self.P * self.e0 + (self.D / delta_seconds) * (self.e0 - self.e1) 
 
