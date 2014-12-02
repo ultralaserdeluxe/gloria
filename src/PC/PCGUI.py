@@ -185,12 +185,10 @@ def main():
     motorR = StringVar()
     
     motorL_entry = ttk.Scale(mainframe, from_=-100, to=100)
-    motorL_entry.grid(column=1, row=1, sticky=(W, E))
-    motorL_entry.pack()
+    motorL_entry.grid(column=1, row=1)
 
     motorR_entry = ttk.Scale(mainframe, from_=-100, to=100)
-    motorR_entry.grid(column=3, row=1, sticky=(W, E))
-    motorR_entry.pack()
+    motorR_entry.grid(column=3, row=1)
     
     ttk.Label(mainframe, textvariable=motorL).grid(column=1, row=3)
     ttk.Button(mainframe, text="LMotor Val", command=motorL_get).grid(column=1, row=2)
