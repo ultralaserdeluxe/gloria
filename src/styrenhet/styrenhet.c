@@ -20,6 +20,8 @@
 void spi_recieve_handler(unsigned int data)
 {
 	input_byte(gloria_queue, data);
+	read_all_commands(gloria_queue);
+	SPDR = !SPDR;
 }
 
 int main(void)
@@ -41,7 +43,7 @@ int main(void)
 		
 		//for (int i = SERVO_1; i <= SERVO_8; i++)
 		//{
-			read_all_commands(gloria_queue);
+			//read_all_commands(gloria_queue);
 			//update_servo_status(gloria_queue->arm, i);
 			//}
 
