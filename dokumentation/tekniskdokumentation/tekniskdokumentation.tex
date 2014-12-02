@@ -1,0 +1,82 @@
+
+\documentclass[titlepage, a4paper]{article}
+\input{../mall/layout.tex}	% Importera generella layout-strukturer
+
+% Information nödvändig för generella layout-strukturer
+\newcommand{\LIPSredaktor}{Hannes Snögren}
+\newcommand{\LIPSversion}{0.1}
+\newcommand{\LIPSdokument}{Teknisk dokumentation}
+\newcommand{\LIPSdokumenttyp}{Teknisk dokumentation}
+\newcommand{\LIPSgranskatdatum}{}
+\newcommand{\LIPSgranskare}{}
+\newcommand{\LIPSgodkannare}{}
+\newcommand{\LIPSgodkantdatum}{}
+\newcommand{\LIPSkursnamn}{TSEA29}
+\newcommand{\LIPSprojektnamn}{Lagerrobot}
+\newcommand{\LIPSprojektgrupp}{Grupp 2}
+%\newcommand{\LIPSgruppadress}{}
+\newcommand{\LIPSartaltermin}{HT1, 2014}
+\newcommand{\LIPSgrupphemsida}{http://github.com/ultralaserdeluxe/gloria}
+\newcommand{\LIPSkund}{Tomas Svensson}
+\newcommand{\LIPSkundkontakt}{Tomas Svensson}
+\newcommand{\LIPSkursansvarig}{Tomas Svensson}
+\newcommand{\LIPShandledare}{Peter Johansson}
+
+% Dokument-specifika paket
+\usepackage{tabularx}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{mathtools}
+\usetikzlibrary{shapes, arrows}
+
+\pagenumbering{roman}
+
+\begin{document}
+
+\LIPSTitelsida
+
+\begin{LIPSprojektidentitet}
+\LIPSgruppmedlem{Pål Kastman}{Projektledare}{0703896295}{palka285@student.liu.se}
+\LIPSgruppmedlem{Hannes Snögren}{Dokumentansvarig}{0706265064}{hansn314@student.liu.se}
+\LIPSgruppmedlem{Alexander Yngve}{Hårdvaruansvarig}{0762749762}{aleyn573@student.liu.se}
+\LIPSgruppmedlem{Martin Söderén}{Mjukvaruansvarig}{0708163241}{marso329@student.liu.se}
+\LIPSgruppmedlem{Daniel Wassing}{Leveransansvarig}{0767741110}{danwa223@student.liu.se}
+\LIPSgruppmedlem{Dennis Ljung}{Testansvarig}{0708568148}{denlj069@student.liu.se}
+\end{LIPSprojektidentitet}
+
+\newpage
+\tableofcontents	%Innehållsförteckning
+%\listoffigures
+%\listoftables
+
+\newpage
+
+\begin{LIPSdokumenthistorik}
+\LIPSversionsinfo{0.1}{}{}{}{}
+\end{LIPSdokumenthistorik}
+
+\newpage
+\pagenumbering{arabic}	%Påbörja sidnumrering
+
+% Inledning, översikt osv
+\input{tekdok-inledning}
+\input{tekdok-produkten}
+\input{tekdok-teori}
+\input{tekdok-systemet}
+\input{tekdok-pcenhet}
+\input{tekdok-huvudenhet}
+\input{tekdok-styrenhet}
+\input{tekdok-sensorenhet}
+\input{tekdok-slutsatser}
+\input{tekdok-referenser}
+
+
+\newpage
+\begin{appendices}
+
+% Bilagor
+
+\end{appendices}
+
+
+\end{document}

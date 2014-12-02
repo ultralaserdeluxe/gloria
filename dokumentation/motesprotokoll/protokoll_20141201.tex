@@ -1,0 +1,74 @@
+\documentclass[titlepage, a4paper]{article}
+\input{../mall/layout.tex}	% Importera generella layout-strukturer
+\usepackage{tabularx}
+
+\newcommand{\LIPSdokumenttyp}{Mötesprotokoll}
+\newcommand{\LIPSkursnamn}{TSEA29}
+\newcommand{\LIPSprojektnamn}{Lagerrobot}
+\newcommand{\LIPSprojektgrupp}{Grupp 2}
+\newcommand{\LIPSutfardare}{hansn314} % Vem har utfärdat protokollet?
+
+\pagenumbering{roman}	% Sidnumrering
+
+\begin{document}
+
+\begin{projektmote}{Mötesprotokoll}{2014-12-01}
+% ------------ PARAGRAFER ----------------------
+% Syntax \paragraf{Vi bestämde och kom överens}
+% ----------------------------------------------
+\paragraf{Mötet öppnas.}
+\paragraf{Närvarande: Martin, Daniel, Dennis, Pål, Yngve och Hannes}
+\paragraf{Vi går igenom bordlagda frågor angående statusrapporten:
+\begin{itemize}
+\item{\textbf{Hur mycket tid har ni kvar av era budgeterade timmar?} \newline Vi har 354 budgeterade timmar kvar att lägga på projektet.}
+\item{\textbf{Hur många timmar har respektive projektmedlem kvar att leverera och hur ska dessa timmar fördelas över de kvarvarande veckorna? Redovisa i en tabell i statusrapporten hur många timmar detta blir per person och vecka. Redovisa också vilka aktiviteter som respektive person ska arbeta med.} \newline 
+}
+\end{itemize}
+}
+\begin{table}[h]
+\center
+\begin{tabularx}{\textwidth}{| X | X | l | l | l | X |}
+	\hline
+	{\textbf{Vem}} & {\textbf{Sammanlagt}} & {\textbf{v.49}} & {\textbf{v.50}} & {\textbf{v.51}} & {\textbf{Aktiviteter}} \\\hline
+	{Pål} & {63} & {25} & {25} & {13} & {48,41,44,53,50,42} \\\hline
+	{Hannes} & {46} & {18} & {18} & {10} & {48,49,26,45} \\\hline
+	{Martin} & {55} & {20} & {20} & {15} & {48,38,39,46,53} \\\hline
+	{Dennis} & {72} & {27} & {27} & {18} & {48,24,40,44,47,53} \\\hline
+	{Yngve} & {53} & {20} & {20} & {13} & {48,46,43,49}  \\\hline
+	{Daniel} & {67} & {25} & {25} & {17} & {48,47,42,51,52}  \\\hline
+
+\end{tabularx}
+\end{table}
+\paragraf{Mötet avslutas.}
+\end{projektmote}
+
+\newpage
+\textbf{\Large Aktuella aktiviteter}
+\begin{center}
+\begin{tabularx}{\textwidth}{| p{4mm} | X | p{13.5mm} | X |}
+	\hline
+	\textbf{Nr} & \textbf{Aktivitet} & \textbf{Ansvar} & \textbf{Status} \\\hline	
+% ------------ Aktuella aktiviteter ------------
+% Syntax {Nr} & {Aktivitet} & {Ansvarig} & {Status} \\\hline
+% ----------------------------------------------
+	{14} & {Skriva UI för PC} & {DW} & {En första iteration färdig} \\\hline
+	{17} & {Implementera styrning av servon} & {HS} & {Klarr} \\\hline
+	{24} & {Implementera styrlogik} & {DL} & {Påbörjad} \\\hline
+	{26} & {Mäta respons från motorer och servon} & {AY} & {Ej påbörjad, Försenad} \\\hline
+	{28} & {Tolka IR-sensordata} & {PK} & {Påbörjad} \\\hline
+	{33} & {Testa styra servon från huvud} & {AY} & {Klar} \\\hline
+	{35} & {Implementera läsning av sensordata på huvud} & {DL} & {Påbörjad} \\\hline
+	{38} & {Implementera och testa X,Y,Z  till servovinkel konvertering} & {MS, HS} & {Ej testat, annars klart} \\\hline
+	{39} & {Implementera och testa gränser för armen} & {MS} & {Ej påbörjad, försenad} \\\hline
+	{40} & {Implementera smoothing-funktion för servon och motorer} & {DL} & {Ej påbörjad} \\\hline
+	{41} & {Implementera paketnedsättningsfunktion} & {PK} & {Ej påbörjad, försenad} \\\hline
+	{42} & {Implementera fjärrstyrning från PC} & {DW} & {Påbörjad} \\\hline
+	{43} & {Implementera detektion av stoppmarkering} & {} & {påbörjad} \\\hline
+	{44} & {Implementera detektion av paket} & {} & {Påbörjad} \\\hline
+	{45} & {Implementera detektion av stationer} & {} & {Påbörjad} \\\hline
+	{46} & {Implementera regleringsalgoritm} & {AY, MS} & {Implementerad, behöver finjusteras} \\\hline
+	{54} & {Tejpa testbanor} & {DW} & {Ej påbörjad} \\\hline
+\end{tabularx}
+\end{center}
+
+\end{document}
