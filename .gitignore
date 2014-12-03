@@ -91,3 +91,6 @@ eagle.epf
 
 # LaTeXing addon for Atom build files
 *.fls
+
+# Bluetooth connection conf file
+src/tools/connect.conf
