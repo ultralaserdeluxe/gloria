@@ -98,7 +98,7 @@ class pcThread(threading.Thread):
                         for j in range(len(data[1])):
                             self.__sensorList[i][1][j]=checkSubelement(data[1][j])
                         temp=i
-                self.__commandQueue.put(self.__sensorList[temp])
+                self.__commandQueue.put(self.__sensorList[temp][:])
             elif data[0]=="calibrate":
                 self.__commandQueue.put(data)
             elif data[0]=="start":
