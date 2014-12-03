@@ -4,7 +4,7 @@
  * Created: 2014-11-15 16:28:17
  *  Author: Hannes
  *	Description: lol-commands
- */ 
+ */
 
 #include "command_queue.h"
 #include <util/atomic.h>
@@ -21,14 +21,14 @@ void system_init(command_queue_t *q, int motors, int servos)
 		q->arm->s[i].ID = i;
 	}
 	motor_init();
-	
+
 	/* Create and give motors their IDs */
 	q->motor = new_motor_data(motors);
 	for (int i = MOTOR_LEFT; i <= MOTOR_RIGHT; i++)
 	{
 		q->motor->s[i].ID = i;
 	}
-	
+
 	/* Set initial goal velocity */
 	set_goal_velocity_left(q->motor, FORWARD, 0x00);
 	set_goal_velocity_right(q->motor, FORWARD, 0x00);
@@ -50,7 +50,7 @@ int servo_remaining_time(arm_data_t *a, int id)
 	//}
 	//uint16_t time = (distance) / (speed >> 4);
 	//return (distance >> 2) & 0xff;
-	return s.speed_l;
+	return (position >> 4);
 }
 
 void input_byte(command_queue_t *q, uint8_t data)
@@ -77,21 +77,27 @@ void input_byte(command_queue_t *q, uint8_t data)
 			switch (data & COMMAND_ADDRESS_MASK)
 			{
 			case ADDRESS_JOINT_1:
+				update_servo_status(q->arm, SERVO_1);
 				SPDR = servo_remaining_time(q->arm, SERVO_1);
 				break;
 			case ADDRESS_JOINT_2:
+				update_servo_status(q->arm, SERVO_2);
 				SPDR = servo_remaining_time(q->arm, SERVO_2);
 				break;
 			case ADDRESS_JOINT_3:
+				update_servo_status(q->arm, SERVO_4);
 				SPDR = servo_remaining_time(q->arm, SERVO_4);
 				break;
 			case ADDRESS_JOINT_4:
+				update_servo_status(q->arm, SERVO_6);
 				SPDR = servo_remaining_time(q->arm, SERVO_6);
 				break;
 			case ADDRESS_JOINT_5:
+				update_servo_status(q->arm, SERVO_7);
 				SPDR = servo_remaining_time(q->arm, SERVO_7);
 				break;
 			case ADDRESS_JOINT_6:
+				update_servo_status(q->arm, SERVO_8);
 				SPDR = servo_remaining_time(q->arm, SERVO_8);
 				break;
 			}
@@ -159,7 +165,7 @@ void remove_node(command_queue_t *q, command_queue_node_t *node)
 	{
 		return;
 	}
-	
+
 	command_queue_node_t *current = q->head;
 	if (node == first_node(q))
 	{
@@ -179,7 +185,7 @@ void remove_node(command_queue_t *q, command_queue_node_t *node)
 		}
 		current->next = node->next;
 	}
-	
+
 	if (node == last_node(q))
 	{
 		q->last = current;
@@ -245,11 +251,11 @@ int set_node_command(command_queue_node_t *node, int data)
 	return set_command(node->command, data);
 }
 
-/* Sets a part of command command, chosen with chooser to data. 
+/* Sets a part of command command, chosen with chooser to data.
 	Returns updated status */
 int set_command(command_struct_t *command, uint8_t data)
 {
-	if (command->status > 10) 
+	if (command->status > 10)
 	{
 		command->status = 0xff;
 		return command->status;
@@ -424,7 +430,7 @@ bool read_command(command_queue_t *q)
 			}
 			else
 			{
-				set_queued_velocity_left(q->motor, BACKWARD, next_servo_parameter(p)->current_parameter);	
+				set_queued_velocity_left(q->motor, BACKWARD, next_servo_parameter(p)->current_parameter);
 			}
 			break;
 		case ADDRESS_MOTOR_R:
