@@ -92,3 +92,4 @@ eagle.epf
 
 # Except for src/styr
 !src/styrenhet/*
+!src/spi/*
