@@ -85,3 +85,10 @@ eagle.epf
 *.info
 
 *.eps
+
+# Specific for styr_refactor branch
+# Ignore everything
+*
+
+# Except for src/styr
+!src/styrenhet/*
