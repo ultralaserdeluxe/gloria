@@ -36,6 +36,11 @@ detection_time = 3
 #error marginal for linesensors
 error_margin = 5
 
+#used for detection stopstations
+timestampstop = 0
+station_right_cnt = 0
+stop_detection_time = 1
+
 #spi init for driveunit
 drive = driveUnit()
 
@@ -82,8 +87,22 @@ def check_put_down_left():
     return False            
 
 
-def on_stopstation():
-    #if we have 3 stations without packages in a row??
+#if we have 3 stations without packages in a row??
+def on_stopstation_right():
+    if timestampstop == 0:
+        timestampstop = time.time()
+    elif (time.time() - timestampstop) <= stop_detection_time:
+        if is_station_right() and right_station_cnt == 2:
+            right_station_cnt = 0
+            timestampstop = 0
+            return True
+        elif is_station_right and right_station_cnt != 2:
+            right_station_cnt += 1
+        else:
+            pass
+    else:
+        timestampstop = 0
+        right_station_cnt = 0
     return False
 
 #check the 3 sensors furthermost to the right
@@ -96,7 +115,15 @@ def is_station_right():
             answer = True
         else:
             answer = False
+    for i in range(0,3):
+        value = sensorList[0][1][i]
+        tape_value = calibrateData[i][0]
+        if value <= (tape_value + error_margin) and value >= (tape_value - error_margin):
+            answer = True
+        else:
+            answer = False
     return answer
+
 
 #check the 3 sensors furthermost to the left
 def is_station_left():
@@ -108,22 +135,35 @@ def is_station_left():
             answer = True
         else:
             answer = False
+    for i in range(8,11):
+        value = sensorList[0][1][i]
+        tape_value = calibrateData[i][0]
+        if value <= (tape_value + error_margin) and value >= (tape_value - error_margin):
+            answer = True
+        else:
+            answer = False
     return answer
 
+
+#check for package on right side
 def has_package_right():
     distance = distance_right(sensorList[1][1][0])
     if distance >= 6.0 and distance <= 20.0:
         return True
     return False
 
+
+#check for package on left side
 def has_package_left():
     distance = distance_left(sensorList[1][1][1])
     if distance >= 6.0 and distance <= 20.0:
         return True
     return False
 
+
 def drive_forward():
     print "keep on truckin..."
+
 
 def steer_arm(command):
     axis_id = 1
@@ -132,36 +172,21 @@ def steer_arm(command):
         axis_id+=1
     drive.sendAllAxis()
 
+
 def calibrate_floor(): 
     #give floor values
     for i in range(0,11):
         calibrateData[i][0] = sensorList[0][1][i]
+
 
 def calibrate_tape():
     #give tape values
     for i in range(0,11):
         calibrateData[i][1] = sensorList[0][1][i]
 
-                             
 
-
-sensorthread = sensorThread(sensorList)
-sensorthread.start()
-
-#test
-#commandQueue.put(["start"])
-#commandQueue.put(["autoMotor",[True]])
-#commandQueue.put(["autoArm",[False]])
-
-pcthread = pcThread(commandQueue, sensorList)
-pcthread.start()
-
-while commandQueue.get()[0] != "start":
-    pass
-
-while True:
-
-    #get latest PC commando from queue
+def get_command():
+    #get latest PC command from queue
     if not commandQueue.empty():
         command = commandQueue.get()
         if command[0] == "calibrate_floor":
@@ -180,6 +205,26 @@ while True:
                 autoarm = False
         else:
             pass
+                             
+
+#test
+#commandQueue.put(["start"])
+#commandQueue.put(["autoMotor",[True]])
+#commandQueue.put(["autoArm",[False]])
+
+sensorthread = sensorThread(sensorList)
+sensorthread.start()
+
+pcthread = pcThread(commandQueue, sensorList)
+pcthread.start()
+
+while commandQueue.get()[0] != "start":
+    pass
+
+while True:
+
+    #get latest PC command from queue
+    get_command()
 
     #if we pass a station we have *detection time* to find a package
     if timestamp == 0:
@@ -197,9 +242,16 @@ while True:
         timestamp = 0
     else:
         pass
-            
-    #the steerlogic...
-    if automotor == True and not on_stopstation() :
+    
+    #check if robot is on stopstation, goes into manualmode
+    if on_stopstation_right():
+        drive.setMotorLeft(0x00)
+        drive.setMotorRight(0x00)
+        drive,sendAllMotor()
+        automotor = False
+    
+    #the steerlogic.
+    if automotor == True:
         print "autonom motor\n"
         if pick_up == False:
             #no need to steer arm, continue
@@ -219,6 +271,11 @@ while True:
                     pick_up = False
                     put_down = False                    
                     new_speed = 0x60
+                if speed != new_speed:
+                    speed = new_speed
+                    drive.setMotorLeft(speed)
+                    drive.setMotorRight(speed)
+                    drive.sendAllMotor()
             else:
                 #put down package... must set put_down to false again
                 print "putting down package..."                        
@@ -239,11 +296,5 @@ while True:
         else:
             pass
                
-    if speed != new_speed:
-        speed = new_speed
-        drive.setMotorLeft(speed)
-        drive.setMotorRight(speed)
-        drive.sendAllMotor()
-               
-#    print "pick_up? = " + str(pick_up) + "\nput_down? = " + str(put_down)
+    #print "pick_up? = " + str(pick_up) + "\nput_down? = " + str(put_down)
     time.sleep(0.01)
