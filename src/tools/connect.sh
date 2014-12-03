@@ -9,8 +9,9 @@
 # sudo connect.sh <ip-address>
 # Will try to connect with specified ip address. Does not affect saved ip in connect.conf
 main() {
-	local conf_file="./connect.conf"	# Specify conf_file
-	local bt_interface="bnep0"		# Specify BT interface
+	local conf_file="./connect.conf"		# Specify conf_file
+	local bt_interface="bnep0"				# Specify BT interface
+	local ssh_server="ubuntu@192.168.99.1"	# Specify ssh server
 
 	if [ "$#" -ne 1 ]
 	then
@@ -50,8 +51,8 @@ main() {
 	else
 		# Connect to ssh
 		echo Setting up ssh.
-		ssh ubuntu@192.168.99.1
-		send -- "temppwd\r"
+		ssh $ssh_server
+		# TODO: Send password aswell
 	fi
 }
 
