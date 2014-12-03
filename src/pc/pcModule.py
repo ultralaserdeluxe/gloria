@@ -24,7 +24,7 @@ class pcModule():
                 readable, writable, exceptional = select.select([self.__s], [self.__s], [self.__s])
             if self.__s in readable:
                 while self.__s in readable:
-                    complete_data_set=complete_data_set+self.__s.recv(self.__package_size) #decode MIGHT be needed here
+                    complete_data_set=complete_data_set+self.__s.recv(self.__package_size).decode() #decode MIGHT be needed here
                     readable, writable, exceptional = select.select([self.__s], [self.__s], [self.__s])
         return complete_data_set
     
@@ -167,7 +167,7 @@ class pcModule():
         
     #all commands go by this method if we wan to buffer the later on and send them all together
     def sendCommand(self,data):
-        self.sendData(";"+data)
+        self.sendData(data + ";")
         
     #sends a command to the host to sends all the current sensorvalues and updates our sensorlist
     def updateSensors(self):

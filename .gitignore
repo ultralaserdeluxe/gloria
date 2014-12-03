@@ -89,3 +89,5 @@ eagle.epf
 # Python files
 *.pyc
 
+# LaTeXing addon for Atom build files
+*.fls

@@ -1,5 +1,5 @@
 from sensorThread import *
-#from pcThread import *
+from pcThread import *
 from driveUnit import *
 from distance import *
 import Queue
@@ -39,7 +39,7 @@ error_margin = 5
 #spi init for driveunit
 drive = driveUnit()
 
-command = []
+command = ["assjammer"]
 
 def check_pick_up_right():
     if station_right:
@@ -149,18 +149,18 @@ sensorthread = sensorThread(sensorList)
 sensorthread.start()
 
 #test
-commandQueue.put(["start"])
-commandQueue.put(["autoMotor",[True]])
-commandQueue.put(["autoArm",[False]])
+#commandQueue.put(["start"])
+#commandQueue.put(["autoMotor",[True]])
+#commandQueue.put(["autoArm",[False]])
 
+pcthread = pcThread(commandQueue, sensorList)
+pcthread.start()
 
-#pcthread = pcThread(sensorList,commandQueue)
-#pcthread.start()
-
-while not commandQueue.get()[0] != "start":
+while commandQueue.get()[0] != "start":
     pass
 
 while True:
+
     #get latest PC commando from queue
     if not commandQueue.empty():
         command = commandQueue.get()
@@ -199,7 +199,7 @@ while True:
         pass
             
     #the steerlogic...
-    if automotor == False and not on_stopstation() :
+    if automotor == True and not on_stopstation() :
         print "autonom motor\n"
         if pick_up == False:
             #no need to steer arm, continue
@@ -245,5 +245,5 @@ while True:
         drive.setMotorRight(speed)
         drive.sendAllMotor()
                
-    print "pick_up? = " + str(pick_up) + "\nput_down? = " + str(put_down)
-    time.sleep(0.1)
+#    print "pick_up? = " + str(pick_up) + "\nput_down? = " + str(put_down)
+    time.sleep(0.01)
