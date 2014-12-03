@@ -23,7 +23,7 @@ main() {
 			echo $ip > $conf_file
 		else
 			# else read from file
-			local ip=$(head -n 1 conf_file)
+			local ip=$(head -n 1 $conf_file)
 		fi
 	else
 		# Use argument
