@@ -3,6 +3,7 @@ from pcThread import *
 from driveUnit import *
 from distance import *
 import Queue
+import copy
 
 ################### list #######################
 
@@ -13,7 +14,10 @@ calibrateData=[[74,198],[127,210],[150,220],[50,184],[140,226],[65,180],
 
 #gets fresh values from sensorthread
 sensorList = [["lineSensor",[0,0,0,0,0,0,0,0,0,0,0]],
-              ["distance",[0,0]]]
+              ["distance",[0,0]],
+              ["autoMotor",[True]],
+              ["autoArm",[False]],
+              ["motorSpeed",[0,0]]]
 
 #commandos from PC
 commandQueue = Queue.Queue()
@@ -27,6 +31,10 @@ autoarm = False
 has_package = False
 speed = 0x00
 new_speed = 0x00
+speed_left = 0x00
+speed_right = 0x00
+new_speed_left = 0x00
+new_speed_right = 0x00
 #used for syncing station, package detection
 timestamp = 0
 station_right = False
@@ -175,10 +183,6 @@ def has_package_left():
     return False
 
 
-def drive_forward():
-    print "keep on truckin..."
-
-
 def steer_arm(command):
     axis_id = 1
     for data in command[1]:
@@ -199,12 +203,21 @@ def calibrate_tape():
         calibrateData[i][1] = sensorList[0][1][i]
 
 
+def set_speed(left,right):
+    drive.setMotorLeft(left)
+    drive.setMotorRight(right)
+    drive.sendAllMotor()
+
 def get_command():
     #get latest PC command from queue
+    global command
     global automotor
     global autoarm
+    global speed
+    global new_speed
     if not commandQueue.empty():
         command = commandQueue.get()
+        #print command
         if command[0] == "calibrate_floor":
             calibrate_floor()
         elif command[0] == "calibrate_tape":
@@ -212,8 +225,11 @@ def get_command():
         elif command[0] == "autoMotor":
             if command[1][0] == True:
                 automotor = True
+                speed = 0x00
+                new_speed = 0x00
             else:
                 automotor = False
+                set_speed(0x00,0x00)
         elif command[0] == "autoArm":
             if command[1][0] == True:
                 autoarm = True
@@ -221,26 +237,29 @@ def get_command():
                 autoarm = False
         else:
             pass
-                             
+
 
 #test
-commandQueue.put(["start"])
-commandQueue.put(["autoMotor",[True]])
-commandQueue.put(["autoArm",[False]])
+#commandQueue.put(["start"])
+#commandQueue.put(["autoMotor",[True]])
+#commandQueue.put(["autoArm",[False]])
 
 sensorthread = sensorThread(sensorList)
+sensorthread.daemon=True
 sensorthread.start()
 
-#pcthread = pcThread(commandQueue, sensorList)
-#pcthread.start()
+pcthread = pcThread(commandQueue, sensorList)
+pcthread.daemon=True
+pcthread.start()
 
-while commandQueue.get()[0] != "start":
-    pass
+#while commandQueue.get()[0] != "start":
+ #   pass
 
 while True:
 
     #get latest PC command from queue
     get_command()
+    #print command
     #if we pass a station we have *detection time* to find a package
     if timestamp == 0:
         if is_station_right():
@@ -258,13 +277,12 @@ while True:
     else:
         pass
     
+    
     #check if robot is on stopstation, goes into manualmode
-    #if on_stopstation_right():
-        #print "stop station"
-        #drive.setMotorLeft(0x00)
-        #drive.setMotorRight(0x00)
-        #drive.sendAllMotor()
-        #automotor = False
+    if on_stopstation_right():
+        print "stop station"
+        set_speed(0x00,0x00)
+        automotor = False
     
     #the steerlogic.
     if automotor == True:
@@ -289,9 +307,7 @@ while True:
                     new_speed = 0x40
                 if speed != new_speed:
                     speed = new_speed
-                    drive.setMotorLeft(speed)
-                    drive.setMotorRight(speed)
-                    drive.sendAllMotor()
+                    set_speed(speed,speed)
             else:
                 #put down package... must set put_down to false again
                 print "putting down package..."                        
@@ -304,9 +320,12 @@ while True:
     else:
         #manuell
         if command[0] == "motorSpeed":
-            drive.setMotorLeft(command[1][0])
-            drive.setMotorRight(command[1][1])
-            drive.sendAllMotor()
+            new_speed_left = command[1][0]
+            new_speed_right = command[1][1]
+            if (speed_left != new_speed_left) or (speed_right != new_speed_right):
+                speed_left = new_speed_left
+                speed_right = new_speed_right
+                set_speed(speed_left,speed_right)
         elif command[0] == "armPosition":
             steer_arm(command)
         else:
