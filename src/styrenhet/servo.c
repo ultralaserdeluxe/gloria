@@ -16,6 +16,7 @@
 #include "ax12a.h"
 #include "usart.h"
 #include "servo.h"
+#include "parameter_chain.h"
 
 /* Initialize servo */
 void servo_init(int ID)

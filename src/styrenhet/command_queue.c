@@ -7,6 +7,7 @@
  */ 
 
 #include "command_queue.h"
+#include "parameter_chain.h"
 #include <util/atomic.h>
 #include <stdbool.h>
 
@@ -49,8 +50,8 @@ int servo_remaining_time(arm_data_t *a, int id)
 		//else return 0xff;
 	//}
 	//uint16_t time = (distance) / (speed >> 4);
-	//return (distance >> 2) & 0xff;
-	return s.speed_l;
+	return (distance >> 2) & 0xff;
+	//return 0x34;
 }
 
 void input_byte(command_queue_t *q, uint8_t data)
@@ -77,21 +78,27 @@ void input_byte(command_queue_t *q, uint8_t data)
 			switch (data & COMMAND_ADDRESS_MASK)
 			{
 			case ADDRESS_JOINT_1:
+				update_servo_status(q->arm, SERVO_1);
 				SPDR = servo_remaining_time(q->arm, SERVO_1);
 				break;
 			case ADDRESS_JOINT_2:
+				update_servo_status(q->arm, SERVO_2);
 				SPDR = servo_remaining_time(q->arm, SERVO_2);
 				break;
 			case ADDRESS_JOINT_3:
+				update_servo_status(q->arm, SERVO_4);
 				SPDR = servo_remaining_time(q->arm, SERVO_4);
 				break;
 			case ADDRESS_JOINT_4:
+				update_servo_status(q->arm, SERVO_6);
 				SPDR = servo_remaining_time(q->arm, SERVO_6);
 				break;
 			case ADDRESS_JOINT_5:
+				update_servo_status(q->arm, SERVO_7);
 				SPDR = servo_remaining_time(q->arm, SERVO_7);
 				break;
 			case ADDRESS_JOINT_6:
+				update_servo_status(q->arm, SERVO_8);
 				SPDR = servo_remaining_time(q->arm, SERVO_8);
 				break;
 			}

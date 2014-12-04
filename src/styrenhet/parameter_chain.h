@@ -9,6 +9,11 @@
 #ifndef PARAMETER_CHAIN_H
 #define PARAMETER_CHAIN_H
 
+#include <stdlib.h>
+#include <stddef.h>
+#include <avr/io.h>
+#include <stdbool.h>
+
 typedef struct servo_parameter
 {
 	uint8_t current_parameter;

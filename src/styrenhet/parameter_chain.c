@@ -6,6 +6,7 @@
  * 				parameters (in this case uint8_t)
  */ 
 
+#include "parameter_chain.h"
 
 servo_parameter_t* create_servo_parameter(unsigned int new_parameter)
 {

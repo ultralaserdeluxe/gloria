@@ -23,15 +23,21 @@ void usart_init( void )
 	UBRR1H = 0x00;
 	UBRR1L = 0x00;
 	/* Enable receiver and transmitter */
-	UCSR1B = (1<<RXEN1)|(1<<TXEN1);
+	/* Enable interrupt on recieve */
+	UCSR1B = (1<<RXCIE1)|(1<<RXEN1)|(1<<TXEN1);
 	/* Set frame format: 8data, 2stop bit */
 	UCSR1C = (3<<UCSZ10);
 	
 	/* Timer0 is used for timeout for usart_recieve */
-	TCCR0A	= 0x00; /* OC0A/B as normal, no waveform generation */
+	TCCR0A	= 0x00; /* OC0A/B as normal */
 	/* Prescaler clk/1024. 
 	 * We use the overflow flag, which gives us about 1/61Hz = 16ms */
 	TCCR0B	= (1<<CS02)|(1<<CS00);
+}
+
+ISR(USART1_RX_vect)
+{
+	usart_put_recieve(UDR1);
 }
 
 void usart_transmit( unsigned char data )
@@ -82,6 +88,49 @@ unsigned char usart_receive( void )
 	}
 	/* Get and return received data from buffer */
 	return UDR1;
+}
+
+void usart_recieve_buffer_init()
+{
+	usart_receive_buffer = malloc(usart_buffer_t);
+	usart_receive_buffer.head = NULL;
+	usart_receive_buffer.tail = NULL;
+}
+
+bool usart_is_buffer_empty()
+{
+	if (usart_receive_buffer.head == NULL) return true;
+	else return false;
+}
+
+void usart_put_recieve(unsigned char in)
+{
+	servo_parameter_t *new = create_servo_parameter(in);
+	if (usart_is_buffer_empty())
+	{
+		usart_receive_buffer.head = new;
+		usart_receive_buffer.tail = new;
+	}
+	else
+	{
+		usart_receive_buffer.tail->next = new;
+		usart_receive_buffer.tail = new;
+	}
+}
+
+unsigned char usart_pop_recieve( void )
+{
+	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	{
+		if (usart_receive_buffer.head != NULL)
+		{
+			servo_parameter_t *h = usart_receive_buffer.head;
+			int val = h->current_parameter;
+			usart_receive_buffer.head = h->next;
+			free(h);
+		}
+	}
+	return -1;
 }
 
 void usart_flush_rx()

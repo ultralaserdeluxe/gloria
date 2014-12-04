@@ -8,6 +8,7 @@
 #define F_CPU 16000000UL
 #include "arm.h"
 #include "usart.h"
+#include "parameter_chain.h"
 #include <util/delay.h>
 #include <util/atomic.h>
 
@@ -169,6 +170,8 @@ void update_servo_status(arm_data_t *arm, int id)
 	free_servo_parameter_chain(p);
 	_delay_us(10); //Wait for last command to send properly
 	usart_set_rx();
+	
+	_delay_ms(1); // Wait for command to be recieved
 	////usart_receive(); //Todo: Why is this random byte necessary?
 	usart_receive(); //0xff
 	usart_receive(); //0xff
