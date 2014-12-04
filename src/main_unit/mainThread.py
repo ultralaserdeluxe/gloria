@@ -183,10 +183,6 @@ def has_package_left():
     return False
 
 
-def drive_forward():
-    print "keep on truckin..."
-
-
 def steer_arm(command):
     axis_id = 1
     for data in command[1]:
@@ -244,9 +240,9 @@ def get_command():
 
 
 #test
-#ommandQueue.put(["start"])
+#commandQueue.put(["start"])
 #commandQueue.put(["autoMotor",[True]])
-#ommandQueue.put(["autoArm",[False]])
+#commandQueue.put(["autoArm",[False]])
 
 sensorthread = sensorThread(sensorList)
 sensorthread.daemon=True
@@ -281,13 +277,12 @@ while True:
     else:
         pass
     
+    
     #check if robot is on stopstation, goes into manualmode
-    #if on_stopstation_right():
-        #print "stop station"
-        #drive.setMotorLeft(0x00)
-        #drive.setMotorRight(0x00)
-        #drive.sendAllMotor()
-        #automotor = False
+    if on_stopstation_right():
+        print "stop station"
+        set_speed(0x00,0x00)
+        automotor = False
     
     #the steerlogic.
     if automotor == True:
