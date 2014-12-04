@@ -13,6 +13,7 @@ main() {
 	local bt_interface="bnep0"				# Specify BT interface
 	local ssh_server="ubuntu@192.168.99.1"	# Specify ssh server
 
+	local ip
 	if [ "$#" -ne 1 ]
 	then
 		# No argument - Use conf_file
@@ -20,15 +21,16 @@ main() {
 			then
 			# create conf if doesnt exist
 			echo "Choose an unused ip:"
-			read local ip
+			read ip
 			echo $ip > $conf_file
 		else
 			# else read from file
-			local ip=$(head -n 1 $conf_file)
+			ip=$(head -n 1 $conf_file)
+			cat $conf_file
 		fi
 	else
 		# Use argument
-		local ip=$1
+		ip=$1
 	fi
 	echo Using ip $ip
 
