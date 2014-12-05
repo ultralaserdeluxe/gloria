@@ -47,6 +47,7 @@ class RobotArm():
         self.arm=Arm()
         self.closed=False
         self.__limits=[[0,1023],[205,813],[210,940],[180,810],[0,1023],[0,512]]
+	self.__totalLimits=[ [-410,410],[-350,400] ,[-71,420],[-90,90],[-240,60],[0,140]]
         self.claw=0
         self.gripperOffset=0
         self.xyz=[100.0,100.0,100.0]
@@ -84,7 +85,7 @@ class RobotArm():
                 self.xyz[0]=x
             else:
                 if x>self.xyz[0]:
-                    self.handleError("can increase x if out of bounds")
+                    self.handleError("cant increase x if robot out of bounds")
                 else:
                     self.xyz[0]=x
     def setY(self,y):
@@ -99,7 +100,7 @@ class RobotArm():
                 self.xyz[1]=y
             else:
                 if y>self.xyz[1]:
-                    self.handleError("can increase y if out of bounds")
+                    self.handleError("cant increase y if robot out of bounds")
                 else:
                     self.xyz[1]=y
     def setZ(self,z):
@@ -114,7 +115,7 @@ class RobotArm():
                 self.xyz[2]=z
             else:
                 if z>self.xyz[2]:
-                    self.handleError("can increase z if out of bounds")
+                    self.handleError("cant increase z if robot out of bounds")
                 else:
                     self.xyz[2]=z
     def setGripperAngle(self,gripper):
