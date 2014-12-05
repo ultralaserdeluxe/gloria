@@ -151,6 +151,7 @@ class pcModule():
         self.sendCommand(command)
         
     #sends a command to change the arm to the position decribed by the arguments
+	# -410<x<410,-350<y<400 -71<z<420,-90<pitch<90,-240<wrist<60,<0grip<140
     def setArmPosition(self,x,y,z,pitch,wrist,grip):
         command="armPosition="+str(x)+","+str(y)+","+str(z)+","+str(pitch)+","+str(wrist)+","+str(grip)
         self.sendCommand(command)
