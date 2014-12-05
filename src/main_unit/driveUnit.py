@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import time
-from spi import SPI
+import platform
+
+if "arm" in platform.machine().lower():
+    from spi import SPI
+else:
+    from spi_dummy import SPI
 
 class driveUnit():
     def __init__(self):
