@@ -1,0 +1,71 @@
+\documentclass[titlepage, a4paper]{article}
+\input{../mall/layout.tex}	% Importera generella layout-strukturer
+\usepackage{tabularx}
+
+\newcommand{\LIPSdokumenttyp}{Mötesprotokoll}
+\newcommand{\LIPSkursnamn}{TSEA29}
+\newcommand{\LIPSprojektnamn}{Lagerrobot}
+\newcommand{\LIPSprojektgrupp}{Grupp 2}
+\newcommand{\LIPSutfardare}{hansn314} % Vem har utfärdat protokollet?
+
+\pagenumbering{roman}	% Sidnumrering
+
+\begin{document}
+
+\begin{projektmote}{Mötesprotokoll}{2014-12-05}
+% ------------ PARAGRAFER ----------------------
+% Syntax \paragraf{Vi bestämde och kom överens}
+% ----------------------------------------------
+\paragraf{Mötet öppnas.}
+\paragraf{Hannes för protokoll.}
+\paragraf{Närvarande: Martin, Dennis, Pål, Yngve och Hannes.}
+\paragraf{Status:
+\begin{itemize}
+	\item{\textbf{Dennis} Skulle ha testat styrlogik och det har gjorts. Skulle ha påbörjat smoothing-funktion, får se i hur stor utsträckning det behövs. Är i stort nöjd med veckan som varit. Nästa vecka skall styrlogiken fortsätta testas.}
+	\item{\textbf{Yngve} Skulle implementera och testa detektion av stoppmarkering. Det har gjorts av Pål och Dennis. Regleringsalgoritmen skulle ha gjorts och den fungerar fint. Det går absolut att finjustera regleringen ytterligare i mån av tid. Teknisk dokumentation har inte gjorts. Nästa vecka skall detektion av stoppmarkering implementeras och den tekniska dokumentationen skall jobbas på.}
+	\item{\textbf{Martin} Skulle jobbat med reglering, x,y,z-konvertering, gränser för armen den här veckan. Samtliga aktiviterer är klara. Nästa vecka skall implementation av x,y,z-konvertering och gränser för armen göras, vilket är klart. Istället görs teknisk dokumentation.}
+	\item{\textbf{Pål} Skulle jobbat med paketnedsättningsfunktionen, det har inte gjorts i avvaktan på x,y,z-konvertering. Det görs nästa vecka istället. Skulle hjälpt Wassing att implementera fjärrstyrning från PC. Skulle implementera detektion av paket, vilket har gjorts. I övrigt har detektion av stoppstationer och dylikt jobbats med. Nästa vecka skall nedsättningsfunktion och presentationen jobbas med.}
+	\item{\textbf{Hannes} Skulle jobbat med detektion av stationer, vilket Pål och Dennis jobbat med. Skulle ha börjat på den tekniska dokumentationen, vilket har gjorts. Har också jobbat med att mäta respons från motorer och servon. Nästa vecka skall främst den tekniska dokumentationen jobbas på.}
+\end{itemize}
+}
+\paragraf{Yngve den Enormt Generöse skriver ut en kravspec som Pål tar ansvar för. Vi går sedan igenom krav för krav för att se hur vi ligger till.
+\begin{itemize}
+	\item{Krav 10 bör diskuteras med Tomas. Är modulerna enkelt utbytbara?}
+	\item{Krav 11. Finns ingen startknapp för roboten.}
+	\item{Krav 23 bör diskuteras med Tomas. Betyder det att sensorenheten skall kalibrera?}
+	\item{Krav 29, diskutera med Tomas.}
+	\item{Krav 39 samma som 10.}
+	\item{Fråga Tomas vem som gör tävlingsbanan och när.}
+\end{itemize}
+}
+\paragraf{Mötet avslutas.}
+\end{projektmote}
+
+\newpage
+\begin{center}
+\begin{tabularx}{\textwidth}{| p{4mm} | X | p{13.5mm} | X |}
+	\hline
+	\textbf{Nr} & \textbf{Aktivitet} & \textbf{Ansvar} & \textbf{Status} \\\hline
+% ------------ Aktuella aktiviteter ------------
+% Syntax {Nr} & {Aktivitet} & {Ansvarig} & {Status} \\\hline
+% ----------------------------------------------
+	{14} & {Skriva UI för PC} & {DW} & {En första iteration färdig} \\\hline
+	{24} & {Implementera styrlogik} & {DL} & {Påbörjad} \\\hline
+	{26} & {Mäta respons från motorer och servon} & {AY} & {Påbörjad} \\\hline
+	{28} & {Tolka IR-sensordata} & {PK} & {Påbörjad} \\\hline
+	{35} & {Implementera läsning av sensordata på huvud} & {DL} & {Påbörjad} \\\hline
+	{38} & {Implementera och testa X,Y,Z  till servovinkel konvertering} & {MS, HS} & {Klar.} \\\hline
+	{39} & {Implementera och testa gränser för armen} & {MS} & {Klar.} \\\hline
+	{40} & {Implementera smoothing-funktion för servon och motorer} & {DL} & {Ej påbörjad} \\\hline
+	{41} & {Implementera paketnedsättningsfunktion} & {PK} & {Ej påbörjad, försenad} \\\hline
+	{42} & {Implementera fjärrstyrning från PC} & {DW} & {Påbörjad} \\\hline
+	{43} & {Implementera detektion av stoppmarkering} & {} & {påbörjad} \\\hline
+	{44} & {Implementera detektion av paket} & {} & {Påbörjad} \\\hline
+	{45} & {Implementera detektion av stationer} & {} & {Påbörjad} \\\hline
+	{46} & {Implementera regleringsalgoritm} & {AY, MS} & {Implementerad och fungerar bra, behöver finjusteras} \\\hline
+	{49} & {Dokumentation: Teknisk dokumentation} & {HS} & {Påbörjad} \\\hline
+	{54} & {Tejpa testbanor} & {DW} & {Ej påbörjad} \\\hline
+\end{tabularx}
+\end{center}
+
+\end{document}
