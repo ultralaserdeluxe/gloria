@@ -14,11 +14,15 @@ calibrateData=[[74,198],[127,210],[150,220],[50,184],[140,226],[65,180],
 
 
 #gets fresh values from sensorthread
-sensorList = [["lineSensor",[0,0,0,0,0,0,0,0,0,0,0]],
-              ["distance",[0,0]],
-              ["autoMotor",[True]],
-              ["autoArm",[False]],
-              ["motorSpeed",[0,0]]]
+shared_stuff = {"lineSensor" : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "distance" :  [0, 0],
+              "armPosition" : [0, 0, 255, 4, 5, 5],
+              "errorCodes" : ["YngveProgrammedMeWrong"],
+              "motorSpeed" : [70, 70],
+              "latestCalibration" : "0000-00-00-15:00",
+              "autoMotor" : True,
+              "autoArm" : False,
+              "regulator" : [0, 0]}
 
 #commandos from PC
 commandQueue = Queue.Queue()
@@ -100,10 +104,10 @@ def check_put_down_left():
 def floor_on_sides():
     floor_min = calibrateData[0][0]
     floor_max = calibrateData[0][1]
-    value = sensorList[0][1][0]
+    value = shared_stuff["lineSensor"][0]
     floor_min2 = calibrateData[10][0]
     floor_max2 = calibrateData[10][1]
-    value2 = sensorList[0][1][10]
+    value2 = shared_stuff["lineSensor"][10]
 
     norm_value = float(value - floor_min) / (floor_max - floor_min)
     norm_value2 = float(value2 - floor_min2) / (floor_max2 - floor_min2)
@@ -142,12 +146,12 @@ def on_stopstation_right():
 def is_station_right():
     tape_max = calibrateData[10][1]
     tape_min = calibrateData[10][0]
-    value = sensorList[0][1][10]
+    value = shared_stuff["lineSensor"][10]
     norm_value = float(value - tape_min) / (tape_max - tape_min)
 
     floor_max = calibrateData[0][1]
     floor_min = calibrateData[0][0]
-    value2 = sensorList[0][1][0]
+    value2 = shared_stuff["lineSensor"][0]
     norm_value2 = float(value2 - floor_min) / (floor_max - floor_min)
 
     if norm_value > 0.8:
@@ -168,12 +172,12 @@ def is_station_right():
 def is_station_left():
     tape_min = calibrateData[0][0]
     tape_max = calibrateData[0][1]
-    value = sensorList[0][1][0]
+    value = shared_stuff["lineSensor"][0]
     norm_value = float(value - tape_min) / (tape_max - tape_min)
 
     floor_min = calibrateData[10][0]
     floor_max = calibrateData[10][1]
-    value2 = sensorList[0][1][10]
+    value2 = shared_stuff["lineSensor"][10]
     norm_value2 = float(value2 - floor_min) / (floor_max - floor_min)
 
     if norm_value > 0.8:
@@ -192,7 +196,7 @@ def is_station_left():
 
 #check for package on right side
 def has_package_right():
-    distance = distance_right(sensorList[1][1][0])
+    distance = distance_right(shared_stuff["distance"][0])
     if distance >= 6.0 and distance <= 20.0:
         return True
     return False
@@ -200,7 +204,7 @@ def has_package_right():
 
 #check for package on left side
 def has_package_left():
-    distance = distance_left(sensorList[1][1][1])
+    distance = distance_left(shared_stuff["distance"][1])
     if distance >= 6.0 and distance <= 20.0:
         return True
     return False
@@ -248,13 +252,13 @@ def steer_arm(command):
 def calibrate_floor(): 
     #give floor values
     for i in range(0,11):
-        calibrateData[i][0] = sensorList[0][1][i]
+        calibrateData[i][0] = shared_stuff["lineSensor"][i]
 
 
 def calibrate_tape():
     #give tape values
     for i in range(0,11):
-        calibrateData[i][1] = sensorList[0][1][i]
+        calibrateData[i][1] = shared_stuff["lineSensor"][i]
 
 
 def set_speed(left,right):
@@ -298,11 +302,11 @@ def get_command():
 #commandQueue.put(["autoMotor",[True]])
 #commandQueue.put(["autoArm",[False]])
 
-sensorthread = sensorThread(sensorList)
+sensorthread = sensorThread(shared_stuff)
 sensorthread.daemon=True
 sensorthread.start()
 
-pcthread = pcThread(commandQueue, sensorList)
+pcthread = pcThread(commandQueue, shared_stuff)
 pcthread.daemon=True
 pcthread.start()
 
