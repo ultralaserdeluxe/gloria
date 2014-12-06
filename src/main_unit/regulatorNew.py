@@ -40,7 +40,6 @@ class Regulator(threading.Thread):
     def setRegMotor(self,left,right):
         self.__sensorList["regulator"] = left, right
 
-
     def getLeftMotor(self):
         return self.__sensorList["motorSpeed"][0]
 

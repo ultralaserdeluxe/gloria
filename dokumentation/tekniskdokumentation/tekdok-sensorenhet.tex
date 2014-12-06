@@ -3,7 +3,27 @@
 \section{Sensorenhet}
 
 \subsection{Teori}
+\todo{Behövs inte här? Avståndssensor-formel i avsnitt för huvudenheten?}
 
 \subsection{Hårdvara}
 
+\todo{Blockschema hur sensorenheten är ihopkopplad med modellnummer}
+
+Sensorenheten består av en Atmega1284p, en reflexsensormodul och två avståndssensorer. Reflexsensormodulen är kopplad via två 16-1 muxar till enkretsdatorn. Den ena muxen används för att styra en enable-signal till rätt reflexsensor och den andra för att välja rätt utsignal. Enkretsdatorn är ansluten till huvudenheten med en \todo{20lol-pinnarskabel?} över vilken de kommunicerar via SPI.
+
+\subsubsection{Reflexsensormodul}
+
+Reflexsensormodulens syfte är att detektera banan längs vilken roboten skall röra sig. Den består av 11 reflexsensorer som i sig består av en IR-diod och en fototransistor. Utsignalen ligger mellan 0V och 5V. De ger låg utspänning då underlaget reflekterar mycket ljus, och hög utspänning då lite ljus reflekteras.
+
+\subsubsection{Avståndssensorer}
+
+Avståndssensorerna är av typen GP2D120 vilken använder ljus för att detektera avståndet. Dess utsignal är en analog spänning mellan 0V och 3.2V.
+
 \subsection{Mjukvara}
+
+All mjukvara på sensorenheten är skriven i $C$ och finns på enkretsdatorn. Den består av två delar.
+\todo{Flödesschema för sensorenheten.}
+\newline
+För det första körs en mainloop där sensordata kontinuerligt uppdateras. Sensordata uppdateras i två steg. Först itererar vi igenom Reflexsensorerna genom att först styra om enable-signalen till den aktuella sensorn och därefter utföra en AD-omvandling på den signal vi får tillbaks och sedan gå till nästa. När vi är klara med detta utför vi i tur och ordning en AD-omvandling på insignalerna från avståndssensorerna. Alla värden sparas i en global struct.
+\newline
+För det andra tar sensorenheten emot förfrågning från huvudenheten över SPI. När en sådan förfrågan inkommer triggas ett avbrott i vilket sensorenheten svarar med det begärda sensorvärdet. Då inget i avläsningen av sensorerna är tidskritiskt behöver vi inte oroa oss för när dessa avbrott kommer.
