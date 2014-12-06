@@ -46,7 +46,7 @@ main() {
 	fi
 	echo Using ip $ip
 
-	# Check if connected
+	# Check if connected, connect if not
 	local bluetooth="$(ifconfig | egrep $bt_interface)"
 	if [ -z "${bluetooth}" ]
 	then
@@ -70,7 +70,7 @@ main() {
 		else
 			# Connect to ssh
 			echo Connecting over SSH.
-			echo Consider installing Expect to make the process even easier.
+			echo Consider installing Expect (apt-get install expect) to make the process even easier.
 			ssh $ssh_server
 		fi
 	fi
