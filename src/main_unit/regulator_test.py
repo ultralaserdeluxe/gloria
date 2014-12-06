@@ -1,7 +1,7 @@
 import time
 from sensorThread import sensorThread
 from driveUnit import driveUnit
-from regulatorNew import Regulator
+from regulator import Regulator
 
 sensorList = {"lineSensor" : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
               "distance" :  [0, 0],
@@ -13,11 +13,11 @@ sensorList = {"lineSensor" : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
               "autoArm" : False,
               "regulator" : [0, 0]}
 
-driver = driveUnit()
+drive_unit = driveUnit()
 
-sensorThreadObject=sensorThread(sensorList)
-sensorThreadObject.daemon=True
-sensorThreadObject.start()
+sensor_thread = sensorThread(sensorList)
+sensor_thread.daemon=True
+sensor_thread.start()
 
 regulator = Regulator(sensorList)
 regulator.daemon = True
@@ -29,8 +29,10 @@ while True:
     time.sleep(0.01)
 
     l, r = sensorList["regulator"]
-    driver.setMotorLeft(l)
+    drive_unit.setMotorLeft(l)
     time.sleep(0.001)
-    driver.setMotorRight(r)
+    drive_unit.setMotorRight(r)
     time.sleep(0.001)
-    driver.sendAllMotor()
+    drive_unit.sendAllMotor()
+
+    print "I didnt crash!"
