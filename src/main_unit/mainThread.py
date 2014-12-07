@@ -112,6 +112,22 @@ def floor_on_sides():
         return True
     return False
 
+
+#new try, perhaps less messy
+#without timer though
+def stopstation_right():
+    if (is_station_right() and wait_for_floor == True):
+        right_station_cnt += 1
+        return False
+    elif (!is_station_right):
+        wait_for_floor = True
+        return False
+    elif right_station_cnt == 3:
+        right_station_cnt = 0
+        return True
+
+
+
 #if we have 3 stations without packages in a row??
 def on_stopstation_right():
     global timestampstop
