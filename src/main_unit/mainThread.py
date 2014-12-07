@@ -116,6 +116,33 @@ def floor_on_sides():
         return True
     return False
 
+
+#new try, hopefully less messy
+#without timer though
+def stopstation_right():
+    global on_floor
+    global right_station_cnt
+
+
+    if (is_station_right() and on_floor == True):
+        
+        if right_station_cnt == 2:
+            right_station_cnt = 0
+            on_floor = False
+            return True
+        else:
+            right_station_cnt += 1
+            on_floor = False
+            return False
+
+    elif (not is_station_right):
+        on_floor = True
+        return False
+    
+    else:
+        return False
+
+
 #if we have 3 stations without packages in a row??
 def on_stopstation_right():
     global timestampstop
@@ -337,7 +364,7 @@ while True:
     
     
     #check if robot is on stopstation, goes into manualmode
-    if on_stopstation_right():
+    if stopstation_right():
         print "stop station"
         set_speed(0x00,0x00)
         automotor = False
