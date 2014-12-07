@@ -7,7 +7,8 @@ from tkinter import *
 from tkinter import ttk
 from pcModule import pcModule
 
-gloria=pcModule("10.42.0.47")
+gloria=pcModule("192.168.99.1")
+#gloria=pcModule("10.42.0.47")
 gloria.updateSensors()
 gloria.start()
 speed = 0
