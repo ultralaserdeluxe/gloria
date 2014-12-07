@@ -1,13 +1,15 @@
-# PCGUI stub
+#!/usr/bin/python
 
 #motor(L,R), arm(X,Y,Z,W,P,G), calibrate, status
 #automotor(M), autoarm(M), start?
 
+import sys
 from tkinter import *
 from tkinter import ttk
 from pcModule import pcModule
 
-gloria=pcModule("192.168.99.1")
+gloria=pcModule(str(sys.argv[1]))
+#gloria=pcModule("192.168.99.1")
 #gloria=pcModule("10.42.0.47")
 gloria.updateSensors()
 gloria.start()
