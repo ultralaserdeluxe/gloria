@@ -77,8 +77,8 @@ def main():
                 motorR.set(speed)
                 lastIssuedCommand.set("StopTurn")
             else:
-                gloria.setMotorSpeed((speed//2), speed) #left turn
-                motorL.set(speed//2)
+                gloria.setMotorSpeed(-speed, speed) #left turn
+                motorL.set(-speed)
                 motorR.set(speed)
                 lastIssuedCommand.set("TurnLeft")
         elif button_pressed == 'd':
@@ -88,9 +88,9 @@ def main():
                 motorR.set(speed)
                 lastIssuedCommand.set("StopTurn")
             else:
-                gloria.setMotorSpeed(speed, (speed//2)) #right turn
+                gloria.setMotorSpeed(speed, -speed) #right turn
                 motorL.set(speed)
-                motorR.set(speed//2)
+                motorR.set(-speed)
                 lastIssuedCommand.set("TurnRight")
         elif button_pressed == 's' and speed > -100:
             speed -= 10
@@ -101,14 +101,14 @@ def main():
             speed = 0
             lastIssuedCommand.set("Stopped")
         elif button_pressed == 'q':
-            gloria.setMotorSpeed(-50, 50) #could also be -speed, speed
+            gloria.setMotorSpeed(-100, 100) #could also be -speed, speed
             #Might be nice for the motor, however it would require us to move
             #before we can spin. A separate function could be implemented for this.
             motorL.set(-50)
             motorR.set(50)
             lastIssuedCommand.set("SpinLeft")
         elif button_pressed == 'e':
-            gloria.setMotorSpeed(50, -50) #same as above
+            gloria.setMotorSpeed(100, -100) #same as above
             motorL.set(50)
             motorR.set(-50)
             lastIssuedCommand.set("SpinRight")
