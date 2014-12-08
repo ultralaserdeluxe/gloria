@@ -3,13 +3,13 @@
 
 % Information nödvändig för generella layout-strukturer
 \newcommand{\LIPSredaktor}{Hannes Snögren}
-\newcommand{\LIPSversion}{1.0}
+\newcommand{\LIPSversion}{1.1}
 \newcommand{\LIPSdokument}{Kravspecifikation}
 \newcommand{\LIPSdokumenttyp}{Kravspecifikation}
-\newcommand{\LIPSgranskatdatum}{2014-09-16}
+\newcommand{\LIPSgranskatdatum}{2014-12-08}
 \newcommand{\LIPSgranskare}{Tomas Svensson}
 \newcommand{\LIPSgodkannare}{Tomas Svensson}
-\newcommand{\LIPSgodkantdatum}{2014-09-16}
+\newcommand{\LIPSgodkantdatum}{2014-12-08}
 \newcommand{\LIPSkursnamn}{TSEA29}
 \newcommand{\LIPSprojektnamn}{Lagerrobot}
 \newcommand{\LIPSprojektgrupp}{Grupp 2}
@@ -33,16 +33,16 @@
 \LIPSTitelsida
 
 \begin{LIPSprojektidentitet}
-\LIPSgruppmedlem{Pål Kastman}{Projektledare}{0703896295}{palka285@student.liu.se}
-\LIPSgruppmedlem{Hannes Snögren}{Dokumentansvarig}{0706265064}{hansn314@student.liu.se}
-\LIPSgruppmedlem{Alexander Yngve}{}{0762749762}{aleyn573@student.liu.se}
-\LIPSgruppmedlem{Martin Söderén}{}{0708163241}{marso329@student.liu.se}
-\LIPSgruppmedlem{Daniel Wassing}{}{0767741110}{danwa223@student.liu.se}
-\LIPSgruppmedlem{Dennis Ljung}{}{0708568148}{denlj069@student.liu.se}
+	\LIPSgruppmedlem{Pål Kastman}{Projektledare}{0703896295}{palka285@student.liu.se}
+	\LIPSgruppmedlem{Hannes Snögren}{Dokumentansvarig}{0706265064}{hansn314@student.liu.se}
+	\LIPSgruppmedlem{Alexander Yngve}{Hårdvaruansvarig}{0762749762}{aleyn573@student.liu.se}
+	\LIPSgruppmedlem{Martin Söderén}{Mjukvaruansvarig}{0708163241}{marso329@student.liu.se}
+	\LIPSgruppmedlem{Daniel Wassing}{Leveransansvarig}{0767741110}{danwa223@student.liu.se}
+	\LIPSgruppmedlem{Dennis Ljung}{Testansvarig}{0708568148}{denlj069@student.liu.se}
 \end{LIPSprojektidentitet}
 
 \newpage
-\tableofcontents	%Innehållsförteckning	
+\tableofcontents	%Innehållsförteckning
 %\listoffigures
 %\listoftables
 
@@ -56,49 +56,51 @@
 \LIPSversionsinfo{0.4}{2014-09-15}{Fjärde utkast}{hansn314}{2014-09-15}
 \LIPSversionsinfo{0.5}{2014-09-16}{Femte utkast}{hansn314}{2014-09-16}
 \LIPSversionsinfo{1.0}{2014-09-16}{Första version}{hansn314}{2014-09-16}
+\LIPSversionsinfo{1.1}{2014-12-08}{Första revision av första version}{hansn314}{2014-12-08}
+\LIPSversionsinfo{1.1.1}{2014-12-08}{Rättade datum försättsblad}{hansn314}{}
 \end{LIPSdokumenthistorik}
 
 \newpage
 \pagenumbering{arabic}	%Påbörja sidnumrering
 
-\input{kravspecifikation-inledning}
+\input{tex/kravspecifikation-inledning}
 
-\input{kravspecifikation-oversikt}
+\input{tex/kravspecifikation-oversikt}
 
-\input{kravspecifikation-huvudmodul}
+\input{tex/kravspecifikation-huvudmodul}
 
-% \input{kravspecifikation-kommunikationsmodul}
+% \input{tex/kravspecifikation-kommunikationsmodul}
 
-\input{kravspecifikation-sensormodul}
+\input{tex/kravspecifikation-sensormodul}
 
-\input{kravspecifikation-styrmodul}
+\input{tex/kravspecifikation-styrmodul}
 
-%\input{kravspecifikation-armmodul}
+%\input{tex/kravspecifikation-armmodul}
 
-%\input{kravspecifikation-motormodul}
+%\input{tex/kravspecifikation-motormodul}
 
-\input{kravspecifikation-programvara}
+\input{tex/kravspecifikation-programvara}
 
-\input{kravspecifikation-prestandakrav}
+\input{tex/kravspecifikation-prestandakrav}
 
-\input{kravspecifikation-vidareutveckling}
+\input{tex/kravspecifikation-vidareutveckling}
 
-\input{kravspecifikation-tillforlitlighet}
+\input{tex/kravspecifikation-tillforlitlighet}
 
-\input{kravspecifikation-ekonomi}
+\input{tex/kravspecifikation-ekonomi}
 
-%\input{kravspecifikation-säkerhet}
-\input{kravspecifikation-leveranskrav}
+%\input{tex/kravspecifikation-säkerhet}
+\input{tex/kravspecifikation-leveranskrav}
 
 \newpage
-\input{kravspecifikation-dokumentation}
+\input{tex/kravspecifikation-dokumentation}
 
-%\input{kravspecifikation-kvalitetskrav}
+%\input{tex/kravspecifikation-kvalitetskrav}
 
 \newpage
 \begin{appendices}
 
-\input{banregler}
+\input{tex/banregler}
 
 \end{appendices}
 

@@ -15,7 +15,7 @@ För att roboten ska kunna färdas framåt smidigt så kommer den behöva någon
 
 \begin{figure}[h]
 \center
-\includegraphics[scale=0.2]{Styrlogik.png}
+\includegraphics[scale=0.2]{grafik/Styrlogik.png}
 \caption{Flödesschema för huvudmodulens styralgoritm.} \label{systemskiss:autonomtschema}
 \end{figure}
 
@@ -28,14 +28,14 @@ Figur \ref{systemskiss:autonomtschema} är en visualisering av hur det autonoma 
 \item Beräkna nästa lämpliga operation
 \item Skicka kommandon till styrmodulen hur roboten ska färdas
 \item Reglera för att följa linjen
-\item Om upplockning ska ske: 
+\item Om upplockning ska ske:
 \newline
 Vidarebefordra kommandon från användaren till styrmodulen för armen
 \item Skicka sensorvärden till användaren
 \end{itemize}
 
 \subsection{Manuellt läge}
-När roboten är satt i manuellt läge väntar huvudmodulen på kommandon från användaren och utför sedan dessa. 
+När roboten är satt i manuellt läge väntar huvudmodulen på kommandon från användaren och utför sedan dessa.
 \subsubsection{Arbetsblock}
 \begin{itemize}
 \item Hämta kommandon från användaren

@@ -144,6 +144,10 @@ class pcModule():
     def setAutoArm(self,temp):
         command="autoArm="+str(temp)
         self.sendCommand(command)
+
+    def setPackageTrue(self): #sends gloria that a package has been picked up
+        command="hasPackage"
+        seld.sendCommand(command)
         
     #sends a commands to change the left motors to leftSpeed(int) and right motors to rightSpeed(int) which both are between 100 and -100
     def setMotorSpeed(self,leftSpeed,rightSpeed):

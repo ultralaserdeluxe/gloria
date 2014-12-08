@@ -25,6 +25,7 @@ class pcThread(threading.Thread):
             self.__s.listen(1)
             self.__conn, self.__addr = self.__s.accept()
             self.__s.setblocking(0)
+
         def resetConnection():
             self.__s.close()
             self.__s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -34,6 +35,7 @@ class pcThread(threading.Thread):
             self.__addr=None
             self.__package_tail=""
             self.run()
+
         #recevies data from the user, returns a string as described in the designspecification
         def receiveData():
             complete_data_set=""
@@ -45,8 +47,10 @@ class pcThread(threading.Thread):
 		self.__package_tail=""
                 while self.__conn in readable:
                     data=self.__conn.recv(512).decode()
+
                     if not data:
                         resetConnection()
+
                     complete_data_set=complete_data_set+data
                     readable, writable, exceptional = select.select([self.__conn], [self.__conn], [self.__conn])
                     if not data:
