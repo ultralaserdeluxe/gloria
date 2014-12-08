@@ -8,11 +8,11 @@ from tkinter import *
 from tkinter import ttk
 from pcModule import pcModule
 
-gloria=pcModule(str(sys.argv[1]))
+#gloria=pcModule(str(sys.argv[1]))
 #gloria=pcModule("192.168.99.1")
 #gloria=pcModule("10.42.0.47")
-gloria.updateSensors()
-gloria.start()
+#gloria.updateSensors()
+#gloria.start()
 speed = 0
 
 def main():
@@ -171,6 +171,9 @@ def main():
             else:
                 gloria.setAutoArm(False)
                 lastIssuedCommand.set("Arm Manual")
+        elif command == "hasPackage":
+            gloria.setPackageTrue()
+            lastIssuedCommand.set("Got Package")
         gloria.updateSensors()
         mainframe.focus_set()
                 
@@ -260,6 +263,7 @@ def main():
     ttk.Button(mainframe, text="ManMotor", command=lambda : write_single("motor", False)).grid(column=2, row=6)
     ttk.Button(mainframe, text="AutoArm", command=lambda : write_single("arm", True)).grid(column=1, row=7)
     ttk.Button(mainframe, text="ManArm", command=lambda : write_single("arm", False)).grid(column=2, row=7)
+    ttk.Button(mainframe, text="GotPackage", command=lambda : write_single("hasPackage", True)).grid(column=3, row=7)
     
     for child in mainframe.winfo_children():
         child.grid_configure(padx=5, pady=5)
