@@ -1,4 +1,10 @@
-from spi import SPI
+import platform
+
+if "arm" in platform.machine().lower():
+    from spi import SPI
+else:
+    from spi_dummy import SPI
+
 class sensorUnit():
     def __init__(self):
         self.__bus=SPI(3,1)

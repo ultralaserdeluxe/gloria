@@ -1,7 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import time
-from spi import SPI
+import platform
+
+if "arm" in platform.machine().lower():
+    from spi import SPI
+else:
+    from spi_dummy import SPI
 
 class driveUnit():
     def __init__(self):
@@ -15,6 +20,8 @@ class driveUnit():
     #    print self.__bus.readbytes(1)
 
     def setMotorLeft(self,speed):
+        speed = int(speed)
+
         if speed >= 0:
             direction = 1
         else:
@@ -28,6 +35,8 @@ class driveUnit():
         self.__bus.writebytes([abs(speed)])
 
     def setMotorRight(self,speed):
+        speed = int(speed)
+
         if speed >= 0:
             direction = 1
         else:

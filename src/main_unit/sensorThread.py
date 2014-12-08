@@ -2,7 +2,7 @@
 import threading
 import sensorUnit
 import time
-updateFreq=100.0 #Hz and must be float
+updateFreq=200.0 #Hz and must be float
 class sensorThread(threading.Thread):
     def __init__(self,sensorList):
         self.__sensorList=sensorList
@@ -14,16 +14,12 @@ class sensorThread(threading.Thread):
             time.sleep(1.0/updateFreq)
             self.updateDistance()
             self.updateLineSensor()
+
     def updateDistance(self):
-        for i in range(len( self.__sensorList)):
-            if self.__sensorList[i][0]=="distance":
-                self.__sensorList[i][1][0]=self.__sensorUnit.getLeftDistance()
-                self.__sensorList[i][1][1]=self.__sensorUnit.getRightDistance()
+        l = self.__sensorUnit.getLeftDistance()
+        r = self.__sensorUnit.getRightDistance()
+        self.__sensorList["distance"] = [l , r]
                 
     def updateLineSensor(self):
-        for i in range(len( self.__sensorList)):
-            if self.__sensorList[i][0]=="lineSensor":
-                for j in range(11):
-                    self.__sensorList[i][1][j]=self.__sensorUnit.getLineSensor(j)
-                    
-                    
+        for i in range(11):
+            self.__sensorList["lineSensor"][i]=self.__sensorUnit.getLineSensor(i)

@@ -125,6 +125,7 @@ class pcModule():
         newList=[]
         data=data.split(";")
         for element in data:
+            if not element: continue
             tempList=[]
             temp=element.split("=")
             tempList.append(temp[0])
@@ -147,7 +148,7 @@ class pcModule():
 
     def setPackageTrue(self): #sends gloria that a package has been picked up
         command="hasPackage"
-        seld.sendCommand(command)
+        self.sendCommand(command)
         
     #sends a commands to change the left motors to leftSpeed(int) and right motors to rightSpeed(int) which both are between 100 and -100
     def setMotorSpeed(self,leftSpeed,rightSpeed):

@@ -14,7 +14,7 @@ class pcThread(threading.Thread):
         self.__sensorList=sensorList
         self.__conn=None
         self.__addr=None
-	self.__package_tail=""
+        self.__package_tail=""
         threading.Thread.__init__(self)
         
     #when the thread is started this is started
@@ -25,15 +25,17 @@ class pcThread(threading.Thread):
             self.__s.listen(1)
             self.__conn, self.__addr = self.__s.accept()
             self.__s.setblocking(0)
-	def resetConnection():
-		self.__s.close()
-		self.__s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        	self.__s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        	self.__s.bind(('', 1337))
-	        self.__conn=None
-        	self.__addr=None
-		self.__package_tail=""
-		self.run()
+
+        def resetConnection():
+            self.__s.close()
+            self.__s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.__s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.__s.bind(('', 1337))
+            self.__conn=None
+            self.__addr=None
+            self.__package_tail=""
+            self.run()
+
         #recevies data from the user, returns a string as described in the designspecification
         def receiveData():
             complete_data_set=""
@@ -41,31 +43,34 @@ class pcThread(threading.Thread):
                 readable, writable, exceptional = select.select([self.__conn], [self.__conn], [self.__conn])
                 while self.__conn not in readable:
                     readable, writable, exceptional = select.select([self.__conn], [self.__conn], [self.__conn])
-		complete_data_set=self.__package_tail
+                complete_data_set=self.__package_tail
+		self.__package_tail=""
                 while self.__conn in readable:
                     data=self.__conn.recv(512).decode()
-		    if not data:
-			resetConnection()
+
+                    if not data:
+                        resetConnection()
+
                     complete_data_set=complete_data_set+data
                     readable, writable, exceptional = select.select([self.__conn], [self.__conn], [self.__conn])
                     if not data:
                         break
-	    self.__package_tail=complete_data_set[(complete_data_set.rfind(";")+1):]
-	    complete_data_set=complete_data_set[:(complete_data_set.rfind(";")+1)]
+            self.__package_tail=complete_data_set[(complete_data_set.rfind(";")+1):]
+            complete_data_set=complete_data_set[:(complete_data_set.rfind(";")+1)]
             return complete_data_set
         
         def isfloat(value):
-  	    try:
-    		float(value)
-    		return True
-  	    except ValueError:
-    		return False
+            try:
+                float(value)
+                return True
+            except ValueError:
+                return False
         #converts the sensorlist to a string to send to the user as described in the designspecifikation
         def checkSubelement(subelement):
             if subelement.isdigit():
                 return int(subelement)
-	    if isfloat(subelement):
-		return float(subelement)
+            if isfloat(subelement):
+                return float(subelement)
             else:
                 if subelement=="True":
                     return True
@@ -73,20 +78,20 @@ class pcThread(threading.Thread):
                     return False
                 else:
                     return subelement
-        def convertSensorList(list):
-            string=""
-            for element in list:
-                if not string:
-                    string=element[0]+"="+str(element[1][0])
+        def convertSensorList(stuff):
+            s = ""
+
+            for k, v in stuff.iteritems():
+                s += str(k) + "="
+                
+                if isinstance(v, list):
+                    s += ",".join([str(e) for e in v])
                 else:
-                    string=string+";"+element[0]+"="+str(element[1][0])
-                first=True
-                for subElement in element[1]:
-                    if first:
-                        first=False
-                    else:
-                        string=string+","+str(subElement)
-            return string
+                    s += str(v)
+
+                s += ";"
+
+            return s
         
         #a simple function that sends data to the user
         def sendData(data):
@@ -100,14 +105,19 @@ class pcThread(threading.Thread):
         def commandHandler(data):
             temp=0;
             if data[0]=="status":
-                sendData(convertSensorList(self.__sensorList))
+                ans = convertSensorList(self.__sensorList)
+                sendData(ans)
+                print "pcThread status", ans
+
             elif data[0]=="motorSpeed" or data[0]=="armPosition" or data[0]=="autoMotor" or data[0]=="autoArm":
-                for i in range(len(self.__sensorList)):
-                    if self.__sensorList[i][0]==data[0]:
-                        for j in range(len(data[1])):
-                            self.__sensorList[i][1][j]=checkSubelement(data[1][j])
-                        temp=i
-                self.__commandQueue.put(self.__sensorList[temp][:])
+
+                if len(data[1]) > 1:
+                    self.__sensorList[data[0]] = [checkSubelement(e) for e in data[1]]
+                else:
+                    self.__sensorList[data[0]] = checkSubelement(data[1][0])
+                
+                self.__commandQueue.put([data[0]] + [self.__sensorList[data[0]]])
+
             elif data[0]=="calibrate":
                 self.__commandQueue.put(data)
             elif data[0]=="start":

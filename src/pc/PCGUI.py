@@ -138,7 +138,7 @@ def main():
             armW.set(gloria.getArmPosition()[4])
             armG.set(gloria.getArmPosition()[5])
             motorBool.set(gloria.getAutoMotor())
-            armBool.set(goria.getArmAuto())
+            armBool.set(gloria.getArmAuto())
             lastIssuedCommand.set("Got Status")
         elif command == "calibrate":
             gloria.calibrate()

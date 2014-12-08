@@ -4,7 +4,7 @@ from driveUnit import *
 from distance import *
 from arm import Arm
 import Queue
-
+from regulator import Regulator
 
 ################### list #######################
 
@@ -14,11 +14,16 @@ calibrateData=[[74,198],[127,210],[150,220],[50,184],[140,226],[65,180],
 
 
 #gets fresh values from sensorthread
-sensorList = [["lineSensor",[0,0,0,0,0,0,0,0,0,0,0]],
-              ["distance",[0,0]],
-              ["autoMotor",[True]],
-              ["autoArm",[False]],
-              ["motorSpeed",[0,0]]]
+shared_stuff = {"lineSensor" : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                "distance" :  [0, 0],
+                "armPosition" : [0, 0, 255, 4, 5, 5],
+                "errorCodes" : ["YngveProgrammedMeWrong"],
+                "motorSpeed" : [70, 70],
+                "latestCalibration" : "0000-00-00-15:00",
+                "autoMotor" : True,
+                "autoArm" : False,
+                "regulator" : [0, 0],
+                "error" : 0}
 
 #commandos from PC
 commandQueue = Queue.Queue()
@@ -59,12 +64,14 @@ drive = driveUnit()
 robot_arm=Arm()
 
 command = ["assjammer"]
+# commandQueue.put(["start"])
+# commandQueue.put(["autoMotor", [True]])
 
 def check_pick_up_right():
     if station_right:
-        #print "station to the right found\n"
+        print "station to the right found! error", abs(shared_stuff["error"]), is_on_straight()
         if has_package_right():
-            #print "station has package\n"
+            print "station has package\n"
             if has_package == False:
                 #print "has no current package, pick up\n"
                 return True
@@ -72,9 +79,9 @@ def check_pick_up_right():
 
 def check_pick_up_left():
     if station_left:
-        #print "station to the left found\n"
+        print "station to the left found! error", abs(shared_stuff["error"]), is_on_straight()
         if has_package_left():
-            #print "station has package\n"
+            print "station has package\n"
             if has_package == False:
                 #print "has no current package, pick up\n"
                 return True
@@ -99,24 +106,6 @@ def check_put_down_left():
                 #print "has current package, put down\n"
                 return True
     return False            
-    
-
-def floor_on_sides():
-    floor_min = calibrateData[0][0]
-    floor_max = calibrateData[0][1]
-    value = sensorList[0][1][0]
-    floor_min2 = calibrateData[10][0]
-    floor_max2 = calibrateData[10][1]
-    value2 = sensorList[0][1][10]
-
-    norm_value = float(value - floor_min) / (floor_max - floor_min)
-    norm_value2 = float(value2 - floor_min2) / (floor_max2 - floor_min2)
-
-    if norm_value < 0.45 and norm_value2 < 0.45:
-        return True
-    return False
-
-
 
 def stopstation_left():
     global on_floor_left
@@ -139,8 +128,6 @@ def stopstation_left():
         on_floor_left = True
     return False
 
-
-#new try, hopefully less messy
 def stopstation_right():
     global on_floor_right
     global right_station_cnt
@@ -162,17 +149,19 @@ def stopstation_right():
         on_floor_right = True
     return False
 
+def is_on_straight():
+    return abs(shared_stuff["error"]) < 3
 
 #check the 3 sensors furthermost to the right
 def is_station_right():
     tape_max = calibrateData[10][1]
     tape_min = calibrateData[10][0]
-    value = sensorList[0][1][10]
+    value = shared_stuff["lineSensor"][10]
     norm_value = float(value - tape_min) / (tape_max - tape_min)
 
     floor_max = calibrateData[0][1]
     floor_min = calibrateData[0][0]
-    value2 = sensorList[0][1][0]
+    value2 = shared_stuff["lineSensor"][0]
     norm_value2 = float(value2 - floor_min) / (floor_max - floor_min)
 
     if norm_value > 0.8:
@@ -186,19 +175,19 @@ def is_station_right():
  
 #    print "tape_right", tape_right, "floor_left", floor_left, "tape_value", norm_value, "floor_value", norm_value2
 
-    return tape_right and floor_left
+    return tape_right and floor_left and is_on_straight()
 
 
 #check the 3 sensors furthermost to the left
 def is_station_left():
     tape_min = calibrateData[0][0]
     tape_max = calibrateData[0][1]
-    value = sensorList[0][1][0]
+    value = shared_stuff["lineSensor"][0]
     norm_value = float(value - tape_min) / (tape_max - tape_min)
 
     floor_min = calibrateData[10][0]
     floor_max = calibrateData[10][1]
-    value2 = sensorList[0][1][10]
+    value2 = shared_stuff["lineSensor"][10]
     norm_value2 = float(value2 - floor_min) / (floor_max - floor_min)
 
     if norm_value > 0.8:
@@ -212,12 +201,11 @@ def is_station_left():
 
 #    print "tape_left", tape_left, "floor_right", floor_right, "tape_value", norm_value, "floor_value", norm_value2
 
-    return tape_left and floor_right
-
+    return tape_left and floor_right and is_on_straight()
 
 #check for package on right side
 def has_package_right():
-    distance = distance_right(sensorList[1][1][0])
+    distance = distance_right(shared_stuff["distance"][0])
     if distance >= 6.0 and distance <= 20.0:
         return True
     return False
@@ -225,7 +213,7 @@ def has_package_right():
 
 #check for package on left side
 def has_package_left():
-    distance = distance_left(sensorList[1][1][1])
+    distance = distance_left(shared_stuff["distance"][1])
     if distance >= 6.0 and distance <= 20.0:
         return True
     return False
@@ -273,13 +261,13 @@ def steer_arm(command):
 def calibrate_floor(): 
     #give floor values
     for i in range(0,11):
-        calibrateData[i][0] = sensorList[0][1][i]
+        calibrateData[i][0] = shared_stuff["lineSensor"][i]
 
 
 def calibrate_tape():
     #give tape values
     for i in range(0,11):
-        calibrateData[i][1] = sensorList[0][1][i]
+        calibrateData[i][1] = shared_stuff["lineSensor"][i]
 
 
 def set_speed(left,right):
@@ -296,21 +284,21 @@ def get_command():
     global new_speed
     if not commandQueue.empty():
         command = commandQueue.get()
-        #print str(command[0])
+        print str(command)
         if command[0] == "calibrate_floor":
             calibrate_floor()
         elif command[0] == "calibrate_tape":
             calibrate_tape()
-        elif command[0] == "autoMotor":
-            if command[1][0] == True:
+        elif str(command[0]) == "autoMotor":
+            if command[1] == True:
                 automotor = True
-                speed = 0x00
-                new_speed = 0x00
+                speed_right=speed_left = 0x00
+                new_speed_right=speed_right = 0x00
             else:
                 automotor = False
                 set_speed(0x00,0x00)
         elif command[0] == "autoArm":
-            if command[1][0] == True:
+            if command[1] == True:
                 autoarm = True
             else:
                 autoarm = False
@@ -323,13 +311,17 @@ def get_command():
 #commandQueue.put(["autoMotor",[True]])
 #commandQueue.put(["autoArm",[False]])
 
-sensorthread = sensorThread(sensorList)
+sensorthread = sensorThread(shared_stuff)
 sensorthread.daemon=True
 sensorthread.start()
 
-pcthread = pcThread(commandQueue, sensorList)
+pcthread = pcThread(commandQueue, shared_stuff)
 pcthread.daemon=True
 pcthread.start()
+
+regulator = Regulator(shared_stuff)
+regulator.daemon=True
+regulator.start()
 
 while str(commandQueue.get()[0]) != "start":
     pass
@@ -379,17 +371,18 @@ while True:
             if put_down == False:
                 if check_pick_up_right() or check_pick_up_left():
                     pick_up = True
-                    new_speed = 0x00
+                    new_speed_left = new_speed_right = 0x00
                 elif check_put_down_right() or check_put_down_left():
                     put_down = True
-                    new_speed = 0x00
+                    new_speed_left = new_speed_right  = 0x00
                 else:
                     pick_up = False
                     put_down = False                    
-                    new_speed = 0x40
-                if speed != new_speed:
-                    speed = new_speed
-                    set_speed(speed,speed)
+                    new_speed_left, new_speed_right = shared_stuff["regulator"]
+                if (speed_left != new_speed_left) or (speed_right != new_speed_right):
+                    speed_left = new_speed_left
+                    speed_right = new_speed_right
+                    set_speed(speed_left,speed_right)
             else:
                 #put down package... must set put_down to false again
                 print "putting down package..."                        
@@ -402,6 +395,7 @@ while True:
     else:
         #manuell
         if command[0] == "motorSpeed":
+            print "mainThread", command
             new_speed_left = command[1][0]
             new_speed_right = command[1][1]
             if (speed_left != new_speed_left) or (speed_right != new_speed_right):
