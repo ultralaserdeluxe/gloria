@@ -49,9 +49,15 @@ class pcThread(threading.Thread):
     		return True
   	    except ValueError:
     		return False
+	def isnumber(value):
+	    try:
+		int(value)
+		return True
+	    except ValueError:
+		return False		
         #converts the sensorlist to a string to send to the user as described in the designspecifikation
         def checkSubelement(subelement):
-            if subelement.isdigit():
+            if isnumber(subelement):
                 return int(subelement)
 	    if isfloat(subelement):
 		return float(subelement)
