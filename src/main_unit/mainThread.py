@@ -46,9 +46,13 @@ detection_time = 1
 error_margin = 15
 
 #used for detection stopstations
-timestampstop = 0
+timestampstop_left = 0
+timestampstop_right = 0
 right_station_cnt = 0
-stop_detection_time = 3
+left_station_cnt = 0
+stop_detection_time = 2
+on_floor_left = True
+on_floor_right = True
 
 #spi init for driveunit
 drive = driveUnit()
@@ -58,9 +62,9 @@ command = ["assjammer"]
 
 def check_pick_up_right():
     if station_right:
-        print "station to the right found\n"
+        #print "station to the right found\n"
         if has_package_right():
-            print "station has package\n"
+            #print "station has package\n"
             if has_package == False:
                 #print "has no current package, pick up\n"
                 return True
@@ -68,9 +72,9 @@ def check_pick_up_right():
 
 def check_pick_up_left():
     if station_left:
-        print "station to the left found\n"
+        #print "station to the left found\n"
         if has_package_left():
-            print "station has package\n"
+            #print "station has package\n"
             if has_package == False:
                 #print "has no current package, pick up\n"
                 return True
@@ -113,57 +117,51 @@ def floor_on_sides():
     return False
 
 
-#new try, hopefully less messy
-#without timer though
-def stopstation_right():
-    global on_floor
-    global right_station_cnt
 
-
-    if (is_station_right() and on_floor == True):
-        
-        if right_station_cnt == 2:
-            right_station_cnt = 0
-            on_floor = False
-            return True
-        else:
-            right_station_cnt += 1
-            on_floor = False
-            return False
-
-    elif (not is_station_right):
-        on_floor = True
-        return False
+def stopstation_left():
+    global on_floor_left
+    global left_station_cnt
+    global timestampstop_left
     
-    else:
-        return False
-
-
-#if we have 3 stations without packages in a row??
-def on_stopstation_right():
-    global timestampstop
-    global right_station_cnt
-    if floor_on_sides():
-        wait_on_floor = False
-    else:
-        wait_on_floor = True
-    if timestampstop == 0:
-        if is_station_right():
-            timestampstop = time.time()
-    elif (time.time() - timestampstop) <= stop_detection_time:
-        if is_station_right() and right_station_cnt == 2:
-            right_station_cnt = 0
-            timestampstop = 0
+    if (time.time() - timestampstop_left) >= stop_detection_time:
+        left_station_cnt = 0
+    if (is_station_left() and on_floor_left == True):
+        if left_station_cnt == 0:
+            timestampstop_left = time.time()
+        elif left_station_cnt == 2:
+            left_station_cnt = 0
+            on_floor_left = False
             return True
-        elif is_station_right() and right_station_cnt != 2 and wait_on_floor == False:
-            right_station_cnt += 1
-            #wait_on_floor = True
-        else:
-            pass
-    else:
-        timestampstop = 0
-        right_station_cnt = 0
+        left_station_cnt += 1
+        on_floor_left = False
+        return False
+    elif (not is_station_left()):
+        on_floor_left = True
     return False
+
+
+#new try, hopefully less messy
+def stopstation_right():
+    global on_floor_right
+    global right_station_cnt
+    global timestampstop_right
+
+    if (time.time() - timestampstop_right) >= stop_detection_time:        
+        right_station_cnt = 0
+    if (is_station_right() and on_floor_right == True):
+        if right_station_cnt == 0:
+            timestampstop_right = time.time()
+        elif right_station_cnt == 2:
+            right_station_cnt = 0
+            on_floor_right = False
+            return True
+        right_station_cnt += 1
+        on_floor_right = False
+        return False
+    elif (not is_station_right()):
+        on_floor_right = True
+    return False
+
 
 #check the 3 sensors furthermost to the right
 def is_station_right():
@@ -298,7 +296,7 @@ def get_command():
     global new_speed
     if not commandQueue.empty():
         command = commandQueue.get()
-        #print command
+        #print str(command[0])
         if command[0] == "calibrate_floor":
             calibrate_floor()
         elif command[0] == "calibrate_tape":
@@ -333,8 +331,8 @@ pcthread = pcThread(commandQueue, sensorList)
 pcthread.daemon=True
 pcthread.start()
 
-#while commandQueue.get()[0] != "start":
- #   pass
+while str(commandQueue.get()[0]) != "start":
+    pass
 
 while True:
 
@@ -360,11 +358,14 @@ while True:
     
     
     #check if robot is on stopstation, goes into manualmode
-    if stopstation_right():
-        print "stop station"
+    if stopstation_left():
         set_speed(0x00,0x00)
         automotor = False
-    
+        
+    if stopstation_right():
+        set_speed(0x00,0x00)
+        automotor = False
+
     #the steerlogic.
     if automotor == True:
         #print "autonom motor\n"
