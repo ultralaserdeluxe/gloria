@@ -1,0 +1,19 @@
+% Hur huvudenheten är designad
+
+\section{Huvudenhet}
+
+\subsection{Teori}
+\todo{Hur fungerar regleringen}
+\todo{Hur beräknar vi armens vinklar?}
+\todo{Hur tolkar vi sensordata?}
+
+\subsection{Hårdvara}
+Den hårdvara som ingår i huvudenheten består av en Beagleboard \todo{typ/modell av Beagleboard?}. På denna sitter en Blåtands-enhet av typ \todo{Typ/modell av BT?} monterad för kommunikation med PCenheten. \todo{Ska SPI-kabel nämnas?}
+\todo{Bild på BB?}
+
+\subsection{Mjukvara}
+
+Mjukvaran är uppdelad i \todo{2?} trådar, där varje tråd fyller en specifik funktion. Sensortråden hämtar kontunuerligt uppdaterad data från sensorenheten, PCtråden hanterar alla förfrågningar från PCenheten och maintråden beslutar vad som ska skickas till styrenheten.
+\todo{subsubsections för varje tråd med mer ingående?}
+
+\todo{Schema över asmycket trådar}

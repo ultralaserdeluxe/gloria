@@ -14,7 +14,7 @@ class pcThread(threading.Thread):
         self.__sensorList=sensorList
         self.__conn=None
         self.__addr=None
-	self.__package_tail=""
+        self.__package_tail=""
         threading.Thread.__init__(self)
         
     #when the thread is started this is started
@@ -25,6 +25,17 @@ class pcThread(threading.Thread):
             self.__s.listen(1)
             self.__conn, self.__addr = self.__s.accept()
             self.__s.setblocking(0)
+
+        def resetConnection():
+            self.__s.close()
+            self.__s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.__s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.__s.bind(('', 1337))
+            self.__conn=None
+            self.__addr=None
+            self.__package_tail=""
+            self.run()
+
         #recevies data from the user, returns a string as described in the designspecification
         def receiveData():
             complete_data_set=""
@@ -32,29 +43,34 @@ class pcThread(threading.Thread):
                 readable, writable, exceptional = select.select([self.__conn], [self.__conn], [self.__conn])
                 while self.__conn not in readable:
                     readable, writable, exceptional = select.select([self.__conn], [self.__conn], [self.__conn])
-		complete_data_set=self.__package_tail
+                complete_data_set=self.__package_tail
+		self.__package_tail=""
                 while self.__conn in readable:
                     data=self.__conn.recv(512).decode()
+
+                    if not data:
+                        resetConnection()
+
                     complete_data_set=complete_data_set+data
                     readable, writable, exceptional = select.select([self.__conn], [self.__conn], [self.__conn])
                     if not data:
                         break
-	    self.__package_tail=complete_data_set[(complete_data_set.rfind(";")+1):]
-	    complete_data_set=complete_data_set[:(complete_data_set.rfind(";")+1)]
+            self.__package_tail=complete_data_set[(complete_data_set.rfind(";")+1):]
+            complete_data_set=complete_data_set[:(complete_data_set.rfind(";")+1)]
             return complete_data_set
         
         def isfloat(value):
-  	    try:
-    		float(value)
-    		return True
-  	    except ValueError:
-    		return False
+            try:
+                float(value)
+                return True
+            except ValueError:
+                return False
         #converts the sensorlist to a string to send to the user as described in the designspecifikation
         def checkSubelement(subelement):
             if subelement.isdigit():
                 return int(subelement)
-	    if isfloat(subelement):
-		return float(subelement)
+            if isfloat(subelement):
+                return float(subelement)
             else:
                 if subelement=="True":
                     return True
