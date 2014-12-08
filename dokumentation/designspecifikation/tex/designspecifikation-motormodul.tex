@@ -1,9 +1,9 @@
 \section{Styrenhet}
-Styrenheten har till uppgift att driva de motorer som driver hjulen och de servon som styr armen. Styrenheten består av en AVR av typ Atmega1284, två motorpar och en robotarm av typ Trossenrobotics Reactor\cite{trossenarm}. AVRen är ansluten till huvudenheten med en SPI-buss och en busy-pinne. Instruktioner från huvudenheten fås enligt protokoll definierat i sektion \ref{protokoll:pc-motor}. 
+Styrenheten har till uppgift att driva de motorer som driver hjulen och de servon som styr armen. Styrenheten består av en AVR av typ Atmega1284, två motorpar och en robotarm av typ Trossenrobotics Reactor\cite{trossenarm}. AVRen är ansluten till huvudenheten med en SPI-buss och en busy-pinne. Instruktioner från huvudenheten fås enligt protokoll definierat i sektion \ref{protokoll:pc-motor}.
 
 \begin{figure}[H]
 \center
-\input{styrenhet-blockschema.tex}
+\input{grafik/styrenhet-blockschema.tex}
 \caption{Blockschema över styrenheten}
 \end{figure}
 
@@ -13,7 +13,7 @@ Styrenheten innehåller två motorpar. De är anslutna med två PWM-signaler til
 
 \subsection{Robotarm}
 
-Robotarmen består av 7 servon av modell AX12-A\cite{servo}. De är anslutna till AVRen med en UART-buss. Dessa servon styrs genom att en målvinkel sätts (0-1023) med möjlighet att ändra hastighet, vridmoment och styra av/på. Från huvudenheten får styrenheten målvinklar för varje enskild led. Styrenheten är ansvarig för att se till att parallella servon körs synkroniserat för att inte slita sönder varandra. Styrenheten är också ansvarig för att servona accelerar och bromsar något i sina rörelser för att robotarmen skall röra sig mjukt och utan ryck. Så länge robotarmen är i rörelse sätts en busy-flagga. Den låter huvudenheten utföra köade instruktioner för robotarmen så snart som det är möjligt. 
+Robotarmen består av 7 servon av modell AX12-A\cite{servo}. De är anslutna till AVRen med en UART-buss. Dessa servon styrs genom att en målvinkel sätts (0-1023) med möjlighet att ändra hastighet, vridmoment och styra av/på. Från huvudenheten får styrenheten målvinklar för varje enskild led. Styrenheten är ansvarig för att se till att parallella servon körs synkroniserat för att inte slita sönder varandra. Styrenheten är också ansvarig för att servona accelerar och bromsar något i sina rörelser för att robotarmen skall röra sig mjukt och utan ryck. Så länge robotarmen är i rörelse sätts en busy-flagga. Den låter huvudenheten utföra köade instruktioner för robotarmen så snart som det är möjligt.
 
 \subsection{Mjukvara}
 
@@ -24,12 +24,12 @@ När AVRen inte är upptagen med avbrott körs en loop där alla servons hastigh
 \centering
 \begin{minipage}[b]{.5\linewidth}
 \centering
-\scalebox{0.7}{\input{motor-flow-interrupt}}
+\scalebox{0.7}{\input{grafik/motor-flow-interrupt}}
 \subcaption{Flödesschema för avbrottsrutin}\label{designspec:motor-interrupt-figure}
 \end{minipage}%
 \begin{minipage}[b]{.5\linewidth}
 \centering
-\scalebox{0.6}{\input{motor-flow-main}}
+\scalebox{0.6}{\input{grafik/motor-flow-main}}
 \subcaption{Flödesschema för mainloop}\label{designspec:motor-main-figure}
 \end{minipage}
 \caption{Styrenhetens mjukvara}\label{fig:1}

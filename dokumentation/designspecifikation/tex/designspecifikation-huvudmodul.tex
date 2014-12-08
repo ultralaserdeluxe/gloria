@@ -6,12 +6,12 @@ Huvudmodulen utför de flesta beräkningar nödvändiga för att roboten ska kun
 Modulen ska bestå av en enkortsdator av modell Beagleboard-xM. Den har en ARM Cortex-A8 processor som har en klockfrekvens på 1GHz. Denna behöver ett operativsystem för att kunna användas. Den enda hårdvaran som behövs för att kunna använda Beagleboard är ett minneskort för operativsystem och en Blåtandsdongel för kommunikationen med PC-enheten. Kommunikation med sensorenhet och styrenhet sker över SPI.
 
 \subsection{Mjukvara}
-Mjukvaran som behövs för att implementera all funktionalitet hos huvudmodulen kommer att vara skriven i programspråket Python. Koden för programmet kommer vara trådbaserad och möjligen objektorienterad. 
+Mjukvaran som behövs för att implementera all funktionalitet hos huvudmodulen kommer att vara skriven i programspråket Python. Koden för programmet kommer vara trådbaserad och möjligen objektorienterad.
 \newline
 Programmet ska delas in i 3 trådar. Dessa körs kontinuerligt och delar på två trådsäkra listor: sensorvärden och instruktioner. I instruktionslistanlistan ligger alla argument till tillhörande instruktioner från PC-enheten och i sensorvärden ligger all data från sensorenheten. Listorna kan trådarna antingen läsa eller skriva till (se figur \ref{designspec:huvudmodul-tradar}).
 
 \begin{figure}[h]
-\scalebox{0.8}{\input{tradar}}
+\scalebox{0.8}{\input{grafik/tradar}}
 \caption{Trådarna och listorna de delar på} \label{designspec:huvudmodul-tradar}
 \end{figure}
 
@@ -33,7 +33,7 @@ I huvudtråden ligger huvudloopen för programmet. Den börjar med att läsa vä
 
 \begin{figure}[H]
 \centering
-\scalebox{0.6}{\input{huvudtrad}}
+\scalebox{0.6}{\input{grafik/huvudtrad}}
 \caption{Flödesschema för huvudtråden} \label{designspec:huvudmodul-huvudtrad}
 \end{figure}
 
@@ -42,8 +42,8 @@ I huvudtråden ligger huvudloopen för programmet. Den börjar med att läsa vä
 \newline
 \newline
 Här ska kod för autonom aktivitet hos systemet ligga. Sensorvärdeslistan behöver läsas av varje iteration för att avgöra om systemet befinner sig vid en av- eller upplockningsstation samt om systemet behöver regleras. Om systemet befinner sig vid en upplockningsstation behöver vi läsa av instruktionslistan för att få argument om att styra armen. Om systemet befinner sig vid en avplockningsstation ska systemet låsa sig tills paket är avsläppt.
-\newline 
-Om systemet inte befinner sig vid en av- eller upplockningsstation skickas värden till styrenheten att köra roboten framåt. Dessa värden beräknas i slutet av programmet med regleringsalgoritmen utifrån linjesensordata från sensorvärdeslistan. 
+\newline
+Om systemet inte befinner sig vid en av- eller upplockningsstation skickas värden till styrenheten att köra roboten framåt. Dessa värden beräknas i slutet av programmet med regleringsalgoritmen utifrån linjesensordata från sensorvärdeslistan.
 
 \paragraph{Manuellt läge}
 \leavevmode
@@ -58,7 +58,7 @@ Sensortrådens uppgift är att uppdatera sensorvärdeslistan med fräscha värde
 PC-tråden delar upp strängen med data från PC-enheten och lagrar instruktionerna och deras argument i instruktionslistan.
 
 \subsection{Reglering}
-För att undvika att roboten hackar sig fram och istället rör sig med smidiga rörelser så ska motorns styrsignaler regleras med en tidsdiskret PD-regulator. En PID regulator är onödig då vi inte har något stående fel i teorin. Om roboten är mitt på linjen och står rakt så kommer felet vara noll. I praktiken kommer det inte vara så då roboten troligtvis inte kommer stå rakt på linjen och motorerna kommer säkert åka i olika hastigheter. Dock så blir en PD-regulator tillräckligt bra. En annan anledning till att inte ha med I-delen är att det är svårt att implementera det bra i ett tidsdiskret system. 
+För att undvika att roboten hackar sig fram och istället rör sig med smidiga rörelser så ska motorns styrsignaler regleras med en tidsdiskret PD-regulator. En PID regulator är onödig då vi inte har något stående fel i teorin. Om roboten är mitt på linjen och står rakt så kommer felet vara noll. I praktiken kommer det inte vara så då roboten troligtvis inte kommer stå rakt på linjen och motorerna kommer säkert åka i olika hastigheter. Dock så blir en PD-regulator tillräckligt bra. En annan anledning till att inte ha med I-delen är att det är svårt att implementera det bra i ett tidsdiskret system.
 \begin{itemize}
 \item $e[n]$ Är felet vid sampling n
 \item $e[n-1]$ Är felet vid sampling n-1
@@ -66,7 +66,7 @@ För att undvika att roboten hackar sig fram och istället rör sig med smidiga 
 \item $K_{P}$ är en konstant för den proportionella delen av regleringen
 \item $K_{D}$ är en konstant för den deriverande delen av regleringen
 \item $\Delta T$ är tiden mellan sampling n och n-1
- 
+
 \end{itemize}
  $$ u[n] = K_P*e[n] + K_D\frac{e[n]-e[n-1]}{\Delta T}$$
  Roboten är begränsade av hårdvaran hur ofta den kan läsa av data från reflexsensorna. En rimlig uppdateringsfrekvens skulle kunna vara 25 Hz\cite{handledare}. Så $\Delta T$ kommer vara 40ms.
@@ -76,12 +76,12 @@ För att undvika att roboten hackar sig fram och istället rör sig med smidiga 
  \newline
 
  \begin{figure}[H]
- \centerline{\input{armdir}}
+ \centerline{\input{grafik/armdir}}
  \caption{Armens koordinatsystem i förhållande till roboten. Upp är robotens färdriktning}
  \end{figure}
 
  \begin{figure}[H]
-\centerline{\input{robotmath}}
+\centerline{\input{grafik/robotmath}}
 \caption{Armens vinklar}
 \end{figure}
 
@@ -89,7 +89,7 @@ För att undvika att roboten hackar sig fram och istället rör sig med smidiga 
  För att detta ska vara möjligt så behöver vi använda lite trionometri. Omvandlingen sker på följande sätt:
 Antag att roboten start i: $$X,Y,Z,GR=0,0,0,\pi/2$$
 Där GR(GripRadian) är vilken vinkel gripklon har till z-axeln.\newline
-Vi omvandlar:$$ X,Y,Z,GR\rightarrow A,W,Z,GR$$ 
+Vi omvandlar:$$ X,Y,Z,GR\rightarrow A,W,Z,GR$$
 Där A är armens vinkel mot positiva x-axeln och W är armens utsträckning.
 $$A=tan^-1(\dfrac{Y}{X}) $$
 $$W=\sqrt{X^2+Y^2}$$
@@ -111,7 +111,7 @@ Då har vi alla vinklar vi behöver. Sedan är det upp till styrenheten att omva
 Beräkningarna har simulerats i ett eget python-program (figur \ref{designspec-huvud-sim-arm}).
 \begin{figure}[H]
 \center
-\includegraphics[scale=0.55]{simulator}
+\includegraphics[scale=0.55]{grafik/simulator}
 \caption{Simulerad arm} \label{designspec-huvud-sim-arm}
 \end{figure}
 
