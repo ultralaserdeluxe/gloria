@@ -11,20 +11,20 @@ Motorenheten innehåller två hjulpar, de styrs separat för att göra det möjl
 \begin{itemize}
 \item Ta emot kommandon från huvudmodulen om vilken hastighet båda hjulparen ska hålla
 \item Omvandla hastigheten till lämpliga PWM signaler
-\item Starta motorn mjukt 
-\item Lägg PWM signalerna på motorernas utgångar 
+\item Starta motorn mjukt
+\item Lägg PWM signalerna på motorernas utgångar
 \item Stanna motorn mjukt
 \end{itemize}
 
 \subsection{Robotarm}
 
-Robotarmen består av 7 servon av modell AX12-A. Dessa styrs genom att en målvinkel sätts (0-1023), med möjlighet att ändra hastighet, vridmoment och styra av/på. Från huvudmodulen får enheten målvinklar för varje enskild led. Styrmodulen är ansvarig för att se till att parallella servon körs synkroniserat, för att inte slita sönder varandra. Styrmodulen ansvarar också över att armen inte ska kollidera med resten av roboten. Den kommer att programmeras med vilka rymdmängder som den ej får passera och om den får kommandon som gör att den kommer passera dessa mängder måste den välja en annan väg än rakaste vägen.  
+Robotarmen består av 7 servon av modell AX12-A. Dessa styrs genom att en målvinkel sätts (0-1023), med möjlighet att ändra hastighet, vridmoment och styra av/på. Från huvudmodulen får enheten målvinklar för varje enskild led. Styrmodulen är ansvarig för att se till att parallella servon körs synkroniserat, för att inte slita sönder varandra. Styrmodulen ansvarar också över att armen inte ska kollidera med resten av roboten. Den kommer att programmeras med vilka rymdmängder som den ej får passera och om den får kommandon som gör att den kommer passera dessa mängder måste den välja en annan väg än rakaste vägen.
 %\newline
 %\centerline{\includegraphics[scale=0.4]{arm}}
 
 \begin{figure}[h]
 \center
-\includegraphics[scale=0.35]{arm}
+\includegraphics[scale=0.35]{grafik/arm}
 \caption{Robotarm.}
 \end{figure}
 
