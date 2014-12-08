@@ -2,7 +2,7 @@ from sensorThread import *
 from pcThread import *
 from driveUnit import *
 from distance import *
-from arm import Arm
+from arm import robotArm
 import Queue
 from regulator import Regulator
 
@@ -61,7 +61,7 @@ on_floor_right = True
 
 #spi init for driveunit
 drive = driveUnit()
-robot_arm=Arm()
+robot_arm = robotArm()
 
 command = ["assjammer"]
 # commandQueue.put(["start"])
@@ -220,43 +220,14 @@ def has_package_left():
 
 
 def steer_arm(command):
-    robot_arm.updateX(command[1][0])
-    robot_arm.updateY(command[1][1])
-    robot_arm.updateZ(command[1][2])
+    robot_arm.setAll(command[1])
+    servo_values = robot_arm.getServoValues()
+    for i in range(6):
+        drive.setArmAxis(i+1, servo_values[i])
+        time.sleep(0.001)
+        drive.sendAllAxis()
+        time.sleep(0.001)
 
-    #sensor_values=robot_arm.getServoValues()
-    #for i in range(6):
-    limits=[[0,1023],[205,813],[210,940],[180,810],[0,1023],[0,512]]
-    for i in range(len(command[1])):
-        if command[1][i]>limits[i][1]:
-            command[1][i]=limits[i][1]
-        if command[1][i]<limits[i][0]:
-            command[1][i]=limits[i][0]
-    drive.setArmAxis(1,command[1][0])
-    time.sleep(0.01)
-    drive.sendAllAxis()
-    time.sleep(0.01)
-    drive.setArmAxis(2,command[1][1])
-    time.sleep(0.01)
-    drive.sendAllAxis()
-    time.sleep(0.01)
-    drive.setArmAxis(3,command[1][2])
-    time.sleep(0.01)
-    drive.sendAllAxis()
-    time.sleep(0.01)
-    drive.setArmAxis(4,command[1][3])
-    time.sleep(0.01)
-    drive.sendAllAxis()
-    time.sleep(0.01)
-    drive.setArmAxis(5,command[1][4])
-    time.sleep(0.01)
-    drive.sendAllAxis()
-    time.sleep(0.01)
-    #print(command[1][5])
-    drive.setArmAxis(6,command[1][5])
-    time.sleep(0.01)
-    drive.sendAllAxis()
-    time.sleep(0.01)
 
 def calibrate_floor(): 
     #give floor values
