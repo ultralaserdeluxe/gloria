@@ -120,9 +120,21 @@ def main():
         mainframe.focus_set()
 
     def write_arm(X,Y,Z,P,W,G):
-        gloria.setArmPosition(int(X.get()), int(Y.get()), int(Z.get()), int(P.get()), int(W.get()), int(G.get()))
-        gloria.updateSensors()
-        mainframe.focus_set()
+        values = [e.get() for e in [X, Y, Z, P, W, G]]
+        cocked = False
+
+        for e in values:
+            try:
+                int(e)
+            except ValueError:
+                cocked = True
+
+        if not cocked:
+            gloria.setArmPosition(int(X.get()), int(Y.get()), int(Z.get()), int(P.get()), int(W.get()), int(G.get()))
+            gloria.updateSensors()
+            mainframe.focus_set()
+        else:
+            errorCodes.set("YOU COCKED UP MOTHERFUCKER! CYKA!")
         
     def write_single(command,arg):
         if command == "status":
@@ -163,7 +175,7 @@ def main():
             lastIssuedCommand.set("Got Package")
         gloria.updateSensors()
         mainframe.focus_set()
-                
+
     #mainframe
     root = Tk()
     root.title("Gloria GUI command centre")
@@ -259,8 +271,8 @@ def main():
     ttk.Label(mainframe, textvariable=errorCodes).grid(column=2, row=8, columnspan=5)
     ttk.Label(mainframe, text="lineSensor:").grid(column=1, row=9)
     ttk.Label(mainframe, textvariable=lineSensor).grid(column=2, row=9, columnspan=5)
-    ttk.Label(mainframe, text="latest Command:").grid(column=3, row=9)
-    ttk.Label(mainframe, textvariable=lastIssuedCommand).grid(column=4, row=9)
+    #ttk.Label(mainframe, text="latest Command:").grid(column=3, row=9)
+    #ttk.Label(mainframe, textvariable=lastIssuedCommand).grid(column=4, row=9)
     ttk.Label(mainframe, text="leftDistance:").grid(column=1, row=10)
     ttk.Label(mainframe, textvariable=leftDistance).grid(column=2, row=10)
     ttk.Label(mainframe, text="rightDistance:").grid(column=1, row=11)
@@ -291,7 +303,11 @@ def main():
     mainframe.focus_set()
     mainframe.bind("<Key>", keybind_motor)
     mainframe.pack()
-    
+
+    def update_status():
+        write_single("status", 0)
+        root.after(1000,update_status)
+    root.after(1000,update_status)
     root.mainloop()
 
 main() #use only for local gui test
