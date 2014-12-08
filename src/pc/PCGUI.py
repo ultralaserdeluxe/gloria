@@ -8,11 +8,11 @@ from tkinter import *
 from tkinter import ttk
 from pcModule import pcModule
 
-gloria=pcModule(str(sys.argv[1]))
+#gloria=pcModule(str(sys.argv[1]))
 #gloria=pcModule("192.168.99.1")
 #gloria=pcModule("10.42.0.47")
-gloria.updateSensors()
-gloria.start()
+#gloria.updateSensors()
+#gloria.start()
 speed = 0
 
 def main():
@@ -77,8 +77,8 @@ def main():
                 motorR.set(speed)
                 lastIssuedCommand.set("StopTurn")
             else:
-                gloria.setMotorSpeed((speed//2), speed) #left turn
-                motorL.set(speed//2)
+                gloria.setMotorSpeed(-speed, speed) #left turn
+                motorL.set(-speed)
                 motorR.set(speed)
                 lastIssuedCommand.set("TurnLeft")
         elif button_pressed == 'd':
@@ -88,9 +88,9 @@ def main():
                 motorR.set(speed)
                 lastIssuedCommand.set("StopTurn")
             else:
-                gloria.setMotorSpeed(speed, (speed//2)) #right turn
+                gloria.setMotorSpeed(speed, -speed) #right turn
                 motorL.set(speed)
-                motorR.set(speed//2)
+                motorR.set(-speed)
                 lastIssuedCommand.set("TurnRight")
         elif button_pressed == 's' and speed > -100:
             speed -= 10
@@ -101,14 +101,14 @@ def main():
             speed = 0
             lastIssuedCommand.set("Stopped")
         elif button_pressed == 'q':
-            gloria.setMotorSpeed(-50, 50) #could also be -speed, speed
+            gloria.setMotorSpeed(-100, 100) #could also be -speed, speed
             #Might be nice for the motor, however it would require us to move
             #before we can spin. A separate function could be implemented for this.
             motorL.set(-50)
             motorR.set(50)
             lastIssuedCommand.set("SpinLeft")
         elif button_pressed == 'e':
-            gloria.setMotorSpeed(50, -50) #same as above
+            gloria.setMotorSpeed(100, -100) #same as above
             motorL.set(50)
             motorR.set(-50)
             lastIssuedCommand.set("SpinRight")
@@ -171,6 +171,9 @@ def main():
             else:
                 gloria.setAutoArm(False)
                 lastIssuedCommand.set("Arm Manual")
+        elif command == "hasPackage":
+            gloria.setPackageTrue()
+            lastIssuedCommand.set("Got Package")
         gloria.updateSensors()
         mainframe.focus_set()
                 
@@ -260,6 +263,7 @@ def main():
     ttk.Button(mainframe, text="ManMotor", command=lambda : write_single("motor", False)).grid(column=2, row=6)
     ttk.Button(mainframe, text="AutoArm", command=lambda : write_single("arm", True)).grid(column=1, row=7)
     ttk.Button(mainframe, text="ManArm", command=lambda : write_single("arm", False)).grid(column=2, row=7)
+    ttk.Button(mainframe, text="GotPackage", command=lambda : write_single("hasPackage", True)).grid(column=3, row=7)
     
     for child in mainframe.winfo_children():
         child.grid_configure(padx=5, pady=5)
