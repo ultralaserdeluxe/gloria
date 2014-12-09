@@ -103,13 +103,13 @@ def main():
             lastIssuedCommand.set("Stopped")
         elif button_pressed == 'q':
             gloria.setMotorSpeed(-100, 100) #hard spin left
-            motorL.set(-50)
-            motorR.set(50)
+            motorL.set(-100)
+            motorR.set(100)
             lastIssuedCommand.set("SpinLeft")
         elif button_pressed == 'e':
             gloria.setMotorSpeed(100, -100) #hard spin right
-            motorL.set(50)
-            motorR.set(-50)
+            motorL.set(100)
+            motorR.set(-100)
             lastIssuedCommand.set("SpinRight")
         else:
             pass
