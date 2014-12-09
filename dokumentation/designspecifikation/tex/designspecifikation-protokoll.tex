@@ -2,7 +2,7 @@
 
 \begin{figure}[H]
 \center
-\scalebox{0.6}{\input{grafik/FLOW1.tex}}
+\scalebox{0.6}{\input{grafik/protokoll-oversikt}}
 \caption{Flödesschema över kommunikationskanalerna i systemet}
 \end{figure}
 
@@ -74,16 +74,20 @@ Sensorenheten svarar med endast data. En byte per fototransistor i linjesensorn.
 	\centering
 		\begin{tabularx}{\textwidth}{| l | X |}
 			\hline
-			\textbf{Adress} & \textbf{Beskrivning} \\
-			\hline
-			{0000} & {Linjesensor Fram} \\
-			\hline
-			{0010} & {Avståndssensor Höger} \\
-			\hline
-			{0011} & {Avståndssensor Vänster} \\
-			\hline
-			{1111} & {Adressera samtliga sensorer} \\
-			\hline
+			\textbf{Adress} & \textbf{Beskrivning} \\\hline
+			{0000} & {Linjesensor 1} \\\hline
+			{0001} & {Linjesensor 2} \\\hline
+			{0010} & {Linjesensor 3} \\\hline
+			{0011} & {Linjesensor 4} \\\hline
+			{0100} & {Linjesensor 5} \\\hline
+			{0101} & {Linjesensor 6} \\\hline
+			{0110} & {Linjesensor 7} \\\hline
+			{0111} & {Linjesensor 8} \\\hline
+			{1000} & {Linjesensor 9} \\\hline
+			{1001} & {Linjesensor 10} \\\hline
+			{1010} & {Linjesensor 11} \\\hline
+			{1011} & {Avståndssensor Höger} \\\hline
+			{1100} & {Avståndssensor Vänster} \\\hline
 		\end{tabularx}
 	\caption{Adresser för instruktioner till sensorenhet} \label{protokoll:huvud-sensor-adress}
 \end{table}
@@ -143,6 +147,6 @@ En instruktion består av tre bytes. Den första byten innehåller instruktionen
 Adresserna Arm axel 1 till 4, refererar till armens frihetsgrader enligt figur \ref{protokoll-arm-axlar}.
 
 \begin{figure}[H]
-\centerline{\includegraphics[scale=0.4]{grafik/robotaxis}}
+\centerline{\includegraphics[scale=0.4]{grafik/protokoll-axlar.png}}
 \caption{\textit{Till vänster}: Armens frihetsgrader  \textit{Till höger}: Armens koordinatsystem} \label{protokoll-arm-axlar}
 \end{figure}

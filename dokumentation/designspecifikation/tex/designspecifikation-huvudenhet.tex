@@ -11,7 +11,7 @@ Mjukvaran som behövs för att implementera all funktionalitet hos huvudmodulen 
 Programmet ska delas in i 3 trådar. Dessa körs kontinuerligt och delar på två trådsäkra listor: sensorvärden och instruktioner. I instruktionslistanlistan ligger alla argument till tillhörande instruktioner från PC-enheten och i sensorvärden ligger all data från sensorenheten. Listorna kan trådarna antingen läsa eller skriva till (se figur \ref{designspec:huvudmodul-tradar}).
 
 \begin{figure}[h]
-\scalebox{0.8}{\input{grafik/tradar}}
+\scalebox{0.8}{\input{grafik/huvud-tradar}}
 \caption{Trådarna och listorna de delar på} \label{designspec:huvudmodul-tradar}
 \end{figure}
 
@@ -33,7 +33,7 @@ I huvudtråden ligger huvudloopen för programmet. Den börjar med att läsa vä
 
 \begin{figure}[H]
 \centering
-\scalebox{0.6}{\input{grafik/huvudtrad}}
+\scalebox{0.6}{\input{grafik/huvud-huvudtrad}}
 \caption{Flödesschema för huvudtråden} \label{designspec:huvudmodul-huvudtrad}
 \end{figure}
 
@@ -76,12 +76,12 @@ För att undvika att roboten hackar sig fram och istället rör sig med smidiga 
  \newline
 
  \begin{figure}[H]
- \centerline{\input{grafik/armdir}}
+ \centerline{\input{grafik/huvud-armkoordinatsystem}}
  \caption{Armens koordinatsystem i förhållande till roboten. Upp är robotens färdriktning}
  \end{figure}
 
  \begin{figure}[H]
-\centerline{\input{grafik/robotmath}}
+\centerline{\input{grafik/huvud-armvinklar}}
 \caption{Armens vinklar}
 \end{figure}
 
@@ -111,7 +111,7 @@ Då har vi alla vinklar vi behöver. Sedan är det upp till styrenheten att omva
 Beräkningarna har simulerats i ett eget python-program (figur \ref{designspec-huvud-sim-arm}).
 \begin{figure}[H]
 \center
-\includegraphics[scale=0.55]{grafik/simulator}
+\includegraphics[scale=0.55]{grafik/huvud-simulator}
 \caption{Simulerad arm} \label{designspec-huvud-sim-arm}
 \end{figure}
 
