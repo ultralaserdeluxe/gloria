@@ -68,8 +68,7 @@ def main():
         #if time permits implement a dictionary instead
         button_pressed = event.char
         if button_pressed == 'w' and speed < 100:
-            speed += 10
-            gloria.setMotorSpeed(speed, speed) #faster
+            speed += 20 #faster
             lastIssuedCommand.set("IncrSpeed")
         elif button_pressed == 'a':
             if lastIssuedCommand.get() == "TurnLeft":
@@ -94,26 +93,25 @@ def main():
                 motorR.set(-speed)
                 lastIssuedCommand.set("TurnRight")
         elif button_pressed == 's' and speed > -100:
-            speed -= 10
-            gloria.setMotorSpeed(speed, speed) #slower
+            speed -= 20 #slower
             lastIssuedCommand.set("DecrSpeed")
         elif button_pressed == 'r':
-            gloria.setMotorSpeed(0, 0) #stop
-            speed = 0
+            speed = 0 #stop
             lastIssuedCommand.set("Stopped")
         elif button_pressed == 'q':
             gloria.setMotorSpeed(-100, 100) #hard spin left
-            motorL.set(-50)
-            motorR.set(50)
+            motorL.set(-100)
+            motorR.set(100)
             lastIssuedCommand.set("SpinLeft")
         elif button_pressed == 'e':
             gloria.setMotorSpeed(100, -100) #hard spin right
-            motorL.set(50)
-            motorR.set(-50)
+            motorL.set(100)
+            motorR.set(-100)
             lastIssuedCommand.set("SpinRight")
         else:
             pass
         if button_pressed in ['w','s','r']:
+            gloria.setMotorSpeed(speed, speed)
             motorL.set(speed)
             motorR.set(speed)
         gloria.updateSensors()
@@ -271,8 +269,9 @@ def main():
     ttk.Label(mainframe, textvariable=errorCodes).grid(column=2, row=8, columnspan=5)
     ttk.Label(mainframe, text="lineSensor:").grid(column=1, row=9)
     ttk.Label(mainframe, textvariable=lineSensor).grid(column=2, row=9, columnspan=5)
-    #ttk.Label(mainframe, text="latest Command:").grid(column=3, row=9)
-    #ttk.Label(mainframe, textvariable=lastIssuedCommand).grid(column=4, row=9)
+    ttk.Label(mainframe, text="latest Command:").grid(column=4, row=3)
+    ttk.Label(mainframe, text="V").grid(column=4, row=4)
+    ttk.Label(mainframe, textvariable=lastIssuedCommand).grid(column=4, row=5)
     ttk.Label(mainframe, text="leftDistance:").grid(column=1, row=10)
     ttk.Label(mainframe, textvariable=leftDistance).grid(column=2, row=10)
     ttk.Label(mainframe, text="rightDistance:").grid(column=1, row=11)
