@@ -7,6 +7,7 @@
 
 #include <avr/io.h>
 #include <util/atomic.h>
+#include "usart.h"
 
 void usart_init( void )
 {
@@ -92,7 +93,6 @@ unsigned char usart_receive( void )
 
 void usart_recieve_buffer_init()
 {
-	usart_receive_buffer = malloc(usart_buffer_t);
 	usart_receive_buffer.head = NULL;
 	usart_receive_buffer.tail = NULL;
 }
@@ -120,17 +120,18 @@ void usart_put_recieve(unsigned char in)
 
 unsigned char usart_pop_recieve( void )
 {
+	int val = -1;
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
 	{
 		if (usart_receive_buffer.head != NULL)
 		{
 			servo_parameter_t *h = usart_receive_buffer.head;
-			int val = h->current_parameter;
+			val = h->current_parameter;
 			usart_receive_buffer.head = h->next;
 			free(h);
 		}
 	}
-	return -1;
+	return val;
 }
 
 void usart_flush_rx()

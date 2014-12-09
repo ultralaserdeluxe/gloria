@@ -71,39 +71,6 @@ void input_byte(command_queue_t *q, uint8_t data)
 		put_queue(q, new_node());
 		status = set_node_command(last_node(q), data);
 	}
-	if (status == 4)
-	{
-		if ((data & COMMAND_INSTRUCTION_MASK) == COMMAND_STATUS)
-		{
-			switch (data & COMMAND_ADDRESS_MASK)
-			{
-			case ADDRESS_JOINT_1:
-				update_servo_status(q->arm, SERVO_1);
-				SPDR = servo_remaining_time(q->arm, SERVO_1);
-				break;
-			case ADDRESS_JOINT_2:
-				update_servo_status(q->arm, SERVO_2);
-				SPDR = servo_remaining_time(q->arm, SERVO_2);
-				break;
-			case ADDRESS_JOINT_3:
-				update_servo_status(q->arm, SERVO_4);
-				SPDR = servo_remaining_time(q->arm, SERVO_4);
-				break;
-			case ADDRESS_JOINT_4:
-				update_servo_status(q->arm, SERVO_6);
-				SPDR = servo_remaining_time(q->arm, SERVO_6);
-				break;
-			case ADDRESS_JOINT_5:
-				update_servo_status(q->arm, SERVO_7);
-				SPDR = servo_remaining_time(q->arm, SERVO_7);
-				break;
-			case ADDRESS_JOINT_6:
-				update_servo_status(q->arm, SERVO_8);
-				SPDR = servo_remaining_time(q->arm, SERVO_8);
-				break;
-			}
-		}
-	}
 }
 
 /* Create a new queue, with one empty entry */
@@ -480,6 +447,36 @@ bool read_command(command_queue_t *q)
 			break;
 		case ADDRESS_JOINT_6:
 			set_servo_goal_speed(q->arm, SERVO_8, p->current_parameter, next_servo_parameter(p)->current_parameter);
+			break;
+		}
+	}
+	else if ((c->instruction & COMMAND_INSTRUCTION_MASK) == COMMAND_STATUS)
+	{
+		switch (c->instruction & COMMAND_ADDRESS_MASK)
+		{
+			case ADDRESS_JOINT_1:
+			update_servo_status(q->arm, SERVO_1);
+			SPDR = servo_remaining_time(q->arm, SERVO_1);
+			break;
+			case ADDRESS_JOINT_2:
+			update_servo_status(q->arm, SERVO_2);
+			SPDR = servo_remaining_time(q->arm, SERVO_2);
+			break;
+			case ADDRESS_JOINT_3:
+			update_servo_status(q->arm, SERVO_4);
+			SPDR = servo_remaining_time(q->arm, SERVO_4);
+			break;
+			case ADDRESS_JOINT_4:
+			update_servo_status(q->arm, SERVO_6);
+			SPDR = servo_remaining_time(q->arm, SERVO_6);
+			break;
+			case ADDRESS_JOINT_5:
+			update_servo_status(q->arm, SERVO_7);
+			SPDR = servo_remaining_time(q->arm, SERVO_7);
+			break;
+			case ADDRESS_JOINT_6:
+			update_servo_status(q->arm, SERVO_8);
+			SPDR = servo_remaining_time(q->arm, SERVO_8);
 			break;
 		}
 	}
