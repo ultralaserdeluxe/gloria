@@ -2,11 +2,11 @@
 
 \todo{Överväger att lägga figur \ref{kommunikation-oversikt} i Systemet och protokollen under varje enhet.}
 
-\begin{figure}[h!]
-	\centering
-	\includegraphics[scale=0.4]{grafik/kommunikation-oversikt}
-	\caption{Översikt systemets kommunikationskanaler} \label{kommunikation-oversikt}
-\end{figure}
+%\begin{figure}[h!]
+%	\centering
+%	\includegraphics[scale=0.4]{grafik/kommunikation-oversikt}
+%	\caption{Översikt systemets kommunikationskanaler} \label{kommunikation-oversikt}
+%\end{figure}
 
 Figur \ref{kommunikation-oversikt} ger en översikt av vilka moduler som kommunicerar med varandra och på vilket sätt detta sker. Styrenheten och Sensorenheten använder samma SPI-buss fast med olika Slave Select-pinnar.
 
@@ -19,7 +19,7 @@ PC-enheten och Huvudenheten kommunicerar över Blåtand.
 
 Huvudenheten kommunicerar med Styrenheten över SPI. Storleken på en instruktion är antingen fyra eller sju bytes lång. För att förebygga synkroniseringsproblem skickas först två startbytes bestående av hexadecimalt $0xff$ följt av längden på instruktionen (startbytesen och längdbyten räknas ej med). Därefter följer instruktionsbyten som består av två delar. De fyra högsta bitarna anger vilken instruktion som ska utföras enligt tabell \ref{protokoll:pc-motor-tabell}, och de fyra lägsta vilket servo eller motorpar instruktionen rör enligt tabell \ref{protokoll:pc-motor-adress-tabell}. I fallet att instruktionen är \textit{Sätt register A till D} krävs dessutom två databytes.
 
-Då ett motorpar adresseras anger den minsta biten i den första databyten vilken riktning motorparet skall röra sig. $0$ anger framåt, $1$ bakåt \todo{Stämmer?}. Den andra databyten anger vilken fart vi vill att motorerna skall röra sig i. Notera att motorerna sätts med kommandot $Sätt register A till D$.
+Då ett motorpar adresseras anger den minsta biten i den första databyten vilken riktning motorparet skall röra sig. $0$ anger framåt, $1$ bakåt \todo{Stämmer?}. Den andra databyten anger vilken fart vi vill att motorerna skall röra sig i. Notera att motorerna sätts med kommandot.
 
 De servon vi arbetar med har en upplösning på 10 bitar både för position och hastighet. Vi måste alltså ha två databytes när vi vill ändra någon egenskap hos dessa. De två minsta bitarna i den första databyten är de två högsta bitarna och därefter följer den andra databyten.
 
