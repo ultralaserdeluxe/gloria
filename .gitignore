@@ -86,10 +86,8 @@ eagle.epf
 
 *.eps
 
-# Specific for styr_refactor branch
-# Ignore everything
-*
+# Python files
+*.pyc
 
-# Except for src/styr
-!src/styrenhet/*
-!src/spi/*
+# LaTeXing addon for Atom build files
+*.fls
