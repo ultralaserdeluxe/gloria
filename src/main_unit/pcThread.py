@@ -34,7 +34,7 @@ class pcThread(threading.Thread):
                     readable, writable, exceptional = select.select([self.__conn], [self.__conn], [self.__conn])
 		complete_data_set=self.__package_tail
                 while self.__conn in readable:
-                    data=self.__conn.recv(512)
+                    data=self.__conn.recv(512).decode()
                     complete_data_set=complete_data_set+data
                     readable, writable, exceptional = select.select([self.__conn], [self.__conn], [self.__conn])
                     if not data:
@@ -79,7 +79,7 @@ class pcThread(threading.Thread):
         
         #a simple function that sends data to the user
         def sendData(data):
-            self.__conn.sendall(data)
+            self.__conn.sendall(data.encode())
             
         #a function not used yet but can be used to remotely shutdown the BB
         def shutDown():

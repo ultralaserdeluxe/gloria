@@ -1,5 +1,5 @@
 /*
- * sensorenhet.c
+ * sensor_unit.c
  *
  * Created: 2014-11-04
  * Description: Software for our sensor unit.
