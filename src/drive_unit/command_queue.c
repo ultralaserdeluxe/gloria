@@ -279,188 +279,21 @@ bool read_command(command_queue_t *q)
 	/* If we have Action, perform action */
 	if ((c->instruction & COMMAND_INSTRUCTION_MASK) == COMMAND_ACTION)
 	{
-		switch (c->instruction & COMMAND_ADDRESS_MASK)
-		{
-		case ADDRESS_ALL:
-			arm_action(SERVO_ALL);
-			motor_action(MOTOR_ALL);
-			break;
-		case ADDRESS_ARM:
-			arm_action(SERVO_ALL);
-			break;
-		case ADDRESS_JOINT_1:
-			arm_action(SERVO_1);
-			break;
-		case ADDRESS_JOINT_2:
-			arm_action(SERVO_2);
-			arm_action(SERVO_3);
-			break;
-		case ADDRESS_JOINT_3:
-			arm_action(SERVO_4);
-			arm_action(SERVO_5);
-			break;
-		case ADDRESS_JOINT_4:
-			arm_action(SERVO_6);
-			break;
-		case ADDRESS_JOINT_5:
-			arm_action(SERVO_7);
-			break;
-		case ADDRESS_JOINT_6:
-			arm_action(SERVO_8);
-			break;
-		case ADDRESS_MOTOR_ALL:
-			motor_action(MOTOR_ALL);
-			break;
-		case ADDRESS_MOTOR_L:
-			motor_action(MOTOR_LEFT);
-			break;
-		case ADDRESS_MOTOR_R:
-			motor_action(MOTOR_RIGHT);
-			break;
-		}
+		command_action(c->instruction);
 	}
 	else if ((c->instruction & COMMAND_INSTRUCTION_MASK) == COMMAND_SET_REG)
 	{
 		servo_parameter_t *p = c->first_parameter;
-		switch (c->instruction & COMMAND_ADDRESS_MASK)
-		{
-		case ADDRESS_ARM:
-			set_servo_goal_position(SERVO_1, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_servo_goal_position(SERVO_2, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			/* SERVO_3 is same joint as SERVO_2 and has to be its inverse */
-			set_inverse_servo_goal_position(SERVO_3, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_servo_goal_position(SERVO_4, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			/* SERVO_5 is same joint as SERVO_4 and has to be its inverse */
-			set_inverse_servo_goal_position(SERVO_5, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_servo_goal_position(SERVO_6, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_servo_goal_position(SERVO_7, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_servo_goal_position(SERVO_8, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			update_servo_regs(SERVO_ALL);
-			break;
-		case ADDRESS_JOINT_1:
-			set_servo_goal_position(SERVO_1, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			update_servo_regs(SERVO_1);
-			break;
-		case ADDRESS_JOINT_2:
-			set_servo_goal_position(SERVO_2, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			/* SERVO_3 is same joint as SERVO_2 and has to be its inverse */
-			set_inverse_servo_goal_position(SERVO_3, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			update_servo_regs(SERVO_2);
-			update_servo_regs(SERVO_3);
-			break;
-		case ADDRESS_JOINT_3:
-			set_inverse_servo_goal_position(SERVO_5, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_servo_goal_position(SERVO_4, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			/* SERVO_5 is same joint as SERVO_4 and has to be its inverse */
-			update_servo_regs(SERVO_4);
-			update_servo_regs(SERVO_5);
-			break;
-		case ADDRESS_JOINT_4:
-			set_servo_goal_position(SERVO_6, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			update_servo_regs(SERVO_6);
-			break;
-		case ADDRESS_JOINT_5:
-			set_servo_goal_position(SERVO_7, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			update_servo_regs(SERVO_7);
-			break;
-		case ADDRESS_JOINT_6:
-			set_servo_goal_position(SERVO_8, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			update_servo_regs(SERVO_8);
-			break;
-		case ADDRESS_MOTOR_ALL:
-			if(p->current_parameter == 1)
-			{
-				set_queued_velocity_left(FORWARD, next_servo_parameter(p)->current_parameter);
-				set_queued_velocity_right(FORWARD, next_servo_parameter(p)->current_parameter);
-			}
-			else
-			{
-				set_queued_velocity_left(BACKWARD, next_servo_parameter(p)->current_parameter);
-				set_queued_velocity_right(BACKWARD, next_servo_parameter(p)->current_parameter);
-			}
-			break;
-		case ADDRESS_MOTOR_L:
-			if(p->current_parameter == 1)
-			{
-				set_queued_velocity_left(FORWARD, next_servo_parameter(p)->current_parameter);
-			}
-			else
-			{
-				set_queued_velocity_left(BACKWARD, next_servo_parameter(p)->current_parameter);
-			}
-			break;
-		case ADDRESS_MOTOR_R:
-			if(p->current_parameter == 1)
-			{
-				set_queued_velocity_right(FORWARD, next_servo_parameter(p)->current_parameter);
-			}
-			else
-			{
-				set_queued_velocity_right(BACKWARD, next_servo_parameter(p)->current_parameter);
-			}
-			break;
-		}
+		command_set_reg(c->instruction, p->current_parameter, next_servo_parameter(p)->current_parameter);
 	}
 	else if ((c->instruction & COMMAND_INSTRUCTION_MASK) == COMMAND_SET_JOINT_SPEED)
 	{
 		servo_parameter_t *p = c->first_parameter;
-		switch (c->instruction & COMMAND_ADDRESS_MASK)
-		{
-		case ADDRESS_ARM:
-			set_servo_goal_speed(SERVO_1, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_servo_goal_speed(SERVO_2, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_servo_goal_speed(SERVO_3, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_servo_goal_speed(SERVO_4, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_servo_goal_speed(SERVO_5, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_servo_goal_speed(SERVO_6, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_servo_goal_speed(SERVO_7, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_servo_goal_speed(SERVO_8, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			break;
-		case ADDRESS_JOINT_1:
-			set_servo_goal_speed(SERVO_1, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			break;
-		case ADDRESS_JOINT_2:
-			set_servo_goal_speed(SERVO_2, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_servo_goal_speed(SERVO_3, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			break;
-		case ADDRESS_JOINT_3:
-			set_servo_goal_speed(SERVO_4, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			set_servo_goal_speed(SERVO_5, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			break;
-		case ADDRESS_JOINT_4:
-			set_servo_goal_speed(SERVO_6, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			break;
-		case ADDRESS_JOINT_5:
-			set_servo_goal_speed(SERVO_7, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			break;
-		case ADDRESS_JOINT_6:
-			set_servo_goal_speed(SERVO_8, p->current_parameter, next_servo_parameter(p)->current_parameter);
-			break;
-		}
+		command_set_joint_speed();
 	}
 	else if ((c->instruction & COMMAND_INSTRUCTION_MASK) == COMMAND_STATUS)
 	{
-		switch (data & COMMAND_ADDRESS_MASK)
-		{
-			case ADDRESS_JOINT_1:
-				SPDR = servo_remaining_time(SERVO_1);
-				break;
-			case ADDRESS_JOINT_2:
-				SPDR = servo_remaining_time(SERVO_2);
-				break;
-			case ADDRESS_JOINT_3:
-				SPDR = servo_remaining_time(SERVO_4);
-				break;
-			case ADDRESS_JOINT_4:
-				SPDR = servo_remaining_time(SERVO_6);
-				break;
-			case ADDRESS_JOINT_5:
-				SPDR = servo_remaining_time(SERVO_7);
-				break;
-			case ADDRESS_JOINT_6:
-				SPDR = servo_remaining_time(SERVO_8);
-				break;
-		}
+		command_status(c->instruction);
 	}
 	free_node(n);
 	return true;
@@ -492,5 +325,198 @@ void update_status(command_queue_t *q, int first_servo, int last_servo)
 	for (int i = first_servo; i <= last_servo; i++)
 	{
 		update_servo_status(q->arm, i);
+	}
+}
+
+void command_action(int instruction)
+{
+	switch (instruction & COMMAND_ADDRESS_MASK)
+	{
+		case ADDRESS_ALL:
+		arm_action(SERVO_ALL);
+		motor_action(MOTOR_ALL);
+		break;
+		case ADDRESS_ARM:
+		arm_action(SERVO_ALL);
+		break;
+		case ADDRESS_JOINT_1:
+		arm_action(SERVO_1);
+		break;
+		case ADDRESS_JOINT_2:
+		arm_action(SERVO_2);
+		arm_action(SERVO_3);
+		break;
+		case ADDRESS_JOINT_3:
+		arm_action(SERVO_4);
+		arm_action(SERVO_5);
+		break;
+		case ADDRESS_JOINT_4:
+		arm_action(SERVO_6);
+		break;
+		case ADDRESS_JOINT_5:
+		arm_action(SERVO_7);
+		break;
+		case ADDRESS_JOINT_6:
+		arm_action(SERVO_8);
+		break;
+		case ADDRESS_MOTOR_ALL:
+		motor_action(MOTOR_ALL);
+		break;
+		case ADDRESS_MOTOR_L:
+		motor_action(MOTOR_LEFT);
+		break;
+		case ADDRESS_MOTOR_R:
+		motor_action(MOTOR_RIGHT);
+		break;
+	}
+}
+
+void command_set_reg(int instruction, int parameter_1, int parameter_2)
+{
+	switch (instruction & COMMAND_ADDRESS_MASK)
+	{
+	case ADDRESS_ARM:
+		set_servo_goal_position(SERVO_1, parameter_1, parameter_2);
+		set_servo_goal_position(SERVO_2, parameter_1, parameter_2);
+		/* SERVO_3 is same joint as SERVO_2 and has to be its inverse */
+		set_inverse_servo_goal_position(SERVO_3, parameter_1, parameter_2);
+		set_servo_goal_position(SERVO_4, parameter_1, parameter_2);
+		/* SERVO_5 is same joint as SERVO_4 and has to be its inverse */
+		set_inverse_servo_goal_position(SERVO_5, parameter_1, parameter_2);
+		set_servo_goal_position(SERVO_6, parameter_1, parameter_2);
+		set_servo_goal_position(SERVO_7, parameter_1, parameter_2);
+		set_servo_goal_position(SERVO_8, parameter_1, parameter_2);
+		update_servo_regs(SERVO_ALL);
+		break;
+	case ADDRESS_JOINT_1:
+		set_servo_goal_position(SERVO_1, parameter_1, parameter_2);
+		update_servo_regs(SERVO_1);
+		break;
+	case ADDRESS_JOINT_2:
+		set_servo_goal_position(SERVO_2, parameter_1, parameter_2);
+		/* SERVO_3 is same joint as SERVO_2 and has to be its inverse */
+		set_inverse_servo_goal_position(SERVO_3, parameter_1, parameter_2);
+		update_servo_regs(SERVO_2);
+		update_servo_regs(SERVO_3);
+		break;
+	case ADDRESS_JOINT_3:
+		set_inverse_servo_goal_position(SERVO_5, parameter_1, parameter_2);
+		set_servo_goal_position(SERVO_4, parameter_1, parameter_2);
+		/* SERVO_5 is same joint as SERVO_4 and has to be its inverse */
+		update_servo_regs(SERVO_4);
+		update_servo_regs(SERVO_5);
+		break;
+	case ADDRESS_JOINT_4:
+		set_servo_goal_position(SERVO_6, parameter_1, parameter_2);
+		update_servo_regs(SERVO_6);
+		break;
+	case ADDRESS_JOINT_5:
+		set_servo_goal_position(SERVO_7, parameter_1, parameter_2);
+		update_servo_regs(SERVO_7);
+		break;
+	case ADDRESS_JOINT_6:
+		set_servo_goal_position(SERVO_8, parameter_1, parameter_2);
+		update_servo_regs(SERVO_8);
+		break;
+	case ADDRESS_MOTOR_ALL:
+		if(parameter_1 == 1)
+		{
+			set_queued_velocity_left(FORWARD, parameter_2);
+			set_queued_velocity_right(FORWARD, parameter_2);
+		}
+		else
+		{
+			set_queued_velocity_left(BACKWARD, parameter_2);
+			set_queued_velocity_right(BACKWARD, parameter_2);
+		}
+		break;
+	case ADDRESS_MOTOR_L:
+		if(parameter_1 == 1)
+		{
+			set_queued_velocity_left(FORWARD, parameter_2);
+		}
+		else
+		{
+			set_queued_velocity_left(BACKWARD, parameter_2);
+		}
+		break;
+	case ADDRESS_MOTOR_R:
+		if(parameter_1 == 1)
+		{
+			set_queued_velocity_right(FORWARD, parameter_2);
+		}
+		else
+		{
+			set_queued_velocity_right(BACKWARD, parameter_2);
+		}
+		break;
+	}
+}
+
+void command_set_joint_speed(int instruction, int parameter_1, int parameter_2)
+{
+	switch (instruction & COMMAND_ADDRESS_MASK)
+	{
+	case ADDRESS_ARM:
+		set_servo_goal_speed(SERVO_1, parameter_1, parameter_2);
+		set_servo_goal_speed(SERVO_2, parameter_1, parameter_2);
+		set_servo_goal_speed(SERVO_3, parameter_1, parameter_2);
+		set_servo_goal_speed(SERVO_4, parameter_1, parameter_2);
+		set_servo_goal_speed(SERVO_5, parameter_1, parameter_2);
+		set_servo_goal_speed(SERVO_6, parameter_1, parameter_2);
+		set_servo_goal_speed(SERVO_7, parameter_1, parameter_2);
+		set_servo_goal_speed(SERVO_8, parameter_1, parameter_2);
+		break;
+	case ADDRESS_JOINT_1:
+		set_servo_goal_speed(SERVO_1, parameter_1, parameter_2);
+		break;
+	case ADDRESS_JOINT_2:
+		set_servo_goal_speed(SERVO_2, parameter_1, parameter_2);
+		set_servo_goal_speed(SERVO_3, parameter_1, parameter_2);
+		break;
+	case ADDRESS_JOINT_3:
+		set_servo_goal_speed(SERVO_4, parameter_1, parameter_2);
+		set_servo_goal_speed(SERVO_5, parameter_1, parameter_2);
+		break;
+	case ADDRESS_JOINT_4:
+		set_servo_goal_speed(SERVO_6, parameter_1, parameter_2);
+		break;
+	case ADDRESS_JOINT_5:
+		set_servo_goal_speed(SERVO_7, parameter_1, parameter_2);
+		break;
+	case ADDRESS_JOINT_6:
+		set_servo_goal_speed(SERVO_8, parameter_1, parameter_2);
+		break;
+	}
+}
+
+void command_status(int instruction)
+{
+	switch (instruction & COMMAND_ADDRESS_MASK)
+	{
+		case ADDRESS_JOINT_1:
+			update_servo_status(SERVO_1);
+			SPDR = servo_remaining_time(SERVO_1);
+			break;
+		case ADDRESS_JOINT_2:
+			update_servo_status(SERVO_2);
+			SPDR = servo_remaining_time(SERVO_2);
+			break;
+		case ADDRESS_JOINT_3:
+			update_servo_status(SERVO_4);
+			SPDR = servo_remaining_time(SERVO_4);
+			break;
+		case ADDRESS_JOINT_4:
+			update_servo_status(SERVO_6);
+			SPDR = servo_remaining_time(SERVO_6);
+			break;
+		case ADDRESS_JOINT_5:
+			update_servo_status(SERVO_7);
+			SPDR = servo_remaining_time(SERVO_7);
+			break;
+		case ADDRESS_JOINT_6:
+			update_servo_status(SERVO_8);
+			SPDR = servo_remaining_time(SERVO_8);
+			break;
 	}
 }

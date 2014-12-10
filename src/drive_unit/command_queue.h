@@ -76,4 +76,7 @@ void read_all_commands(command_queue_t *q);
 int command_status(command_struct_t *current);
 bool command_recieved(command_struct_t *c);
 void update_status(command_queue_t *q, int first_servo, int last_servo);
+
+void command_action(int instruction);
+
 #endif /* COMMAND_QUEUE_H_ */
