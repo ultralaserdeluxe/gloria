@@ -2,8 +2,8 @@
  * styrenhet.c
  *
  * Created: 2014-11-06
- * Description: File containing the main loop.
- */ 
+ * Description: Main file.
+ */
 
 #define F_CPU 16000000UL
 #include <avr/io.h>
@@ -20,36 +20,36 @@
 void spi_recieve_handler(unsigned int data)
 {
 	input_byte(gloria_queue, data);
-	//read_all_commands(gloria_queue);
 }
 
 int main(void)
 {
 	gloria_queue = new_queue();
 	system_init(gloria_queue, 2, 8);
-	arm_init(gloria_queue->arm);
 	spi_slave_init();
 	sei();
-	
+
 	//DDRA = 0xff;
-	
+
 	while(1){
-		
-		//set_goal_velocity_left(gloria_queue->motor, FORWARD, 0x10);
-		//set_goal_velocity_right(gloria_queue->motor, FORWARD, 0x10);
-		
-		for (int i = SERVO_1; i <= SERVO_8; i++)
-		{
+
+		//usart_set_rx();
+		//_delay_us(20);
+		//usart_set_tx();
+		//_delay_us(20);
+
+		//for (int i = SERVO_1; i <= SERVO_8; i++)
+		//{
 			read_all_commands(gloria_queue);
 			//update_servo_status(gloria_queue->arm, i);
-		}
+			//}
 
 		/* Servo read debug */
 		//usart_set_tx();
 		//update_status(gloria_queue->arm, SERVO_7);
 		//PORTA = gloria_queue->arm->s[SERVO_7].speed_l;
 		//usart_set_tx();
-		
+
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0x03); // Flytta Axel
 		//input_byte(gloria_queue, 0x12);
@@ -91,7 +91,7 @@ int main(void)
 		//input_byte(gloria_queue, 0x00);
 		//input_byte(gloria_queue, 0x00);
 		//
-		
+
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0x03);
@@ -110,7 +110,7 @@ int main(void)
 		//update_status(gloria_queue->arm, SERVO_7);
 		//PORTA = gloria_queue->arm->s[SERVO_7].speed_l;
 		//usart_set_tx();
-		
+
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0x03); // Flytta Axel
@@ -153,7 +153,7 @@ int main(void)
 		//input_byte(gloria_queue, 0x00);
 		//input_byte(gloria_queue, 0xff);
 		//
-		
+
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0xff);
 		//input_byte(gloria_queue, 0x01);
@@ -161,7 +161,7 @@ int main(void)
 		//
 		//read_all_commands(gloria_queue);
 		//_delay_ms(5000);
-		
+
 		/* Debug 2 - Do what read_command does */
 		//set_inverse_servo_goal_position(gloria_queue->arm, id, 0x00, 0x50);
 		//update_servo_regs(gloria_queue->arm, id);

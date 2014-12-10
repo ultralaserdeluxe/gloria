@@ -3,7 +3,7 @@
  *
  * Created: 2014-11-14
  * Description: Functions for motor control.
- */ 
+ */
 
 
 #ifndef MOTOR_H_
@@ -27,8 +27,6 @@ typedef struct wheel_data
 	uint8_t goal_speed;
 	direction_t queued_direction;
 	uint8_t queued_speed;
-	
-	int iteration;
 } wheel_data_t;
 
 typedef struct motor_data
@@ -37,13 +35,15 @@ typedef struct motor_data
 	int length;
 } motor_data_t;
 
+motor_data_t motor;
+
+void new_motor_data(int number_of_motors);
 void motor_init();
-motor_data_t* new_motor_data(int number_of_motors);
-void motor_action(int ID, motor_data_t *d);
-void set_goal_velocity_left(motor_data_t *d, uint8_t direction, uint8_t speed);
-void set_goal_velocity_right(motor_data_t *d, uint8_t direction, uint8_t speed);
-void set_queued_velocity_left(motor_data_t *d, uint8_t direction, uint8_t speed);
-void set_queued_velocity_right(motor_data_t *d, uint8_t direction, uint8_t speed);
+void motor_action(int ID);
+void set_goal_velocity_left(uint8_t direction, uint8_t speed);
+void set_goal_velocity_right(uint8_t direction, uint8_t speed);
+void set_queued_velocity_left(uint8_t direction, uint8_t speed);
+void set_queued_velocity_right(uint8_t direction, uint8_t speed);
 
 void set_speed_left(uint8_t speed);
 void set_speed_right(uint8_t speed);

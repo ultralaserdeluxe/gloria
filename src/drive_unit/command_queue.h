@@ -4,7 +4,7 @@
  * Created: 2014-11-15 16:28:28
  *	Description: Command queue takes command bytes and makes arm/motors perform
  *					Requested actions.
- */ 
+ */
 
 #ifndef COMMAND_QUEUE_H_
 #define COMMAND_QUEUE_H_
@@ -20,13 +20,13 @@
 #include "arm.h"
 #include "motor.h"
 
-/* The following datatypes are meant to be a readable list of commands to be 
+/* The following datatypes are meant to be a readable list of commands to be
 	forwarded to the specified servo */
 typedef struct command_struct
 {
 	uint8_t instruction;
 	servo_parameter_t *first_parameter;
-	
+
 	/* Comparing status with expected length of recieved message
 		tells us whether we have recieved the whole message */
 	uint8_t status;
@@ -43,8 +43,6 @@ typedef struct command_queue
 {
 	command_queue_node_t *head;
 	command_queue_node_t *last;
-	arm_data_t *arm;
-	motor_data_t *motor;
 } command_queue_t;
 
 
