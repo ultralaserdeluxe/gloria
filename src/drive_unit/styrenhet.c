@@ -2,7 +2,7 @@
  * styrenhet.c
  *
  * Created: 2014-11-06
- * Description: Main file.
+ * Description: File containing the main loop.
  */ 
 
 #define F_CPU 16000000UL
@@ -20,6 +20,7 @@
 void spi_recieve_handler(unsigned int data)
 {
 	input_byte(gloria_queue, data);
+	//read_all_commands(gloria_queue);
 }
 
 int main(void)
@@ -34,16 +35,14 @@ int main(void)
 	
 	while(1){
 		
-		//usart_set_rx();
-		//_delay_us(20);
-		//usart_set_tx();
-		//_delay_us(20);
+		//set_goal_velocity_left(gloria_queue->motor, FORWARD, 0x10);
+		//set_goal_velocity_right(gloria_queue->motor, FORWARD, 0x10);
 		
-		//for (int i = SERVO_1; i <= SERVO_8; i++)
-		//{
+		for (int i = SERVO_1; i <= SERVO_8; i++)
+		{
 			read_all_commands(gloria_queue);
 			//update_servo_status(gloria_queue->arm, i);
-			//}
+		}
 
 		/* Servo read debug */
 		//usart_set_tx();

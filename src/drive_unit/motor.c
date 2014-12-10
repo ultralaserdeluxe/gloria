@@ -27,7 +27,7 @@ void motor_init()
 	TCCR2A |= (1<<COM2B1); /* Clear compare register B on match. */
 	TCCR2A |= (1<<WGM20);  /* Phase correct PWM. */
 	
-	TCCR2B = (1<<CS20);    /* No prescaling. */
+	TCCR2B = (0<<CS22)|(1<<CS21)|(1<<CS20);    /* We want a freq of about 0.5-1kHz */
 	
 	/* Set up timer 1 (16-bit) for acceleration control. */
 	TCCR1B  = (1<<WGM22); /* CTC mode. */
