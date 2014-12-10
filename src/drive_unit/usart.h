@@ -1,9 +1,9 @@
-﻿/*
- * usart.h
- *
- * Created: 2014-11-09
- * Description: Functions for working with USART.
- */ 
+/*
+* usart.h
+*
+* Created: 2014-11-09
+* Description: Functions for working with USART.
+*/
 
 
 #ifndef USART_H_

@@ -154,8 +154,10 @@ void update_servo_status(int id)
 	free_servo_parameter_chain(p);
 	_delay_us(10); //Wait for last command to send properly
 	usart_set_rx();
+
+	_delay_ms(10); // Wait for command to be recieved
 	////usart_receive(); //Todo: Why is this random byte necessary?
-	usart_receive(); //0xff
+	/*usart_receive(); //0xff
 	usart_receive(); //0xff
 	usart_receive(); //id
 	usart_receive(); //length
@@ -166,6 +168,20 @@ void update_servo_status(int id)
 	int new_speed_l = usart_receive();
 	int new_speed_h = usart_receive();
 	usart_receive(); //checksum
+	*/
+
+	usart_pop_recieve();
+	usart_pop_recieve();
+	usart_pop_recieve();
+	usart_pop_recieve();
+
+	int new_status = usart_pop_recieve();
+	int new_position_l = usart_pop_recieve();
+	int new_position_h = usart_pop_recieve();
+	int new_speed_l = usart_pop_recieve();
+	int new_speed_h = usart_pop_recieve();
+
+	usart_pop_recieve();
 
 	usart_set_tx();
 
