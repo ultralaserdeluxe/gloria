@@ -47,7 +47,7 @@ void motor_init()
 	/* Set up timer 1 (16-bit) for acceleration control. */
 	TCCR1B  = (1<<WGM22); /* CTC mode. */
 	TCCR1B |= (1<<CS22)|(1<<CS20); /* Prescaler clk/1024. */
-	TIMSK1  = (1<<OCIE1A); /* Enable interrupt on OCR1A */
+	TIMSK1  = (0<<OCIE1A); /* Disable interrupt on OCR1A */
 	OCR1A   = 1562; /* Should give an update period of ~10 Hz. */
 }
 
@@ -115,12 +115,16 @@ void motor_action(int ID)
 	case MOTOR_ALL:
 		set_goal_velocity_left(motor.s[MOTOR_LEFT].queued_direction, motor.s[MOTOR_LEFT].queued_speed);
 		set_goal_velocity_right(motor.s[MOTOR_RIGHT].queued_direction, motor.s[MOTOR_RIGHT].queued_speed);
+		set_speed_left(motor.s[MOTOR_LEFT].goal_speed);
+		set_speed_left(motor.s[MOTOR_RIGHT].goal_speed);
 		break;
 	case MOTOR_LEFT:
 		set_goal_velocity_left(motor.s[MOTOR_LEFT].queued_direction, motor.s[MOTOR_LEFT].queued_speed);
+		set_speed_left(motor.s[MOTOR_LEFT].goal_speed);
 		break;
 	case MOTOR_RIGHT:
 		set_goal_velocity_right(motor.s[MOTOR_RIGHT].queued_direction, motor.s[MOTOR_RIGHT].queued_speed);
+		set_speed_left(motor.s[MOTOR_RIGHT].goal_speed);
 		break;
 	default:
 		/* Unreachable statement */
