@@ -6,19 +6,19 @@ Sensorenheten har till uppgift att förse huvudenheten med sensordata. Sensordat
 
 \subsection{Hårdvara}
 
-%\begin{figure}[h!]
-%	\centering
-%	\includegraphics[scale=0.4]{grafik/sensorenhet-oversikt}
-%	\caption{Översikt av sensorenheten }
-%\end{figure}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.4]{grafik/sensorenhet-oversikt}
+	\caption{Översikt av sensorenheten }
+\end{figure}
 
 Sensorenheten består av en Atmega1284p, en reflexsensormodul och två avståndssensorer. Reflexsensormodulen är kopplad via två 16-1 muxar till enkretsdatorn. Den ena muxen används för att styra en konstant hög enable-signal till rätt reflexsensor och den andra för att välja rätt utsignal. Båda muxarna styrs av samma styrsignal från processorn. Enkretsdatorn är ansluten till huvudenheten med en \todo{20lol-pinnarskabel?} över vilken de kommunicerar via SPI.
 
-%\begin{figure}[h!]
-%	\centering
-%	\includegraphics[scale=0.5]{grafik/sensorenhet-processor}
-%	\caption{Schema över hur enkretssdatorn i sensorenheten är ansluten till övrig hårdvara.}
-%\end{figure}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.5]{grafik/sensorenhet-processor}
+	\caption{Schema över hur enkretssdatorn i sensorenheten är ansluten till övrig hårdvara.}
+\end{figure}
 
 \subsubsection{Reflexsensormodul}
 
@@ -32,11 +32,11 @@ Avståndssensorerna är av typen GP2D120 vilken använder ljus för att detekter
 
 All mjukvara på sensorenheten är skriven i $C$ och finns på enkretsdatorn. Den består av två delar, illustrerat i figur \ref{sensorenhet-mjukvara}.
 
-%\begin{figure}[h!]
-%	\centering
-%	\includegraphics[scale=0.4]{grafik/sensorenhet-mjukvara}
-%	\caption{Till vänster sensorenhetens \todo{huvudslinga}, till höger %den avbrottsrutin som körs vid mottagen data över SPI.} \label%{sensorenhet-mjukvara}
-%\end{figure}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.4]{grafik/sensorenhet-mjukvara}
+	\caption{Till vänster sensorenhetens \todo{huvudslinga}, till höger den avbrottsrutin som körs vid mottagen data över SPI.} \label{sensorenhet-mjukvara}
+\end{figure}
 
 För det första körs en mainloop där sensordata kontinuerligt uppdateras. Först itererar vi igenom Reflexsensorerna genom att först styra om enable-signalen till den aktuella sensorn och därefter utföra en AD-omvandling på den signal vi får tillbaks och sedan gå till nästa. Därefter utför vi i tur och ordning en AD-omvandling på insignalerna från avståndssensorerna. Alla värden sparas i en global datastruktur.
 \newline
