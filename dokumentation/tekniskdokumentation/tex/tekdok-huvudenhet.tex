@@ -3,43 +3,41 @@
 \section{Huvudenhet}
 
 \subsection{Teori}
+\todo{Skulle kunna lägga det här som en egen section}
 
 \subsubsection{reglering}
 \todo{Hur tolkar vi sensordata?}
 \todo{Hur fungerar regleringen. Detta får yngve skriva}
 
 \subsubsection{Styrning av arm}
- Omvandlingen från x,y,z koordinater till vinklar för armens servon sker på huvudenheten. På huvudenheten finns en pythonmodul arm.py som implementerar beräkningarna som beskrivs nedan. Den används på följande sätt:
- \begin{enumerate}
- \item skapa en instans av robotArm som är en klass i arm.py
- \item använd funktionen setAll som tar in en lista som argument med följande innehåll \newline [x,y,z,gripperAngle,gripperRotationsOffset,gripper]
- \item använd funktionen getServoValues som returnerar en lista med alla servons vinklar i form av 10 bitars integers. 
- \end{enumerate}
-GripperAngle är gripklons vinkel mot marken, gripperRotationsOffset är en offset på gripklons vinkel i förhållande till leden som gripklons är fäst i och gripper är hur mycket gripklon klämmer. 
-\newline
-\newline
-I listan som returneras är första värdet till armens bas, det andra är till A1, det tredje är till A2, det fjärde till A3, det femte till klons rotation och det sjätte till klons grepp.
+Omvandlingen från $(x,y,z)$-koordinater till vinklar för armens servon sker på huvudenheten. På huvudenheten finns en pythonmodul \texttt{arm.py} som implementerar beräkningarna som beskrivs nedan. Den används i tre steg.
+\begin{enumerate}
+    \item skapa en instans av robotArm som är en klass i \texttt{arm.py}
+    \item använd funktionen \texttt{setAll} som tar in en lista som argument med följande innehåll \newline \texttt{[$x$,$y$,$z$,$gripperAngle$,$gripperRotationsOffset$,$gripper$]} \todo{Fixa formattering, allt texttt eller delvis emph?}
+    \item använd funktionen \texttt{getServoValues} som returnerar en lista med alla servons vinklar i form av 10 bitars heltal.
+\end{enumerate}
 
+GripperAngle är gripklons vinkel mot marken, gripperRotationsOffset är en offset på gripklons vinkel i förhållande till leden som gripklons är fäst i och gripper är hur mycket gripklon klämmer.
 
-% \begin{figure}[H]
-% \centerline{\input{grafik/huvud-armkoordinatsystem}}
-% \caption{Armens koordinatsystem i förhållande till roboten. Upp är robotens färdriktning}
-% \end{figure}
+I listan som returneras är första värdet till armens bas, det andra är till $A1$, det tredje är till $A2$, det fjärde till $A3$, det femte till klons rotation och det sjätte till klons grepp.
 
- %\begin{figure}[H]
-%\centerline{\input{grafik/huvud-armvinklar}}
-%\caption{Armens vinklar}
-%\end{figure}
+\begin{figure}[h!]
+    \centerline{\input{grafik/huvud-armkoordinatsystem}}
+    \caption{Armens koordinatsystem i förhållande till roboten. Upp är robotens färdriktning}
+\end{figure}
 
+\begin{figure}[h!]
+    \centerline{\input{grafik/huvud-armvinklar}}
+    \caption{Armens vinklar}
+\end{figure}
 
-Omvandlingen sker på följande sätt där gripperRotationOffset och gripper ignoreras:
-Antag att roboten start i: $$X,Y,Z,GR=0,0,0,\pi/2$$
-Där GR(GripRadian) är vilken vinkel gripklon har till z-axeln.\newline
-Vi omvandlar:$$ X,Y,Z,GR\rightarrow A,W,Z,GR$$
-Där A är armens vinkel mot positiva x-axeln och W är armens utsträckning.
+Omvandlingen sker på följande sätt där gripperRotationOffset och gripper ignoreras. Antag att roboten startar i $X,Y,Z,GR=0,0,0,\pi/2$.
+Där $GR$(GripRadian) är vilken vinkel gripklon har till $z$-axeln.\newline
+Vi omvandlar våra rum-koordinater till en vinkel och plankoordinater $X,Y,Z,GR\rightarrow A,W,Z,GR$. Där $A$ är armens vinkel mot positiva $x$-axeln och $W$ är armens utsträckning.
+\todo{Visualisera omvandling rumkoordinater till plan}
 $$A=tan^-1(\dfrac{Y}{X}) $$
 $$W=\sqrt{X^2+Y^2}$$
-Genom denna omvandlingen så kan vi göra om detta till ett 2-dimensionellt problem istället för ett 3-dimentionellt problem. Vi får in X,Y,Z,GR och ställer in robotens vinkel mot x-axelns positiva del och sedan ser vi till att roboten bara har rätt utsträckning och höjd.
+Genom denna omvandlingen så kan vi göra om detta till ett 2-dimensionellt problem istället för ett 3-dimensionellt problem. Vi får in $X$,$Y$,$Z$,$GR$ och ställer in robotens vinkel mot $x$-axelns positiva del och sedan ser vi till att roboten bara har rätt utsträckning och höjd.
 $$P_4=(W,Z)$$
 $$P_0=(0,0)$$
 $$W_2=W-cos(GR)*L_3$$
@@ -53,7 +51,7 @@ $$Z_1=sin(A_1)*L_1$$
 $$A_2=tan^-1(\dfrac{Z_2-Z_1}{W_2-W_1})-A_1$$
 $$A_3=GR-D_2-D_3$$
 
-Då har är alla vinklar beräknande men servornas nollpunkter är inte på samma ställen som nollställena i beräkningarna ovanför. Så följande offset ställs in i grader:
+Då är alla vinklar beräknade men servornas nollpunkter är inte på samma ställen som nollställena i beräkningarna ovanför. Så följande offset ställs in i grader:
 \begin{itemize}
 \item A0=A0+60
 \item A1=240-A1
@@ -96,15 +94,15 @@ Oftas tas flera kommandon emot samtidigt och PCtråden gör om dessa till en lis
 \item ";motorSpeed=speed1,speed2;motorspeed=speed3;speed4;"  tas emot
 \item detta görs om till [["motorspeed",["speed1","speed2"]],["motorSpeed",["speed3","speed4"]]]
 \item det första kommandot behandlas genom att argumenten omvandlas till intergers, motorernas hastighet uppdateras i dictionaryn och kommandot läggs till i kön så maintråd vet att den ska skicka ut kommandot.
-\item nästa kommando behandlas på samma sätt men om speed1=speed3 och speed2=speed4 så ignoreras kommandot då det inte påverkar hastigheterna. 
+\item nästa kommando behandlas på samma sätt men om speed1=speed3 och speed2=speed4 så ignoreras kommandot då det inte påverkar hastigheterna.
 \end{enumerate}
 \subsubsection{Sensortråd}
 I denna tråd sätts en uppdateringfrekvens och sedan hämtar denna tråd alla värden från sensorenheten och lägger dessa i dictionaryn så ofta.
 \subsubsection{RegulatorTråd}
-I denna tråd sätts en uppdateringsfrekvens som för nuvarande är satt till 50Hz och sedan så beräknar denna tråd ut reglerfelet så ofta utgående linjesensorns värden som finns i dictionaryn. Från detta så beräknas hastigheterna ut för vardera motorpar och placeras i en egen plats i dictionaryn som sedan maintråden kan välja att använda eller ej. 
+I denna tråd sätts en uppdateringsfrekvens som för nuvarande är satt till 50Hz och sedan så beräknar denna tråd ut reglerfelet så ofta utgående linjesensorns värden som finns i dictionaryn. Från detta så beräknas hastigheterna ut för vardera motorpar och placeras i en egen plats i dictionaryn som sedan maintråden kan välja att använda eller ej.
 \newline
 \newline
-Anledningen till detta hamnade i en egen tråd var för att säkerhetsställa att beräkningarna sker kontinurligt och inte beror på loopen i mainthred. 
+Anledningen till detta hamnade i en egen tråd var för att säkerhetsställa att beräkningarna sker kontinurligt och inte beror på loopen i mainthred.
 
 
 
