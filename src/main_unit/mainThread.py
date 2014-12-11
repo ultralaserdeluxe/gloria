@@ -61,6 +61,13 @@ stop_detection_time = 2
 on_floor_left = True
 on_floor_right = True
 
+on_floor_middle_left = True
+left_middle_cnt = 0
+stopstation_left_detected = False
+
+stop_cnt = 0
+floor_middle = False
+floor_left = False
 
 is_centered = False
 
@@ -112,6 +119,25 @@ def check_put_down_left():
                 return True
     return False            
 
+def stopstation_middle_left():
+    global on_floor_middle_left
+    global left_middle_cnt
+    
+        
+    if (station_centered() and on_floor_middle_left == True):
+        left_middle_cnt += 1
+        on_floor_middle_left = False
+        return False
+
+    elif (not station_centered()):
+        on_floor_middle_left = True
+    elif left_middle_cnt > 2:
+        left_middle_cnt = 0
+        return True
+    return False
+
+
+
 def stopstation_left():
     global on_floor_left
     global left_station_cnt
@@ -133,6 +159,9 @@ def stopstation_left():
 
     elif (not is_station_left()):
         on_floor_left = True
+    elif left_station_cnt > 2:
+        left_station_cnt = 0
+        return True
     return False
 
 def stopstation_right():
@@ -159,6 +188,26 @@ def stopstation_right():
 def is_on_straight():
     return abs(shared_stuff["error"]) < 3
 
+
+
+def stopstation():
+    global floor_left
+    global floor_middle
+    global stop_cnt
+
+    if is_station_left() and floor_left:
+        stop_cnt += 1
+        floor_left = False
+    if station_centered() and floor_middle:
+        stop_cnt-= 1
+        floor_middle = False
+    if (not is_station_left()):
+        floor_left = True
+    if (not station_centered()):
+        floor_middle = True
+    if stop_cnt > 2:
+        return True
+    return False
 
 #checks if station is under robot
 def station_centered():
@@ -363,19 +412,37 @@ while True:
     get_command()
         
     #check if robot is on stopstation, goes into manualmode
-    if stopstation_left():
+    # if not has_package and stopstation_left():
+    #     set_speed(0x00,0x00)
+    #     automotor = False
+    # elif has_package and stopstation_left():
+    #     stop_station_left_detected = True
+            
+
+    # if stopstation_left_detected and station_middle_left():
+    #     stop_station_left_detected = False
+    #     left_station_cnt = 0
+    
+    
+    
+    if stopstation():
         if has_package:
+            print "stopstation_left_detected TRUE"
+            stopstation_left_detected = True
+        else:
             set_speed(0x00,0x00)
             automotor = False
-        else:
-            
-        
+    elif stop_cnt == 0:
+        #print "stopstation_leftdetected FALSE"
+        stopstation_left_detected = False
 
-    if stopstation_right():
-        set_speed(0x00,0x00)
-        automotor = False
+    print stop_cnt
 
+    # if stopstation_right():
+    #     set_speed(0x00,0x00)
+    #     automotor = False
 
+    #print stop_cnt
     #the steerlogic.
     if automotor == True:
         #if has_package == True:
@@ -394,7 +461,8 @@ while True:
                     pick_up = True
                     #new_speed_left = new_speed_right = 0x00
                 elif (check_put_down_right() or check_put_down_left()):
-                    put_down = True
+                    if not stopstation_left_detected:
+                        put_down = True
                     #new_speed_left = new_speed_right = 0x00
                 else:
                     pick_up = False
@@ -419,7 +487,9 @@ while True:
                     print "putting down package..."
                     steer_arm(fake_command)
                     time.sleep(6)
-                                  
+                else:
+                    is_centered = False
+                    set_speed(new_speed_left, new_speed_right)
         else:
             #print "Pick up True"
             #pick_up is true, user have to steer arm. pick_up = false
