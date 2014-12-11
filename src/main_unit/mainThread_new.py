@@ -1,3 +1,4 @@
+import sys
 import time
 import Queue
 import logging as log
@@ -7,73 +8,126 @@ import regulator
 import driveUnit
 import sensorThread
 
+HALTED = "HALTED"
 MANUAL = "MANUAL"
-SEARCH_PICK_UP = "SEARCH_PICK_UP"
-AFTER_PICK_UP = "AFTER_PICK_UP"
+LINE = "LINE"
+
+class Station:
+    def __init__(self, empty, left):
+        self.empty = empty
+        self.left = left
+
+    def is_empty(self):
+        return self.empty
+
+    def is_full(self):
+        return not self.empty
+
+    def is_left(self):
+        return self.left
+
+    def is_right(self):
+        return not self.left
 
 class Gloria:
     def __init__(self, shared_stuff, cmd_queue):
         self.shared_stuff = shared_stuff
         self.cmd_queue = cmd_queue
-        self.state = MANUAL
+
+        self.drive = driveUnit.driveUnit()
+        self.current_speed = [None, None]
+
+        self.state = None
         self.has_package = False
+        self.station_queue = []
 
     def get_command(self):
         if not self.cmd_queue.empty():
-            cmd = self.cmd_queue.get()
-            log.debug("Got command: %s" %str(cmd))
-            return cmd
-        return ["NO_CMD"]
+            _cmd = self.cmd_queue.get()
+            cmd = _cmd[0]
+            args = _cmd[1:]
+            if args:
+                args = _cmd[1]
+            log.debug("Got command \"%s\" and args %s." %(cmd, str(args)))
+            return cmd, args
+        return "", []
 
     def change_state(self, new_state):
         log.info("Changing state from %s to %s." %(self.state, new_state))        
         self.state = new_state
 
-    def pick_up_station_found(self):
-        return False
+    def handle_command(self, cmd, args):
+        if cmd == "start" and self.state == HALTED:
+            self.change_state(MANUAL)
+        elif cmd == "halt" and self.state != HALTED:
+            self.change_state(HALTED)
+        elif cmd == "autoMotor" and args == True and self.state == MANUAL:
+            self.change_state(LINE)
+        elif cmd == "autoMotor" and args == False and self.state == LINE:
+            self.change_state(MANUAL)
+        elif cmd == "":
+            pass
 
     def run(self):
+        self.change_state(HALTED)
+
         while True:
             time.sleep(0.1)
-            _cmd = self.get_command()
-            cmd = _cmd[0]
-            args = _cmd[1:]
+            cmd, args = self.get_command()
+            self.handle_command(cmd, args)
 
-            # TODO: Handle calibrate commands here
-            if cmd == "calibrate":
-                pass
-
-            # State transitions
-            if cmd == "autoMotor" and args[0] == False:
-                self.change_state(MANUAL)
-            elif self.state != SEARCH_PICK_UP and not self.has_package or (cmd == "autoMotor" and args[0] == True):
-                self.change_state(SEARCH_PICK_UP)
-            elif self.pick_up_station_found():
-                self.change_state(MANUAL)
-            elif cmd == "hasPackage":
-                self.state = AFTER_PICK_UP
-            
             # State execution
-            if self.state == MANUAL:
+            if self.state == HALTED:
+                self.halted()
+            elif self.state == MANUAL:
                 self.manual(cmd, args)
-            elif self.state == SEARCH_PICK_UP:
-                self.search_pick_up()
+            elif self.state == LINE:
+                self.line()
+            else:
+                log.critical("Vegetable state! state=\"%s\"" %str(self.state))
+                sys.exit(1)
+
+    def halted(self):
+        self.set_speed(0, 0)
 
     def manual(self, cmd, args):
-        if cmd == "motorSpeed":
-            # Set motor speed
+        if cmd == "calibrateFloor":
+            #TODO: Handle calibrate floor
             pass
+        elif cmd == "calibrateTape":
+            #TODO: Handle calibrate tape
+            pass
+        elif cmd == "motorSpeed":
+            self.set_speed(args[0], args[1])
         elif cmd == "armPosition":
-            # Set arm position
-            pass
+            self.steer_arm(*args)
 
-    def search_pick_up(self):
+    def line(self):
         # Regulate
         pass
 
-    def after_pick_up(self):
-        # Go forward a little bit and lift arm
-        pass
+    def set_speed(self, left, right):
+        if left != self.current_speed[0] or right != self.current_speed[1]:
+            log.debug("set_speed: left=%d right=%d" %(left, right))
+
+            self.current_speed[0] = left
+            self.current_speed[1] = right
+
+            self.drive.setMotorLeft(left)
+            self.drive.setMotorRight(right)
+            self.drive.sendAllMotor()
+
+    def steer_arm(self, x, y, z, p, w, g):
+        log.debug("steer_arm: x=%d y=%d z=%d p=%d w=%d g=%d" %(x, y, z, p, w, g))
+
+        arm.setAll([x, y, z, p, w, g])
+        servo_values = arm.getServoValues()
+        
+        for i in range(6):
+            drive.setArmAxis(i+1, servo_values[i])
+            time.sleep(0.001)
+            drive.sendAllAxis()
+            time.sleep(0.001)
 
 if __name__ == "__main__":
     ## TODO: MOVE TO SENSOR THREAD
