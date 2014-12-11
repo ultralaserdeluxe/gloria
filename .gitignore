@@ -94,3 +94,6 @@ eagle.epf
 
 # Bluetooth connection conf file
 src/tools/connect.conf
+
+# Except .eps files in documentation graphics
+!/dokumentation/**/grafik/*.eps
