@@ -133,6 +133,7 @@ class Gloria:
 if __name__ == "__main__":
 
     shared_stuff = {"lineSensor" : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    "middleSensor" : [0, 0],
                     "distance" :  [0, 0],
                     "armPosition" : [0, 0, 255, 4, 5, 5],
                     "errorCodes" : ["YngveProgrammedMeWrong"],
