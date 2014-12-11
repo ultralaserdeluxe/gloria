@@ -20,3 +20,10 @@ class sensorUnit():
             raise SyntaxError("Linesensor value out of bounds")
         self.__bus.writebytes([temp])
         return self.__bus.readbytes(1)[0]
+    def getLeftMiddleSensor(self):
+        self.__bus.writebytes([14])
+        return self.__bus.readbytes(1)[0]
+    def getRightMiddleSensor(self):
+        self.__bus.writebytes([15])
+        return self.__bus.readbytes(1)[0]
+

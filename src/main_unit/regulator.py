@@ -33,10 +33,10 @@ class Regulator(threading.Thread):
             self.__sensorList["error"] = self.__e0
 
     def setMotors(self):
-        leftCurrent=self.getLeftMotor()
-        rightCurrent=self.getRightMotor()
-        left=leftCurrent-int(self.__signalOut)
-        right=rightCurrent+int(self.__signalOut) 
+        # leftCurrent=self.getLeftMotor()
+        # rightCurrent=self.getRightMotor()
+        left=50-int(self.__signalOut)
+        right=50+int(self.__signalOut) 
         self.setRegMotor(left, right)
     
     def setRegMotor(self,left,right):
