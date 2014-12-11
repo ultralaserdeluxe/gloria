@@ -41,10 +41,10 @@ void spi_recieve_handler(unsigned int data)
 
 	switch(address)
 	{
-		case 12:
+		case 11:
 			SPDR = sensors->distance[0];
 			break;
-		case 13:
+		case 12:
 			SPDR = sensors->distance[1];
 			break;
 		default:
