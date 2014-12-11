@@ -3,75 +3,73 @@
 \section{Huvudenhet}
 
 \subsection{Teori}
+\todo{Skulle kunna lägga det här som en egen section}
 
-\subsubsection{reglering}
+\subsubsection{Reglering}
 \todo{Hur tolkar vi sensordata?}
 \todo{Hur fungerar regleringen. Detta får yngve skriva}
 
 \subsubsection{Styrning av arm}
- Omvandlingen från x,y,z koordinater till vinklar för armens servon sker på huvudenheten. På huvudenheten finns en pythonmodul arm.py som implementerar beräkningarna som beskrivs nedan. Den används på följande sätt:
- \begin{enumerate}
- \item skapa en instans av robotArm som är en klass i arm.py
- \item använd funktionen setAll som tar in en lista som argument med följande innehåll \newline [x,y,z,gripperAngle,gripperRotationsOffset,gripper]
- \item använd funktionen getServoValues som returnerar en lista med alla servons vinklar i form av 10 bitars integers. 
- \end{enumerate}
-GripperAngle är gripklons vinkel mot marken, gripperRotationsOffset är en offset på gripklons vinkel i förhållande till leden som gripklons är fäst i och gripper är hur mycket gripklon klämmer. 
-\newline
-\newline
-I listan som returneras är första värdet till armens bas, det andra är till A1, det tredje är till A2, det fjärde till A3, det femte till klons rotation och det sjätte till klons grepp.
+Omvandlingen från $(x,y,z)$-koordinater till vinklar för armens servon sker på huvudenheten. På huvudenheten finns en pythonmodul \texttt{arm.py} som implementerar beräkningarna som beskrivs nedan. Den används i tre steg.
+\begin{enumerate}
+    \item Skapa en instans av robotArm som är en klass i \texttt{arm.py}.
+    \item Använd funktionen \texttt{setAll} som tar in en lista som argument med följande innehåll \newline [\emph{x},\emph{y},\emph{z},\emph{gripperAngle},\emph{gripperRotationsOffset},\emph{gripper}].
+    \item Använd funktionen \texttt{getServoValues} som returnerar en lista med alla servons vinklar i form av 10-bitars heltal.
+\end{enumerate}
 
+GripperAngle är gripklons vinkel mot marken, gripperRotationsOffset är en offset på gripklons vinkel i förhållande till leden som gripklons är fäst i och gripper är hur mycket gripklon klämmer.
 
-% \begin{figure}[H]
-% \centerline{\input{grafik/huvud-armkoordinatsystem}}
-% \caption{Armens koordinatsystem i förhållande till roboten. Upp är robotens färdriktning}
-% \end{figure}
+I listan som returneras är första värdet till armens bas, det andra är till $A1$, det tredje är till $A2$, det fjärde till $A3$, det femte till klons rotation och det sjätte till klons grepp.
 
- %\begin{figure}[H]
-%\centerline{\input{grafik/huvud-armvinklar}}
-%\caption{Armens vinklar}
-%\end{figure}
+\begin{figure}[h!]
+    \centerline{\input{grafik/huvud-armkoordinatsystem}}
+    \caption{Armens koordinatsystem i förhållande till roboten. Upp är robotens färdriktning}
+\end{figure}
 
+\begin{figure}[h!]
+    \centerline{\input{grafik/huvud-armvinklar}}
+    \caption{Armens vinklar}
+\end{figure}
 
-Omvandlingen sker på följande sätt där gripperRotationOffset och gripper ignoreras:
-Antag att roboten start i: $$X,Y,Z,GR=0,0,0,\pi/2$$
-Där GR(GripRadian) är vilken vinkel gripklon har till z-axeln.\newline
-Vi omvandlar:$$ X,Y,Z,GR\rightarrow A,W,Z,GR$$
-Där A är armens vinkel mot positiva x-axeln och W är armens utsträckning.
-$$A=tan^-1(\dfrac{Y}{X}) $$
+Omvandlingen sker på följande sätt där gripperRotationOffset och gripper ignoreras. Antag att roboten startar i $(X,Y,Z,GR)=(0,0,0,\pi/2)$.
+Där $GR$(GripRadian) är vilken vinkel gripklon har till $z$-axeln.\newline
+Vi omvandlar våra rum-koordinater till en vinkel och plankoordinater $X,Y,Z,GR\rightarrow A,W,Z,GR$. Där $A$ är armens vinkel mot positiva $x$-axeln och $W$ är armens utsträckning.
+\todo{Visualisera omvandling rumkoordinater till plan}
+$$A=tan^{-1}(\dfrac{Y}{X}) $$
 $$W=\sqrt{X^2+Y^2}$$
-Genom denna omvandlingen så kan vi göra om detta till ett 2-dimensionellt problem istället för ett 3-dimentionellt problem. Vi får in X,Y,Z,GR och ställer in robotens vinkel mot x-axelns positiva del och sedan ser vi till att roboten bara har rätt utsträckning och höjd.
+Genom denna omvandlingen så kan vi göra om detta till ett 2-dimensionellt problem istället för ett 3-dimensionellt problem. Vi får in $X$,$Y$,$Z$,$GR$ och ställer in robotens vinkel mot $x$-axelns positiva del och sedan ser vi till att roboten bara har rätt utsträckning och höjd.
 $$P_4=(W,Z)$$
 $$P_0=(0,0)$$
 $$W_2=W-cos(GR)*L_3$$
 $$Z_2=Z-sin(GR)*L_3$$
 $$H_L=\sqrt{W_2^2+Z_2^2}$$
-$$H_A=tan^-1(\dfrac{Z_2}{W_2})$$
+$$H_A=tan^{-1}(\dfrac{Z_2}{W_2})$$
 Cosinussatsen ger:
-$$A_1=cos^-1(\dfrac{L_1^2+H_L^2-L_2^2}{2*L_1*H_L})+H_A$$
+$$A_1=cos^{-1}(\dfrac{L_1^2+H_L^2-L_2^2}{2*L_1*H_L})+H_A$$
 $$W_1=cos(A_1)*L_1$$
 $$Z_1=sin(A_1)*L_1$$
-$$A_2=tan^-1(\dfrac{Z_2-Z_1}{W_2-W_1})-A_1$$
+$$A_2=tan^{-1}(\dfrac{Z_2-Z_1}{W_2-W_1})-A_1$$
 $$A_3=GR-D_2-D_3$$
 
-Då har är alla vinklar beräknande men servornas nollpunkter är inte på samma ställen som nollställena i beräkningarna ovanför. Så följande offset ställs in i grader:
+Då är alla vinklar beräknade men servornas nollpunkter är inte på samma ställen som nollställena i beräkningarna ovanför. Så följande offset ställs in i grader:
 \begin{itemize}
-\item A0=A0+60
-\item A1=240-A1
-\item A2=240-A2
-\item A3=150-A3
-\item A4=240-A0+GripperRotationOffset (klons rotation beror på basens rotation)
-\item A5 har ingen offset
+\item $A0=A0+60$
+\item $A1=240-A1$
+\item $A2=240-A2$
+\item $A3=150-A3$
+\item $A4=240-A0+GripperRotationOffset$ (klons rotation beror på basens rotation)
+\item $A5$ har ingen offset
 \end{itemize}
-Dessa vinklar är nu i grader. Dessa multipliceras nu med 3.41 och avrundas nedåt till heltal och kan nu användas direkt av styrenheten.
+Dessa vinklar är nu i grader. Dessa multipliceras nu med $3.41$ \todo{Varför?} och avrundas nedåt till heltal och kan nu användas direkt av styrenheten.
 \subsection{Hårdvara}
 Den hårdvara som ingår i huvudenheten består av en Beagleboard-xm. På denna sitter en Blåtands-enhet av typ \todo{Typ/modell av BT?} monterad för kommunikation med PCenheten. Denna är ansluten till styrenheten och sensorenheten med en flatkabel som innehåller SPI-busen.
 \todo{Bild på BB?}
 
 \subsection{Mjukvara}
 \subsubsection{Allmänt}
-Mjukvaran är uppdelad i fyra trådar. En maintråd som har hand om all styrlogik, en pctråd som hanterar all kommunikation med PC:n, en sensortråd som kontinuerligt uppdaterar huvudenhetens sensorvärden. Slutligen en regulatortråd som har hand om regleringen så roboten kan följa banan utan problem. Alla dessa kommunicera med varandra över en dictionary som innehållar alla olika variabler som behövs delas. Kommandon från PC:n delas mellan pctråden och maintråden genom en kö.
+Mjukvaran är uppdelad i fyra trådar. En maintråd som har hand om all styrlogik, en pctråd som hanterar all kommunikation med PC:n, en sensortråd som kontinuerligt uppdaterar huvudenhetens sensorvärden. Slutligen en regulatortråd som har hand om regleringen så roboten kan följa banan utan problem. Alla dessa kommunicerar med varandra genom ett dictionary som innehållar alla olika variabler som behöver delas. Kommandon från PC:n delas mellan pctråden och maintråden genom en kö.
 \subsubsection{Kommunikation}
-För kommunikationen med PC:n så används pythons standard socketpacket för att sätta upp en tcp/ip anslutning med en dator. Detta startas upp vid boot. Skulle en anslutning brytas av någon anledning så startas anslutning om igen och inväntar en ny anslutning. För närvarande så används PAN över bluetooth för att ansluta till huvudenheten. Detta gör att man kan SSH in på den coh konfigurera den trådlöst. Emacs och Nano är installerat för editering av filer. Man kan även ansluta till huvudenhet över ethernetkabel eller låta den ansluta till ett trådlöst nätverk men blåtand är den mest beprövade metoden. För att ansluta en ny dator med Linux till huvudenhetens PAN behövss följande göras:
+För kommunikationen med PC:n så används pythons standard socketpacket för att sätta upp en tcp/ip anslutning med en dator. Detta startas upp vid boot. Skulle en anslutning brytas av någon anledning så startas anslutning om igen och inväntar en ny anslutning. För närvarande så används PAN över bluetooth för att ansluta till huvudenheten. Detta gör att man kan SSH in på den coh konfigurera den trådlöst. Emacs och Nano är installerat för editering av filer. Man kan även ansluta till huvudenhet över ethernetkabel eller låta den ansluta till ett trådlöst nätverk men blåtand är den mest beprövade metoden. För att ansluta en ny dator med Linux till huvudenhetens PAN behövs följande göras:
 \todo{får uppdatera detta, osäker om detta stämmer}
 \begin{enumerate}
 \item ha tillgång till en terminal på huvudenheten, den enklaste är att ansluta en skärm och tangentbord till den.\newline Lösenordet är :"temppwd"
@@ -82,13 +80,14 @@ För kommunikationen med PC:n så används pythons standard socketpacket för at
 \item kör "sudo pand -n -c 00:19:0E:0F:F0:6F	" på din pc
 \item kör "sudo ifconfig bnep0 192.168.99.2 up " på din pc
 \end{enumerate}
-Nu borde du kunna pinga och ssh in på ubuntu@192.168.99.1 vilket är huvudenhetens statiska ip-adress. I framtiden behövs bara de två sista stegen genomföras
+Nu borde du kunna pinga och ssh in på ubuntu@192.168.99.1 vilket är huvudenhetens statiska ip-adress. I framtiden behövs bara de två sista stegen genomföras.
+\todo{Sista delen bör flyttas till användarhandledning}
 
 \subsubsection{Maintråd}
 \todo{Hur tolkar vi sensordata?}
 \todo{bäst om dennis skriver denna}
 \subsubsection{PCtråd}
-PCtråden sätter upp en socket när den skapas och väntar på en inkommand anslutning från en PC. När den får en anslutning så väntar den på ett kommando. Kommandot kommer som en textsträng på formatet ;kommando=argument1,argument2;. Om kommandot inte har några argument så ser strängen ut på följande sätt :"kommando". Denna sträng görs om till en lista med följande utseende : ["kommando",["argument1","argument2"]].
+PCtråden sätter upp en socket när den skapas och väntar på en inkommande anslutning från en PC. När den får en anslutning så väntar den på ett kommando. Kommandot kommer som en textsträng på formatet \textit{;kommando=argument1,argument2;}. Om kommandot inte har några argument så ser strängen ut på följande sätt \textit{:"kommando"}. Denna sträng görs om till en lista med följande utseende \textit{: ["kommando",["argument1","argument2"]]}.
 \newline
 \newline
 Oftas tas flera kommandon emot samtidigt och PCtråden gör om dessa till en lista av kommandon som den går igenom och behandlar en efter en. Får men till exempel in två kommandon om sätta motorhastigheten så ser tillvägagångssättet ut på följande sätt:
@@ -96,17 +95,15 @@ Oftas tas flera kommandon emot samtidigt och PCtråden gör om dessa till en lis
 \item ";motorSpeed=speed1,speed2;motorspeed=speed3;speed4;"  tas emot
 \item detta görs om till [["motorspeed",["speed1","speed2"]],["motorSpeed",["speed3","speed4"]]]
 \item det första kommandot behandlas genom att argumenten omvandlas till intergers, motorernas hastighet uppdateras i dictionaryn och kommandot läggs till i kön så maintråd vet att den ska skicka ut kommandot.
-\item nästa kommando behandlas på samma sätt men om speed1=speed3 och speed2=speed4 så ignoreras kommandot då det inte påverkar hastigheterna. 
+\item nästa kommando behandlas på samma sätt men om speed1=speed3 och speed2=speed4 så ignoreras kommandot då det inte påverkar hastigheterna.
 \end{enumerate}
 \subsubsection{Sensortråd}
 I denna tråd sätts en uppdateringfrekvens och sedan hämtar denna tråd alla värden från sensorenheten och lägger dessa i dictionaryn så ofta.
 \subsubsection{RegulatorTråd}
-I denna tråd sätts en uppdateringsfrekvens som för nuvarande är satt till 50Hz och sedan så beräknar denna tråd ut reglerfelet så ofta utgående linjesensorns värden som finns i dictionaryn. Från detta så beräknas hastigheterna ut för vardera motorpar och placeras i en egen plats i dictionaryn som sedan maintråden kan välja att använda eller ej. 
+I denna tråd sätts en uppdateringsfrekvens som för nuvarande är satt till 50Hz och sedan så beräknar denna tråd ut reglerfelet så ofta utgående linjesensorns värden som finns i dictionaryn. Från detta så beräknas hastigheterna ut för vardera motorpar och placeras i en egen plats i dictionaryn som sedan maintråden kan välja att använda eller ej.
 \newline
 \newline
-Anledningen till detta hamnade i en egen tråd var för att säkerhetsställa att beräkningarna sker kontinurligt och inte beror på loopen i mainthred. 
-
-
+Anledningen till detta hamnade i en egen tråd var för att säkerhetsställa att beräkningarna sker kontinurligt och inte beror på loopen i mainthred.
 
 
 \todo{Schema över asmycket trådar}
