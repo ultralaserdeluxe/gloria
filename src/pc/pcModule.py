@@ -11,6 +11,7 @@ class pcModule():
         self.__port=1337
         self.__ip_adress=ip_adress
         self.__package_size=512
+	self.__s.settimeout(1)
         self.__s.connect((self.__ip_adress , self.__port))
         self.__s.setblocking(0)
         self.__sensorsList=[]
