@@ -104,7 +104,8 @@ class Gloria:
 
     def line(self):
         # Regulate
-        pass
+        left, right = shared_stuff["regulator"]
+        self.set_speed(left, right)
 
     def set_speed(self, left, right):
         if left != self.current_speed[0] or right != self.current_speed[1]:
@@ -130,10 +131,6 @@ class Gloria:
             time.sleep(0.001)
 
 if __name__ == "__main__":
-    ## TODO: MOVE TO SENSOR THREAD
-    # calibrate_data = [[74, 198], [127, 210], [150, 220], [50, 184],
-    #                  [140, 226], [65, 180], [170, 230], [47, 160],
-    #                  [103, 204], [56, 165], [48, 178]]
 
     shared_stuff = {"lineSensor" : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     "distance" :  [0, 0],
@@ -141,12 +138,17 @@ if __name__ == "__main__":
                     "errorCodes" : ["YngveProgrammedMeWrong"],
                     "motorSpeed" : [70, 70],
                     "latestCalibration" : "0000-00-00-15:00",
-                    "autoMotor" : True,
+                    "autoMotor" : False,
                     "autoArm" : False,
                     "regulator" : [0, 0],
                     "error" : 0}
 
+    # TODO: HANDLE IN A BETTER WAY
+    calibrate_max = [198, 210, 220, 184, 226, 180, 230, 160, 204, 165, 178]
+    calibrate_min = [74, 127, 150, 50, 140, 65, 170, 47, 103, 56, 48]
     sensor_thread = sensorThread.sensorThread(shared_stuff)
+    sensor_thread.cal_max = calibrate_max
+    sensor_thread.cal_min = calibrate_min
     sensor_thread.daemon=True
     sensor_thread.start()
 

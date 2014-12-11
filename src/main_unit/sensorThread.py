@@ -8,7 +8,9 @@ class sensorThread(threading.Thread):
         self.__sensorList=sensorList
         self.__sensorUnit=sensorUnit.sensorUnit()
 	threading.Thread.__init__(self)
-        
+        self.cal_max = [255] * 11
+        self.cal_min = [0] * 11
+
     def run(self):
         while True:
             time.sleep(1.0/updateFreq)
@@ -22,4 +24,7 @@ class sensorThread(threading.Thread):
                 
     def updateLineSensor(self):
         for i in range(11):
-            self.__sensorList["lineSensor"][i]=self.__sensorUnit.getLineSensor(i)
+            value = self.__sensorUnit.getLineSensor(i)
+
+            norm_value = float(value - self.cal_min[i]) / (self.cal_max[i] - self.cal_min[i])
+            self.__sensorList["lineSensor"][i] = norm_value
