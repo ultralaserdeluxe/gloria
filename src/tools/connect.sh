@@ -37,30 +37,30 @@ main() {
 			ip=$(head -n 1 $conf_file)
 		fi
 	elif [ $1 == "reset" ]; then
-		echo Resetting
+		echo "Resetting..."
 		rm $conf_file
 		exit 1
 	else
 		# Use argument as ip
 		ip=$1
 	fi
-	echo Using ip $ip
+	echo "Using ip $ip"
 
 	# Check if connected, connect if not
 	local bluetooth="$(ifconfig | egrep $bt_interface)"
 	if [ -z "${bluetooth}" ]
 	then
 		# If bluetooth not connected, try to connect
-		echo Connecting...
+		echo "Connecting..."
 		sh ./connect_bt.sh $ip
 	else
-		echo Already connected!
+		echo "Already connected!"
 	fi
 
 	# Check if connected successfully"
 	local bluetooth="$(ifconfig | egrep $bt_interface)"
 	if [ -z "${bluetooth}" ]; then
-		echo Failed to connect.
+		echo "Failed to connect."
 	else
 		# If expect is installed, connect and provide password
 		local expect=$(which expect)
