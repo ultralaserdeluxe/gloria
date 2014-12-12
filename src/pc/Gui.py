@@ -10,6 +10,8 @@ import matplotlib
 from numpy import arange, sin, pi
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
+import pygame
+
 class Gui():     
     def __init__(self):
         self.setup()
@@ -18,7 +20,13 @@ class Gui():
         #everything regarding gloria
         self.__ip_adress=""
         self.__gloria=None
-        self.__joy=joystick.Joystick()
+        
+        self.__hasJoystick = True
+        try:
+            self.__joy=joystick.Joystick()
+        except pygame.error:
+            self.__hasJoystick = False
+
         #setup the root windows
         self.__root=tk.Tk()
         self.__root.resizable(True, True)
@@ -250,7 +258,8 @@ class Gui():
         self.__root.after(1000, self.screenSaver)
         
     def peripheralUpdater(self):
-        self.updateSpeedFromJoystick()
+        if self.__hasJoystick:
+            self.updateSpeedFromJoystick()
         self.__root.after(50,self.peripheralUpdater)
     def sensorUpdater(self):
         if self.__gloria:
