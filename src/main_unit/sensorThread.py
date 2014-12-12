@@ -1,15 +1,14 @@
-"""a thread class that fetches data from the sensorunit and puts it in the list shared with mainthread and pc-thread"""
 import threading
 import sensorUnit
 import time
 updateFreq=200.0 #Hz and must be float
 class sensorThread(threading.Thread):
-    def __init__(self,sensorList):
-        self.__sensorList=sensorList
+    """A thread class that fetches data from the sensorunit and puts it in the dict shared with mainthread and pc-thread."""
+
+    def __init__(self, shared):
+        self.shared=shared
         self.__sensorUnit=sensorUnit.sensorUnit()
 	threading.Thread.__init__(self)
-        self.cal_max = [255] * 11
-        self.cal_min = [0] * 11
 
     def run(self):
         while True:
@@ -21,23 +20,26 @@ class sensorThread(threading.Thread):
     def updateDistance(self):
         l = self.__sensorUnit.getLeftDistance()
         r = self.__sensorUnit.getRightDistance()
-        self.__sensorList["distance"] = [l , r]
+        self.shared["distance"] = [l , r]
                 
     def updateLineSensor(self):
         for i in range(11):
             value = self.__sensorUnit.getLineSensor(i)
 
-            norm_value = float(value - self.cal_min[i]) / (self.cal_max[i] - self.cal_min[i])
+            mini = self.shared["lineCalMin"][i]
+            maxi = self.shared["lineCalMax"][i]
+
+            norm_value = float(value - mini) / (maxi - mini)
 
             if norm_value < 0:
                 norm_value = 0
             elif norm_value > 1:
                 norm_value = 1
 
-            self.__sensorList["lineSensor"][i] = norm_value
+            self.shared["lineSensor"][i] = norm_value
 
     def updateMiddleSensor(self):
         left = self.__sensorUnit.getLeftMiddleSensor()
         right = self.__sensorUnit.getRightMiddleSensor()
-        self.__sensorList["middleSensor"][0] = left
-        self.__sensorList["middleSensor"][1] = right
+        self.shared["middleSensor"][0] = left
+        self.shared["middleSensor"][1] = right
