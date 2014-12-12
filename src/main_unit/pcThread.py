@@ -127,7 +127,9 @@ class pcThread(threading.Thread):
                         self.__sensorList[data[0]] = checked_elements[0]
                         self.__commandQueue.put([data[0]] + [self.__sensorList[data[0]]])
 
-            elif data[0]=="calibrate":
+            elif data[0]=="calibrateTape":
+                self.__commandQueue.put(data)
+            elif data[0] == "calibrateFloor":
                 self.__commandQueue.put(data)
             elif data[0]=="start":
                 self.__commandQueue.put(data)
