@@ -1,7 +1,11 @@
+import logging as log
 import threading
-import sensorUnit
 import time
+
+import sensorUnit
+
 updateFreq=200.0 #Hz and must be float
+
 class sensorThread(threading.Thread):
     """A thread class that fetches data from the sensorunit and puts it in the dict shared with mainthread and pc-thread."""
 
@@ -43,3 +47,21 @@ class sensorThread(threading.Thread):
         right = self.__sensorUnit.getRightMiddleSensor()
         self.shared["middleSensor"][0] = left
         self.shared["middleSensor"][1] = right
+
+        # TODO: Normalize middleSensor
+
+    def calibrateTape(self):
+        for i in range(11):
+            value = self.__sensorUnit.getLineSensor(i)
+            self.shared["lineCalMax"][i] = value
+
+        log.info("New tape calibration: %s" %str(self.shared["lineCalMax"]))
+        # TODO: Calibrate middleSensor
+
+    def calibrateFloor(self):
+        for i in range(11):
+            value = self.__sensorUnit.getLineSensor(i)
+            self.shared["lineCalMin"][i] = value
+
+        log.info("New floor calibration: %s" %str(self.shared["lineCalMin"]))
+        # TODO: Calibrate middleSensor

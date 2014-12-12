@@ -30,7 +30,7 @@ class Station:
         return not self.left
 
 class Gloria:
-    def __init__(self, shared_stuff, cmd_queue):
+    def __init__(self, shared_stuff, cmd_queue, sensor_thread):
         self.shared_stuff = shared_stuff
         self.cmd_queue = cmd_queue
 
@@ -93,10 +93,10 @@ class Gloria:
 
     def manual(self, cmd, args):
         if cmd == "calibrateFloor":
-            #TODO: Handle calibrate floor            
+            sensor_thread.calibrateFloor()
             pass
         elif cmd == "calibrateTape":
-            #TODO: Handle calibrate tape
+            sensor_thread.calibrateTape()
             pass
         elif cmd == "motorSpeed":
             self.set_speed(args[0], args[1])
@@ -163,5 +163,5 @@ if __name__ == "__main__":
     regulator.start()
 
     log.basicConfig(level=log.DEBUG)
-    gloria = Gloria(shared_stuff, cmd_queue)
+    gloria = Gloria(shared_stuff, cmd_queue, sensor_thread)
     gloria.run()
