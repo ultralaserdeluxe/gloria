@@ -183,10 +183,14 @@ class pcModule():
         self.sendCommand(command)
         
     #sends a command to the host to calibrate the linesensor
-    def calibrate(self):
-        command="calibrate"
+    def calibrateTape(self):
+        command="calibrateTape"
         self.sendCommand(command)
         
+    def calibrateFloor(self):
+        command="calibrateFloor"
+        self.sendCommand(command)
+
     #sends a command to the host to start the routine
     def start(self):
         command="start"
