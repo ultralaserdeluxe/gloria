@@ -26,7 +26,7 @@ void read_linesensor(sensor_data_t* sensor_data)
 	ADMUX = 0x67;
 
 	uint8_t channel;
-	for(channel = line_sensor_first; channel < line_sensor_last; channel++){
+	for(channel = line_sensor_first; channel <= line_sensor_last; channel++){
 		PORTA = channel & 0x0F;
 		sensor_data->line[channel] = adc_convert();
 	}

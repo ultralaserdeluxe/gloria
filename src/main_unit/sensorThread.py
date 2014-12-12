@@ -14,6 +14,7 @@ class sensorThread(threading.Thread):
             time.sleep(1.0/updateFreq)
             self.updateDistance()
             self.updateLineSensor()
+            self.updateMiddleSensor()
 
     def updateDistance(self):
         l = self.__sensorUnit.getLeftDistance()
@@ -23,3 +24,9 @@ class sensorThread(threading.Thread):
     def updateLineSensor(self):
         for i in range(11):
             self.__sensorList["lineSensor"][i]=self.__sensorUnit.getLineSensor(i)
+
+    def updateMiddleSensor(self):
+        left = self.__sensorUnit.getLeftMiddleSensor()
+        right = self.__sensorUnit.getRightMiddleSensor()
+        self.__sensorList["middleSensor"][0] = left
+        self.__sensorList["middleSensor"][1] = right
