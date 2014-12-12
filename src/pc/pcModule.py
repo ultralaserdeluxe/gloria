@@ -171,6 +171,9 @@ class pcModule():
     def start(self):
         command="start"
         self.sendCommand(command)
+    def stop(self):
+	command="halt"
+	self.sendCommand(command)
         
     #all commands go by this method if we wan to buffer the later on and send them all together
     def sendCommand(self,data):
