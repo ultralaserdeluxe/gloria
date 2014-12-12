@@ -5,6 +5,7 @@ import pcModule
 import os
 import joystick
 import math
+import numpy as np
 #for regulatorerror
 import matplotlib
 from numpy import arange, sin, pi
@@ -41,6 +42,9 @@ class Gui():
         self.__window_height=self.__root.winfo_height()
         self.__buttonsToEnable=[]
         self.__screenSaver=True
+        self.__oldRegulatorErrors=[0.0 for e in range(100)]
+        self.__oldRegulatorTime=[float(e) for e in range(100)]
+        self.__oldRegulatorCounter=0
         #linesensors bars frame
         self.__linesensorFrame=tk.Frame(self.__root,bg="white",width=self.__window_width,height=self.__window_height/6)
         self.__linesensorFrame.grid(row = 0, column = 0,columnspan=5)
@@ -173,17 +177,19 @@ class Gui():
         self.__regulatorFrame.grid(row = 2, column = 4)
         
         #regulatorplot
-        f = Figure(figsize=(1,1), dpi=100,tight_layout=True)
-        frame=f.gca()
-        frame.axes.get_xaxis().set_ticks([])
-        frame.axes.get_yaxis().set_ticks([])
+        f = Figure(figsize=(100,100), dpi=100,tight_layout=True)
+        self.__regulatorPlotFrame=f.gca()
+        self.__regulatorPlotFrame.axes.get_xaxis().set_ticks([])
+        self.__regulatorPlotFrame.axes.get_yaxis().set_ticks([])
         self.__regulatorPlot = f.add_subplot(111)
         t = arange(0.0,3.0,0.01)
         s = sin(2*pi*t)
         self.__regulatorPlot.plot(t,s)
+        
         self.__Regulatorcanvas = FigureCanvasTkAgg(f, master=self.__regulatorFrame)
         self.__Regulatorcanvas.show()
         self.__Regulatorcanvas.get_tk_widget().place(relwidth=1.0,relheight=1.0,relx=0.5,rely=0.5,anchor=tk.CENTER)
+        
         
         self.__errorFrame=tk.Frame(self.__root,bg="white",width=self.__window_width/4,height=self.__window_height*2/6)
         self.__errorFrame.grid(row = 4, column = 4)
@@ -213,6 +219,30 @@ class Gui():
         for i in range(-100,100):
             self.setSpeedbars(i, i)
             time.sleep(0.01)
+    def updateRegulatorError(self,error):
+        self.__oldRegulatorErrors[self.__oldRegulatorCounter]=error[0]
+        self.__oldRegulatorCounter=self.__oldRegulatorCounter+1
+        if self.__oldRegulatorCounter>99:
+            self.__oldRegulatorCounter=0
+        self.updateRegulatorgraph()
+    def updateRegulatorgraph(self):
+        self.__regulatorPlot.cla()
+        self.__regulatorPlot.plot(np.array(self.__oldRegulatorTime,dtype=float),np.array(self.__oldRegulatorErrors,dtype=float))
+        #self.__regulatorPlot.plot([0,1,2,3,4,5,6],[32,453,3,4,5,65,65])
+        self.__regulatorPlotFrame.axes.get_xaxis().set_ticks([])
+        self.__regulatorPlotFrame.axes.get_yaxis().set_ticks([])
+        self.__Regulatorcanvas.show()
+    def regulatorGraphTest(self):
+        self.__regulatorPlot.cla()
+        for i in range(100):
+            t = arange(0.0,3.0,0.01)
+            s = sin(2*pi*t)
+            self.__regulatorPlot.scatter(t[i],s[i])
+            time.sleep(0.0001)
+            self.__regulatorPlotFrame.axes.get_xaxis().set_ticks([])
+            self.__regulatorPlotFrame.axes.get_yaxis().set_ticks([])
+            self.__Regulatorcanvas.show()
+            
     def updateSpeedFromJoystick(self):
         x=self.__joy.x_axis()
         y=self.__joy.y_axis()
@@ -255,6 +285,7 @@ class Gui():
         if self.__screenSaver:
             self.linesensorBarsTester()
             self.speedBarsTester()
+            self.regulatorGraphTest()
         self.__root.after(1000, self.screenSaver)
         
     def peripheralUpdater(self):
@@ -263,8 +294,13 @@ class Gui():
         self.__root.after(50,self.peripheralUpdater)
     def sensorUpdater(self):
         if self.__gloria:
+            print(self.__gloria.getSensorList())
             try:
                 self.__gloria.updateSensors()
+            except (socket.error,AttributeError):
+                self.handleInternalErrors("broken connection")
+            try:
+                self.updateRegulatorError(self.__gloria.getRegulatorError())
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
             try:
