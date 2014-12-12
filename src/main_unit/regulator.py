@@ -47,13 +47,11 @@ class Regulator(threading.Thread):
     def calc_position(self, norm_values):
         weights = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
-        norm_sum = sum(norm_values)
-
-        if norm_sum == 0:
-            return 6
-
         # From TSEA29 lecture 5 (AVR, sensorer, Beagleboard)
-        center = sum(map(lambda x, y: x*y, norm_values, weights)) / norm_sum
+        try:
+            center = sum(map(lambda x, y: x*y, norm_values, weights)) / sum(norm_values)
+        except ZeroDivisionError:
+            return 6
 
         return center
         

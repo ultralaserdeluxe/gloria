@@ -33,7 +33,10 @@ class sensorThread(threading.Thread):
             mini = self.shared["lineCalMin"][i]
             maxi = self.shared["lineCalMax"][i]
 
-            norm_value = float(value - mini) / (maxi - mini)
+            try:
+                norm_value = float(value - mini) / (maxi - mini)
+            except ZeroDivisionError:
+                norm_value = 0
 
             if norm_value < 0:
                 norm_value = 0
