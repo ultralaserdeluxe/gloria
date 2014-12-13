@@ -7,7 +7,7 @@ import pcThread
 import regulator
 import driveUnit
 import sensorThread
-import sensor_eval as se
+import station_functions as se
 import arm
 
 HALTED = "HALTED"
@@ -66,7 +66,7 @@ class Gloria:
         self.current_speed = [None, None]
 
         self.state = None
-        self.stored_state = none
+        self.stored_state = None
         self.has_package = False
         self.station_queue = []
 
@@ -245,7 +245,8 @@ class Gloria:
         else:
             if not se.all_equal(front_converted):
                 left, right = self.shared["regulator"]
-                self.set_speed(left, right)
+                #self.set_speed(left, right)
+		self.go_straight()
             else:
                 self.go_straight()
                 log.info("Found a crossing or break in line.")
@@ -275,7 +276,7 @@ class Gloria:
         avg = sum(map(abs, self.shared["pastErrors"])) / len(self.shared["pastErrors"])
 
         return avg < 3
-        
+
     def put_down_package(self, station):
         side = ["right", "left"][station.is_left()]
         log.info("Putting down package on %s side." %side)
