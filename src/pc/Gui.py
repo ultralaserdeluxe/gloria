@@ -164,12 +164,51 @@ class Gui():
         self.__overviewFrame=tk.Frame(self.__root,bg="white",width=self.__window_width*2/4,height=self.__window_height*2/6)
         self.__overviewFrame.grid(row = 2, column = 2)
         
+        self.__overviewCanvas=tk.Canvas(self.__overviewFrame,width=self.__window_width*2/4,height=self.__window_height*2/6)
+        self.__overviewCanvas.place(relx=0.5,rely=0.5,anchor=tk.CENTER)
+        self.__root.update()
+        self.__overviewRobot=self.__overviewCanvas.create_rectangle(int(self.__overviewCanvas.winfo_width()*0.40),int(self.__overviewCanvas.winfo_height()*0.20),int(self.__overviewCanvas.winfo_width()*0.60),int(self.__overviewCanvas.winfo_height()*0.80))
+        self.__leftMiddleSensor=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4-30),int(self.__overviewCanvas.winfo_height()/2.0-4),int(self.__overviewCanvas.winfo_width()/2.0+4-30),int(self.__overviewCanvas.winfo_height()/2.0+4),fill="red")
+        self.__rightMiddleSensor=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4+30),int(self.__overviewCanvas.winfo_height()/2.0-4),int(self.__overviewCanvas.winfo_width()/2.0+4+30),int(self.__overviewCanvas.winfo_height()/2.0+4),fill="red")
+        self.__linesensorDots={}
+        
+        self.__linesensorDot0=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4-50),int(self.__overviewCanvas.winfo_height()/2.0-4-80),int(self.__overviewCanvas.winfo_width()/2.0+4-50),int(self.__overviewCanvas.winfo_height()/2.0+4-80),fill="red")
+        self.__linesensorDots[0]=self.__linesensorDot0
+        
+        self.__linesensorDot1=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4-40),int(self.__overviewCanvas.winfo_height()/2.0-4-80),int(self.__overviewCanvas.winfo_width()/2.0+4-40),int(self.__overviewCanvas.winfo_height()/2.0+4-80),fill="red")
+        self.__linesensorDots[1]=self.__linesensorDot1
+        
+        self.__linesensorDot2=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4-30),int(self.__overviewCanvas.winfo_height()/2.0-4-80),int(self.__overviewCanvas.winfo_width()/2.0+4-30),int(self.__overviewCanvas.winfo_height()/2.0+4-80),fill="red")
+        self.__linesensorDots[2]=self.__linesensorDot2
+        
+        self.__linesensorDot3=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4-20),int(self.__overviewCanvas.winfo_height()/2.0-4-80),int(self.__overviewCanvas.winfo_width()/2.0+4-20),int(self.__overviewCanvas.winfo_height()/2.0+4-80),fill="red")
+        self.__linesensorDots[3]=self.__linesensorDot3
+        self.__linesensorDot4=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4-10),int(self.__overviewCanvas.winfo_height()/2.0-4-80),int(self.__overviewCanvas.winfo_width()/2.0+4-10),int(self.__overviewCanvas.winfo_height()/2.0+4-80),fill="red")
+        self.__linesensorDots[4]=self.__linesensorDot4
+        self.__linesensorDot5=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4-0),int(self.__overviewCanvas.winfo_height()/2.0-4-80),int(self.__overviewCanvas.winfo_width()/2.0+4-0),int(self.__overviewCanvas.winfo_height()/2.0+4-80),fill="red")
+        self.__linesensorDots[5]=self.__linesensorDot5
+        self.__linesensorDot6=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4+10),int(self.__overviewCanvas.winfo_height()/2.0-4-80),int(self.__overviewCanvas.winfo_width()/2.0+4+10),int(self.__overviewCanvas.winfo_height()/2.0+4-80),fill="red")
+        self.__linesensorDots[6]=self.__linesensorDot6
+        self.__linesensorDot7=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4+20),int(self.__overviewCanvas.winfo_height()/2.0-4-80),int(self.__overviewCanvas.winfo_width()/2.0+4+20),int(self.__overviewCanvas.winfo_height()/2.0+4-80),fill="red")
+        self.__linesensorDots[7]=self.__linesensorDot7
+        self.__linesensorDot8=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4+30),int(self.__overviewCanvas.winfo_height()/2.0-4-80),int(self.__overviewCanvas.winfo_width()/2.0+4+30),int(self.__overviewCanvas.winfo_height()/2.0+4-80),fill="red")
+        self.__linesensorDots[8]=self.__linesensorDot8
+        self.__linesensorDot9=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4+40),int(self.__overviewCanvas.winfo_height()/2.0-4-80),int(self.__overviewCanvas.winfo_width()/2.0+4+40),int(self.__overviewCanvas.winfo_height()/2.0+4-80),fill="red")
+        self.__linesensorDots[9]=self.__linesensorDot9
+        self.__linesensorDot10=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4+50),int(self.__overviewCanvas.winfo_height()/2.0-4-80),int(self.__overviewCanvas.winfo_width()/2.0+4+50),int(self.__overviewCanvas.winfo_height()/2.0+4-80),fill="red")
+        self.__linesensorDots[10]=self.__linesensorDot10
+        
+        self.__distanceLineLeft=self.__overviewCanvas.create_line(int(self.__overviewCanvas.winfo_width()/2.0-70),int(self.__overviewCanvas.winfo_height()/2.0-30),int(self.__overviewCanvas.winfo_width()/2.0-70),int(self.__overviewCanvas.winfo_height()/2.0+30),width=4,fill="black")
+        self.__distanceLineRight=self.__overviewCanvas.create_line(int(self.__overviewCanvas.winfo_width()/2.0+70),int(self.__overviewCanvas.winfo_height()/2.0-30),int(self.__overviewCanvas.winfo_width()/2.0+70),int(self.__overviewCanvas.winfo_height()/2.0+30),width=4,fill="black")
+
+        
         self.__speedFrame=tk.Frame(self.__root,bg="white",width=self.__window_width*2/4,height=self.__window_height*2/6)
         self.__speedFrame.grid(row = 4, column = 2)
         
         self.__speedCanvas=tk.Canvas(self.__speedFrame,width=self.__window_width*2/4,height=self.__window_height*2/6)
         self.__speedCanvas.place(relx=0.5,rely=0.5,anchor=tk.CENTER)
         self.__root.update()
+        
         self.__leftSpeedBar=self.__speedCanvas.create_rectangle(int(self.__speedCanvas.winfo_width()*0.20),int(self.__speedCanvas.winfo_height()*0.50),int(self.__speedCanvas.winfo_width()*0.30),int(self.__speedCanvas.winfo_height()*0.55),fill="green")
         self.__rightSpeedBar=self.__speedCanvas.create_rectangle(int(self.__speedCanvas.winfo_width()*0.70),int(self.__speedCanvas.winfo_height()*0.50),int(self.__speedCanvas.winfo_width()*0.80),int(self.__speedCanvas.winfo_height()*0.55),fill="green")
         
@@ -214,11 +253,41 @@ class Gui():
     def insertError(self,error):
         self.__errorListbox.insert(tk.END,error)
         self.__errorListbox.yview(tk.END)
+    def setMiddleSensor(self,left,right):
+        if left>0.5:
+            self.__overviewCanvas.itemconfig(self.__leftMiddleSensor, fill="green")
+        else:
+            self.__overviewCanvas.itemconfig(self.__leftMiddleSensor, fill="red")
+        if right>0.5:
+            self.__overviewCanvas.itemconfig(self.__rightMiddleSensor, fill="green")
+        else:
+            self.__overviewCanvas.itemconfig(self.__rightMiddleSensor, fill="red")
+        self.__root.update()
+    def DistanceSensorsTest(self):
+        if not self.__gloria:
+            for i in range(0,30):
+                self.updateDistanceSensor(i, i)
+                time.sleep(0.01)
+            for i in range(30,0,-1):
+                self.updateDistanceSensor(i, i)
+                time.sleep(0.01)
+    def updateDistanceSensor(self,left,right):
+        temp_list=self.__overviewCanvas.coords(self.__distanceLineLeft)
+        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0-70-left)
+        self.__overviewCanvas.coords(self.__distanceLineLeft,tuple(temp_list))
         
+        temp_list=self.__overviewCanvas.coords(self.__distanceLineRight)
+        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0+70+right)
+        self.__overviewCanvas.coords(self.__distanceLineRight,tuple(temp_list))
+        self.__root.update()
     def speedBarsTester(self):
-        for i in range(-100,100):
-            self.setSpeedbars(i, i)
-            time.sleep(0.01)
+        if not self.__gloria:
+            for i in range(-100,100):
+                self.setSpeedbars(i, i)
+                time.sleep(0.001)
+            for i in range(100,0,-1):
+                self.setSpeedbars(i, i)
+                time.sleep(0.001)
     def updateRegulatorError(self,error):
         self.__oldRegulatorErrors[self.__oldRegulatorCounter]=error[0]
         self.__oldRegulatorCounter=self.__oldRegulatorCounter+1
@@ -228,20 +297,20 @@ class Gui():
     def updateRegulatorgraph(self):
         self.__regulatorPlot.cla()
         self.__regulatorPlot.plot(np.array(self.__oldRegulatorTime,dtype=float),np.array(self.__oldRegulatorErrors,dtype=float))
-        #self.__regulatorPlot.plot([0,1,2,3,4,5,6],[32,453,3,4,5,65,65])
         self.__regulatorPlotFrame.axes.get_xaxis().set_ticks([])
         self.__regulatorPlotFrame.axes.get_yaxis().set_ticks([])
         self.__Regulatorcanvas.show()
     def regulatorGraphTest(self):
-        self.__regulatorPlot.cla()
-        for i in range(100):
-            t = arange(0.0,3.0,0.01)
-            s = sin(2*pi*t)
-            self.__regulatorPlot.scatter(t[i],s[i])
-            time.sleep(0.0001)
-            self.__regulatorPlotFrame.axes.get_xaxis().set_ticks([])
-            self.__regulatorPlotFrame.axes.get_yaxis().set_ticks([])
-            self.__Regulatorcanvas.show()
+        if not self.__gloria:
+            self.__regulatorPlot.cla()
+            for i in range(100):
+                t = arange(0.0,3.0,0.01)
+                s = sin(2*pi*t)
+                self.__regulatorPlot.scatter(t[i],s[i])
+                time.sleep(0.0001)
+                self.__regulatorPlotFrame.axes.get_xaxis().set_ticks([])
+                self.__regulatorPlotFrame.axes.get_yaxis().set_ticks([])
+                self.__Regulatorcanvas.show()
             
     def updateSpeedFromJoystick(self):
         x=self.__joy.x_axis()
@@ -274,18 +343,20 @@ class Gui():
                 self.handleInternalErrors("broken connection")
         self.setSpeedbars(left, right)
     def linesensorBarsTester(self):
-        test_data=[[0,0,0,0,0,0,0,0,0,0,0],[128,0,0,0,0,0,0,0,0,0,0],[256,128,0,0,0,0,0,0,0,0,0],[512,256,128,0,0,0,0,0,0,0,0],[1024,512,256,128,0,0,0,0,0,0,0],
-                   [512,1024,512,256,128,0,0,0,0,0,0],[256,512,1024,512,256,128,0,0,0,0,0],[128,256,512,1024,512,256,128,0,0,0,0],[0,128,256,512,1024,512,256,128,0,0,0],[0,0,128,256,512,1024,512,256,128,0,0]
-                   ,[0,0,0,128,256,512,1024,512,256,128,0],[0,0,0,0,128,256,512,1024,512,256,128],[0,0,0,0,0,128,256,512,1024,512,256],[0,0,0,0,0,0,128,256,512,1024,512],[0,0,0,0,0,0,0,128,256,512,1024],[0,0,0,0,0,0,0,0,128,256,512],[0,0,0,0,0,0,0,0,0,128,256],[0,0,0,0,0,0,0,0,0,0,128],[0,0,0,0,0,0,0,0,0,0,0]]
-        for i in range(len(test_data)):
-            self.updateLinesensor([e/1024.0 for e in test_data[i]])
-            self.__root.update()
-            time.sleep(0.1)
+        if not self.__gloria:
+            test_data=[[0,0,0,0,0,0,0,0,0,0,0],[128,0,0,0,0,0,0,0,0,0,0],[256,128,0,0,0,0,0,0,0,0,0],[512,256,128,0,0,0,0,0,0,0,0],[1024,512,256,128,0,0,0,0,0,0,0],
+                       [512,1024,512,256,128,0,0,0,0,0,0],[256,512,1024,512,256,128,0,0,0,0,0],[128,256,512,1024,512,256,128,0,0,0,0],[0,128,256,512,1024,512,256,128,0,0,0],[0,0,128,256,512,1024,512,256,128,0,0]
+                       ,[0,0,0,128,256,512,1024,512,256,128,0],[0,0,0,0,128,256,512,1024,512,256,128],[0,0,0,0,0,128,256,512,1024,512,256],[0,0,0,0,0,0,128,256,512,1024,512],[0,0,0,0,0,0,0,128,256,512,1024],[0,0,0,0,0,0,0,0,128,256,512],[0,0,0,0,0,0,0,0,0,128,256],[0,0,0,0,0,0,0,0,0,0,128],[0,0,0,0,0,0,0,0,0,0,0]]
+            for i in range(len(test_data)):
+                self.updateLinesensor([e/1024.0 for e in test_data[i]])
+                self.__root.update()
+                time.sleep(0.1)
     def screenSaver(self):
-        if self.__screenSaver:
+        if self.__screenSaver and not self.__gloria:
             self.linesensorBarsTester()
             self.speedBarsTester()
             self.regulatorGraphTest()
+            self.DistanceSensorsTest()
         self.__root.after(1000, self.screenSaver)
         
     def peripheralUpdater(self):
@@ -300,6 +371,10 @@ class Gui():
                 self.handleInternalErrors("broken connection")
             try:
                 self.updateRegulatorError(self.__gloria.getRegulatorError())
+            except (socket.error,AttributeError):
+                self.handleInternalErrors("broken connection")
+            try:
+                self.updateDistanceSensor(self.__gloria.getLeftDistanceSensor(), self.__gloria.getRightDistanceSensor())
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
             try:
@@ -399,6 +474,12 @@ class Gui():
                 self.handleInternalErrors("broken connection")
             self.__gloriaStarted=False
     def updateLinesensor(self,values):
+        for i in range(11):
+            if values[i]>0.5:
+                self.__overviewCanvas.itemconfig(self.__linesensorDots[i], fill="green")
+            else:
+                self.__overviewCanvas.itemconfig(self.__linesensorDots[i], fill="red")
+            
         for i in range(11):
             values[i]=int(abs(float(values[i])*1023))
         for i in range(11):
