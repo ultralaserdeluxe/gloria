@@ -8,6 +8,7 @@ import regulator
 import driveUnit
 import sensorThread
 import sensor_eval as se
+import arm
 
 HALTED = "HALTED"
 MANUAL = "MANUAL"
@@ -35,6 +36,7 @@ class Station:
 
     @staticmethod
     def create(side, package):
+        log.info("Station.create side=%s package=%s" %(side, package))
         station = None
         
         if side == se.LEFT and package == se.LEFT:
@@ -56,6 +58,7 @@ class Gloria:
         self.shared = shared_stuff
         self.cmd_queue = cmd_queue
 
+        self.arm = arm.robotArm()
         self.drive = driveUnit.driveUnit()
         self.current_speed = [None, None]
 
@@ -136,30 +139,30 @@ class Gloria:
         front_converted = se.convert_line_values(front_values)
         
         center_values = self.shared["middleSensor"][:]
-        center_converted = se.convert_line_calues(center_values)
+        center_converted = se.convert_line_values(center_values)
 
         if not se.all_equal(front_converted):
             front_station = se.station_front(front_converted)
-            package = se.detect_package(*shared["distance"])
+            package = se.detect_package(*self.shared["distance"])
 
-            if front_station != se.NO_STATION:
+            if front_station != se.NO_STATION and self.is_on_straight():
                 front_obj = Station.create(front_station, package)
                 log.info("Found front station with empty=%s and left=%s." %(str(front_obj.is_empty()), str(front_obj.is_left())))
                 self.station_queue.append(front_obj)
                 self.change_state(STATION_FRONT)
             else:
-                left, right = shared["regulator"]
+                left, right = self.shared["regulator"]
                 self.set_speed(left, right)
 
             center_station = se.station_center(center_converted)
 
-            if center_station != se.NO_STATION:
+            if center_station != se.NO_STATION and self.is_on_straight():
                 self.handle_center_station()
         else:
             log.info("Found crossing or break in line.")
 
-    def handle_center_station(next_state=STATION_CENTER):
-        if is_on_stop() and not self.has_package: self.change_state(HALTED)
+    def handle_center_station(self, next_state=STATION_CENTER):
+        if self.is_on_stop() and not self.has_package: self.change_state(HALTED)
 
         current_center = self.station_queue.pop(0)
         if self.has_package and not current_center.is_full():
@@ -167,24 +170,28 @@ class Gloria:
             self.put_down_packge()
             self.change_state(next_state)
         elif not self.has_package and current_center.is_full():
-            log.info("Current station (left=%s) has package and robot does not. Pick up!", %current_center.is_left())
+            log.info("Current station (left=%s) has package and robot does not. Pick up!" %current_center.is_left())
+            self.set_speed(0, 0)
             self.change_state(MANUAL)
         else:
+            log.info("Current station (left=%s) has no package and robot does not either. Move on." %current_center.is_left())
             self.change_state(next_state)
 
     def station_front(self):
+        self.go_straight()
+
         front_values = self.shared["lineSensor"][:]
         front_converted = se.convert_line_values(front_values)
         front_station = se.station_front(front_converted)
 
         center_values = self.shared["middleSensor"][:]
-        center_converted = se.convert_line_calues(center_values)
+        center_converted = se.convert_line_values(center_values)
         center_station = se.station_center(center_converted)
 
         if front_station == se.NO_STATION:
             log.info("Leaving front station.")
             self.change_state(LINE)
-        elif center_station != se.NO_STATION:
+        elif center_station != se.NO_STATION and self.is_on_straight():
             log.info("Detected center station while on front station.")
             self.handle_center_station(next_state=STATION_BOTH)
 
@@ -192,34 +199,36 @@ class Gloria:
         front_values = self.shared["lineSensor"][:]
         front_converted = se.convert_line_values(front_values)
         front_station = se.station_front(front_converted)
-        package = se.detect_package(*shared["distance"])
+        package = se.detect_package(*self.shared["distance"])
 
         center_values = self.shared["middleSensor"][:]
-        center_converted = se.convert_line_calues(center_values)
+        center_converted = se.convert_line_values(center_values)
         center_station = se.station_center(center_converted)
 
         if center_station == se.NO_STATION:
             log.info("Leaving center station.")
             self.change_state(LINE)
-        elif front_station != se.NO_STATION:
+        elif front_station != se.NO_STATION and self.is_on_straight():
             front_obj = Station.create(front_station, package)
             log.info("Found front station with empty=%s and left=%s." %(str(front_obj.is_empty()), str(front_obj.is_left())))
             self.station_queue.append(front_obj)
             self.change_state(STATION_BOTH)
         else:
             if not se.all_equal(front_converted):
-                left, right = shared["regulator"]
+                left, right = self.shared["regulator"]
                 self.set_speed(left, right)
             else:
                 log.info("Found a crossing or break in line.")
 
     def station_both(self):
+        self.go_straight()
+
         front_values = self.shared["lineSensor"][:]
         front_converted = se.convert_line_values(front_values)
         front_station = se.station_front(front_converted)
 
         center_values = self.shared["middleSensor"][:]
-        center_converted = se.convert_line_calues(center_values)
+        center_converted = se.convert_line_values(center_values)
         center_station = se.station_center(center_converted)
 
         if front_station != se.NO_STATION:
@@ -228,6 +237,25 @@ class Gloria:
         elif center_station != se.NO_STATION:
             log.info("Leaving center station.")
             self.change_state(STATION_FRONT)
+
+    def go_straight(self):
+        self.set_speed(50, 50)
+
+    def is_on_straight(self):
+        # At least two of the sensors in the middle must be True if on straight
+
+        line_4 = self.shared["lineSensor"][4]
+        line_5 = self.shared["lineSensor"][5]
+        line_6 = self.shared["lineSensor"][6]
+
+        converted = se.convert_line_values([line_4, line_5, line_6])
+
+        converted = [e for e in converted if not e is None]
+
+        if sum(converted) >= 2:
+            return True
+        else:
+            return False
 
     def put_down_package(self, station):
         side = ["right", "left"][station.is_left()]
@@ -262,13 +290,13 @@ class Gloria:
     def steer_arm(self, x, y, z, p, w, g):
         log.debug("steer_arm: x=%d y=%d z=%d p=%d w=%d g=%d" %(x, y, z, p, w, g))
 
-        arm.setAll([x, y, z, p, w, g])
-        servo_values = arm.getServoValues()
+        self.arm.setAll([x, y, z, p, w, g])
+        servo_values = self.arm.getServoValues()
         
         for i in range(6):
-            drive.setArmAxis(i+1, servo_values[i])
+            self.drive.setArmAxis(i+1, servo_values[i])
             time.sleep(0.001)
-            drive.sendAllAxis()
+            self.drive.sendAllAxis()
             time.sleep(0.001)
 
 if __name__ == "__main__":
@@ -308,6 +336,6 @@ if __name__ == "__main__":
     regulator.daemon=True
     regulator.start()
 
-    log.basicConfig(level=log.DEBUG)
+    log.basicConfig(level=log.INFO)
     gloria = Gloria(shared_stuff, cmd_queue, sensor_thread)
     gloria.run()

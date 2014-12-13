@@ -46,7 +46,7 @@ class sensorThread(threading.Thread):
             mini = self.shared["lineCalMin"][i]
             maxi = self.shared["lineCalMax"][i]
 
-            norm_value = normalize(value, mini, maxi)
+            norm_value = self.normalize(value, mini, maxi)
             
             self.shared["lineSensor"][i] = norm_value
 
@@ -59,8 +59,8 @@ class sensorThread(threading.Thread):
         right_mini = self.shared["middleCalMin"][1]
         right_maxi = self.shared["middleCalMax"][1]
 
-        norm_left = normalize(left, left_mini, left_maxi)
-        norm_right = normalize(right, right_mini, right_maxi)
+        norm_left = self.normalize(left, left_mini, left_maxi)
+        norm_right = self.normalize(right, right_mini, right_maxi)
 
         self.shared["middleSensor"][0] = norm_left
         self.shared["middleSensor"][1] = norm_right
