@@ -52,7 +52,7 @@ detection_time = 1
 #error marginal for linesensors
 error_margin = 15
 
-
+regulate = False
 
 stopstation_left_detected = False
 stop_cnt = 0
@@ -234,7 +234,7 @@ def is_station_left():
 #check for package on right side
 def has_package_right():
     distance = distance_right(shared_stuff["distance"][0])
-    print "distanceright : ",distance
+    #print "distanceright : ",distance
     if distance >= 6.0 and distance <= 20.0:
         return True
     return False
@@ -243,7 +243,7 @@ def has_package_right():
 #check for package on left side
 def has_package_left():
     distance = distance_left(shared_stuff["distance"][1])
-    print "distanceleft : ",distance
+    #print "distanceleft : ", distance
     if distance >= 6.0 and distance <= 20.0:
         return True
     return False
@@ -282,7 +282,8 @@ def get_command():
     global automotor
     global autoarm
     global speed
-    global new_speed
+    global new_speed_left
+    global new_speed_right
     global pick_up
     global has_package
     global is_centered
@@ -299,10 +300,12 @@ def get_command():
             if command[1] == True:
                 automotor = True
                 speed_right=speed_left = 0x00
-                new_speed_right=speed_right = 0x00
+                new_speed_right=new_speed_left = 0x00
             else:
                 automotor = False
-                set_speed(0x00,0x00)
+                #set_speed(0x00,0x00)
+                speed_right=speed_left = 0x00
+                new_speed_right=new_speed_left = 0x00
         elif command[0] == "autoArm":
             if command[1] == True:
                 autoarm = True
@@ -316,6 +319,30 @@ def get_command():
             steer_arm(["fake_command", [0, 0, 100, 0, 0, 0]])
         else:
             pass
+
+def update_speed():
+
+    global regulate
+    global speed_left
+    global speed_right
+    global new_speed_left
+    global new_speed_right
+    
+    if automotor == True:
+
+        if is_station_left() or is_station_right():
+            regulate = False
+            
+        elif not is_station_left() or not is_station_right():
+            regulate = True
+        
+    if regulate:
+        new_speed_left, new_speed_right = shared_stuff["regulator"]
+        
+    if (speed_left != new_speed_left) or (speed_right != new_speed_right):
+        speed_left = new_speed_left
+        speed_right = new_speed_right
+        set_speed(speed_left, speed_right)
 
 
 #test
@@ -337,11 +364,11 @@ regulator.start()
 
 
 # Print distance sensors
-while True:
-    time.sleep(0.5)
-    #print shared_stuff["distance"]
-    has_package_left()
-    has_package_right()
+# while True:
+#     time.sleep(0.5)
+#     #print shared_stuff["distance"]
+#     has_package_left()
+#     has_package_right()
 
 # # Print middle sensor for debug
 # while True:
@@ -355,6 +382,7 @@ while True:
 
     #get latest PC command from queue
     get_command()
+    update_speed()
     # if True:    
     # #if automotor:
     #     if stopstation_left():
@@ -369,6 +397,7 @@ while True:
 
     # #print stop_cnt
     # print has_package
+
 
     #the steerlogic.
     if automotor == True:
@@ -388,15 +417,18 @@ while True:
                 else:
                     pick_up = False
                     put_down = False                    
-                    new_speed_left, new_speed_right = shared_stuff["regulator"]
+                    regulate = True
 
-                if (speed_left != new_speed_left) or (speed_right != new_speed_right):
-                    speed_left = new_speed_left
-                    speed_right = new_speed_right
-                    set_speed(speed_left,speed_right)
+                    # new_speed_left, new_speed_right = shared_stuff["regulator"]
+
+                # if (speed_left != new_speed_left) or (speed_right != new_speed_right):
+                #     speed_left = new_speed_left
+                #     speed_right = new_speed_right
+                #     set_speed(speed_left,speed_right)
             else:
                 #put down package... must set put_down to false again
-                new_speed_left, new_speed_right = shared_stuff["regulator"]
+                #new_speed_left, new_speed_right = shared_stuff["regulator"]
+                regulator = True
                 if station_centered():
                     is_centered = True
                 if is_centered:
@@ -411,11 +443,12 @@ while True:
                     time.sleep(6)
                 else:
                     is_centered = False
-                    set_speed(new_speed_left, new_speed_right)
+                    #set_speed(new_speed_left, new_speed_right)
         else:
             #print "Pick up True"
             #pick_up is true, user have to steer arm. pick_up = false
-            new_speed_left, new_speed_right = shared_stuff["regulator"]
+            #new_speed_left, new_speed_right = shared_stuff["regulator"]
+            regulator = True
             if station_centered():
                 is_centered = True
 
@@ -426,20 +459,23 @@ while True:
                 if autoarm == False and command[0] == "armPosition":
                     print "Waiting for hasPackage..."
                     steer_arm(command)
-            if (speed_left != new_speed_left) or (speed_right != new_speed_right):
-                speed_left = new_speed_left
-                speed_right = new_speed_right
-                set_speed(speed_left,speed_right)
+            # if (speed_left != new_speed_left) or (speed_right != new_speed_right):
+            #     speed_left = new_speed_left
+            #     speed_right = new_speed_right
+            #     set_speed(speed_left,speed_right)
             
     else:
         #manuell
+        regulate = False
         if command[0] == "motorSpeed":
             new_speed_left = command[1][0]
             new_speed_right = command[1][1]
-            if (speed_left != new_speed_left) or (speed_right != new_speed_right):
-                speed_left = new_speed_left
-                speed_right = new_speed_right
-                set_speed(speed_left,speed_right)
+            
+            # if (speed_left != new_speed_left) or (speed_right != new_speed_right):
+            #     speed_left = new_speed_left
+            #     speed_right = new_speed_right
+            #     set_speed(speed_left,speed_right)
+        
         elif command[0] == "armPosition":
             steer_arm(command)
         else:
