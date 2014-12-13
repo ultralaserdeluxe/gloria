@@ -19,6 +19,10 @@ class Regulator(threading.Thread):
         while True:
             time.sleep(self.__updateTime)
 
+            if len(self.__sensorList["pastErrors"]) == 50:
+                self.__sensorList["pastErrors"].pop(0)
+            self.__sensorList["pastErrors"].append(self.__e0)
+
             self.__e1=self.__e0
             self.__e0=self.get_current_error()
 
