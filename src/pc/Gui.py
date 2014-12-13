@@ -260,6 +260,8 @@ class Gui():
         self.__overviewArmHorizontalLine=self.__overviewCanvas.create_line(int(self.__overviewCanvas.winfo_width()/2.0-10),int(self.__overviewCanvas.winfo_height()/2.0),int(self.__overviewCanvas.winfo_width()/2.0+10),int(self.__overviewCanvas.winfo_height()/2.0),width=2,fill="black")
         self.__overviewArmVerticalLine=self.__overviewCanvas.create_line(int(self.__overviewCanvas.winfo_width()/2.0),int(self.__overviewCanvas.winfo_height()/2.0-10),int(self.__overviewCanvas.winfo_width()/2.0),int(self.__overviewCanvas.winfo_height()/2.0+10),width=2,fill="black")
 
+        self.__overviewArmHeight=self.__overviewCanvas.create_rectangle(int(self.__overviewCanvas.winfo_width()*0.95-10),int(self.__overviewCanvas.winfo_height()*0.5),int(self.__overviewCanvas.winfo_width()*0.95+10),int(self.__overviewCanvas.winfo_height()-2))
+
         
         self.__speedFrame=tk.Frame(self.__root,bg="white",width=self.__window_width*2/4,height=self.__window_height*2/6)
         self.__speedFrame.grid(row = 4, column = 2)
@@ -341,6 +343,11 @@ class Gui():
         temp_list.append(round(self.__overviewCanvas.winfo_width()/2.0+values[0]))
         temp_list.append(round(self.__overviewCanvas.winfo_height()/2.0+10-values[1]))
         self.__overviewCanvas.coords(self.__overviewArmHorizontalLine,tuple(temp_list))
+        
+        temp_list=self.__overviewCanvas.coords(self.__overviewArmHeight)
+        
+        temp_list[1]=round(self.__overviewCanvas.winfo_height()-values[2])
+        self.__overviewCanvas.coords(self.__overviewArmHeight,tuple(temp_list))
         self.__root.update()
         
     def setMiddleSensor(self,left,right):
