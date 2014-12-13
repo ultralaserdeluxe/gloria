@@ -9,9 +9,7 @@ class Regulator(threading.Thread):
         self.__updateFreq=50.0
         self.__updateTime=1.0/self.__updateFreq
         self.__P=28.6 # P-max = 37, ocsilleringsperiod = 0.7
-        #self.__P=25.6 # P-max = 37, ocsilleringsperiod = 0.7
         self.__D=0.7
-        #self.__D=0.5
         self.__signalOut=0.0
         self.cal_floor_1 = [[74,198],[127,210],[150,220],[50,184],[140,226],[65,180],
                                  [170,230],[47,160],[103,204],[56,165],[48,178]]
