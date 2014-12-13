@@ -8,7 +8,7 @@ I projektet ingår främst två större teoretiska beräkningsmoment. Vi måste 
 Omvandlingen från $(x,y,z)$-koordinater till vinklar för armens servon sker på huvudenheten. På huvudenheten finns en pythonmodul \texttt{arm.py} som implementerar beräkningarna som beskrivs nedan. Den används i tre steg.
 \begin{enumerate}
 	\item Skapa en instans av \texttt{robotArm} som är en klass i \texttt{arm.py}.
-	\item Använd funktionen \texttt{setAll} som tar in en lista som argument med följande innehåll \newline [\emph{x},\emph{y},\emph{z},\emph{gripperAngle},\emph{gripperRotationsOffset},\emph{gripper}].
+	\item Använd funktionen \texttt{setAll} som tar in en lista som argument med följande innehåll \newline \texttt{[x,y,z,gripperAngle,gripperRotationsOffset,gripper]}.
 	\item Använd funktionen \texttt{getServoValues} som returnerar en lista med alla servons vinklar i form av 10-bitars heltal.
 \end{enumerate}
 
