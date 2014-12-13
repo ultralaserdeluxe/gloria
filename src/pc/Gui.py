@@ -3,14 +3,69 @@ import time
 import socket  
 import pcModule
 import os
-import joystick
 import math
 import numpy as np
-#for regulatorerror
-import matplotlib
 from numpy import arange, sin, pi
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+import pygame
+class Joystick():
+    def __init__(self,toControl=""):
+        pygame.init()
+        self.__init=False
+        if toControl=="motor":
+            name="Madcatz"
+        if toControl=="arm":
+            name="Saitek"
+        pygame.joystick.init()
+        joystick_count = pygame.joystick.get_count()
+        for i in range(joystick_count):
+            joy=pygame.joystick.Joystick(i)
+            joy.init()
+            temp=joy.get_name()
+            if name in temp:
+                self.joystick=joy
+                self.__init=True
+                
+    def get_init(self):
+        return self.__init
+    def x_axis(self):
+        pygame.event.pump()
+        return self.joystick.get_axis(0)
+    def y_axis(self):
+        pygame.event.pump()
+        return self.joystick.get_axis(1)
+    def throttle(self):
+        pygame.event.pump()
+        return self.joystick.get_axis(2)
+    def z_axis(self):
+        pygame.event.pump()
+        return self.joystick.get_axis(3)
+    def get_button_0(self):
+        pygame.event.pump()
+        return self.joystick.get_button(0)
+    def get_button_1(self):
+        pygame.event.pump()
+        return self.joystick.get_button(1)
+    def get_button_2(self):
+        pygame.event.pump()
+        return self.joystick.get_button(2)
+    def get_button_3(self):
+        pygame.event.pump()
+        return self.joystick.get_button(3)
+    def get_button_4(self):
+        pygame.event.pump()
+        return self.joystick.get_button(4)
+    def get_button_5(self):
+        pygame.event.pump()
+        return self.joystick.get_button(5)
+    def get_button_6(self):
+        pygame.event.pump()
+        return self.joystick.get_button(6)
+    def get_hat(self):
+        pygame.event.pump()
+        return self.joystick.get_hat(0)
+    
 class Gui():     
     def __init__(self):
         self.setup()
@@ -19,7 +74,8 @@ class Gui():
         #everything regarding gloria
         self.__ip_adress=""
         self.__gloria=None
-        self.__joy=joystick.Joystick()
+        self.__motorJoy=None
+        self.__armJoy=None
         #setup the root windows
         self.__root=tk.Tk()
         self.__root.resizable(True, True)
@@ -84,12 +140,19 @@ class Gui():
         self.__connectFrame=tk.Frame(self.__root,bg="white",width=self.__window_width/4,height=self.__window_height*2/6)
         self.__connectFrame.grid(row = 2, column = 0)
         self.__ip_entry = tk.Entry(self.__connectFrame)
-        self.__ip_entry.place(relx=0.50,rely=0.40,anchor=tk.CENTER)
+        self.__ip_entry.place(relx=0.50,rely=0.30,anchor=tk.CENTER)
         self.__ip_entry.delete(0, tk.END)
         self.openConfigFile()
         self.__ip_entry.insert(0, self.__ip_adress)
         self.__connect_button=tk.Button(self.__connectFrame, text="connect", width=15, command=self.connectFunction)
-        self.__connect_button.place(relx=0.50,rely=0.60,anchor=tk.CENTER)
+        self.__connect_button.place(relx=0.50,rely=0.50,anchor=tk.CENTER)
+
+        
+        self.__connectArmJoystickButton=tk.Button(self.__connectFrame, text="connect arm joystick", width=15, command=self.connectArmJoystick)
+        self.__connectArmJoystickButton.place(relx=0.50,rely=0.70,anchor=tk.CENTER)
+        
+        self.__connectMotorJoystickButton=tk.Button(self.__connectFrame, text="connect motor joystick", width=15, command=self.connectMotorJoystick)
+        self.__connectMotorJoystickButton.place(relx=0.50,rely=0.90,anchor=tk.CENTER)
         
         self.__middleSeparator0=tk.Frame(self.__root,height=2,bd=1,relief=tk.SUNKEN)
         self.__middleSeparator0.grid(row = 3, column = 0,sticky=tk.E+tk.W)
@@ -193,6 +256,12 @@ class Gui():
         self.__distanceLineLeft=self.__overviewCanvas.create_line(int(self.__overviewCanvas.winfo_width()/2.0-70),int(self.__overviewCanvas.winfo_height()/2.0-30),int(self.__overviewCanvas.winfo_width()/2.0-70),int(self.__overviewCanvas.winfo_height()/2.0+30),width=4,fill="black")
         self.__distanceLineRight=self.__overviewCanvas.create_line(int(self.__overviewCanvas.winfo_width()/2.0+70),int(self.__overviewCanvas.winfo_height()/2.0-30),int(self.__overviewCanvas.winfo_width()/2.0+70),int(self.__overviewCanvas.winfo_height()/2.0+30),width=4,fill="black")
 
+        self.__overviewArmRing=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-10),int(self.__overviewCanvas.winfo_height()/2.0-10),int(self.__overviewCanvas.winfo_width()/2.0+10),int(self.__overviewCanvas.winfo_height()/2.0+10))
+        self.__overviewArmHorizontalLine=self.__overviewCanvas.create_line(int(self.__overviewCanvas.winfo_width()/2.0-10),int(self.__overviewCanvas.winfo_height()/2.0),int(self.__overviewCanvas.winfo_width()/2.0+10),int(self.__overviewCanvas.winfo_height()/2.0),width=2,fill="black")
+        self.__overviewArmVerticalLine=self.__overviewCanvas.create_line(int(self.__overviewCanvas.winfo_width()/2.0),int(self.__overviewCanvas.winfo_height()/2.0-10),int(self.__overviewCanvas.winfo_width()/2.0),int(self.__overviewCanvas.winfo_height()/2.0+10),width=2,fill="black")
+
+        self.__overviewArmHeight=self.__overviewCanvas.create_rectangle(int(self.__overviewCanvas.winfo_width()*0.95-10),int(self.__overviewCanvas.winfo_height()*0.5),int(self.__overviewCanvas.winfo_width()*0.95+10),int(self.__overviewCanvas.winfo_height()-2))
+
         
         self.__speedFrame=tk.Frame(self.__root,bg="white",width=self.__window_width*2/4,height=self.__window_height*2/6)
         self.__speedFrame.grid(row = 4, column = 2)
@@ -242,9 +311,45 @@ class Gui():
         self.__root.after(50,self.peripheralUpdater)
         self.__root.after(100,self.sensorUpdater)
         self.__root.mainloop()
+    def connectArmJoystick(self):
+        temp=Joystick("arm")
+        if temp.get_init():
+            self.__armJoy=temp
+            self.__connectArmJoystickButton.config(state=tk.DISABLED)
+    def connectMotorJoystick(self):
+        temp=Joystick("motor")
+        if temp.get_init():
+            self.__motorJoy=temp
+            self.__connectMotorJoystickButton.config(state=tk.DISABLED)
     def insertError(self,error):
         self.__errorListbox.insert(tk.END,error)
         self.__errorListbox.yview(tk.END)
+    def updateArmPosition(self,values):
+        temp_list=[]
+        temp_list.append(round(self.__overviewCanvas.winfo_width()/2.0-10+values[0]))
+        temp_list.append(round(self.__overviewCanvas.winfo_height()/2.0-10-values[1]))
+        temp_list.append(round(self.__overviewCanvas.winfo_width()/2.0+10+values[0]))
+        temp_list.append(round(self.__overviewCanvas.winfo_height()/2.0+10-values[1]))
+        self.__overviewCanvas.coords(self.__overviewArmRing,tuple(temp_list))
+        temp_list=[]
+        temp_list.append(round(self.__overviewCanvas.winfo_width()/2.0-10+values[0]))
+        temp_list.append(round(self.__overviewCanvas.winfo_height()/2.0-values[1]))
+        temp_list.append(round(self.__overviewCanvas.winfo_width()/2.0+10+values[0]))
+        temp_list.append(round(self.__overviewCanvas.winfo_height()/2.0-values[1]))
+        self.__overviewCanvas.coords(self.__overviewArmVerticalLine,tuple(temp_list))
+        temp_list=[]
+        temp_list.append(round(self.__overviewCanvas.winfo_width()/2.0+values[0]))
+        temp_list.append(round(self.__overviewCanvas.winfo_height()/2.0-10-values[1]))
+        temp_list.append(round(self.__overviewCanvas.winfo_width()/2.0+values[0]))
+        temp_list.append(round(self.__overviewCanvas.winfo_height()/2.0+10-values[1]))
+        self.__overviewCanvas.coords(self.__overviewArmHorizontalLine,tuple(temp_list))
+        
+        temp_list=self.__overviewCanvas.coords(self.__overviewArmHeight)
+        
+        temp_list[1]=round(self.__overviewCanvas.winfo_height()-values[2])
+        self.__overviewCanvas.coords(self.__overviewArmHeight,tuple(temp_list))
+        self.__root.update()
+        
     def setMiddleSensor(self,left,right):
         if left>0.5:
             self.__overviewCanvas.itemconfig(self.__leftMiddleSensor, fill="green")
@@ -263,13 +368,13 @@ class Gui():
             for i in range(30,0,-1):
                 self.updateDistanceSensor(i, i)
                 time.sleep(0.01)
-    def updateDistanceSensor(self,left,right):
+    def updateDistanceSensor(self,right,left):
         temp_list=self.__overviewCanvas.coords(self.__distanceLineLeft)
-        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0-70-left)
+        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0-70-(30-left))
         self.__overviewCanvas.coords(self.__distanceLineLeft,tuple(temp_list))
         
         temp_list=self.__overviewCanvas.coords(self.__distanceLineRight)
-        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0+70+right)
+        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0+70+(30-right))
         self.__overviewCanvas.coords(self.__distanceLineRight,tuple(temp_list))
         self.__root.update()
     def speedBarsTester(self):
@@ -305,8 +410,8 @@ class Gui():
                 self.__Regulatorcanvas.show()
             
     def updateSpeedFromJoystick(self):
-        x=self.__joy.x_axis()
-        y=self.__joy.y_axis()
+        x=self.__motorJoy.x_axis()
+        y=self.__motorJoy.y_axis()
         z=math.sqrt(x*x+y*y)
         if z!=0.0:
             rad = math.acos(abs(x)/z)
@@ -334,6 +439,13 @@ class Gui():
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
         self.setSpeedbars(left, right)
+    def updateArmFromJoystick(self):
+        self.__gloria.updateSensors()
+        armPosition=self.__gloria.getArmPosition()
+        x=int(self.__armJoy.x_axis()*4.0+armPosition[0])
+        y=int(-self.__armJoy.y_axis()*4.0+armPosition[1])
+        z=int(self.__armJoy.z_axis()*4.0+armPosition[2])
+        self.__gloria.setArmPosition(x, y, z, 0, 0, 0)
     def linesensorBarsTester(self):
         if not self.__gloria:
             test_data=[[0,0,0,0,0,0,0,0,0,0,0],[128,0,0,0,0,0,0,0,0,0,0],[256,128,0,0,0,0,0,0,0,0,0],[512,256,128,0,0,0,0,0,0,0,0],[1024,512,256,128,0,0,0,0,0,0,0],
@@ -352,13 +464,23 @@ class Gui():
         self.__root.after(1000, self.screenSaver)
         
     def peripheralUpdater(self):
-        self.updateSpeedFromJoystick()
+        if self.__motorJoy:
+            self.updateSpeedFromJoystick()
+        if self.__armJoy and self.__gloria:
+            try:
+                self.updateArmFromJoystick()
+            except (socket.error,AttributeError):
+                self.handleInternalErrors("broken connection")
         self.__root.after(50,self.peripheralUpdater)
     def sensorUpdater(self):
         if self.__gloria:
             print(self.__gloria.getSensorList())
             try:
                 self.__gloria.updateSensors()
+            except (socket.error,AttributeError):
+                self.handleInternalErrors("broken connection")
+            try:
+                self.updateArmPosition(self.__gloria.getArmPosition())
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
             try:
@@ -509,6 +631,7 @@ class Gui():
                 self.__gloria=pcModule.pcModule(self.__ip_adress)
                 self.enableButtons(True)
                 self.__screenSaver=False
+                self.__connect_button.config(state=tk.DISABLED)
             except socket.error:
                 self.handleInternalErrors("connection refused")
     def enableButtons(self,value):
@@ -526,6 +649,7 @@ class Gui():
             self.__gloria=None
             self.enableButtons(False)
             self.__screenSaver=True
+            self.__connect_button.config(state=tk.NORMAL)
         
         
 temp=Gui()
