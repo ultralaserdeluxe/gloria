@@ -255,21 +255,10 @@ class Gloria:
         self.set_speed(50, 50)
 
     def is_on_straight(self):
-        # At least two of the sensors in the middle must be True if on straight
+        avg = sum(map(abs, self.shared["pastErrors"])) / len(self.shared["pastErrors"])
 
-        line_4 = self.shared["lineSensor"][4]
-        line_5 = self.shared["lineSensor"][5]
-        line_6 = self.shared["lineSensor"][6]
-
-        converted = se.convert_line_values([line_4, line_5, line_6])
-
-        converted = [e for e in converted if not e is None]
-
-        if sum(converted) >= 2:
-            return True
-        else:
-            return False
-
+        return avg < 3
+        
     def put_down_package(self, station):
         side = ["right", "left"][station.is_left()]
         log.info("Putting down package on %s side." %side)
@@ -334,7 +323,8 @@ if __name__ == "__main__":
                     "autoMotor" : False,
                     "autoArm" : False,
                     "regulator" : [0, 0],
-                    "error" : 0}
+                    "error" : 0,
+                    "pastErrors": []}
 
     sensor_thread = sensorThread.sensorThread(shared_stuff)
     sensor_thread.daemon=True
