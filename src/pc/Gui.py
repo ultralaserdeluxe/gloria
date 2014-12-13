@@ -35,12 +35,15 @@ class Joystick():
     def y_axis(self):
         pygame.event.pump()
         return self.joystick.get_axis(1)
-    def throttle(self):
+    def axis2(self):
         pygame.event.pump()
         return self.joystick.get_axis(2)
-    def z_axis(self):
+    def axis3(self):
         pygame.event.pump()
         return self.joystick.get_axis(3)
+    def axis4(self):
+        pygame.event.pump()
+        return self.joystick.get_axis(4)
     def get_button_0(self):
         pygame.event.pump()
         return self.joystick.get_button(0)
@@ -445,7 +448,8 @@ class Gui():
         x=int(self.__armJoy.x_axis()*4.0+armPosition[0])
         y=int(-self.__armJoy.y_axis()*4.0+armPosition[1])
         z=int(self.__armJoy.z_axis()*4.0+armPosition[2])
-        self.__gloria.setArmPosition(x, y, z, 0, 0, 0)
+        
+        self.__gloria.setArmPosition(x, y, z, int(self.__armJoy.axis2()*90),int( -90 +self.__armJoy.axis3()*150), int(70+self.__armJoy.axis4()*70))
     def linesensorBarsTester(self):
         if not self.__gloria:
             test_data=[[0,0,0,0,0,0,0,0,0,0,0],[128,0,0,0,0,0,0,0,0,0,0],[256,128,0,0,0,0,0,0,0,0,0],[512,256,128,0,0,0,0,0,0,0,0],[1024,512,256,128,0,0,0,0,0,0,0],
