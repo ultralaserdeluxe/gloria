@@ -1,5 +1,6 @@
 import threading
 import time
+import station_functions as sf
 
 class Regulator(threading.Thread):
     def __init__(self,sensorList):
@@ -35,9 +36,9 @@ class Regulator(threading.Thread):
 
     def setMotors(self):
         left=50-int(self.__signalOut)
-        right=50+int(self.__signalOut) 
+        right=50+int(self.__signalOut)
         self.setRegMotor(left, right)
-    
+
     def setRegMotor(self,left,right):
         self.__sensorList["regulator"] = [left, right]
 
@@ -60,14 +61,25 @@ class Regulator(threading.Thread):
             return 6
 
         return center
-        
+
     def calc_error(self, position):
         # 6 is the middle weight.
         return 6 - position
 
     def get_current_error(self):
         sensor_values = self.getSensorValues()
+        converted_values = sf.convert_line_value(sensor_values)
+        station = sf.stationfront(converted_values)
+        mask = []
+        if sf.all_equal(converted_values):
+            mask = [0] * 11
+        elif station != NO_STATION:
+            mask = [0] * 4 + [1] * 3 + [0] * 4
+        else:
+            mask = [1] * 11
+
+        sensor_values = map(lambda x, y: x * y, sensor_values, mask)
         position = self.calc_position(sensor_values)
         error = self.calc_error(position)
-        
+
         return error
