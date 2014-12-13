@@ -11,7 +11,7 @@ class pcModule():
         self.__port=1337
         self.__ip_adress=ip_adress
         self.__package_size=512
-	self.__s.settimeout(1)
+        self.__s.settimeout(1)
         self.__s.connect((self.__ip_adress , self.__port))
         self.__s.setblocking(0)
         self.__sensorsList=[]
@@ -95,6 +95,11 @@ class pcModule():
             if element[0]=="latestCalibration":
                 return element[1]
         raise SyntaxError("sensor not in list")
+    def getRegulatorError(self):
+        for element in self.__sensorsList:
+            if element[0]=="error":
+                return element[1]
+        raise SyntaxError("sensor not in list")
     
     #returns a bool that tells if the arm is in auto or not
     def getArmAuto(self):
@@ -110,9 +115,24 @@ class pcModule():
                 return element[1][0]
         raise SyntaxError("sensor not in list")
             #converts the sensorlist to a string to send to the user as described in the designspecifikation
+    def isDigit(self,element):
+        try:
+            int(element)
+            return True
+        except ValueError:
+            return False
+    def isFloat(self,element):
+        try:
+            float(element)
+            return True
+        except ValueError:
+            return False
+            
     def checkSubelement(self,subelement):
-        if subelement.isdigit():
+        if self.isDigit(subelement):
             return int(subelement)
+        elif self.isFloat(subelement):
+            return float(subelement)
         else:
             if subelement=="True":
                 return True
@@ -157,7 +177,7 @@ class pcModule():
         self.sendCommand(command)
         
     #sends a command to change the arm to the position decribed by the arguments
-	# -410<x<410,-350<y<400 -71<z<420,-90<pitch<90,-240<wrist<60,<0grip<140
+    # -410<x<410,-350<y<400 -71<z<420,-90<pitch<90,-240<wrist<60,<0grip<140
     def setArmPosition(self,x,y,z,pitch,wrist,grip):
         command="armPosition="+str(x)+","+str(y)+","+str(z)+","+str(pitch)+","+str(wrist)+","+str(grip)
         self.sendCommand(command)
@@ -172,8 +192,8 @@ class pcModule():
         command="start"
         self.sendCommand(command)
     def stop(self):
-	command="halt"
-	self.sendCommand(command)
+        command="halt"
+        self.sendCommand(command)
         
     #all commands go by this method if we wan to buffer the later on and send them all together
     def sendCommand(self,data):
