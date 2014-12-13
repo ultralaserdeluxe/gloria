@@ -5,12 +5,12 @@
 För att ansluta en ny dator med Linux till huvudenhetens PAN behövs följande göras:
 \todo{får uppdatera detta, osäker om detta stämmer}
 \begin{enumerate}
-	\item ha tillgång till en terminal på huvudenheten, den enklaste är att ansluta en skärm och tangentbord till den.\newline Lösenordet är :"temppwd"
-	\item kör "sudo bluez-simple-agent hci0 xx:xx:xx:xx:xx:xx" där du byter ut kryssen mot din blåtandenhets mac-adress
-	\item paira huvudenheten med din pc från din pc
-	\item  kör "sudo bluez-test-device trusted xx:xx:xx:xx:xx:xx yes" på huvudenheten
-	\item du kan nu ta bort pairing från din pc
-	\item kör "sudo pand -n -c 00:19:0E:0F:F0:6F	" på din pc
-	\item kör "sudo ifconfig bnep0 192.168.99.2 up " på din pc
+	\item Ha tillgång till en terminal på huvudenheten, det enklaste är att ansluta en skärm och tangentbord till den.\newline Lösenordet är \textbf{temppwd}
+	\item Kör \textbf{sudo bluez-simple-agent hci0 xx:xx:xx:xx:xx:xx} där du byter ut kryssen mot din blåtandenhets mac-adress
+	\item Paira huvudenheten med din pc från din pc
+	\item Kör \textbf{sudo bluez-test-device trusted xx:xx:xx:xx:xx:xx yes} på huvudenheten
+	\item Du kan nu ta bort pairing från din pc
+	\item Kör \textbf{sudo pand -n -c 00:19:0E:0F:F0:6F	} på din pc
+	\item Kör \textbf{sudo ifconfig bnep0 192.168.99.2 up } på din pc
 \end{enumerate}
-Nu borde du kunna pinga och ssh in på ubuntu@192.168.99.1 vilket är huvudenhetens statiska ip-adress. I framtiden behövs bara de två sista stegen genomföras.
+Nu borde du kunna pinga och ssh in på ubuntu@192.168.99.1 vilket är huvudenhetens statiska ip-adress. I framtiden behövs bara de två sista stegen genmföras.
