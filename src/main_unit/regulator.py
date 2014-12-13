@@ -68,12 +68,12 @@ class Regulator(threading.Thread):
 
     def get_current_error(self):
         sensor_values = self.getSensorValues()
-        converted_values = sf.convert_line_value(sensor_values)
-        station = sf.stationfront(converted_values)
+        converted_values = sf.convert_line_values(sensor_values)
+        station = sf.station_front(converted_values)
         mask = []
         if sf.all_equal(converted_values):
             mask = [0] * 11
-        elif station != NO_STATION:
+        elif station != sf.NO_STATION:
             mask = [0] * 4 + [1] * 3 + [0] * 4
         else:
             mask = [1] * 11
