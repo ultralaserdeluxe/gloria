@@ -84,7 +84,7 @@ class Gloria:
 
     def store_state(self, state = None):
         if state is None: state = self.state
-        log.into("Restoring state from %s to %s" %(self.state, self.stored_state))
+        log.info("Restoring state from %s to %s" %(self.state, self.stored_state))
         self.stashed_state = self.state
 
     def restore_state(self):
