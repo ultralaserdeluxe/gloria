@@ -45,9 +45,8 @@ På andra sidan kommandokön har vi den del av mjukvaran som tolkar och utför i
 
 Styrenheten kommunicerar med robotarmen över UART. Atmega1284p har hårdvarustöd för USART, vilket används genom att vi lägger till data till en buffert och väntar på att det skickas.
 
-Styrenheten har en intern datatyp för typ av enhet den förväntas styra. Om det mottagna kommandot är ett av typen \texttt{Sätt register A till D} lagras detta i den adresserade hårdvarans datatyp.
+Motorernashastighet kontrolleras genom en PWM-signal till vardera motorpar. \todo{Beskriv PWM-generator}
+
+Styrenheten har en intern datatyp för typ av enhet den förväntas styra. Om det mottagna kommandot är ett av typen \texttt{Sätt register A till D} lagras detta i den adresserade hårdvarans datatyp. I det fall att det är armen som adresseras skickas den mottagna datan till rätt register med ett \texttt{WRITE}-kommando \todo{ref datablad AX-12a}. Det innebär att armen inte realiserar de mottagna värden förrän den får ett \texttt{ACTION}-kommando. När styrenheten mottager ett \texttt{Action}-kommando från huvudenheten realiserar den tidigare mottagna kommandon för den adresserade hårdvaran. Detta görs genom att skicka \texttt{ACTION}-kommandon till armen respektive sätter de timers som styr PWM-signalerna till motorparen.
 
 \todo{Hur sköts PWM-en?}
-\todo{Hur kommunicerar vi med Armen? Hårdvarustöd UART}
-\todo{Förklara Action-kommando}
-\todo{Hur våra datatyper fungerar}

@@ -34,8 +34,11 @@ Oftast tas flera kommandon emot samtidigt och PCtråden gör om dessa till en li
 
 \subsubsection{Sensortråd}
 Sensortråden hämtar data från Sensorenheten med en given uppdateringsfrekvens. De hämtade sensorvärdena lagras i den globala datastrukturen.
+\todo{Normaliserar filterar sensordata? Uppdateringsfrekvens, varför?}
 
 \subsubsection{Regulatortråd}
 Regulatortråden använder data från linjesensorerna för att beräkna hur roboten behöver röra sig för att följa linjen. Detta görs sedan om till motsvarande motorhastigheter och lagras i den globala datastrukturen.
 
 Regleringen utförs i en egen tråd för att säkerhetsställa att beräkningarna sker med jämna tidsintervall.
+
+\todo{Detektion av stationer/avbrott}

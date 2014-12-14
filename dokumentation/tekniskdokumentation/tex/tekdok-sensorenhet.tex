@@ -46,6 +46,7 @@ All mjukvara på sensorenheten är skriven i $C$ och finns på enkretsdatorn. De
 \end{figure}
 
 För det första körs en mainloop där sensordata kontinuerligt uppdateras. Först itererar vi igenom Reflexsensorerna genom att först styra om enable-signalen till den aktuella sensorn och därefter utföra en AD-omvandling på den signal vi får tillbaks och sedan gå till nästa. Därefter utför vi i tur och ordning en AD-omvandling på insignalerna från avståndssensorerna. Alla värden sparas i en global datastruktur.
-\newline
+
 För det andra tar sensorenheten emot begäran om sensordata från huvudenheten över SPI. När en sådan förfrågan inkommer triggas ett avbrott i vilket sensorenheten svarar med det aktuella sensorvärdet. Då inget i avläsningen av sensorerna är tidskritiskt behöver vi inte oroa oss för när dessa avbrott kommer.
-\todo{Atmegan hårdvarustöd för SPI}
+
+Då Atmega1284p har hårdvarustöd för SPI på så sätt att den triggar ett interrupt då den har mottagit en byte. Det är i detta avbrott vi utför ovan nämnda procedur för kommunikation med huvudenheten.
