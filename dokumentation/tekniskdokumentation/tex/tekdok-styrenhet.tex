@@ -31,7 +31,23 @@ Styrenheten drivs av en enkretsdator av typ Atmega1284p. Den kan anslutas till e
 \end{figure}
 
 \subsection{Mjukvara}
+Styrenhetens mjukvara består av två moment. För det första tas kommandon emot via SPI från huvudenheten. Vi utnyttjar att Atmega1284p har hårdvarustöd för SPI och triggar ett interrupt när en byte tas emot.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[scale=0.4]{grafik/styr-mjukvara}
+	\caption{T.v. Styrenhetens \todo{mainloop}. T.h. Hur styrenheten hanterar avbrott över SPI.} \label{styr-mjukvara}
+\end{figure}
+
+Centralt i mjukvaran är den kommandokö där mottagna databytes hamnar. Vi lägger alltid till inkomna databytes till det sista kommando-objektet i kön. Om vi får in en databyte och det sista objektet är fullt eller listan tom, skapas ett nytt kommando-objekt och läggs till kön. Vi vet att ett kommando-objekt är fullt genom att jämföra den förväntade längden (se \todo{protokoll huvud-styr}) med hur många byte kommandot består av.
+
+På andra sidan kommandokön har vi den del av mjukvaran som tolkar och utför inkomna kommandon. Den kollar kontinuerligt om kommandokön är tom. Är den inte det kollar vi om det första kommandoobjektet är fullt. Är det fullt mottaget tolkar vi och utför det.
+
+Styrenheten kommunicerar med robotarmen över UART. Atmega1284p har hårdvarustöd för USART, vilket används genom att vi lägger till data till en buffert och väntar på att det skickas.
+
+Styrenheten har en intern datatyp för typ av enhet den förväntas styra. Om det mottagna kommandot är ett av typen \texttt{Sätt register A till D} lagras detta i den adresserade hårdvarans datatyp.
+
 \todo{Hur sköts PWM-en?}
 \todo{Hur kommunicerar vi med Armen? Hårdvarustöd UART}
-\todo{Hur tar vi emot kommandon från Huvudenheten?}
-\todo{Flödesschema styrenheten}
+\todo{Förklara Action-kommando}
+\todo{Hur våra datatyper fungerar}

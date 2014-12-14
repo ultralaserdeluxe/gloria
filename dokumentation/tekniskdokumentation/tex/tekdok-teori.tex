@@ -3,6 +3,7 @@ I projektet ingår främst två större teoretiska beräkningsmoment. Vi måste 
 
 \subsection{Reglering}
 \todo{Hur tolkar vi sensordata, hur fungerar regleringen. Detta får yngve skriva}
+\todo{Tolka sensordata} Normaliserar sensordata (ger 0-1), tolkar som True om >0.8, False om <0.3 och None för övrigt. Delar upp linjesensorn i tre fält om 3 sensorer. Om minst två av de tre vänstra och minst en av de tre mittensensorerna är true har vi en station till vänster. Motsvarande för höger. 
 
 \subsection{Styrning av arm}
 Omvandlingen från $(x,y,z)$-koordinater till vinklar för armens servon sker på huvudenheten. På huvudenheten finns en pythonmodul \texttt{arm.py} som implementerar beräkningarna som beskrivs nedan. Den används i tre steg.
