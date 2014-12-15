@@ -425,8 +425,8 @@ class Gui():
         if(y < 0):
             right = 0 - right
             left = 0 - left
-        left=-int(left*100)
-        right=-int(right*100)
+        left=-int(left*255)
+        right=-int(right*255)
         if self.__gloria:
             try:
                 self.__gloria.setMotorSpeed(left,right)
