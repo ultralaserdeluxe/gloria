@@ -43,7 +43,7 @@ class Station:
     @classmethod
     def create(cls, side, package):
         cls.number += 1
-        log.info("Station.create side=%s package=%s number=%s" %(side, package, str(cls.number)))
+        log.debug("Station.create side=%s package=%s number=%s" %(side, package, str(cls.number)))
         station = None
 
         if side == se.LEFT and package == se.LEFT:
@@ -74,6 +74,9 @@ class Gloria:
         self.stored_state = None
         self.has_package = False
         self.station_queue = []
+        
+        self.arm_return_pos = None
+        self.carry_pos = [0, 100, 100, 0, 0, 0]
 
     def get_command(self):
         if not self.cmd_queue.empty():
@@ -92,10 +95,11 @@ class Gloria:
 
     def store_state(self, state = None):
         if state is None: state = self.state
-        log.info("Restoring state from %s to %s" %(self.state, self.stored_state))
-        self.stashed_state = self.state
+        log.info("Storing state: %s" %state)
+        self.stored_state = state
 
     def restore_state(self):
+        log.info("Restoring state from %s to %s" %(self.state, self.stored_state))
         self.change_state(self.stored_state)
 
     def handle_command(self, cmd, args):
@@ -109,7 +113,19 @@ class Gloria:
             self.set_speed(0, 0)
             self.change_state(MANUAL)
         elif cmd == "hasPackage" and self.state == MANUAL and self.stored_state != None:
-            # TODO: Add return arm to default position
+            self.has_package = True
+            self.arm_return_pos = self.shared["armPosition"]
+
+            pos = self.arm_return_pos[:]
+
+            pos[2] = self.carry_pos[2]
+            self.steer_arm(*pos)
+            time.sleep(3)
+
+            pos[0] = self.carry_pos[0]
+            pos[1] = self.carry_pos[1]
+            self.steer_arm(*pos)
+
             self.restore_state()
         elif cmd == "":
             pass
@@ -193,7 +209,7 @@ class Gloria:
         if self.has_package and not current_center.is_full():
             log.info("Current station (left=%s) has no package but robot does. Put down!" %current_center.is_left())
             log.info([str(e) for e in self.station_queue])
-            self.put_down_packge()
+            self.put_down_package(current_center)
             self.change_state(next_state)
         elif not self.has_package and current_center.is_full():
             log.info("Current station (left=%s) has package and robot does not. Pick up!" %current_center.is_left())
@@ -270,10 +286,43 @@ class Gloria:
         self.set_speed(left, right)
 
     def put_down_package(self, station):
-        side = ["right", "left"][station.is_left()]
-        log.info("Putting down package on %s side." %side)
-        set_speed(0, 0)
-        # TODO: Steer arm
+        left = station.is_left()
+        log.info("Putting down package on %s side." %["right", "left"][left])
+        self.set_speed(0, 0)
+        
+        if left:
+            x = abs(self.arm_return_pos[0]) * -1
+        else:
+            x = abs(self.arm_return_pos[0])
+
+        self.arm_return_pos[0] = x
+
+        pos = self.arm_return_pos[:]
+        pos[2] = self.carry_pos[2]
+        
+        log.info("Setting arm to %s" %str(pos))
+        self.steer_arm(*pos)
+        time.sleep(3)
+
+        pos[2] = self.arm_return_pos[2]
+
+        log.info("Setting arm to %s" %str(pos))
+        self.steer_arm(*pos)
+        time.sleep(3)
+
+        pos[2] = self.carry_pos[2]
+
+        log.info("Setting arm to %s" %str(pos))
+        self.steer_arm(*pos)
+        time.sleep(3)
+
+        pos[0] = self.carry_pos[0]
+        pos[1] = self.carry_pos[1]
+
+        log.info("Setting arm to %s" %str(pos))
+        self.steer_arm(*pos)
+
+        self.has_package = False
 
     def is_on_stop(self):
         if len(self.station_queue) < 3:
@@ -286,6 +335,9 @@ class Gloria:
         if (first.is_left() == second.is_left() == third.is_left() and
             first.is_empty() and second.is_empty() and third.is_empty()):
             log.info("Found stop station.")
+            first.empty = not self.has_package
+            second.empty = not self.has_package
+            third.empty = not self.has_package
             return True
 
     def set_speed(self, left, right):
@@ -332,8 +384,7 @@ if __name__ == "__main__":
                     "autoMotor" : False,
                     "autoArm" : False,
                     "regulator" : [0, 0],
-                    "error" : 0,
-                    "pastErrors": []}
+                    "error" : 0}
 
     sensor_thread = sensorThread.sensorThread(shared_stuff)
     sensor_thread.daemon=True
