@@ -114,7 +114,7 @@ class pcThread(threading.Thread):
                 ans = convertSensorList(self.__sensorList)
                 sendData(ans)
 
-            elif data[0]=="motorSpeed" or data[0]=="armPosition" or data[0]=="autoMotor" or data[0]=="autoArm":
+            elif data[0]=="motorSpeed" or data[0]=="armPosition" or data[0]=="autoMotor" or data[0]=="autoArm" or data[0]=="hasPackage":
 
                 checked_elements =  [checkSubelement(e) for e in data[1]]
 
@@ -133,9 +133,9 @@ class pcThread(threading.Thread):
                 self.__commandQueue.put(data)
             elif data[0]=="start":
                 self.__commandQueue.put(data)
-            elif data[0] == "hasPackage":
-                self.__commandQueue.put(data)
             elif data[0] == "halt":
+                self.__commandQueue.put(data)
+            elif data[0] == "clearErrors":
                 self.__commandQueue.put(data)
             else:
                 pass
