@@ -1,6 +1,6 @@
-\section{Användning av systemet}
+\section{Konfigurering av Gloria}
 
-\subsection{Ansluta till Huvudenheten}
+\subsection{Ansluta till Gloria}
 För att kunna ansluta till huvudenheten behöver följande göras:
 \begin{enumerate}
 	\item Ha tillgång till en terminal på huvudenheten, det enklaste är att ansluta en skärm och tangentbord till den.\newline Lösenordet är \textbf{temppwd}
@@ -12,3 +12,11 @@ För att kunna ansluta till huvudenheten behöver följande göras:
 	\item Kör \textbf{sudo ifconfig bnep0 192.168.99.2 up } på din pc
 \end{enumerate}
 Nu borde du kunna pinga och ssh in på ubuntu@192.168.99.1 vilket är huvudenhetens statiska ip-adress. I framtiden behövs bara de två sista stegen genmföras.
+\subsection{Starta Gloria}
+\begin{enumerate}
+	\item Om anslutning har etablerats till Gloria så behöver man hitta filen mainThread.py som ligger i home directory, dvs där man hamnar när man väl har ssh:at in (se Användning av Systemet).
+	\item Kommandot för att starta systemet i Gloria är bara en rad: \textbf{python mainThread.py}
+	När detta kommandot körs så sätter systemet igång och Gloria lägger sig i vänteläge.
+	\item Efter att mainThread.py har startats på Gloria så startar man upp en ny terminal lokalt på datorn som Gloria ska styras ifrån och hittar Gui.py. Sedan kör man kommandot: \textbf{python Gui.py}
+	\item Anslut två joysticks via USB (till pc). Klargör vilken som styr motor och vilken som styr arm.
+\end{enumerate}
