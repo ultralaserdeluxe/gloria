@@ -1,485 +1,409 @@
-from sensorThread import *
-from pcThread import *
-from driveUnit import *
-from distance import *
-from arm import robotArm
+import sys
+import time
 import Queue
-from regulator import Regulator
+import logging as log
 
-################### list #######################
+import pcThread
+import regulator
+import driveUnit
+import sensorThread
+import station_functions as se
+import arm
 
-#calibrated data [[floor,tape],..] for every linesensor
-calibrateData=[[74,198],[127,210],[150,220],[50,184],[140,226],[65,180],
-                     [170,230],[47,160],[103,204],[56,165],[48,178]]
+HALTED = "HALTED"
+MANUAL = "MANUAL"
+LINE = "LINE"
+STATION_FRONT = "STATION_FRONT"
+STATION_CENTER = "STATION_CENTER"
+STATION_BOTH = "STATION_BOTH"
 
+class Station:
+    number = 0
 
-#gets fresh values from sensorthread
-shared_stuff = {"lineSensor" : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                "middleSensor" : [0, 0],
-                "distance" :  [0, 0],
-                "armPosition" : [0, 0, 0, 0, 0, 0],
-                "arm_return_pos" : [0, 0, 0, 0, 0, 0],
-                "errorCodes" : ["YngveProgrammedMeWrong"],
-                "motorSpeed" : [70, 70],
-                "latestCalibration" : "0000-00-00-15:00",
-                "autoMotor" : False,
-                "autoArm" : False,
-                "regulator" : [0, 0],
-                "error" : 0}
+    def __init__(self, empty, left, number):
+        self.empty = empty
+        self.left = left
+        self.number = number
 
-#commandos from PC
-commandQueue = Queue.Queue()
+    def is_empty(self):
+        return self.empty
 
-################### variables #####################
-#may need more...
-pick_up = False
-put_down = False  
-automotor = False
-autoarm = False
-has_package = False
-speed = 0x00
-new_speed = 0x00
-speed_left = 0x00
-speed_right = 0x00
-new_speed_left = 0x00
-new_speed_right = 0x00
-#used for syncing station, package detection
-timestamp = 0
-station_right = False
-station_left = False
-#used for syncing station, package detection
-detection_time = 1 
-#error marginal for linesensors
-error_margin = 15
+    def is_full(self):
+        return not self.empty
 
-regulate = False
+    def is_left(self):
+        return self.left
 
-stopstation_left_detected = False
-stop_cnt = 0
-floor_middle = False
-floor_left = False
+    def is_right(self):
+        return not self.left
 
-is_centered = False
+    def __str__(self):
+        return "(number=%s, left=%s, empty=%s)" %(str(self.number), str(self.left), str(self.empty))
 
-#spi init for driveunit
-drive = driveUnit()
-robot_arm = robotArm()
+    @classmethod
+    def create(cls, side, package):
+        cls.number += 1
+        log.debug("Station.create side=%s package=%s number=%s" %(side, package, str(cls.number)))
+        station = None
 
-command = ["assjammer"]
-# commandQueue.put(["start"])
-# commandQueue.put(["autoMotor", [True]])
+        if side == se.LEFT and package == se.LEFT:
+            station = Station(False, True, cls.number)
+        elif side == se.LEFT and package != se.LEFT:
+            station = Station(True, True, cls.number)
+        elif side == se.RIGHT and package == se.RIGHT:
+            station = Station(False, False, cls.number)
+        elif side == se.RIGHT and package != se.RIGHT:
+            station = Station(True, False, cls.number)
+        else:
+            log.critical("Tried to create Station with side=\"%s\" and package=\"%s\"!" %(side, package))
 
-def check_pick_up_right():
-    if is_station_right():
-        #print "pick up station to the right found! error", abs(shared_stuff["error"]), is_on_straight()
-        if has_package_right():
-            #print "pick up station has package\n"
-            if has_package == False:
-                #print "has no current package, pick up\n"
-                return True
-    return False
+        log.debug("Created Station (%s) with empty=%s and left=%s." %(str(station.number), str(station.is_empty()), str(station.is_left())))
+        return station
 
-def check_pick_up_left():
-    if is_station_left():
-        #print "pick up station to the left found! error", abs(shared_stuff["error"]), is_on_straight()
-        if has_package_left():
-            #print "pick up station has package\n"
-            if has_package == False:
-                #print "has no current package, pick up\n"
-                return True
-    return False           
+class Gloria:
+    def __init__(self, shared_stuff, cmd_queue, sensor_thread):
+        self.shared = shared_stuff
+        self.cmd_queue = cmd_queue
 
-def check_put_down_right():
-    if is_station_right():
-        #print "put down station to the right found! error", abs(shared_stuff["error"]), is_on_straight()
-        if not has_package_right():
-            #print "put down station has no package\n"
-            if has_package == True:
-                #print "has current package, put down\n"
-                return True
-    return False
+        self.arm = arm.robotArm()
+        self.drive = driveUnit.driveUnit()
+        self.current_speed = [None, None]
+        self.linedet = se.LineDetector()
 
-def check_put_down_left():
-    if is_station_left():
-        #print "put down station to the left found! error", abs(shared_stuff["error"]), is_on_straight()
-        if not has_package_left():
-            #print "put down station has no package\n"
-            if has_package == True:
-                #print "has current package, put down\n"
-                return True
-    return False            
-
-
-def is_on_straight():
-    return abs(shared_stuff["error"]) < 3
-
-
-def stopstation_left():
-    global floor_left
-    global floor_middle
-    global stop_cnt
-
-    # front sensor
-    if is_station_left() and floor_left:
-        stop_cnt += 1
-        floor_left = False
-        #time.sleep(0.15)
-    elif (not is_station_left()):
-        floor_left = True
-    
-    # middle sensor
-    if station_centered() and floor_middle:
-        stop_cnt-= 1
-        floor_middle = False
-        #time.sleep(0.15)
-    elif (not station_centered()):
-        floor_middle = True
-    if stop_cnt > 2:
-        return True
-    return False
-
-#checks if station is under robot
-def station_centered():
-    left_max = 250
-    left_min = 150
-    left_value = shared_stuff["middleSensor"][0]
-    left_norm_value = float(left_value - left_min) / (left_max - left_min)
-
-    right_max = 250
-    right_min = 150
-    right_value = shared_stuff["middleSensor"][1]
-    right_norm_value = float(right_value - right_min) / (right_max -right_min)
-
-    #if right_norm_value > 0.8:
-    #    tape_right = True
-    #else:
-    #    tape_right = False
-    if left_norm_value > 0.8:
-        tape_left = True
-    else:
-        tape_left = False
-
-
-    #if tape_left == True:
-        #print "TAPE CENTERED DETECTED"
-#    print "tape_right", tape_right, "floor_left", floor_left, "tape_value", norm_value, "floor_value", norm_value2
-
-    return tape_left # or tape_right 
-
-
-
-#check the sensor furthermost to the right
-def is_station_right():    
-
-    tape_max = calibrateData[8][1]
-    tape_min = calibrateData[8][0]
-    value = shared_stuff["lineSensor"][8]
-    norm_value = float(value - tape_min) / (tape_max - tape_min)
-
-    floor_max = calibrateData[2][1]
-    floor_min = calibrateData[2][0]
-    value2 = shared_stuff["lineSensor"][2]
-    norm_value2 = float(value2 - floor_min) / (floor_max - floor_min)
-
-    if norm_value > 0.8:
-        tape_right = True
-    else:
-        tape_right = False
-    if norm_value2 < 0.45:
-        floor_left = True
-    else:
-        floor_left = False
- 
-#    print "tape_right", tape_right, "floor_left", floor_left, "tape_value", norm_value, "floor_value", norm_value2
-
-    return tape_right and floor_left and is_on_straight()
-
-
-#check the sensor furthermost to the left
-def is_station_left():
-
-    left = []
-    right = []
-
-    for i in range(0,3):
-        tape_min = calibrateData[i][0]
-        tape_max = calibrateData[i][1]
-        value = shared_stuff["lineSensor"][i]
-        norm_value = float(value - tape_min) / (tape_max - tape_min)
+        self.state = None
+        self.stored_state = None
+        self.has_package = False
+        self.station_queue = []
         
-        floor_min = calibrateData[10][0]
-        floor_max = calibrateData[10][1]
-        value2 = shared_stuff["lineSensor"][10]
-        norm_value2 = float(value2 - floor_min) / (floor_max - floor_min)
+        self.arm_return_pos = None
+        self.carry_pos = [0, 100, 100, 0, 0, 0]
 
-        if norm_value > 0.8:
-            left.append(True)
-            #tape_left = True
-        else:
-            left.append(False)
-            #tape_left = False
-        if norm_value2 < 0.45:
-            #right.append(True)
-            floor_right = True
-        else:
-            #right.append(False)
-            floor_right= False
+    def get_command(self):
+        if not self.cmd_queue.empty():
+            _cmd = self.cmd_queue.get()
+            cmd = _cmd[0]
+            args = _cmd[1:]
+            if args:
+                args = _cmd[1]
+            log.debug("Got command \"%s\" and args %s." %(cmd, str(args)))
+            return cmd, args
+        return "", []
 
-    #print "tape_left", tape_left, "floor_right", floor_right, "tape_value", norm_value, "floor_value", norm_value2
-        
-    #return tape_left and floor_right and is_on_straight()
-    return left[0] and left[1] and left[2] and floor_right
+    def change_state(self, new_state):
+        log.info("Changing state from %s to %s." %(self.state, new_state))
+        self.state = new_state
 
+    def store_state(self, state = None):
+        if state is None: state = self.state
+        log.info("Storing state: %s" %state)
+        self.stored_state = state
 
-#check for package on right side
-def has_package_right():
-    distance = distance_right(shared_stuff["distance"][0])
-    #print "distanceright : ",distance
-    if distance >= 6.0 and distance <= 20.0:
-        return True
-    return False
+    def restore_state(self):
+        log.info("Restoring state from %s to %s" %(self.state, self.stored_state))
+        self.change_state(self.stored_state)
 
+    def handle_command(self, cmd, args):
+        if cmd == "start" and self.state == HALTED:
+            self.change_state(MANUAL)
+        elif cmd == "halt" and self.state != HALTED:
+            self.change_state(HALTED)
+        elif cmd == "autoMotor" and args == True and self.state == MANUAL:
+            self.change_state(LINE)
+        elif cmd == "autoMotor" and args == False and self.state == LINE:
+            self.set_speed(0, 0)
+            self.change_state(MANUAL)
+        elif cmd == "hasPackage" and self.state == MANUAL and self.stored_state != None:
+            self.has_package = True
+            self.arm_return_pos = self.shared["armPosition"]
 
-#check for package on left side
-def has_package_left():
-    distance = distance_left(shared_stuff["distance"][1])
-    #print "distanceleft : ", distance
-    if distance >= 6.0 and distance <= 20.0:
-        return True
-    return False
+            pos = self.arm_return_pos[:]
 
+            pos[2] = self.carry_pos[2]
+            self.steer_arm(*pos)
+            time.sleep(3)
 
-def steer_arm(command):
-    robot_arm.setAll(command[1])
-    servo_values = robot_arm.getServoValues()
-    for i in range(6):
-        drive.setArmAxis(i+1, servo_values[i])
-        time.sleep(0.001)
-        drive.sendAllAxis()
-        time.sleep(0.001)
+            pos[0] = self.carry_pos[0]
+            pos[1] = self.carry_pos[1]
+            self.steer_arm(*pos)
 
-
-def calibrate_floor(): 
-    #give floor values
-    for i in range(0,11):
-        calibrateData[i][0] = shared_stuff["lineSensor"][i]
-
-
-def calibrate_tape():
-    #give tape values
-    for i in range(0,11):
-        calibrateData[i][1] = shared_stuff["lineSensor"][i]
-
-
-def set_speed(left,right):
-    drive.setMotorLeft(left)
-    drive.setMotorRight(right)
-    drive.sendAllMotor()
-
-def get_command():
-    #get latest PC command from queue
-    global command
-    global automotor
-    global autoarm
-    global speed
-    global new_speed_left
-    global new_speed_right
-    global pick_up
-    global has_package
-    global is_centered
-    
-
-    if not commandQueue.empty():
-        command = commandQueue.get()
-        #print str(command)
-        if command[0] == "calibrate_floor":
-            calibrate_floor()
-        elif command[0] == "calibrate_tape":
-            calibrate_tape()
-        elif str(command[0]) == "autoMotor":
-            if command[1] == True:
-                automotor = True
-                speed_right=speed_left = 0x00
-                new_speed_right=new_speed_left = 0x00
-            else:
-                automotor = False
-                #set_speed(0x00,0x00)
-                speed_right=speed_left = 0x00
-                new_speed_right=new_speed_left = 0x00
-        elif command[0] == "autoArm":
-            if command[1] == True:
-                autoarm = True
-            else:
-                autoarm = False
-        elif str(command[0]) == "hasPackage" and pick_up == True:
-            has_package = True
-            pick_up = False
-            is_centered = False
-            shared_stuff["arm_return_pos"] = shared_stuff["armPosition"][:]
-            steer_arm(["fake_command", [0, 0, 100, 0, 0, 0]])
-        else:
+            self.restore_state()
+        elif cmd == "":
             pass
 
-def update_speed():
+    def run(self):
+        self.change_state(HALTED)
 
-    global regulate
-    global speed_left
-    global speed_right
-    global new_speed_left
-    global new_speed_right
-    
-    if automotor == True:
+        while True:
+            time.sleep(0.005)
+            cmd, args = self.get_command()
+            self.handle_command(cmd, args)
 
-        if is_station_left() or is_station_right():
-            regulate = False
-            
-        elif not is_station_left() or not is_station_right():
-            regulate = True
-        
-    if regulate:
-        new_speed_left, new_speed_right = shared_stuff["regulator"]
-        
-    if (speed_left != new_speed_left) or (speed_right != new_speed_right):
-        speed_left = new_speed_left
-        speed_right = new_speed_right
-        set_speed(speed_left, speed_right)
-
-
-#test
-#commandQueue.put(["start"])
-#commandQueue.put(["autoMotor",[True]])
-#commandQueue.put(["autoArm",[False]])
-
-sensorthread = sensorThread(shared_stuff)
-sensorthread.daemon=True
-sensorthread.start()
-
-pcthread = pcThread(commandQueue, shared_stuff)
-pcthread.daemon=True
-pcthread.start()
-
-regulator = Regulator(shared_stuff)
-regulator.daemon=True
-regulator.start()
-
-
-# Print distance sensors
-# while True:
-#     time.sleep(0.5)
-#     #print shared_stuff["distance"]
-#     has_package_left()
-#     has_package_right()
-
-# # Print middle sensor for debug
-# while True:
-#     time.sleep(0.5)
-#     print shared_stuff["middleSensor"]
-
-while str(commandQueue.get()[0]) != "start":
-    pass
-       
-while True:
-
-    #get latest PC command from queue
-    get_command()
-    update_speed()
-    # if True:    
-    # #if automotor:
-    #     if stopstation_left():
-    #         if has_package:
-    #             stopstation_left_detected = True
-    #             put_down = False
-    #         else:
-    #             set_speed(0x00,0x00)
-    #             automotor = False
-    #     elif stop_cnt == 0:
-    #         stopstation_left_detected = False
-
-    # #print stop_cnt
-    # print has_package
-
-
-    #the steerlogic.
-    if automotor == True:
-        if pick_up == False:
-            #no need to steer arm, continue
-            #check if we want to steer it anyway
-            if autoarm == False:
-                #steer arm
-                if command[0] == "armPosition":
-                    steer_arm(command)
-            if put_down == False:
-                if check_pick_up_right() or check_pick_up_left():
-                    pick_up = True
-                elif (check_put_down_right() or check_put_down_left()):
-                    #if not stopstation_left_detected:
-                    put_down = True
-                else:
-                    pick_up = False
-                    put_down = False                    
-                    regulate = True
-
-                    # new_speed_left, new_speed_right = shared_stuff["regulator"]
-
-                # if (speed_left != new_speed_left) or (speed_right != new_speed_right):
-                #     speed_left = new_speed_left
-                #     speed_right = new_speed_right
-                #     set_speed(speed_left,speed_right)
+            # State execution
+            if self.state == HALTED:
+                self.halted()
+            elif self.state == MANUAL:
+                self.manual(cmd, args)
+            elif self.state == LINE:
+                self.line()
+            elif self.state == STATION_FRONT:
+                self.station_front()
+            elif self.state == STATION_CENTER:
+                self.station_center()
+            elif self.state == STATION_BOTH:
+                self.station_both()
             else:
-                #put down package... must set put_down to false again
-                #new_speed_left, new_speed_right = shared_stuff["regulator"]
-                regulator = True
-                if station_centered():
-                    is_centered = True
-                if is_centered:
-                    #steer arm
-                    #print "Center found"
-                    new_speed_left = new_speed_right = 0x00
-                    set_speed(new_speed_left, new_speed_right)
-                    fake_command = ["fake_command", shared_stuff["arm_return_pos"]]
-                    put_down = has_package = is_centered = False
-                    print "putting down package..."
-                    steer_arm(fake_command)
-                    time.sleep(6)
-                else:
-                    is_centered = False
-                    #set_speed(new_speed_left, new_speed_right)
-        else:
-            #print "Pick up True"
-            #pick_up is true, user have to steer arm. pick_up = false
-            #new_speed_left, new_speed_right = shared_stuff["regulator"]
-            regulator = True
-            if station_centered():
-                is_centered = True
+                log.critical("Vegetable state! state=\"%s\"" %str(self.state))
+                sys.exit(1)
 
-            if is_centered:
-                #steer arm
-                #print "Center found"
-                new_speed_left = new_speed_right = 0x00
-                if autoarm == False and command[0] == "armPosition":
-                    print "Waiting for hasPackage..."
-                    steer_arm(command)
-            # if (speed_left != new_speed_left) or (speed_right != new_speed_right):
-            #     speed_left = new_speed_left
-            #     speed_right = new_speed_right
-            #     set_speed(speed_left,speed_right)
-            
-    else:
-        #manuell
-        regulate = False
-        if command[0] == "motorSpeed":
-            new_speed_left = command[1][0]
-            new_speed_right = command[1][1]
-            
-            # if (speed_left != new_speed_left) or (speed_right != new_speed_right):
-            #     speed_left = new_speed_left
-            #     speed_right = new_speed_right
-            #     set_speed(speed_left,speed_right)
-        
-        elif command[0] == "armPosition":
-            steer_arm(command)
-        else:
+    def halted(self):
+        self.stored_state = None
+        self.has_package = False
+        self.station_queue = []
+        self.set_speed(0, 0)
+
+    def manual(self, cmd, args):
+        if cmd == "calibrateFloor":
+            sensor_thread.calibrateFloor()
             pass
-               
-    #print "pick_up? = " + str(pick_up) + "\nput_down? = " + str(put_down)
-    time.sleep(0.01)
+        elif cmd == "calibrateTape":
+            sensor_thread.calibrateTape()
+            pass
+        elif cmd == "motorSpeed":
+            self.set_speed(args[0], args[1])
+        elif cmd == "armPosition":
+            self.steer_arm(*args)
+
+    def line(self):
+        self.regulate()
+
+        package = se.detect_package(*self.shared["distance"])
+
+        front_values = self.shared["lineSensor"][:]
+        center_values = self.shared["middleSensor"][:]
+
+        self.linedet.add_values(front_values, center_values)
+
+        front_station = self.linedet.station_front()
+        center_station = self.linedet.station_center()
+
+        if front_station != se.NO_STATION:
+            front_obj = Station.create(front_station, package)
+            log.info("Found front station with empty=%s and left=%s." %(str(front_obj.is_empty()), str(front_obj.is_left())))
+            self.station_queue.append(front_obj)
+            log.info([str(e) for e in self.station_queue])
+            self.change_state(STATION_FRONT)
+        elif center_station != se.NO_STATION:
+            self.handle_center_station()
+
+    def handle_center_station(self, next_state=STATION_CENTER):
+        if self.is_on_stop() and not self.has_package:
+            self.change_state(HALTED)
+            return
+
+        if len(self.station_queue) == 0:
+            log.error("Found unknown center station!")
+            self.change_state(next_state)
+            return
+
+        current_center = self.station_queue.pop(0)
+        if self.has_package and not current_center.is_full():
+            log.info("Current station (left=%s) has no package but robot does. Put down!" %current_center.is_left())
+            log.info([str(e) for e in self.station_queue])
+            self.put_down_package(current_center)
+            self.change_state(next_state)
+        elif not self.has_package and current_center.is_full():
+            log.info("Current station (left=%s) has package and robot does not. Pick up!" %current_center.is_left())
+            log.info([str(e) for e in self.station_queue])
+            self.set_speed(0, 0)
+            self.store_state(next_state)
+            self.change_state(MANUAL)
+        else:
+            log.info("Current station (left=%s) package == robot package. Move on." %current_center.is_left())
+            log.info([str(e) for e in self.station_queue])
+            self.change_state(next_state)
+
+    def station_front(self):
+        self.regulate()
+
+        front_values = self.shared["lineSensor"][:]
+        center_values = self.shared["middleSensor"][:]
+
+        self.linedet.add_values(front_values, center_values)
+
+        front_station = self.linedet.station_front()
+        center_station = self.linedet.station_center()
+
+        if front_station == se.NO_STATION:
+            log.info("Leaving front station.")
+            self.change_state(LINE)
+        elif center_station != se.NO_STATION:
+            log.info("Detected center station while on front station.")
+            self.handle_center_station(next_state=STATION_BOTH)
+
+    def station_center(self):
+        self.regulate()
+
+        package = se.detect_package(*self.shared["distance"])
+
+        front_values = self.shared["lineSensor"][:]
+        center_values = self.shared["middleSensor"][:]
+
+        self.linedet.add_values(front_values, center_values)
+
+        front_station = self.linedet.station_front()
+        center_station = self.linedet.station_center()
+
+        if center_station == se.NO_STATION:
+            log.info("Leaving center station.")
+            self.change_state(LINE)
+        elif front_station != se.NO_STATION:
+            front_obj = Station.create(front_station, package)
+            log.info("Found front station with empty=%s and left=%s." %(str(front_obj.is_empty()), str(front_obj.is_left())))
+            self.station_queue.append(front_obj)
+            log.info([str(e) for e in self.station_queue])
+            self.change_state(STATION_BOTH)
+
+    def station_both(self):
+        self.regulate()
+
+        front_values = self.shared["lineSensor"][:]
+        center_values = self.shared["middleSensor"][:]
+
+        self.linedet.add_values(front_values, center_values)
+
+        front_station = self.linedet.station_front()
+        center_station = self.linedet.station_center()
+
+        if front_station != se.NO_STATION:
+            log.info("Leaving front station.")
+            self.change_state(STATION_CENTER)
+        elif center_station != se.NO_STATION:
+            log.info("Leaving center station.")
+            self.change_state(STATION_FRONT)
+
+    def regulate(self):
+        left, right = self.shared["regulator"]
+        self.set_speed(left, right)
+
+    def put_down_package(self, station):
+        left = station.is_left()
+        log.info("Putting down package on %s side." %["right", "left"][left])
+        self.set_speed(0, 0)
+        
+        if left:
+            x = abs(self.arm_return_pos[0]) * -1
+        else:
+            x = abs(self.arm_return_pos[0])
+
+        self.arm_return_pos[0] = x
+
+        pos = self.arm_return_pos[:]
+        pos[2] = self.carry_pos[2]
+        
+        log.info("Setting arm to %s" %str(pos))
+        self.steer_arm(*pos)
+        time.sleep(3)
+
+        pos[2] = self.arm_return_pos[2]
+
+        log.info("Setting arm to %s" %str(pos))
+        self.steer_arm(*pos)
+        time.sleep(3)
+
+        pos[2] = self.carry_pos[2]
+
+        log.info("Setting arm to %s" %str(pos))
+        self.steer_arm(*pos)
+        time.sleep(3)
+
+        pos[0] = self.carry_pos[0]
+        pos[1] = self.carry_pos[1]
+
+        log.info("Setting arm to %s" %str(pos))
+        self.steer_arm(*pos)
+
+        self.has_package = False
+
+    def is_on_stop(self):
+        if len(self.station_queue) < 3:
+            return False
+
+        first = self.station_queue[0]
+        second = self.station_queue[1]
+        third = self.station_queue[2]
+
+        if (first.is_left() == second.is_left() == third.is_left() and
+            first.is_empty() and second.is_empty() and third.is_empty()):
+            log.info("Found stop station.")
+            first.empty = not self.has_package
+            second.empty = not self.has_package
+            third.empty = not self.has_package
+            return True
+
+    def set_speed(self, left, right):
+        if left != self.current_speed[0] or right != self.current_speed[1]:
+            log.debug("set_speed: left=%d right=%d" %(left, right))
+
+            self.current_speed[0] = left
+            self.current_speed[1] = right
+
+            self.drive.setMotorLeft(left)
+            self.drive.setMotorRight(right)
+            self.drive.sendAllMotor()
+
+    def steer_arm(self, x, y, z, p, w, g):
+        log.debug("steer_arm: x=%d y=%d z=%d p=%d w=%d g=%d" %(x, y, z, p, w, g))
+
+        self.arm.setAll([x, y, z, p, w, g])
+        servo_values = self.arm.getServoValues()
+
+        for i in range(6):
+            self.drive.setArmAxis(i+1, servo_values[i])
+            time.sleep(0.001)
+            self.drive.sendAllAxis()
+            time.sleep(0.001)
+
+if __name__ == "__main__":
+    line_cal_max = [213, 206, 232, 180, 232, 174, 237, 183, 199, 177, 178]
+    line_cal_min = [75, 97, 126, 61, 147, 39, 154, 57, 80, 63, 50]
+
+    middle_cal_max = [250, 250]
+    middle_cal_min = [150, 150]
+
+    shared_stuff = {"lineSensor" : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    "lineCalMax" : line_cal_max,
+                    "lineCalMin" : line_cal_min,
+                    "middleCalMax" : middle_cal_max,
+                    "middleCalMin" : middle_cal_min,
+                    "middleSensor" : [0, 0],
+                    "distance" :  [0, 0],
+                    "armPosition" : [0, 0, 255, 4, 5, 5],
+                    "errorCodes" : ["YngveProgrammedMeWrong"],
+                    "motorSpeed" : [70, 70],
+                    "latestCalibration" : "0000-00-00-15:00",
+                    "autoMotor" : False,
+                    "autoArm" : False,
+                    "regulator" : [0, 0],
+                    "error" : 0}
+
+    sensor_thread = sensorThread.sensorThread(shared_stuff)
+    sensor_thread.daemon=True
+    sensor_thread.start()
+
+    cmd_queue = Queue.Queue()
+    pc_thread = pcThread.pcThread(cmd_queue, shared_stuff)
+    pc_thread.daemon=True
+    pc_thread.start()
+
+    regulator = regulator.Regulator(shared_stuff)
+    regulator.daemon=True
+    regulator.start()
+
+    log.basicConfig(level=log.INFO)
+    gloria = Gloria(shared_stuff, cmd_queue, sensor_thread)
+
+    try:
+        gloria.run()
+    except:
+        gloria.set_speed(0, 0)
+        sys.exit(1)
