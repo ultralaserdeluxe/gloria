@@ -9,6 +9,7 @@ from numpy import arange, sin, pi
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 import pygame
+
 class Joystick():
     def __init__(self,toControl=""):
         pygame.init()
@@ -215,7 +216,7 @@ class Gui():
         self.__calibrateTapeButton.place(relx=0.25,rely=0.50,anchor=tk.CENTER)
         self.__buttonsToEnable.append(self.__calibrateTapeButton)
         
-        self.__calibrateFloorButton=tk.Button(self.__buttonFrame, text="calibrate floor", width=8, command=self.calibrateTape,state=tk.DISABLED)
+        self.__calibrateFloorButton=tk.Button(self.__buttonFrame, text="calibrate floor", width=8, command=self.calibrateFloor,state=tk.DISABLED)
         self.__calibrateFloorButton.place(relx=0.25,rely=0.80,anchor=tk.CENTER)
         self.__buttonsToEnable.append(self.__calibrateFloorButton)
         
@@ -434,8 +435,8 @@ class Gui():
         if(y < 0):
             right = 0 - right
             left = 0 - left
-        left=-int(left*100)
-        right=-int(right*100)
+        left=-int(left*255)
+        right=-int(right*255)
         if self.__gloria:
             try:
                 self.__gloria.setMotorSpeed(left,right)
@@ -478,7 +479,6 @@ class Gui():
         self.__root.after(50,self.peripheralUpdater)
     def sensorUpdater(self):
         if self.__gloria:
-            print(self.__gloria.getSensorList())
             try:
                 self.__gloria.updateSensors()
             except (socket.error,AttributeError):
@@ -508,11 +508,9 @@ class Gui():
                 self.handleInternalErrors("broken connection")
         self.__root.after(100,self.sensorUpdater)
     def calibrateTape(self):
-        #toto implement command for tape calibration on gloria
-        pass
+        self.__gloria.calibrateTape()
     def calibrateFloor(self):
-        #toto implement command for floor calibration on gloria
-        pass
+        self.__gloria.calibrateFloor()
     def setSpeedbars(self,left,right):
         temp_list=self.__speedCanvas.coords(self.__leftSpeedBar)
         if left>0:

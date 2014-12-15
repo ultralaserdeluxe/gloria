@@ -1,5 +1,6 @@
 import threading
 import time
+import station_functions as sf
 
 class Regulator(threading.Thread):
     def __init__(self,sensorList):
@@ -8,14 +9,12 @@ class Regulator(threading.Thread):
         self.__e1=0.0
         self.__updateFreq=50.0
         self.__updateTime=1.0/self.__updateFreq
-        self.__P=28.6 # P-max = 37, ocsilleringsperiod = 0.7
+        self.__P=32 # P-max = 37, ocsilleringsperiod = 0.7
+        #self.__P=28.6 # P-max = 37, ocsilleringsperiod = 0.7
+        #self.__P=25.6 # P-max = 37, ocsilleringsperiod = 0.7
         self.__D=0.7
         self.__signalOut=0.0
-        self.cal_floor_1 = [[74,198],[127,210],[150,220],[50,184],[140,226],[65,180],
-                                 [170,230],[47,160],[103,204],[56,165],[48,178]]
-        self.cal_paper = [[7, 208], [10, 225], [19, 238], [8, 199], [32, 236], [8, 193], [77, 244], [8, 193], [10, 226], [10, 194], [9, 211]]
-        self.cal_floor_2 = [[75, 213], [97, 206], [126, 232], [61, 180], [147, 232], [39, 174], [154, 237], [57, 183], [80, 199], [63, 177], [50, 178]]
-        self.calibration_data = self.cal_floor_2
+        self.linedet = sf.LineDetector()
         threading.Thread.__init__(self)
 
     def run(self):
@@ -33,12 +32,10 @@ class Regulator(threading.Thread):
             self.__sensorList["error"] = self.__e0
 
     def setMotors(self):
-        # leftCurrent=self.getLeftMotor()
-        # rightCurrent=self.getRightMotor()
         left=50-int(self.__signalOut)
-        right=50+int(self.__signalOut) 
+        right=50+int(self.__signalOut)
         self.setRegMotor(left, right)
-    
+
     def setRegMotor(self,left,right):
         self.__sensorList["regulator"] = [left, right]
 
@@ -51,45 +48,35 @@ class Regulator(threading.Thread):
     def getSensorValues(self):
         return self.__sensorList["lineSensor"]
 
-    def normalize(self, value, minimum, maximum):
-        return float(value - minimum) / (maximum - minimum)
-
-    def normalize_sensor_values(self, values, calibration_data):
-        norm_values = []
-
-        for i in range(len(values)):
-            minimum = calibration_data[i][0]
-            maximum = calibration_data[i][1]
-            norm_values.append(self.normalize(values[i], minimum, maximum))
-
-        return norm_values
-
     def calc_position(self, norm_values):
         weights = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
         # From TSEA29 lecture 5 (AVR, sensorer, Beagleboard)
-        center = sum(map(lambda x, y: x*y, norm_values, weights)) / sum(norm_values)
+        try:
+            center = sum(map(lambda x, y: x*y, norm_values, weights)) / sum(norm_values)
+        except ZeroDivisionError:
+            return 6
 
         return center
-        
+
     def calc_error(self, position):
         # 6 is the middle weight.
         return 6 - position
 
     def get_current_error(self):
         sensor_values = self.getSensorValues()
-        norm_values = self.normalize_sensor_values(sensor_values, self.calibration_data)
-        position = self.calc_position(norm_values)
+        converted_values = self.linedet.convert_line_values(sensor_values)
+        station = self.linedet.station_front_one(converted_values)
+        mask = []
+        if self.linedet.all_equal_one(converted_values):
+            mask = [0] * 11
+        elif station != sf.NO_STATION:
+            mask = [0] * 4 + [1] * 3 + [0] * 4
+        else:
+            mask = [1] * 11
+
+        sensor_values = map(lambda x, y: x * y, sensor_values, mask)
+        position = self.calc_position(sensor_values)
         error = self.calc_error(position)
-        
+
         return error
-
-def calibrate_floor(sensorList, calibrateData): 
-    for i in range(0,11):
-        calibrateData[i][0] = sensorList[0][1][i]
-    return calibrateData
-
-def calibrate_tape(sensorList, calibrateData):
-    for i in range(0,11):
-        calibrateData[i][1] = sensorList[0][1][i]
-    return calibrateData
