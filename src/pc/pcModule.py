@@ -26,8 +26,8 @@ class pcModule():
             if self.__s in readable:
                 while self.__s in readable:
                     data=self.__s.recv(self.__package_size).decode()
-                    if not data:
-                        raise socket.error
+                    #if not data:
+                    #    raise socket.error
                     complete_data_set=complete_data_set+data #decode MIGHT be needed here
                     readable, writable, exceptional = select.select([self.__s], [self.__s], [self.__s])
         return complete_data_set
