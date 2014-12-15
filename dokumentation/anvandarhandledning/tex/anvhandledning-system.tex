@@ -1,14 +1,28 @@
-\section{Användning av systemet}
+\section{Installation av Gloria}
+På Gloria så har vi en s.k. huvudenhet, en \textbf{beagleboard}, som innehåller all styrlogik som låter oss hantera Gloria i sin helhet. Beagleboardet har ett antal USB-portar, varav en är ansluten till en blåtandsdongel som låter oss ansluta direkt till beagleboardet från godtycklig pc.
 
-\subsection{Ansluta till Huvudenheten}
+\subsection{Ansluta till Gloria}
 För att kunna ansluta till huvudenheten behöver följande göras:
 \begin{enumerate}
 	\item Ha tillgång till en terminal på huvudenheten, det enklaste är att ansluta en skärm och tangentbord till den.\newline Lösenordet är \textbf{temppwd}
-	\item Kör \textbf{sudo bluez-simple-agent hci0 xx:xx:xx:xx:xx:xx} där du byter ut kryssen mot din blåtandenhets mac-adress
-	\item Paira huvudenheten med din pc från din pc
-	\item Kör \textbf{sudo bluez-test-device trusted xx:xx:xx:xx:xx:xx yes} på huvudenheten
-	\item Du kan nu ta bort pairing från din pc
-	\item Kör \textbf{sudo pand -n -c 00:19:0E:0F:F0:6F	} på din pc
-	\item Kör \textbf{sudo ifconfig bnep0 192.168.99.2 up } på din pc
+	\item Kör \textbf{sudo bluez-simple-agent hci0 xx:xx:xx:xx:xx:xx} där du byter ut kryssen mot din blåtandenhets mac-adress.
+	\item \textbf{Paira} (förbind) huvudenheten med din pc från din pc. Huvudenheten är listad som arm-0 via blåtand.
+	\item Kör \textbf{sudo bluez-test-device trusted xx:xx:xx:xx:xx:xx yes} på huvudenheten där du återigen byter ut kryssen mot din blåtandenhets mac-adress.
+	\item Du kan nu ta bort pairing (men låt blåtand fortsatt vara påslaget) från din pc.
+	\item Kör \textbf{sudo pand -n -c 00:19:0E:0F:F0:6F	} på din pc.
+	\item Kör \textbf{sudo ifconfig bnep0 192.168.99.2 up } på din pc.
 \end{enumerate}
 Nu borde du kunna pinga och ssh in på ubuntu@192.168.99.1 vilket är huvudenhetens statiska ip-adress. I framtiden behövs bara de två sista stegen genmföras.
+\subsection{Starta Gloria}
+\begin{enumerate}
+	\item Om anslutning har etablerats till Gloria så behöver man hitta filen mainThread.py som ligger i home directory, dvs där man hamnar när man väl har ssh:at in (se Användning av Systemet).
+	\item Kommandot för att starta systemet i Gloria är bara en rad: \textbf{python mainThread.py}
+	När detta kommandot körs så sätter systemet igång och Gloria lägger sig i vänteläge.
+	\item Efter att mainThread.py har startats på Gloria så startar man upp en ny terminal lokalt på datorn som Gloria ska styras ifrån och hittar Gui.py. Sedan kör man kommandot: \textbf{python Gui.py}
+	\item Anslut två joysticks via USB (till pc). Klargör vilken som styr motor och vilken som styr arm.
+\end{enumerate}
+\subsection{Kort om AVR}
+\begin{enumerate}
+	\item Eventuell mjukvaruuppdatering kan installeras via JTAG-porten.
+	\item För att starta om AVR så finns det en blå knapp tillgänglig bredvid processorn på virkortet. PCB kan på samma sätt startas om med en grå knapp.
+\end{enumerate}
