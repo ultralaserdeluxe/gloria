@@ -13,7 +13,7 @@
 
 typedef struct sensor_data_t
 {
-	uint8_t line[15];
+	uint8_t line[16];
 	uint8_t distance[2];
 } sensor_data_t;
 
