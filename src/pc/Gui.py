@@ -86,7 +86,7 @@ class Gui():
         self.__screenHeight=int(self.__root.winfo_screenheight()*0.6)
         self.__root.minsize(self.__screenWidth,self.__screenHeight)
         self.__root.grid()
-        self.__root.title("Glorious as FUCK")
+        self.__root.title("Gloria command panel")
         self.__root.config(bg='white')
         self.__root.update()
         self.__window_width=self.__root.winfo_width()
