@@ -204,9 +204,9 @@ class Gui():
         self.__autoMotorButton.place(relx=0.75,rely=0.20,anchor=tk.CENTER)
         self.__buttonsToEnable.append(self.__autoMotorButton)
         
-        self.__autoArmButton=tk.Button(self.__buttonFrame, text="auto arm", width=8, command=self.enableAutoArm,state=tk.DISABLED)
-        self.__autoArmButton.place(relx=0.75,rely=0.50,anchor=tk.CENTER)
-        self.__buttonsToEnable.append(self.__autoArmButton)
+        self.__noPackageButton=tk.Button(self.__buttonFrame, text="no package", width=8, command=self.noPackage,state=tk.DISABLED)
+        self.__noPackageButton.place(relx=0.75,rely=0.50,anchor=tk.CENTER)
+        self.__buttonsToEnable.append(self.__noPackageButton)
         
         self.__gotPackageButton=tk.Button(self.__buttonFrame, text="got package", width=8, command=self.gotPackage,state=tk.DISABLED)
         self.__gotPackageButton.place(relx=0.75,rely=0.80,anchor=tk.CENTER)
@@ -312,9 +312,13 @@ class Gui():
         #starts mainloop
         self.__root.update()
         self.__root.after(2000, self.screenSaver)
-        self.__root.after(50,self.peripheralUpdater)
-        self.__root.after(100,self.sensorUpdater)
+        self.__root.after(25,self.peripheralUpdater)
+        self.__root.after(25,self.sensorUpdater)
+        self.__root.after(1,self.sleeper)
         self.__root.mainloop()
+    def sleeper(self):
+        time.sleep(0.00001)
+        self.__root.after(1,self.sleeper)
     def connectArmJoystick(self):
         temp=Joystick("arm")
         if temp.get_init():
@@ -372,13 +376,13 @@ class Gui():
             for i in range(30,0,-1):
                 self.updateDistanceSensor(i, i)
                 time.sleep(0.01)
-    def updateDistanceSensor(self,right,left):
+    def updateDistanceSensor(self,left,right):
         temp_list=self.__overviewCanvas.coords(self.__distanceLineLeft)
-        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0-70-(30-left))
+        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0-70-(150-left))
         self.__overviewCanvas.coords(self.__distanceLineLeft,tuple(temp_list))
         
         temp_list=self.__overviewCanvas.coords(self.__distanceLineRight)
-        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0+70+(30-right))
+        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0+70+(150-right))
         self.__overviewCanvas.coords(self.__distanceLineRight,tuple(temp_list))
         self.__root.update()
     def speedBarsTester(self):
@@ -448,9 +452,14 @@ class Gui():
         armPosition=self.__gloria.getArmPosition()
         x=int(self.__armJoy.x_axis()*4.0+armPosition[0])
         y=int(-self.__armJoy.y_axis()*4.0+armPosition[1])
-        z=int(self.__armJoy.z_axis()*4.0+armPosition[2])
-        
-        self.__gloria.setArmPosition(x, y, z, int(self.__armJoy.axis2()*90),int( -90 +self.__armJoy.axis3()*150), int(70+self.__armJoy.axis4()*70))
+        z=int(self.__armJoy.axis3()*4.0+armPosition[2])
+        grip=int(armPosition[5])+self.__armJoy.get_button_4()*10-self.__armJoy.get_button_5()*10
+        if grip>140:
+            grip=140
+        if grip<0:
+            grip=0
+            
+        self.__gloria.setArmPosition(x, y, z, int(self.__armJoy.axis2()*90),int(180 +self.__armJoy.axis4()*180), grip)
     def linesensorBarsTester(self):
         if not self.__gloria:
             test_data=[[0,0,0,0,0,0,0,0,0,0,0],[128,0,0,0,0,0,0,0,0,0,0],[256,128,0,0,0,0,0,0,0,0,0],[512,256,128,0,0,0,0,0,0,0,0],[1024,512,256,128,0,0,0,0,0,0,0],
@@ -476,7 +485,7 @@ class Gui():
                 self.updateArmFromJoystick()
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
-        self.__root.after(50,self.peripheralUpdater)
+        self.__root.after(25,self.peripheralUpdater)
     def sensorUpdater(self):
         if self.__gloria:
             try:
@@ -500,13 +509,50 @@ class Gui():
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
             try:
+                left, right = self.__gloria.getMiddleSensor()
+                self.setMiddleSensor(left, right)
+            except (socket.error, AttributeError):
+                self.handleInternalErrors("broken connection")
+            try:
                 tempList=self.__gloria.getErrorCodes()
                 for element in tempList:
                     self.insertError(element)
-                #todo implement clearErrors on gloria
+                self.__gloria.setClearErrors()
+                self.fix_buttons(self.__gloria.getState(), self.__gloria.getAutoMotor())
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
-        self.__root.after(100,self.sensorUpdater)
+        self.__root.after(25,self.sensorUpdater)
+    def fix_buttons(self, state, autoMotor):  
+        if state == "HALTED":
+            self.__startButton.config(text="start", command=self.startFunction)            
+            self.__autoMotorButton.config(state=tk.DISABLED, text="auto motor", command=self.enableAutoMotor)            
+            self.__calibrateFloorButton.config(state=tk.DISABLED)            
+            self.__calibrateTapeButton.config(state=tk.DISABLED)
+            self.__noPackageButton.config(state=tk.DISABLED)
+            self.__gotPackageButton.config(state=tk.DISABLED)
+        elif state == "MANUAL":
+            self.__startButton.config(text="stop", command=self.stopFunction)            
+            self.__autoMotorButton.config(state=tk.ACTIVE, text="auto motor", command=self.enableAutoMotor)            
+            self.__calibrateFloorButton.config(state=tk.ACTIVE)            
+            self.__calibrateTapeButton.config(state=tk.ACTIVE)
+            self.__noPackageButton.config(state=tk.ACTIVE)
+            self.__gotPackageButton.config(state=tk.ACTIVE)
+        elif state != "MANUAL" and autoMotor == True:
+            self.__startButton.config(text="stop", command=self.stopFunction)
+            self.__autoMotorButton.config(state=tk.ACTIVE, text="man motor", command=self.disableAutoMotor)            
+            self.__calibrateFloorButton.config(state=tk.DISABLED)            
+            self.__calibrateTapeButton.config(state=tk.DISABLED)
+            self.__noPackageButton.config(state=tk.DISABLED)
+            self.__gotPackageButton.config(state=tk.DISABLED)
+        elif state != "MANUAL" and autoMotor == False:
+            self.__startButton.config(text="stop", command=self.stopFunction)
+            self.__autoMotorButton.config(state=tk.ACTIVE, text="auto motor", command=self.enableAutoMotor)            
+            self.__calibrateFloorButton.config(state=tk.DISABLED)            
+            self.__calibrateTapeButton.config(state=tk.DISABLED)
+            self.__noPackageButton.config(state=tk.DISABLED)
+            self.__gotPackageButton.config(state=tk.DISABLED)
+        else:
+            pass
     def calibrateTape(self):
         self.__gloria.calibrateTape()
     def calibrateFloor(self):
@@ -541,7 +587,11 @@ class Gui():
 
         self.__root.update()
         
-        
+    def noPackage(self):
+        try:
+            self.__gloria.setPackageFalse()
+        except (socket.error, AttributeError):
+            self.handleInternalErrors("broken connection")    
     def gotPackage(self):
         try:
             self.__gloria.setPackageTrue()
@@ -552,45 +602,41 @@ class Gui():
             self.__gloria.setAutoMotor(True)
         except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
-        self.__autoMotorButton.config(text="man motor")
-        self.__autoMotorButton.config(command=self.disableAutoMotor)
+        #self.__autoMotorButton.config(text="man motor")
+        #self.__autoMotorButton.config(command=self.disableAutoMotor)
     def disableAutoMotor(self):
         try:
             self.__gloria.setAutoMotor(False)
         except (socket.error,AttributeError):
             self.handleInternalErrors("broken connection")
-        self.__autoMotorButton.config(text="auto motor")
-        self.__autoMotorButton.config(command=self.enableAutoMotor)
+        #self.__autoMotorButton.config(text="auto motor")
+        #self.__autoMotorButton.config(command=self.enableAutoMotor)
     def enableAutoArm(self):
         try:
             self.__gloria.setAutoArm(True)
         except (socket.error,AttributeError):
             self.handleInternalErrors("broken connection")
-        self.__autoArmButton.config(text="man arm")
-        self.__autoArmButton.config(command=self.disableAutoArm)
+        self.__noPackageButton.config(text="man arm")
+        self.__noPackageButton.config(command=self.disableAutoArm)
     def disableAutoArm(self):
         try:
             self.__gloria.setAutoArm(False)
         except (socket.error,AttributeError):
             self.handleInternalErrors("broken connection")
-        self.__autoArmButton.config(text="auto arm")
-        self.__autoArmButton.config(command=self.enableAutoArm)
+        self.__noPackageButton.config(text="auto arm")
+        self.__noPackageButton.config(command=self.enableAutoArm)
         
     def startFunction(self):
-        if not self.__gloriaStarted:
-            self.__startButton.config(text="stop")
-            try:
-                self.__gloria.start()
-            except (socket.error,AttributeError):
-                self.handleInternalErrors("broken connection")
-            self.__gloriaStarted=True
-        else:
-            self.__startButton.config(text="start")
-            try:
-                self.__gloria.stop()
-            except (socket.error,AttributeError):
-                self.handleInternalErrors("broken connection")
-            self.__gloriaStarted=False
+        try:
+            self.__gloria.start()
+        except (socket.error,AttributeError):
+            self.handleInternalErrors("broken connection")
+
+    def stopFunction(self):
+        try:
+            self.__gloria.stop()
+        except (socket.error, AttributeError):
+            self.handleInternalErrors("broken connection")
     def updateLinesensor(self,values):
         for i in range(11):
             if values[i]>0.5:
@@ -615,6 +661,7 @@ class Gui():
             config_file = open("config.txt", "w")
             config_file.write(self.__ip_adress)
             config_file.close()
+    
     def connectFunction(self):
         ip_adress=self.__ip_entry.get()
         valid=True
@@ -633,7 +680,7 @@ class Gui():
                 self.__gloria=pcModule.pcModule(self.__ip_adress)
                 self.enableButtons(True)
                 self.__screenSaver=False
-                self.__connect_button.config(state=tk.DISABLED)
+                self.__connect_button.config(text="disconnect",command=self.disconnect)
             except socket.error:
                 self.handleInternalErrors("connection refused")
     def enableButtons(self,value):
@@ -643,8 +690,12 @@ class Gui():
         else:
             for element in self.__buttonsToEnable:
                 element.config(state=tk.DISABLED)
-        
-        
+    def disconnect(self):
+        self.__gloria.disconnect()
+        self.__gloria=None
+        self.enableButtons(False)
+        self.__screenSaver=True
+        self.__connect_button.config(text="connect",command=self.connectFunction)
     def handleInternalErrors(self,error):
         self.insertError(error)
         if error=="broken connection":

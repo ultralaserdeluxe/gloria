@@ -91,6 +91,7 @@ class Gloria:
 
     def change_state(self, new_state):
         log.info("Changing state from %s to %s." %(self.state, new_state))
+        self.shared["state"] = new_state
         self.state = new_state
 
     def store_state(self, state = None):
@@ -384,7 +385,8 @@ if __name__ == "__main__":
                     "autoMotor" : False,
                     "autoArm" : False,
                     "regulator" : [0, 0],
-                    "error" : 0}
+                    "error" : 0,
+                    "state" : None}
 
     sensor_thread = sensorThread.sensorThread(shared_stuff)
     sensor_thread.daemon=True
