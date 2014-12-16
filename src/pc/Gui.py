@@ -316,11 +316,7 @@ class Gui():
         self.__root.after(2000, self.screenSaver)
         self.__root.after(25,self.peripheralUpdater)
         self.__root.after(25,self.sensorUpdater)
-        self.__root.after(1,self.sleeper)
         self.__root.mainloop()
-    def sleeper(self):
-        time.sleep(0.00001)
-        self.__root.after(1,self.sleeper)
     def connectArmJoystick(self):
         temp=Joystick("arm")
         if temp.get_init():
@@ -441,8 +437,8 @@ class Gui():
         if(y < 0):
             right = 0 - right
             left = 0 - left
-        left=-int(left*255)
-        right=-int(right*255)
+        left=-int(round(left*255))
+        right=-int(round(right*255))
         if self.__gloria:
             try:
                 self.__gloria.setMotorSpeed(left,right)
@@ -452,16 +448,19 @@ class Gui():
     def updateArmFromJoystick(self):
         self.__gloria.updateSensors()
         armPosition=self.__gloria.getArmPosition()
-        x=int(self.__armJoy.x_axis()*8.0+armPosition[0])
-        y=int(-self.__armJoy.y_axis()*8.0+armPosition[1])
-        z=int(self.__armJoy.axis3()*8.0+armPosition[2])
-        grip=int(armPosition[5])+self.__armJoy.get_button_4()*10-self.__armJoy.get_button_5()*10
+        tempX=self.__armJoy.x_axis()
+        tempY=self.__armJoy.y_axis()
+        tempZ=self.__armJoy.axis3()
+        x=int(round(tempX*8.0+armPosition[0]))
+        y=int(round(-tempY*8.0+armPosition[1]))
+        z=int(round(tempZ*8.0+armPosition[2]))
+        grip=int(round(armPosition[5]+self.__armJoy.get_button_4()*10-self.__armJoy.get_button_5()*10))
         if grip>140:
             grip=140
         if grip<0:
             grip=0
             
-        self.__gloria.setArmPosition(x, y, z, int(self.__armJoy.axis2()*90),int(180 +self.__armJoy.axis4()*180), grip)
+        self.__gloria.setArmPosition(x, y, z, int(round(self.__armJoy.axis2()*90)),int(round(180 +self.__armJoy.axis4()*180)), grip)
     def linesensorBarsTester(self):
         if not self.__gloria:
             test_data=[[0,0,0,0,0,0,0,0,0,0,0],[128,0,0,0,0,0,0,0,0,0,0],[256,128,0,0,0,0,0,0,0,0,0],[512,256,128,0,0,0,0,0,0,0,0],[1024,512,256,128,0,0,0,0,0,0,0],
