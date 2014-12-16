@@ -568,7 +568,7 @@ class Gui():
     def updateDistanceText(self):
         left_distance = self.__gloria.getLeftDistanceSensor()
         right_distance = self.__gloria.getRightDistanceSensor()
-        self.__overviewDistanceText.itemconfig(text="L: %s R: %s" %(str(left_distance), str(right_distance)))
+        self.__overviewCanvas.itemconfig(self.__overviewPositionText, text="L: %s R: %s" %(str(left_distance), str(right_distance)))
     def fix_buttons(self, state, autoMotor):  
         if state == "HALTED":
             self.__startButton.config(text="start", command=self.startFunction)            
