@@ -192,6 +192,9 @@ class Gloria:
     def line(self):
         self.shared["autoMotor"] = True
 
+        if self.should_flush() and self.station_queue:
+            self.flush_station_queue()
+
         self.regulate()
 
         package = se.detect_package(*self.shared["distance"])
@@ -212,9 +215,6 @@ class Gloria:
             self.change_state(STATION_FRONT)
         elif center_station != se.NO_STATION:
             self.handle_center_station()
-
-        if self.should_flush():
-            self.flush_station_queue()
 
     def handle_center_station(self, next_state=STATION_CENTER):
         if self.is_on_stop() and not self.has_package:
@@ -374,15 +374,20 @@ class Gloria:
             third.empty = not self.has_package
             return True
 
-    def flush_station_queue():
-        self.station_queue = []
+    def flush_station_queue(self):
+        if len(self.station_queue) == 1:
+            log.info("Timeout since front station expired, trying to rescue stuff!")
+            self.handle_station_center()
+        else:
+            log.info("Flushing station queue.")
+            self.station_queue = []
 
-    def refresh_flush_timer():
+    def refresh_flush_timer(self):
         self.flush_timer = time.time()
 
-    def should_flush():
+    def should_flush(self):
         timeout = 2
-        if self.flush_timer - time.time() > timeout:
+        if time.time() - self.flush_timer > timeout:
             return True
         else:
             return False
