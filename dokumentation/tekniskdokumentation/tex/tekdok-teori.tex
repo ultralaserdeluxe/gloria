@@ -8,7 +8,7 @@ För att följa banan måste vi reglera motorernas hastighet. Vi gör detta geno
 	Q_{fel}=6-\frac{\sum_{i=1}^{11}S_{n}*n}{\sum_{i=1}^{11}S_n}
 \end{equation}
 
-För att beräkna utsignalen använder vi felet $Q_{fel}$ och förändringen jämfört med förra iterationen ${\Delta}Q_{fel}$ tillsammans med konstanterna $P$ och $D$. Vi vet att regleringen körs med en uppdateringsfrekvens på 50Hz.
+För att beräkna utsignalen använder vi felet $Q_{fel}$ och förändringen jämfört med förra iterationen ${\Delta}Q_{fel}$ tillsammans med konstanterna $P$ och $D$. Vi vet från avsnitt \ref{huvud-regulator} att regleringen körs med en uppdateringsfrekvens på 50Hz.
 
 \begin{equation} \label{eq2}
 	Q_{out}=(P*Q_{fel}+D*{\Delta}Q_{fel})*freq
@@ -24,9 +24,9 @@ Omvandlingen från $(x,y,z)$-koordinater till vinklar för armens servon sker p�
 	\item Använd funktionen \texttt{getServoValues} som returnerar en lista med alla servons vinklar i form av 10-bitars heltal.
 \end{enumerate}
 
-GripperAngle är gripklons vinkel mot marken, gripperRotationsOffset är en offset på gripklons vinkel i förhållande till leden som gripklon är fäst i och gripper är hur mycket gripklon klämmer.
+\texttt{GripperAngle} är gripklons vinkel mot marken, \texttt{gripperRotationsOffset} är en offset på gripklons vinkel i förhållande till leden som gripklon är fäst i och \texttt{gripper} är hur mycket gripklon klämmer.
 
-I listan som returneras är första värdet till armens bas, det andra är till $A1$, det tredje är till $A2$, det fjärde till $A3$, det femte till klons rotation och det sjätte till klons grepp.
+I listan som returneras är första värdet armens bas, det andra är $A1$, det tredje är $A2$, det fjärde $A3$, det femte klons rotation och det sjätte klons grepp.
 
 \begin{figure}[h!]
 	\centerline{\input{grafik/huvud-armkoordinatsystem}}
@@ -38,7 +38,7 @@ I listan som returneras är första värdet till armens bas, det andra är till 
 	\caption{Armens vinklar}
 \end{figure}
 
-Omvandlingen sker på följande sätt där gripperRotationOffset och gripper ignoreras. Antag att roboten startar i $(X,Y,Z,GR)=(0,0,0,\pi/2)$.
+Omvandlingen sker på följande sätt där \texttt{gripperRotationOffset} och \texttt{gripper} ignoreras. Antag att roboten startar i $(X,Y,Z,GR)=(0,0,0,\pi/2)$.
 Där $GR$(GripRadian) är vilken vinkel gripklon har till $z$-axeln.\newline
 Vi omvandlar våra rum-koordinater till en vinkel och plankoordinater $X,Y,Z,GR\rightarrow A,W,Z,GR$. Där $A$ är armens vinkel mot positiva $x$-axeln och $W$ är armens utsträckning.
 $$A=tan^{-1}(\dfrac{Y}{X}) $$
@@ -64,8 +64,8 @@ Då är alla vinklar beräknade men servornas nollpunkter är inte på samma st�
 	\item $A1=240-A1$
 	\item $A2=240-A2$
 	\item $A3=150-A3$
-	\item $A4=240-A0+GripperRotationOffset$ (klons rotation beror på basens rotation)
+	\item $A4=240-A0+$\texttt{GripperRotationOffset} (klons rotation beror på basens rotation)
 	\item $A5$ har ingen offset
 \end{itemize}
 
-Dessa vinklar är nu i grader. Dessa multipliceras nu med $\frac{1024}{360}$ för att omvandla grader till 10-bitars binära tal, avrundas nedåt till heltal och kan nu användas direkt av styrenheten.
+Dessa vinklar är nu i grader. Dessa multipliceras nu med $\frac{1024}{360}$ för att omvandla grader till 10-bitars binära tal, dessa avrundas nedåt till heltal och kan nu användas direkt av styrenheten.

@@ -6,7 +6,7 @@ Sensorenheten har till uppgift att förse huvudenheten med sensordata. Sensordat
 
 \subsection{Hårdvara}
 
-Sensorenheten består av en Atmega1284p, två reflexsensormoduler och två avståndssensorer. Reflexsensormodulerna är kopplade via två 16-1 muxar till enkretsdatorn. Den ena muxen används för att styra en konstant hög enable-signal till rätt reflexsensor och den andra för att välja rätt utsignal. Båda muxarna styrs av samma styrsignal från enkretsdatorn. Avståndssensorerna är kopplade direkt till enkretsdatorn. Enkretsdatorn är ansluten till huvudenheten med en 20-pinnars flatkabel över vilken de kommunicerar via SPI. Figur \ref{sensor-oversikt} illustrerar hur enheten är organiserad i grova drag. Bilaga \ref{kopplingsschema} visar mer detaljerat hur det är kopplat.
+Sensorenheten består av en Atmega1284p, två reflexsensormoduler\cite{reflexsensormodul} och två avståndssensorer\cite{avstandssensor}. Reflexsensormodulerna är kopplade via två 16-1 muxar\cite{Muxar} till enkretsdatorn. Den ena muxen används för att styra en konstant hög enable-signal till rätt reflexsensor och den andra för att välja rätt utsignal. Båda muxarna styrs av samma styrsignal från enkretsdatorn. Avståndssensorerna är kopplade direkt till enkretsdatorn. Enkretsdatorn är ansluten till huvudenheten med en 20-pinnars flatkabel över vilken de kommunicerar via SPI. Figur \ref{sensor-oversikt} illustrerar hur enheten är organiserad i grova drag. Bilaga \ref{kopplingsschema} visar mer detaljerat hur det är kopplat.
 
 \begin{figure}[h!]
 	\centering

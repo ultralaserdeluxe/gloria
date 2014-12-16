@@ -6,13 +6,13 @@
 	\caption{Översikt systemets kommunikationskanaler} \label{kommunikation-oversikt}
 \end{figure}
 
-Figur \ref{kommunikation-oversikt} ger en översikt av vilka moduler som kommunicerar med varandra och på vilket sätt detta sker. Styrenheten och sensorenheten använder samma SPI-buss fast med olika Slave Select-pinnar. SPI-bussen körs på 20kHz.
+Figur \ref{kommunikation-oversikt} ger en översikt av vilka moduler som kommunicerar med varandra och på vilket sätt detta sker. Styrenheten och sensorenheten använder samma SPI-buss\cite{SPI} fast med olika Slave Select-pinnar. SPI-bussen körs på 20kHz.
 
 \subsection{PCenhet $\longleftrightarrow$ Huvudenhet}
 
 PC:n ansluter till huvudenheten över ett Personal Area Network (PAN) via Blåtand. Alternativt kan en ethernetkabel eller ett trådlöst nätverk användas för att åstadkomma samma sak. Vi sätter sedan upp en TCP/IP-anslutning för att överföra information.
 
-Kommunikation sker på initiativ av PCenheten. PCenheten skickar ett kommando till huvudenheten, och i det fall att det är status som begärs, svarar huvudenheten. Kommandon ges i form av strängar, där en sträng kan innehålla godtyckligt många kommandon. Ett enskilt kommando ges på formen \texttt{kommando=argument1,argument2,...,argumentN}. Innehåller en sträng mer än ett kommando separeras varje kommando av ett semikolon.
+Kommunikation mellan de två enheterna sker på initiativ av PCenheten. PCenheten skickar ett kommando till huvudenheten, och i det fall att det är status som begärs, svarar huvudenheten. Kommandon ges i form av strängar, där en sträng kan innehålla godtyckligt många kommandon. Ett enskilt kommando ges på formen \texttt{kommando=argument1,argument2,...,argumentN}. Innehåller en sträng mer än ett kommando separeras varje kommando av ett semikolon.
 
 När \texttt{status} begärs svarar huvudenheten på samma form som PCenheten med en sträng innehållandes relevant data separerade med semikolon. Tabell \ref{kommunikation-pc-huvud-status} listar vad och i vilken ordning huvudenheten returnerar till PCenheten.
 
@@ -22,19 +22,19 @@ När \texttt{status} begärs svarar huvudenheten på samma form som PCenheten me
 		\hline
 		\textbf{Attribut} & \textbf{Argument} & {\textbf{Beskrivning}}\\\hline
 		{lineSensor} & {11 heltal} & {Normaliserad sensordata för främre linjesensor} \\\hline
-		{lineCalMax} & {$D$} & {Kalibreringsdata} \\\hline
-		{lineCalMin} & {$D$} & {Kalibreringsdata} \\\hline
-		{middleCalMax} & {$D$} & {Kalibreringsdata} \\\hline
-		{middleCalMin} & {$D$} & {Kalibreringsdata} \\\hline
+		{lineCalMax} & {11 heltal} & {Kalibreringsdata} \\\hline
+		{lineCalMin} & {11 heltal} & {Kalibreringsdata} \\\hline
+		{middleCalMax} & {11 heltal} & {Kalibreringsdata} \\\hline
+		{middleCalMin} & {11 heltal} & {Kalibreringsdata} \\\hline
 		{middleSensor} & {2 heltal} & {Normaliserad sensordata för centerad linjesensor} \\\hline
 		{distance} & {2 heltal} & {Normaliserad sensordata för avståndssensorer} \\\hline
 		{armPosition} & {X, Y, Z, P, W, G} & {Armens nuvarande position} \\\hline
-		{errorCodes} & {Lista med strängar} & {Fel- och debugmeddelanden} \\\hline
+		{errorCodes} & {En lista med strängar} & {Fel- och debugmeddelanden} \\\hline
 		{latestCalibration} & {Datum} & {När sensorerna senast blev kalibrerade} \\\hline
 		{autoMotor} & {Sant/Falskt} & {Huruvida roboten är i autonomt eller manuellt läge} \\\hline
 		{regulator} & {2 heltal} & {Utsignalen från regulatortråden} \\\hline
 		{error} & {Heltal} & {Det beräknade felet från regulatortråden} \\\hline
-		{state} & {} & {Vilket tillstånd roboten befinner sig i} \\\hline
+		{state} & {En sträng} & {Vilket tillstånd roboten befinner sig i} \\\hline
 		{hasPackage} & {Sant/Falskt} & {Huruvida roboten har ett paket eller inte} \\\hline
 	\end{tabularx}
 	\caption{Figur över data som huvudenheten returnerar på ett status-kommando} \label{kommunikation-pc-huvud-status}
@@ -47,9 +47,9 @@ När \texttt{status} begärs svarar huvudenheten på samma form som PCenheten me
 	\begin{tabularx}{\textwidth}{| l | l | X |}
 		\hline
 		\textbf{Instruktion} & \textbf{Argument} & \textbf{Beskrivning} \\\hline
-		{autoMotor} & {True/False} & {Sätter motorerna till autonomt eller manuellt läge} \\\hline
-		{autoArm} & {True/False} & {Sätter armen i autonomt eller manuellt läge} \\\hline
-		{hasPackage} & {True/False} & {Meddela roboten att vi har greppat ett paket} \\\hline
+		{autoMotor} & {Sant/Falskt} & {Sätter motorerna till autonomt eller manuellt läge} \\\hline
+		{autoArm} & {Sant/Falskt} & {Sätter armen i autonomt eller manuellt läge} \\\hline
+		{hasPackage} & {Sant/Falskt} & {Meddela roboten att vi har greppat ett paket} \\\hline
 		{calibrateFloor} & {} & {Kalibrera sensorer efter golv} \\\hline
 		{calibrateTape} & {} & {Kalibrera sensorer efter tejp} \\\hline
 		{status} & {} & {Returnera robotens status} \\\hline
@@ -66,11 +66,9 @@ När \texttt{status} begärs svarar huvudenheten på samma form som PCenheten me
 
 Huvudenheten kommunicerar med styrenheten över SPI. Storleken på en instruktion är antingen fyra eller sju bytes lång. För att förebygga synkroniseringsproblem skickas först två startbytes bestående av hexadecimalt \texttt{0xff} följt av längden på instruktionen (startbytesen och längdbyten räknas ej med). Därefter följer instruktionsbyten som består av två delar. De fyra högsta bitarna anger vilken instruktion som ska utföras enligt tabell \ref{protokoll:pc-motor-tabell}, och de fyra lägsta vilket servo eller motorpar instruktionen rör enligt tabell \ref{protokoll:pc-motor-adress-tabell}. I fallet att instruktionen är \texttt{Sätt register A till D} krävs dessutom två databytes.
 
-Då ett motorpar adresseras anger den minsta biten i den första databyten vilken riktning motorparet skall röra sig. $0$ anger framåt, $1$ bakåt \todo{Stämmer?}. Den andra databyten anger vilken hastighet vi vill att motorerna skall röra sig i. Notera att motorernas hastighet sätts med instruktionen \texttt{Sätt register A till D}.
+Då ett motorpar adresseras anger den minsta biten i den första databyten vilken riktning motorparet skall röra sig. $1$ anger framåt, $0$ bakåt. Den andra databyten anger vilken hastighet vi vill att motorerna skall röra sig i. Notera att motorernas hastighet sätts med instruktionen \texttt{Sätt register A till D}.
 
 De servon vi arbetar med har en upplösning på 10 bitar både för position och hastighet. Vi måste alltså ha två databytes när vi vill ändra någon egenskap hos dessa. De två minsta bitarna i den första databyten är de två högsta bitarna och därefter följer den andra databyten.
-
-\todo{Tabell för att illustrera bitar hit och dit?}
 
 \subsubsection{Instruktionslista}
 
@@ -78,7 +76,7 @@ De servon vi arbetar med har en upplösning på 10 bitar både för position och
 	\centering
 	\begin{tabularx}{\textwidth}{| l | l | X |}
 		\hline
-		\textbf{Instruktion} & \textbf{Argument} & \textbf{Beskrivning} \\\
+		\textbf{Instruktion} & \textbf{Argument} & \textbf{Beskrivning} \\\hline
 		{0001} & {A, D} & {Sätt register A till D} \\\hline
 		{0010} & {A} & {Utför givna kommandon för A} \\\hline
 		{0011} & {A, D} & {Sätt servohastighet för A till D} \\\hline
@@ -107,7 +105,7 @@ De servon vi arbetar med har en upplösning på 10 bitar både för position och
 
 \subsection{Huvudenhet $\longleftrightarrow$ Sensorenhet} \label{protokoll-huvud-sensor}
 
-Huvudenheten kommunicerar med Sensorenheten över SPI. Protokollet mellan dessa moduler är väldigt primitivt då det endast finns en instruktion, \texttt{Returnera sensordata för A}. Instruktionen anges av de fyra högsta bitarna av instruktionsbyten enligt tabell \ref{protokoll:huvud-sensor}. Huvudenhetens begäran är då bara på en enda databyte och Sensorenheten svarar omedelbart med de 8 mest signifikanta bitarna för den efterfrågade sensorn. Vilken sensor som enheten returnerar data för anges av de fyra minsta bitarna i instruktionsbyten enligt tabell \ref{protokoll:huvud-sensor-adress}.
+Huvudenheten kommunicerar med sensorenheten över SPI. Protokollet mellan dessa moduler är väldigt primitivt då det endast finns en instruktion, \texttt{Returnera sensordata för A}. Instruktionen anges av de fyra högsta bitarna av instruktionsbyten enligt tabell \ref{protokoll:huvud-sensor}. Huvudenhetens begäran är då bara på en enda databyte och sensorenheten svarar omedelbart med de 8 mest signifikanta bitarna för den efterfrågade sensorn. Vilken sensor som enheten returnerar data för anges av de fyra minsta bitarna i instruktionsbyten enligt tabell \ref{protokoll:huvud-sensor-adress}.
 
 \subsubsection{Instruktionslista}
 
