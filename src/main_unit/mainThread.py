@@ -74,7 +74,9 @@ class Gloria:
         self.stored_state = None
         self.has_package = self.shared["hasPackage"] = False
         self.station_queue = []
-        
+
+        self.flush_timer = time.time()
+
         self.arm_return_pos = None
         self.carry_pos = [0, 100, 100, 0, 0, 140]
 
@@ -101,6 +103,7 @@ class Gloria:
 
     def restore_state(self):
         log.info("Restoring state from %s to %s" %(self.state, self.stored_state))
+        self.refresh_flush_timer()
         self.change_state(self.stored_state)
 
     def handle_command(self, cmd, args):
@@ -109,6 +112,7 @@ class Gloria:
         elif cmd == "halt" and self.state != HALTED:
             self.change_state(HALTED)
         elif cmd == "autoMotor" and args == True and self.state == MANUAL:
+            self.refresh_flush_timer()
             self.change_state(LINE)
         elif cmd == "autoMotor" and args == False and self.state == LINE:
             self.set_speed(0, 0)
@@ -208,6 +212,9 @@ class Gloria:
         elif center_station != se.NO_STATION:
             self.handle_center_station()
 
+        if self.should_flush():
+            self.flush_station_queue()
+
     def handle_center_station(self, next_state=STATION_CENTER):
         if self.is_on_stop() and not self.has_package:
             self.change_state(HALTED)
@@ -250,6 +257,7 @@ class Gloria:
 
         if front_station == se.NO_STATION:
             log.info("Leaving front station.")
+            self.refresh_flush_timer()
             self.change_state(LINE)
         elif center_station != se.NO_STATION:
             log.info("Detected center station while on front station.")
@@ -272,6 +280,7 @@ class Gloria:
 
         if center_station == se.NO_STATION:
             log.info("Leaving center station.")
+            self.refresh_flush_timer()
             self.change_state(LINE)
         elif front_station != se.NO_STATION:
             front_obj = Station.create(front_station, package)
@@ -308,7 +317,7 @@ class Gloria:
         left = station.is_left()
         log.info("Putting down package on %s side." %["right", "left"][left])
         self.set_speed(0, 0)
-        
+
         if left:
             x = abs(self.arm_return_pos[0]) * -1
         else:
@@ -318,7 +327,7 @@ class Gloria:
 
         pos = self.arm_return_pos[:]
         pos[2] = self.carry_pos[2]
-        
+
         log.info("Setting arm to %s" %str(pos))
         self.steer_arm(*pos)
         time.sleep(3)
@@ -363,6 +372,19 @@ class Gloria:
             second.empty = not self.has_package
             third.empty = not self.has_package
             return True
+
+    def flush_station_queue():
+        self.station_queue = []
+
+    def refresh_flush_timer():
+        self.flush_timer = time.time()
+
+    def should_flush():
+        timeout = 2
+        if self.flush_timer - time.time() > timeout:
+            return True
+        else:
+            return False
 
     def set_speed(self, left, right):
         if left != self.current_speed[0] or right != self.current_speed[1]:
