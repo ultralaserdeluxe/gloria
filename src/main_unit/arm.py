@@ -77,7 +77,7 @@ class robotArm():
         self.shared["errorCodes"].append(error)
         log.warning(error)
     def is_out_of_bounds(self):
-        return self.__outOfBounds
+        return self.__outOfBound
     def setX(self,x):
         if self.checkRobotBounds():
             if (x<self.xyz[0] and self.xyz[0]<0) or (x>self.xyz[0] and self.xyz[0]>0):

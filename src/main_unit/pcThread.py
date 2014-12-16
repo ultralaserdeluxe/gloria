@@ -114,19 +114,21 @@ class pcThread(threading.Thread):
                 ans = convertSensorList(self.__sensorList)
                 sendData(ans)
 
-            elif data[0]=="motorSpeed" or data[0]=="armPosition" or data[0]=="autoMotor" or data[0]=="autoArm" or data[0]=="hasPackage":
+            elif data[0]=="motorSpeed" or data[0]=="autoMotor" or data[0]=="autoArm" or data[0]=="hasPackage":
 
                 checked_elements =  [checkSubelement(e) for e in data[1]]
 
                 if len(data[1]) > 1:
                     if self.__sensorList[data[0]] != checked_elements:
-                        #self.__sensorList[data[0]] = checked_elements
                         self.__commandQueue.put([data[0]] + [checked_elements])
                 else:
                     if self.__sensorList[data[0]] != checked_elements[0]:
-                        #self.__sensorList[data[0]] = checked_elements[0]
                         self.__commandQueue.put([data[0]] + [checked_elements[0]])
+            elif data[0]=="armPosition":
+                checked_elements = [checkSubelement(e) for e in data[1]]
 
+                if sum(checked_elements) != 0:
+                    self.__commandQueue.put([data[0]] + [checked_elements])
             elif data[0]=="calibrateTape":
                 self.__commandQueue.put(data)
             elif data[0] == "calibrateFloor":

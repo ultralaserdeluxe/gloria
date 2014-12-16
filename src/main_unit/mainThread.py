@@ -430,11 +430,20 @@ class Gloria:
         self.arm.setAll(self.shared["armPosition"])
         servo_values = self.arm.getServoValues()
 
-        for i in range(6):
-            self.drive.setArmAxis(i+1, servo_values[i])
-            time.sleep(0.001)
-            self.drive.sendAllAxis()
-            time.sleep(0.001)
+        if self.arm.is_out_of_bounds():
+            log.warning("Arm is out of bounds! Resetting to last good coordinates.")
+            self.shared["armPosition"][0] -= x
+            self.shared["armPosition"][1] -= y
+            self.shared["armPosition"][2] -= z
+            self.shared["armPosition"][3] -= p
+            self.shared["armPosition"][4] -= w
+            self.shared["armPosition"][5] -= g
+        else:
+            for i in range(6):
+                self.drive.setArmAxis(i+1, servo_values[i])
+                time.sleep(0.001)
+                self.drive.sendAllAxis()
+                time.sleep(0.001)
 
 def save_cal_to_file(shared_stuff):
     f = open("calibrat.txt", "w")
