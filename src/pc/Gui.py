@@ -467,9 +467,16 @@ class Gui():
                 self.handleInternalErrors("broken connection")
         self.setSpeedbars(left, right)
     def updateArmFromJoystick(self):
-        tempX=self.__armJoy.x_axis()
-        tempY=self.__armJoy.y_axis()
-        tempZ=self.__armJoy.axis3()
+        def get_average(function):
+            temp=[]
+            for i in range(10):
+                temp.append(function())
+                time.sleep(0.01)
+            return reduce(lambda x,y:x+y,temp)/(len(temp))
+        
+        tempX=get_average(self.__armJoy.x_axis)
+        tempY=get_average(self.__armJoy.y_axis)
+        tempZ=get_average(self.__armJoy.axis3)
         x=int(round(tempX*8.0))
         y=int(round(-tempY*8.0))
         z=int(round(tempZ*8.0))
