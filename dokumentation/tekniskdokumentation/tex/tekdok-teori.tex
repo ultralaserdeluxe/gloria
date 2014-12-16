@@ -2,7 +2,19 @@
 I projektet ingår främst två större teoretiska beräkningsmoment. Vi måste reglera utdatan till motorerna för att roboten skall följa linjen. Vidare vill vi kunna använda enklare koordinater för att tala om vart i rummet armen befinner sig, och vi behöver således kunna konvertera $(x,y,z)$-koordinater till vinklar för armens axlar.
 
 \subsection{Reglering}
-\todo{Hur fungerar regleringen!?}
+För att följa banan måste vi reglera motorernas hastighet. Vi gör detta genom att beräkna ett fel och ändra motorernas hastighet proportionellt mot detta. Felet beräknas genom att vi i varje iteration beräknar vart tejpen befinner sig längs den främre linjesensorn. För att göra detta multiplicerar vi linjesensorvärdena med vikter, dividerar med summan av linjesensorvärdena och subtraherar sedan medianvärdet, vilket i det här fallet är $6$. Vi får ekvation \ref{eq1}.
+
+\begin{equation} \label{eq1}
+	Q_{fel}=6-\frac{\sum_{i=1}^{11}S_{n}*n}{\sum_{i=1}^{11}S_n}
+\end{equation}
+
+För att beräkna utsignalen använder vi felet $Q_{fel}$ och förändringen jämfört med förra iterationen ${\Delta}Q_{fel}$ tillsammans med konstanterna $P$ och $D$. Vi vet att regleringen körs med en uppdateringsfrekvens på 50Hz.
+
+\begin{equation} \label{eq2}
+	Q_{out}=(P*Q_{fel}+D*{\Delta}Q_{fel})*freq
+\end{equation}
+
+$Q_{out}$ i ekvationen ovan är den utsignal som används för att beräkna motorernas nya hastigheter.
 
 \subsection{Styrning av arm}
 Omvandlingen från $(x,y,z)$-koordinater till vinklar för armens servon sker på huvudenheten. På huvudenheten finns en pythonmodul \texttt{arm.py} som implementerar beräkningarna som beskrivs nedan. Den används i tre steg.
