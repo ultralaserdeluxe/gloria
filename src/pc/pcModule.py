@@ -26,8 +26,8 @@ class pcModule():
             if self.__s in readable:
                 while self.__s in readable:
                     data=self.__s.recv(self.__package_size).decode()
-                    #if not data:
-                    #    raise socket.error
+                    if not data:
+                        raise socket.error
                     complete_data_set=complete_data_set+data #decode MIGHT be needed here
                     readable, writable, exceptional = select.select([self.__s], [self.__s], [self.__s])
         return complete_data_set
@@ -35,6 +35,8 @@ class pcModule():
     #if the user wants the sensorlist for debugging
     def getSensorList(self):
         return self.__sensorsList
+    def disconnect(self):
+        self.__s.close()
     
     #sends data to the host. The argument data is a string as described in the designspecfication
     def sendData(self,data):
@@ -54,6 +56,12 @@ class pcModule():
     def getLineSensor(self):
         for element in self.__sensorsList:
             if element[0]=="lineSensor":
+                return element[1]
+        raise SyntaxError("sensor not in list")
+    
+    def getMiddleSensor(self):
+        for element in self.__sensorsList:
+            if element[0]=="middleSensor":
                 return element[1]
         raise SyntaxError("sensor not in list")
     
@@ -111,6 +119,12 @@ class pcModule():
                 return element[1][0]
         raise SyntaxError("sensor not in list")
     
+    def getState(self):
+        for element in self.__sensorsList:
+            if element[0]=="state":
+                return element[1][0]
+        raise SyntaxError("sensor not in list")
+    
     #returns a bool that tells if the motors are in auto or not
     def getAutoMotor(self):
         for element in self.__sensorsList:
@@ -165,13 +179,21 @@ class pcModule():
         command="autoMotor="+str(temp)
         self.sendCommand(command)
         
+    def setClearErrors(self):
+        command="clearErrors"
+        self.sendCommand(command)
+        
     #sends a command to the host to set the arm in auto depending on temp which is a bool
     def setAutoArm(self,temp):
         command="autoArm="+str(temp)
         self.sendCommand(command)
 
     def setPackageTrue(self): #sends gloria that a package has been picked up
-        command="hasPackage"
+        command="hasPackage=True"
+        self.sendCommand(command)
+        
+    def setPackageFalse(self):
+        command="hasPackage=False"
         self.sendCommand(command)
         
     #sends a commands to change the left motors to leftSpeed(int) and right motors to rightSpeed(int) which both are between 100 and -100
