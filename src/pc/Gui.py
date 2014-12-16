@@ -226,6 +226,8 @@ class Gui():
         self.__overviewCanvas=tk.Canvas(self.__overviewFrame,width=self.__window_width*2/4,height=self.__window_height*2/6)
         self.__overviewCanvas.place(relx=0.5,rely=0.5,anchor=tk.CENTER)
         self.__root.update()
+        self.__overviewStateText=self.__overviewCanvas.create_text(10,0,text="state: Offline",fill="red",anchor=tk.NW)
+        self.__overviewPositionText=self.__overviewCanvas.create_text(10,20,text="X:100 Y:100 Z:100",anchor=tk.NW)
         self.__overviewRobot=self.__overviewCanvas.create_rectangle(int(self.__overviewCanvas.winfo_width()*0.40),int(self.__overviewCanvas.winfo_height()*0.20),int(self.__overviewCanvas.winfo_width()*0.60),int(self.__overviewCanvas.winfo_height()*0.80))
         self.__leftMiddleSensor=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4-30),int(self.__overviewCanvas.winfo_height()/2.0-4),int(self.__overviewCanvas.winfo_width()/2.0+4-30),int(self.__overviewCanvas.winfo_height()/2.0+4),fill="red")
         self.__rightMiddleSensor=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4+30),int(self.__overviewCanvas.winfo_height()/2.0-4),int(self.__overviewCanvas.winfo_width()/2.0+4+30),int(self.__overviewCanvas.winfo_height()/2.0+4),fill="red")
@@ -370,19 +372,19 @@ class Gui():
         self.__root.update()
     def DistanceSensorsTest(self):
         if not self.__gloria:
-            for i in range(0,30):
+            for i in range(0,150):
                 self.updateDistanceSensor(i, i)
                 time.sleep(0.01)
-            for i in range(30,0,-1):
+            for i in range(150,0,-1):
                 self.updateDistanceSensor(i, i)
                 time.sleep(0.01)
     def updateDistanceSensor(self,left,right):
         temp_list=self.__overviewCanvas.coords(self.__distanceLineLeft)
-        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0-70-(150-left))
+        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0-70-(150-left)/2.0)
         self.__overviewCanvas.coords(self.__distanceLineLeft,tuple(temp_list))
         
         temp_list=self.__overviewCanvas.coords(self.__distanceLineRight)
-        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0+70+(150-right))
+        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0+70+(150-right)/2.0)
         self.__overviewCanvas.coords(self.__distanceLineRight,tuple(temp_list))
         self.__root.update()
     def speedBarsTester(self):
@@ -450,9 +452,9 @@ class Gui():
     def updateArmFromJoystick(self):
         self.__gloria.updateSensors()
         armPosition=self.__gloria.getArmPosition()
-        x=int(self.__armJoy.x_axis()*4.0+armPosition[0])
-        y=int(-self.__armJoy.y_axis()*4.0+armPosition[1])
-        z=int(self.__armJoy.axis3()*4.0+armPosition[2])
+        x=int(self.__armJoy.x_axis()*8.0+armPosition[0])
+        y=int(-self.__armJoy.y_axis()*8.0+armPosition[1])
+        z=int(self.__armJoy.axis3()*8.0+armPosition[2])
         grip=int(armPosition[5])+self.__armJoy.get_button_4()*10-self.__armJoy.get_button_5()*10
         if grip>140:
             grip=140
@@ -493,6 +495,14 @@ class Gui():
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
             try:
+                self.updateArmPostionText()
+            except (socket.error,AttributeError):
+                self.handleInternalErrors("broken connection")
+            try:
+                self.updateStatusText()
+            except (socket.error,AttributeError):
+                self.handleInternalErrors("broken connection")
+            try:
                 self.updateArmPosition(self.__gloria.getArmPosition())
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
@@ -522,6 +532,12 @@ class Gui():
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
         self.__root.after(25,self.sensorUpdater)
+    def updateStatusText(self):
+        state=self.__gloria.getState()
+        self.__overviewCanvas.itemconfig(self.__overviewStateText,text="state: "+state, fill="green")
+    def updateArmPostionText(self):
+        position=self.__gloria.getArmPosition()
+        self.__overviewCanvas.itemconfig(self.__overviewPositionText,text="X:"+str(position[0])+" Y:"+str(position[1])+" Z:"+str(position[2]))
     def fix_buttons(self, state, autoMotor):  
         if state == "HALTED":
             self.__startButton.config(text="start", command=self.startFunction)            
@@ -702,7 +718,9 @@ class Gui():
             self.__gloria=None
             self.enableButtons(False)
             self.__screenSaver=True
-            self.__connect_button.config(state=tk.NORMAL)
+            self.__connect_button.config(text="connect",command=self.connectFunction,state=tk.NORMAL)
+            self.__overviewCanvas.itemconfig(self.__overviewStateText,text="state: Offline", fill="red")
+
         
         
 temp=Gui()
