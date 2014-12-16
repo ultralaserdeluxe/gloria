@@ -4,7 +4,7 @@ import socket
 import select
 import os
 class pcThread(threading.Thread):
-    
+
     #a constructor for the class
     def __init__(self,commandQueue,sensorList):
         self.__s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -16,10 +16,10 @@ class pcThread(threading.Thread):
         self.__addr=None
         self.__package_tail=""
         threading.Thread.__init__(self)
-        
+
     #when the thread is started this is started
     def run(self):
-        
+
         #waits for a user to connect
         def waitForConnection():
             self.__s.listen(1)
@@ -63,7 +63,7 @@ class pcThread(threading.Thread):
 		int(value)
 		return True
 	    except ValueError:
-		return False        
+		return False
 
         def isfloat(value):
             try:
@@ -89,7 +89,7 @@ class pcThread(threading.Thread):
 
             for k, v in stuff.iteritems():
                 s += str(k) + "="
-                
+
                 if isinstance(v, list):
                     s += ",".join([str(e) for e in v])
                 else:
@@ -98,15 +98,15 @@ class pcThread(threading.Thread):
                 s += ";"
 
             return s
-        
+
         #a simple function that sends data to the user
         def sendData(data):
             self.__conn.sendall(data.encode())
-            
+
         #a function not used yet but can be used to remotely shutdown the BB
         def shutDown():
             os.system("poweroff")
-            
+
         #takes in commands from the mainloop and executes them
         def commandHandler(data):
             temp=0;
@@ -120,12 +120,12 @@ class pcThread(threading.Thread):
 
                 if len(data[1]) > 1:
                     if self.__sensorList[data[0]] != checked_elements:
-                        self.__sensorList[data[0]] = checked_elements
-                        self.__commandQueue.put([data[0]] + [self.__sensorList[data[0]]])
+                        #self.__sensorList[data[0]] = checked_elements
+                        self.__commandQueue.put([data[0]] + [checked_elements])
                 else:
                     if self.__sensorList[data[0]] != checked_elements[0]:
-                        self.__sensorList[data[0]] = checked_elements[0]
-                        self.__commandQueue.put([data[0]] + [self.__sensorList[data[0]]])
+                        #self.__sensorList[data[0]] = checked_elements[0]
+                        self.__commandQueue.put([data[0]] + [checked_elements[0]])
 
             elif data[0]=="calibrateTape":
                 self.__commandQueue.put(data)
@@ -139,7 +139,7 @@ class pcThread(threading.Thread):
                 self.__commandQueue.put(data)
             else:
                 pass
-            
+
         #takes in a received string and converts it into a list of commands that can easily be used
         def splitCommand(data):
             commandList=[]
@@ -163,8 +163,3 @@ class pcThread(threading.Thread):
             commands=splitCommand(receiveData())
             for element in commands:
                 commandHandler(element)
-            
-        
-        
-                
-            

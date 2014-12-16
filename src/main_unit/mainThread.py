@@ -93,6 +93,8 @@ class Gloria:
         return "", []
 
     def change_state(self, new_state):
+        if new_state = MANUAL:
+            self.flush_command_queue()
         log.info("Changing state from %s to %s." %(self.state, new_state))
         self.shared["state"] = new_state
         self.state = new_state
@@ -392,6 +394,10 @@ class Gloria:
             return True
         else:
             return False
+
+    def flush_command_queue(self):
+        while not self.cmd_queue.empty():
+            self.cmd_queue.get()
 
     def set_speed(self, left, right):
         if left != self.current_speed[0] or right != self.current_speed[1]:
