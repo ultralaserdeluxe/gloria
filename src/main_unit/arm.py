@@ -59,24 +59,25 @@ class robotArm():
     def checkRobotBounds(self):
         return abs(self.xyz[0])<140 and self.xyz[1]<170 and self.xyz[2]<11
     def getServoValues(self):
-            self.update_a0_joy()
-            self.update_tw_joy()
-            self.update_z_joy()
-            self.draw_robot()
-            temp=self.__toReturn
+        self.update_a0_joy()
+        self.update_tw_joy()
+        self.update_z_joy()
+        self.draw_robot()
+        temp=self.__toReturn
 
-            for i in range(len(temp)):
-                if temp[i]>self.__limits[i][1]:
-                    temp[i]=self.__limits[i][1]
-                    self.handleError("axis "+str(i+1)+" value too high, set to maximum value instead")
-                if temp[i]<self.__limits[i][0]:
-                    temp[i]=self.__limits[i][0]
-                    self.handleError("axis "+str(i+1)+" value too low, set to minimum value instead")
-            return temp
+        for i in range(len(temp)):
+            if temp[i]>self.__limits[i][1]:
+                temp[i]=self.__limits[i][1]
+                self.handleError("axis "+str(i+1)+" value too high, set to maximum value instead")
+            if temp[i]<self.__limits[i][0]:
+                temp[i]=self.__limits[i][0]
+                self.handleError("axis "+str(i+1)+" value too low, set to minimum value instead")
+        return temp
     def handleError(self,error):
         self.shared["errorCodes"].append(error)
         log.warning(error)
-
+    def is_out_of_bounds(self):
+        return self.__outOfBounds
     def setX(self,x):
         if self.checkRobotBounds():
             if (x<self.xyz[0] and self.xyz[0]<0) or (x>self.xyz[0] and self.xyz[0]>0):
