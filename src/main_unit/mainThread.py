@@ -93,7 +93,7 @@ class Gloria:
         return "", []
 
     def change_state(self, new_state):
-        if new_state = MANUAL:
+        if new_state == MANUAL:
             self.flush_command_queue()
         log.info("Changing state from %s to %s." %(self.state, new_state))
         self.shared["state"] = new_state
@@ -411,17 +411,24 @@ class Gloria:
             self.drive.sendAllMotor()
 
     def steer_arm(self, x, y, z, p, w, g):
-        log.debug("steer_arm: x=%d y=%d z=%d p=%d w=%d g=%d" %(x, y, z, p, w, g))
+        self.shared["armPosition"][0] += x
+        self.shared["armPosition"][1] += y
+        self.shared["armPosition"][2] += z
+        self.shared["armPosition"][3] += p
+        self.shared["armPosition"][4] += w
+        self.shared["armPosition"][5] += g
 
-        self.arm.setAll([x, y, z, p, w, g])
+        log.info("steer_arm: x=%d y=%d z=%d p=%d w=%d g=%d"
+                 %(self.shared["armPosition"][0],
+                   self.shared["armPosition"][1],
+                   self.shared["armPosition"][2],
+                   self.shared["armPosition"][3],
+                   self.shared["armPosition"][4],
+                   self.shared["armPosition"][5]))
+
+
+        self.arm.setAll(self.shared["armPosition"])
         servo_values = self.arm.getServoValues()
-
-        self.shared["armPosition"][0] = x
-        self.shared["armPosition"][1] = y
-        self.shared["armPosition"][2] = z
-        self.shared["armPosition"][3] = p
-        self.shared["armPosition"][4] = w
-        self.shared["armPosition"][5] = g
 
         for i in range(6):
             self.drive.setArmAxis(i+1, servo_values[i])
@@ -475,11 +482,7 @@ if __name__ == "__main__":
                     "state" : None,
                     "hasPackage" :False}
 
-    print shared_stuff
-
     load_cal_from_file(shared_stuff)
-
-    print shared_stuff
 
     sensor_thread = sensorThread.sensorThread(shared_stuff)
     sensor_thread.daemon=True
