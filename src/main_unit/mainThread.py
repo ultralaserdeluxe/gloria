@@ -376,6 +376,7 @@ class Gloria:
 
     def flush_station_queue(self):
         if len(self.station_queue) == 1:
+            log.info("Timeout since front station expired, trying to rescue stuff!")
             self.handle_station_center()
         else:
             log.info("Flushing station queue.")
