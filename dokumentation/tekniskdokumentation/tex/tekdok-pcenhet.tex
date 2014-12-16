@@ -1,24 +1,27 @@
 % Hur är PC-enheten designad?
 
 \section{PC-enhet}
-Syftet med PC-enheten är att sköta kommunikationen mellan PC och huvudenheten samt 
-underlätta för användaren att styra systemet genom ett smart och tydligt grafiskt gränssnitt. 
-Mjukvaran för att göra detta är uppdelad i två delar: En PC-modul som hanterar all data som 
-skickas och tas emot samt ett grafiskt gränssnitt (GUI) mot användaren. Allt är skrivet i 
+Syftet med PC-enheten är att sköta kommunikationen mellan PC och huvudenheten samt
+underlätta för användaren att styra systemet genom ett smart och tydligt grafiskt gränssnitt.
+Mjukvaran för att göra detta är uppdelad i två delar: En PC-modul som hanterar all data som
+skickas och tas emot samt ett grafiskt gränssnitt (GUI) mot användaren. Allt är skrivet i
 programspråket python.
 
+\subsection{Hårdvara}
+För att köra PCenheten krävs en PC med Python installerat. Under utvecklingen av systemet har Ubuntu använts och testats, och det är det som det finns instruktioner för i användarhandledningen. Vidare krävs en Blåtands-enhet för kommunikation med roboten.
+
 \subsection{PC-modul}
-PC-modulens uppgift är att skapa ett gränssnitt för kommunikation mellan PC och det övriga 
-systemet. Rent kodmässigt är den strukturerad i form av en klass med olika metoder för att skicka 
-och ta emot data från användaren och huvudenheten. Metoder som börjar på get läser olika data från 
-huvudenheten (hastighet, armposition, debugdata) och metoder som börjar på set sätter och skickar 
-kommando från GUI till huvudenheten. Klassens initiering tar in en sträng som är IP-adressen till 
-huvudenheten. För att skicka data över nätverket används funktioner från det inbyggda paketet 
+PC-modulens uppgift är att skapa ett gränssnitt för kommunikation mellan PC och det övriga
+systemet. Rent kodmässigt är den strukturerad i form av en klass med olika metoder för att skicka
+och ta emot data från användaren och huvudenheten. Metoder som börjar på get läser olika data från
+huvudenheten (hastighet, armposition, debugdata) och metoder som börjar på set sätter och skickar
+kommando från GUI till huvudenheten. Klassens initiering tar in en sträng som är IP-adressen till
+huvudenheten. För att skicka data över nätverket används funktioner från det inbyggda paketet
 socket. Ett annat paket kallat select används för I/O verifiering.
 
 \subsection{GUI}
-Det grafiska gränssnittet ska hjälpa användaren att enkelt sköta och styra systemet. 
-Det är implementerat via en egen klass som använder funktioner ur paketet tkinter för att rita 
-upp och hantera olika grafiska objekt som fönster och knappar. Funktionerna kallar på lämpliga 
-metoder i PC-modulen om kommando ska skickas eller data ska läsas och visas i fönstret. För att 
-hantera joystick-indata och styrning används funktioner ur paketet pygame. 
+Det grafiska gränssnittet ska hjälpa användaren att enkelt sköta och styra systemet.
+Det är implementerat via en egen klass som använder funktioner ur paketet tkinter för att rita
+upp och hantera olika grafiska objekt som fönster och knappar. Funktionerna kallar på lämpliga
+metoder i PC-modulen om kommando ska skickas eller data ska läsas och visas i fönstret. För att
+hantera joystick-indata och styrning används funktioner ur paketet pygame.

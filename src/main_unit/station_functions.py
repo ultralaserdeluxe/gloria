@@ -3,6 +3,8 @@ import distance
 UPPER_LINE_LIMIT = 0.6
 LOWER_LINE_LIMIT = 0.4
 
+TROSKEL_VALUE = 4
+
 RIGHT = 1
 LEFT = -1
 NO_STATION = 0
@@ -46,12 +48,12 @@ class LineDetector:
     def all_equal_front(self):
         r = [self.all_equal_one(p) for p in self.past_front]
 
-        return sum(r) >= 4
+        return sum(r) >= TROSKEL_VALUE
 
     def all_equal_center(self):
         r = [self.all_equal_one(p) for p in self.past_center]
 
-        return sum(r) >= 4
+        return sum(r) >= TROSKEL_VALUE
 
     def station(self, left, right):
         if left == True and right == False:
@@ -88,9 +90,9 @@ class LineDetector:
 
         s = sum(r)
 
-        if s <= -4:
+        if s <= -TROSKEL_VALUE:
             return LEFT
-        elif s >= 4:
+        elif s >= TROSKEL_VALUE:
             return RIGHT
         else:
             return NO_STATION
@@ -123,9 +125,9 @@ class LineDetector:
 
         s = sum(r)
 
-        if s <= -4:
+        if s <= -TROSKEL_VALUE:
             return LEFT
-        elif s >= 4:
+        elif s >= TROSKEL_VALUE:
             return RIGHT
         else:
             return NO_STATION

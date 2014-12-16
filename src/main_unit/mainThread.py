@@ -72,11 +72,13 @@ class Gloria:
 
         self.state = None
         self.stored_state = None
-        self.has_package = False
+        self.has_package = self.shared["hasPackage"] = False
         self.station_queue = []
-        
+
+        self.flush_timer = time.time()
+
         self.arm_return_pos = None
-        self.carry_pos = [0, 100, 100, 0, 0, 0]
+        self.carry_pos = [0, 100, 130, 0, 0, 140]
 
     def get_command(self):
         if not self.cmd_queue.empty():
@@ -85,7 +87,8 @@ class Gloria:
             args = _cmd[1:]
             if args:
                 args = _cmd[1]
-            log.debug("Got command \"%s\" and args %s." %(cmd, str(args)))
+            if not cmd == "clearErrors":
+                log.debug("Got command \"%s\" and args %s." %(cmd, str(args)))
             return cmd, args
         return "", []
 
@@ -101,6 +104,7 @@ class Gloria:
 
     def restore_state(self):
         log.info("Restoring state from %s to %s" %(self.state, self.stored_state))
+        self.refresh_flush_timer()
         self.change_state(self.stored_state)
 
     def handle_command(self, cmd, args):
@@ -109,6 +113,7 @@ class Gloria:
         elif cmd == "halt" and self.state != HALTED:
             self.change_state(HALTED)
         elif cmd == "autoMotor" and args == True and self.state == MANUAL:
+            self.refresh_flush_timer()
             self.change_state(LINE)
         elif cmd == "autoMotor" and args == False and self.state == LINE:
             self.set_speed(0, 0)
@@ -116,8 +121,8 @@ class Gloria:
         elif cmd == "hasPackage" and args == True and self.state == MANUAL and self.stored_state != None:
 	    log.info("Setting has_package to True.")
 
-            self.has_package = True
-            self.arm_return_pos = self.shared["armPosition"]
+            self.has_package = self.shared["hasPackage"] = True
+            self.arm_return_pos = self.shared["armPosition"][:]
 
             pos = self.arm_return_pos[:]
 
@@ -134,7 +139,7 @@ class Gloria:
             self.shared["errorCodes"] = []
 	elif cmd == "hasPackage" and args == False and self.state == MANUAL:
 	    log.info("Setting has_package to False.")
-            self.has_package = False
+            self.has_package = self.shared["hasPackage"] = False
         elif cmd == "":
             pass
 
@@ -164,24 +169,33 @@ class Gloria:
                 sys.exit(1)
 
     def halted(self):
+        self.shared["autoMotor"] = False
         self.stored_state = None
-        self.has_package = False
+        self.has_package = self.shared["hasPackage"] = False
         self.station_queue = []
         self.set_speed(0, 0)
 
     def manual(self, cmd, args):
+        self.shared["autoMotor"] = False
+
         if cmd == "calibrateFloor":
             sensor_thread.calibrateFloor()
-            pass
+            save_cal_to_file(self.shared)
         elif cmd == "calibrateTape":
             sensor_thread.calibrateTape()
-            pass
+            save_cal_to_file(self.shared)
         elif cmd == "motorSpeed":
             self.set_speed(args[0], args[1])
         elif cmd == "armPosition":
             self.steer_arm(*args)
 
     def line(self):
+        self.shared["autoMotor"] = True
+
+        if self.should_flush() and self.station_queue:
+            self.flush_station_queue()
+            return
+
         self.regulate()
 
         package = se.detect_package(*self.shared["distance"])
@@ -231,6 +245,8 @@ class Gloria:
             self.change_state(next_state)
 
     def station_front(self):
+        self.shared["autoMotor"] = True
+
         self.regulate()
 
         front_values = self.shared["lineSensor"][:]
@@ -243,12 +259,15 @@ class Gloria:
 
         if front_station == se.NO_STATION:
             log.info("Leaving front station.")
+            self.refresh_flush_timer()
             self.change_state(LINE)
         elif center_station != se.NO_STATION:
             log.info("Detected center station while on front station.")
             self.handle_center_station(next_state=STATION_BOTH)
 
     def station_center(self):
+        self.shared["autoMotor"] = True
+
         self.regulate()
 
         package = se.detect_package(*self.shared["distance"])
@@ -263,6 +282,7 @@ class Gloria:
 
         if center_station == se.NO_STATION:
             log.info("Leaving center station.")
+            self.refresh_flush_timer()
             self.change_state(LINE)
         elif front_station != se.NO_STATION:
             front_obj = Station.create(front_station, package)
@@ -272,6 +292,8 @@ class Gloria:
             self.change_state(STATION_BOTH)
 
     def station_both(self):
+        self.shared["autoMotor"] = True
+
         self.regulate()
 
         front_values = self.shared["lineSensor"][:]
@@ -297,7 +319,7 @@ class Gloria:
         left = station.is_left()
         log.info("Putting down package on %s side." %["right", "left"][left])
         self.set_speed(0, 0)
-        
+
         if left:
             x = abs(self.arm_return_pos[0]) * -1
         else:
@@ -307,13 +329,18 @@ class Gloria:
 
         pos = self.arm_return_pos[:]
         pos[2] = self.carry_pos[2]
-        
+
         log.info("Setting arm to %s" %str(pos))
         self.steer_arm(*pos)
         time.sleep(3)
 
         pos[2] = self.arm_return_pos[2]
 
+        log.info("Setting arm to %s" %str(pos))
+        self.steer_arm(*pos)
+        time.sleep(3)
+
+        pos[5] = self.carry_pos[5]
         log.info("Setting arm to %s" %str(pos))
         self.steer_arm(*pos)
         time.sleep(3)
@@ -330,7 +357,7 @@ class Gloria:
         log.info("Setting arm to %s" %str(pos))
         self.steer_arm(*pos)
 
-        self.has_package = False
+        self.has_package = self.shared["hasPackage"] = False
 
     def is_on_stop(self):
         if len(self.station_queue) < 3:
@@ -348,12 +375,30 @@ class Gloria:
             third.empty = not self.has_package
             return True
 
+    def flush_station_queue(self):
+        if len(self.station_queue) == 1:
+            log.info("Timeout since front station expired, trying to rescue stuff!")
+            self.handle_center_station()
+        else:
+            log.info("Flushing station queue.")
+            self.station_queue = []
+
+    def refresh_flush_timer(self):
+        self.flush_timer = time.time()
+
+    def should_flush(self):
+        timeout = 2
+        if time.time() - self.flush_timer > timeout:
+            return True
+        else:
+            return False
+
     def set_speed(self, left, right):
         if left != self.current_speed[0] or right != self.current_speed[1]:
             log.debug("set_speed: left=%d right=%d" %(left, right))
 
-            self.current_speed[0] = left
-            self.current_speed[1] = right
+            self.current_speed[0] = self.shared["motorSpeed"][0] = left
+            self.current_speed[1] = self.shared["motorSpeed"][1] = right
 
             self.drive.setMotorLeft(left)
             self.drive.setMotorRight(right)
@@ -365,11 +410,39 @@ class Gloria:
         self.arm.setAll([x, y, z, p, w, g])
         servo_values = self.arm.getServoValues()
 
+        self.shared["armPosition"][0] = x
+        self.shared["armPosition"][1] = y
+        self.shared["armPosition"][2] = z
+        self.shared["armPosition"][3] = p
+        self.shared["armPosition"][4] = w
+        self.shared["armPosition"][5] = g
+
         for i in range(6):
             self.drive.setArmAxis(i+1, servo_values[i])
             time.sleep(0.001)
             self.drive.sendAllAxis()
             time.sleep(0.001)
+
+def save_cal_to_file(shared_stuff):
+    f = open("calibrat.txt", "w")
+    f.truncate()
+
+    for i in ["lineCalMin", "lineCalMax", "middleCalMin", "middleCalMax"]:
+        f.write(" ".join(str(e) for e in shared_stuff[i]) + "\n")
+
+    f.close()
+
+def load_cal_from_file(shared_stuff):
+    f = open("calibrat.txt", "r")
+
+    keys = ["lineCalMin", "lineCalMax", "middleCalMin", "middleCalMax"]
+    i = 0
+
+    for line in f:
+        shared_stuff[keys[i]] = [int(e) for e in line.split()]
+        i += 1
+
+    f.close()
 
 if __name__ == "__main__":
     line_cal_max = [213, 206, 232, 180, 232, 174, 237, 183, 199, 177, 178]
@@ -395,6 +468,12 @@ if __name__ == "__main__":
                     "error" : 0,
                     "state" : None,
                     "hasPackage" :False}
+
+    print shared_stuff
+
+    load_cal_from_file(shared_stuff)
+
+    print shared_stuff
 
     sensor_thread = sensorThread.sensorThread(shared_stuff)
     sensor_thread.daemon=True
