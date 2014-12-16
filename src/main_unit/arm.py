@@ -49,7 +49,7 @@ class robotArm():
         self.arm=Arm()
         self.closed=False
         self.__limits=[[0,1023],[205,813],[210,940],[180,810],[0,1023],[0,512]]
-	self.__totalLimits=[ [-410,410],[-350,400] ,[-71,420],[-90,90],[0,360],[0,140]]
+        self.__totalLimits=[ [-410,410],[-350,400] ,[-71,420],[-90,90],[0,360],[0,140]]
         self.claw=0
         self.gripperOffset=0
         self.xyz=[100.0,100.0,100.0]
@@ -127,6 +127,13 @@ class robotArm():
         self.setX(servo_values[0])
         self.setY(servo_values[1])
         self.setZ(servo_values[2])
+        if self.__outOfBound:
+            temp=[abs(e) for e in self.xyz]
+            tempIndex=temp.index(max(temp))
+            if self.xyz[tempIndex]<0:
+                self.xyz[tempIndex]=self.xyz[tempIndex]+10
+            else:
+                self.xyz[tempIndex]=self.xyz[tempIndex]-10
         self.setGripperAngle(servo_values[3])
         self.setGripperRotationOffset(servo_values[4])
         self.setGripper(servo_values[5])
