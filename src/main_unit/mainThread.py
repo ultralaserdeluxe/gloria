@@ -375,8 +375,11 @@ class Gloria:
             return True
 
     def flush_station_queue(self):
-        log.info("Flushing station queue.")
-        self.station_queue = []
+        if len(self.station_queue) == 1:
+            self.handle_station_center()
+        else:
+            log.info("Flushing station queue.")
+            self.station_queue = []
 
     def refresh_flush_timer(self):
         self.flush_timer = time.time()
