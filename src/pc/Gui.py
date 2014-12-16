@@ -486,7 +486,7 @@ class Gui():
                 self.updateArmFromJoystick()
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
-        self.__root.after(25,self.peripheralUpdater)
+        self.__root.after(50,self.peripheralUpdater)
     def sensorUpdater(self):
         if self.__gloria:
             try:
@@ -530,7 +530,7 @@ class Gui():
                 self.fix_buttons(self.__gloria.getState(), self.__gloria.getAutoMotor())
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
-        self.__root.after(25,self.sensorUpdater)
+        self.__root.after(100,self.sensorUpdater)
     def updateStatusText(self):
         state=self.__gloria.getState()
         self.__overviewCanvas.itemconfig(self.__overviewStateText,text="state: "+state, fill="green")
