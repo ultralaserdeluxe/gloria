@@ -5,7 +5,7 @@ I projektet ingår främst två större teoretiska beräkningsmoment. Vi måste 
 För att följa banan måste vi reglera motorernas hastighet. Vi gör detta genom att beräkna ett fel och ändra motorernas hastighet proportionellt mot detta. Felet beräknas genom att vi i varje iteration beräknar vart tejpen befinner sig längs den främre linjesensorn. För att göra detta multiplicerar vi linjesensorvärdena med vikter, dividerar med summan av linjesensorvärdena och subtraherar sedan medianvärdet, vilket i det här fallet är $6$. Vi får ekvation \ref{eq1}.
 
 \begin{equation} \label{eq1}
-	Q_{fel}=\frac{\sum_{i=1}^{11}S_{n}*n}{\sum_{i=1}^{11}S_n}-6
+	Q_{fel}=6-\frac{\sum_{i=1}^{11}S_{n}*n}{\sum_{i=1}^{11}S_n}
 \end{equation}
 
 För att beräkna utsignalen använder vi felet $Q_{fel}$ och förändringen jämfört med förra iterationen ${\Delta}Q_{fel}$ tillsammans med konstanterna $P$ och $D$. Vi vet att regleringen körs med en uppdateringsfrekvens på 50Hz.
