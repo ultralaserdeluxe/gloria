@@ -72,11 +72,11 @@ class Gloria:
 
         self.state = None
         self.stored_state = None
-        self.has_package = False
+        self.has_package = self.shared["hasPackage"] = False
         self.station_queue = []
         
         self.arm_return_pos = None
-        self.carry_pos = [0, 100, 100, 0, 0, 0]
+        self.carry_pos = [0, 100, 100, 0, 0, 140]
 
     def get_command(self):
         if not self.cmd_queue.empty():
@@ -116,7 +116,7 @@ class Gloria:
         elif cmd == "hasPackage" and args == True and self.state == MANUAL and self.stored_state != None:
 	    log.info("Setting has_package to True.")
 
-            self.has_package = True
+            self.has_package = self.shared["hasPackage"] = True
             self.arm_return_pos = self.shared["armPosition"]
 
             pos = self.arm_return_pos[:]
@@ -134,7 +134,7 @@ class Gloria:
             self.shared["errorCodes"] = []
 	elif cmd == "hasPackage" and args == False and self.state == MANUAL:
 	    log.info("Setting has_package to False.")
-            self.has_package = False
+            self.has_package = self.shared["hasPackage"] = False
         elif cmd == "":
             pass
 
@@ -164,24 +164,29 @@ class Gloria:
                 sys.exit(1)
 
     def halted(self):
+        self.shared["autoMotor"] = False
         self.stored_state = None
-        self.has_package = False
+        self.has_package = self.shared["hasPackage"] = False
         self.station_queue = []
         self.set_speed(0, 0)
 
     def manual(self, cmd, args):
+        self.shared["autoMotor"] = False
+
         if cmd == "calibrateFloor":
             sensor_thread.calibrateFloor()
-            pass
+            save_cal_to_file(self.shared)
         elif cmd == "calibrateTape":
             sensor_thread.calibrateTape()
-            pass
+            save_cal_to_file(self.shared)
         elif cmd == "motorSpeed":
             self.set_speed(args[0], args[1])
         elif cmd == "armPosition":
             self.steer_arm(*args)
 
     def line(self):
+        self.shared["autoMotor"] = True
+
         self.regulate()
 
         package = se.detect_package(*self.shared["distance"])
@@ -231,6 +236,8 @@ class Gloria:
             self.change_state(next_state)
 
     def station_front(self):
+        self.shared["autoMotor"] = True
+
         self.regulate()
 
         front_values = self.shared["lineSensor"][:]
@@ -249,6 +256,8 @@ class Gloria:
             self.handle_center_station(next_state=STATION_BOTH)
 
     def station_center(self):
+        self.shared["autoMotor"] = True
+
         self.regulate()
 
         package = se.detect_package(*self.shared["distance"])
@@ -272,6 +281,8 @@ class Gloria:
             self.change_state(STATION_BOTH)
 
     def station_both(self):
+        self.shared["autoMotor"] = True
+
         self.regulate()
 
         front_values = self.shared["lineSensor"][:]
@@ -318,6 +329,11 @@ class Gloria:
         self.steer_arm(*pos)
         time.sleep(3)
 
+        pos[5] = self.carry_pos[5]
+        log.info("Setting arm to %s" %str(pos))
+        self.steer_arm(*pos)
+        time.sleep(3)
+
         pos[2] = self.carry_pos[2]
 
         log.info("Setting arm to %s" %str(pos))
@@ -330,7 +346,7 @@ class Gloria:
         log.info("Setting arm to %s" %str(pos))
         self.steer_arm(*pos)
 
-        self.has_package = False
+        self.has_package = self.shared["hasPackage"] = False
 
     def is_on_stop(self):
         if len(self.station_queue) < 3:
@@ -365,11 +381,34 @@ class Gloria:
         self.arm.setAll([x, y, z, p, w, g])
         servo_values = self.arm.getServoValues()
 
+        self.shared["armPosition"] = [x, y, z, p, w, g]
+
         for i in range(6):
             self.drive.setArmAxis(i+1, servo_values[i])
             time.sleep(0.001)
             self.drive.sendAllAxis()
             time.sleep(0.001)
+
+def save_cal_to_file(shared_stuff):
+    f = open("calibrat.txt", "w")
+    f.truncate()
+
+    for i in ["lineCalMin", "lineCalMax", "middleCalMin", "middleCalMax"]:
+        f.write(" ".join(str(e) for e in shared_stuff[i]) + "\n")
+
+    f.close()
+
+def load_cal_from_file(shared_stuff):
+    f = open("calibrat.txt", "r")
+
+    keys = ["lineCalMin", "lineCalMax", "middleCalMin", "middleCalMax"]
+    i = 0
+
+    for line in f:
+        shared_stuff[keys[i]] = [int(e) for e in line.split()]
+        i += 1
+
+    f.close()
 
 if __name__ == "__main__":
     line_cal_max = [213, 206, 232, 180, 232, 174, 237, 183, 199, 177, 178]
@@ -395,6 +434,12 @@ if __name__ == "__main__":
                     "error" : 0,
                     "state" : None,
                     "hasPackage" :False}
+
+    print shared_stuff
+
+    load_cal_from_file(shared_stuff)
+
+    print shared_stuff
 
     sensor_thread = sensorThread.sensorThread(shared_stuff)
     sensor_thread.daemon=True
