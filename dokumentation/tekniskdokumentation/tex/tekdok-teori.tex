@@ -41,7 +41,6 @@ I listan som returneras är första värdet till armens bas, det andra är till 
 Omvandlingen sker på följande sätt där gripperRotationOffset och gripper ignoreras. Antag att roboten startar i $(X,Y,Z,GR)=(0,0,0,\pi/2)$.
 Där $GR$(GripRadian) är vilken vinkel gripklon har till $z$-axeln.\newline
 Vi omvandlar våra rum-koordinater till en vinkel och plankoordinater $X,Y,Z,GR\rightarrow A,W,Z,GR$. Där $A$ är armens vinkel mot positiva $x$-axeln och $W$ är armens utsträckning.
-\todo{Visualisera omvandling rumkoordinater till plan}
 $$A=tan^{-1}(\dfrac{Y}{X}) $$
 $$W=\sqrt{X^2+Y^2}$$
 Genom denna omvandlingen så kan vi göra om detta till ett 2-dimensionellt problem istället för ett 3-dimensionellt problem. Vi får in $X$,$Y$,$Z$,$GR$ och ställer in robotens vinkel mot $x$-axelns positiva del och sedan ser vi till att roboten bara har rätt utsträckning och höjd.
@@ -59,6 +58,7 @@ $$A_2=tan^{-1}(\dfrac{Z_2-Z_1}{W_2-W_1})-A_1$$
 $$A_3=GR-D_2-D_3$$
 
 Då är alla vinklar beräknade men servornas nollpunkter är inte på samma ställen som nollställena i beräkningarna ovanför. Så följande offset ställs in i grader:
+
 \begin{itemize}
 	\item $A0=A0+60$
 	\item $A1=240-A1$
@@ -67,4 +67,5 @@ Då är alla vinklar beräknade men servornas nollpunkter är inte på samma st�
 	\item $A4=240-A0+GripperRotationOffset$ (klons rotation beror på basens rotation)
 	\item $A5$ har ingen offset
 \end{itemize}
-Dessa vinklar är nu i grader. Dessa multipliceras nu med $3.41$ \todo{Varför?} och avrundas nedåt till heltal och kan nu användas direkt av styrenheten.
+
+Dessa vinklar är nu i grader. Dessa multipliceras nu med $\frac{1024}{360}$ för att omvandla grader till 10-bitars binära tal, avrundas nedåt till heltal och kan nu användas direkt av styrenheten.
