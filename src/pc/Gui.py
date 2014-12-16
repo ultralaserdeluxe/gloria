@@ -66,6 +66,27 @@ class Joystick():
     def get_button_6(self):
         pygame.event.pump()
         return self.joystick.get_button(6)
+    def get_button_7(self):
+        pygame.event.pump()
+        return self.joystick.get_button(7)
+    def get_button_8(self):
+        pygame.event.pump()
+        return self.joystick.get_button(8)
+    def get_button_9(self):
+        pygame.event.pump()
+        return self.joystick.get_button(9)
+    def get_button_10(self):
+        pygame.event.pump()
+        return self.joystick.get_button(10)
+    def get_button_11(self):
+        pygame.event.pump()
+        return self.joystick.get_button(11)
+    def get_button_12(self):
+        pygame.event.pump()
+        return self.joystick.get_button(12)
+    def get_button_13(self):
+        pygame.event.pump()
+        return self.joystick.get_button(13)
     def get_hat(self):
         pygame.event.pump()
         return self.joystick.get_hat(0)
@@ -446,21 +467,16 @@ class Gui():
                 self.handleInternalErrors("broken connection")
         self.setSpeedbars(left, right)
     def updateArmFromJoystick(self):
-        self.__gloria.updateSensors()
-        armPosition=self.__gloria.getArmPosition()
         tempX=self.__armJoy.x_axis()
         tempY=self.__armJoy.y_axis()
         tempZ=self.__armJoy.axis3()
-        x=int(round(tempX*8.0+armPosition[0]))
-        y=int(round(-tempY*8.0+armPosition[1]))
-        z=int(round(tempZ*8.0+armPosition[2]))
-        grip=int(round(armPosition[5]+self.__armJoy.get_button_4()*10-self.__armJoy.get_button_5()*10))
-        if grip>140:
-            grip=140
-        if grip<0:
-            grip=0
-            
-        self.__gloria.setArmPosition(x, y, z, int(round(self.__armJoy.axis2()*90)),int(round(180 +self.__armJoy.axis4()*180)), grip)
+        x=int(round(tempX*8.0))
+        y=int(round(-tempY*8.0))
+        z=int(round(tempZ*8.0))
+        grip=int(round(self.__armJoy.get_button_4()*8-self.__armJoy.get_button_5()*8))
+        wrist=int(round(self.__armJoy.get_button_8()*8-self.__armJoy.get_button_8()*8))
+        rotation=int(round(self.__armJoy.get_button_10()*8-self.__armJoy.get_button_11()*8))    
+        self.__gloria.setArmPosition(x, y, z, wrist,rotation, grip)
     def linesensorBarsTester(self):
         if not self.__gloria:
             test_data=[[0,0,0,0,0,0,0,0,0,0,0],[128,0,0,0,0,0,0,0,0,0,0],[256,128,0,0,0,0,0,0,0,0,0],[512,256,128,0,0,0,0,0,0,0,0],[1024,512,256,128,0,0,0,0,0,0,0],
