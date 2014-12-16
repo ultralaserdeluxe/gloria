@@ -1,25 +1,25 @@
 \section{Installation av Gloria}
-På Gloria så har vi en s.k. huvudenhet, en \textbf{beagleboard}, som innehåller all styrlogik som låter oss hantera Gloria i sin helhet. Beagleboardet har ett antal USB-portar, varav en är ansluten till en blåtandsdongel som låter oss ansluta direkt till beagleboardet från godtycklig pc.
+På Gloria så finns en huvudenhet, en \textbf{beagleboard}, som innehåller all styrlogik som låter användaren hantera roboten. Beagleboardet har ett antal USB-portar, varav en är ansluten till en blåtandsdongel som låter användaren ansluta direkt till beagleboardet från godtycklig pc.
 
 \subsection{Ansluta till Gloria}
-För att kunna ansluta till huvudenheten behöver följande göras (antag att vi sitter på en linuxmaskin):
+För att kunna ansluta till huvudenheten behöver följande göras (antag att man sitter på en linuxmaskin):
 \begin{enumerate}
 	\item Ha tillgång till en terminal på huvudenheten, det enklaste är att ansluta en skärm och tangentbord till den.\newline Lösenordet är \textbf{temppwd}
-	\item Kör \textbf{sudo bluez-simple-agent hci0 xx:xx:xx:xx:xx:xx} där du byter ut kryssen mot din blåtandenhets mac-adress.
-	\item \textbf{Paira} (förbind) huvudenheten med din pc från din pc. Huvudenheten är listad som arm-0 via blåtand.
-	\item Kör \textbf{sudo bluez-test-device trusted xx:xx:xx:xx:xx:xx yes} på huvudenheten där du återigen byter ut kryssen mot din blåtandenhets mac-adress.
-	\item Du kan nu ta bort pairing (men låt blåtand fortsatt vara påslaget) från din pc.
-	\item Kör \textbf{sudo pand -n -c 00:19:0E:0F:F0:6F	} på din pc.
-	\item Kör \textbf{sudo ifconfig bnep0 192.168.99.2 up } på din pc.
+	\item Kör \textbf{sudo bluez-simple-agent hci0 xx:xx:xx:xx:xx:xx} där man byter ut kryssen mot den anslutande blåtandenhetens mac-adress.
+	\item Upprätta en förbindelse från den anslutande PCn till huvudenheten. Huvudenheten är listad som arm-0 via blåtand.
+	\item Kör \textbf{sudo bluez-test-device trusted xx:xx:xx:xx:xx:xx yes} på huvudenheten där man återigen byter ut kryssen mot blåtandenhetens mac-adress.
+	\item Man kan nu ta bort förbindelsen (men låt blåtand fortsatt vara påslaget) från den anslutande PCn.
+	\item Kör \textbf{sudo pand -n -c 00:19:0E:0F:F0:6F	} på den anslutande PCn.
+	\item Kör \textbf{sudo ifconfig bnep0 192.168.99.2 up } på den anslutande PCn.
 \end{enumerate}
-Nu borde du kunna pinga och ssh in på ubuntu@192.168.99.1 vilket är huvudenhetens statiska ip-adress. I framtiden behövs bara de två sista stegen genmföras.
+Nu borde man kunna pinga och ssha in på ubuntu@192.168.99.1 vilket är huvudenhetens statiska ip-adress. I framtiden behövs bara de två sista stegen genmföras.
 \subsection{Starta Gloria}
 \begin{enumerate}
-	\item Om anslutning har etablerats till Gloria så behöver man hitta filen mainThread.py som ligger i usr/bin/home/main.
-	\item Kommandot för att starta systemet i Gloria är bara en rad: \textbf{python mainThread.py}
-	När detta kommandot körs så sätter systemet igång och Gloria lägger sig i vänteläge.
-	\item Efter att mainThread.py har startats på Gloria så startar man upp en ny terminal lokalt på datorn som Gloria ska styras ifrån och hittar Gui.py. Sedan kör man kommandot: \textbf{python Gui.py}
-	\item Anslut två joysticks via USB (till pc). Klargör vilken som styr motor och vilken som styr arm.
+	\item Om anslutning har etablerats till roboten så behöver man hitta filen mainThread.py som ligger i usr/bin/home/main.
+	\item Kommandot för att starta systemet är \textbf{python mainThread.py}
+	När detta kommandot körs så sätter systemet igång och roboten lägger sig i vänteläge.
+	\item Efter att mainThread.py har startats på roboten så startar man upp en ny terminal lokalt på datorn som roboten ska styras ifrån och hittar Gui.py. Sedan kör man kommandot: \textbf{python Gui.py}
+	\item Anslut två joysticks via USB (till PC). För att styra motorn behöver du en mad catz och för armen du en Saitek.
 \end{enumerate}
 \subsection{Kort om AVR}
 Eventuell mjukvaruuppdatering kan installeras via JTAG-porten.

@@ -1,17 +1,17 @@
 \section{Användning av det grafiska gränssnittet}
 
-Det grafiska gränssnittet finns där för att underlätta att läsa sensordata från gloria och sända kommandon till gloria.
+Det grafiska gränssnittet finns där för att kontrollera och få information om systemets status.
 
 \begin{figure}[h!]
 	\center
 	\includegraphics[scale=0.6]{Gui.png}
 	\endcenter
-	\caption{Gui. Överst visas sensordata (10), i mitten visas gloria (11), till höger visas reglerfel (12) samt errorcodes (13) och nederst visas en terminal (14).}
+	\caption{Gui. Överst visas information från linjesensorn (10), i mitten visas en översikt av systemet (11), till höger visas reglerfel (12) samt felmeddelanden (13), nedre mitten visar motorernas hastighet (14) och nederst visas en terminal (15).}
 \end{figure}
 
 \subsection{Initiering och översikt av gränssnittet}
 
-Väl inne i Gui.py så ser du ett antal saker på skärmen (se figur 1).
+Väl inne i Gui.py så finns ett antal saker på skärmen (se figur 1).
 \begin{enumerate}
 	\item Saker som behöver göras innan körning:
 	\begin{itemize}
@@ -39,9 +39,9 @@ Väl inne i Gui.py så ser du ett antal saker på skärmen (se figur 1).
 		\item Gripklo (släpp, grepp): Vänster knapp på framsidan av Joysticken regleras från T1 till T2, där T1 innebär att gripklon öppnar sig och T2 att den stänger sig.
 	\end{itemize}
 \subsection{Kalibrering av golv- och tejpsensorvärden}
-	För att Gloria ska kunna köra autonomt längs en bana krävs det att sensorerna har vissa värden för bana (tejp), så att Gloria vet när den börjar hamna utanför banan (golv). För att kunna supporta olika typer av banor så har vi möjligheten att kalibrera sensorvärden.
+	För att roboten ska kunna köra autonomt längs en bana krävs det att sensorerna har vissa värden för bana (tejp), så att roboten vet när den börjar hamna utanför banan (golv). För att kunna supporta olika typer av banor så finns möjligheten att kalibrera sensorvärden.
 \begin{itemize}
-	\item Kalibrering av tejp sker genom att man placerar Gloria över tejpen som den ska följa och trycker på \textbf{calibrate tape} i gränsnittet (markerat 5 i figur 1). Värdet som sensorvärdena får då sparas som tejp i Gloria.
-	\item Kalibrering av golv sker genom att man placerar Gloria över golv och trycker på \textbf{calibrate floor} i gränssnittet (markerat 6 i figur 1). Värdet som sensorvärdena får då sparas som golv i Gloria.
+	\item Kalibrering av tejp sker genom att man placerar roboten över tejpen som den ska följa och trycker på \textbf{calibrate tape} i gränsnittet (markerat 5 i figur 1). Värdet som sensorvärdena får då sparas som tejp.
+	\item Kalibrering av golv sker genom att man placerar roboten över golv och trycker på \textbf{calibrate floor} i gränssnittet (markerat 6 i figur 1). Värdet som sensorvärdena får då sparas som golv.
 \end{itemize}
-För att garantera att Gloria ska fungera enligt specifikationerna så krävs det att banreglerna som visas i Appendix A följs.
+För att garantera att roboten ska fungera enligt specifikationerna så krävs det att banreglerna som visas i Appendix A följs.
