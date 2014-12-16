@@ -23,6 +23,21 @@ När \texttt{status} begärs svarar huvudenheten på samma form som PCenheten me
 	\begin{tabularx}{\textwidth}{| l | X | X |}
 		\hline
 		\textbf{Attribut} & \textbf{Argument} & {\textbf{Beskrivning}}\\\hline
+		{lineSensor} & {11 heltal} & {Normaliserad sensordata för främre linjesensor} \\\hline
+		{lineCalMax} & {$D$} & {Kalibreringsdata} \\\hline
+		{lineCalMin} & {$D$} & {Kalibreringsdata} \\\hline
+		{middleCalMax} & {$D$} & {Kalibreringsdata} \\\hline
+		{middleCalMin} & {$D$} & {Kalibreringsdata} \\\hline
+		{middleSensor} & {2 heltal} & {Normaliserad sensordata för centerad linjesensor} \\\hline
+		{distance} & {2 heltal} & {Normaliserad sensordata för avståndssensorer} \\\hline
+		{armPosition} & {X, Y, Z, P, W, G} & {Armens nuvarande position} \\\hline
+		{errorCodes} & {Lista med strängar} & {Fel- och debugmeddelanden} \\\hline
+		{latestCalibration} & {Datum} & {När sensorerna senast blev kalibrerade} \\\hline
+		{autoMotor} & {Sant/Falskt} & {Huruvida roboten är i autonomt eller manuellt läge} \\\hline
+		{regulator} & {2 heltal} & {Utsignalen från regulatortråden} \\\hline
+		{error} & {Heltal} & {Det beräknade felet från regulatortråden} \\\hline
+		{state} & {} & {Vilket tillstånd roboten befinner sig i} \\\hline
+		{hasPackage} & {Sant/Falskt} & {Huruvida roboten har ett paket eller inte} \\\hline
 	\end{tabularx}
 	\caption{\todo{Lista precis vad status returnerar.}} \label{kommunikation-pc-huvud-status}
 \end{table}
@@ -43,6 +58,8 @@ När \texttt{status} begärs svarar huvudenheten på samma form som PCenheten me
 		{start} & {} & {Roboten påbörjar körning} \\\hline
 		{armPosition} & {X,Y,Z,P,W,G} & {Förflytta armen till givna koordinater} \\\hline
 		{motorSpeed} & {L,R} & {Sätt motorernas hastighet till givna hastigheter} \\\hline
+		{halt} & {} & {Roboten stannar} \\\hline
+		{clearErrors} & {} & {Rensa listan med debug och felmeddelanden} \\\hline
 	\end{tabularx}
 	\caption{Kommandon från PCenhet till Huvudenhet} \label{protokoll:pc-huvud-tabell}
 \end{table}
