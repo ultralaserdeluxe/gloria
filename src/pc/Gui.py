@@ -249,6 +249,7 @@ class Gui():
         self.__root.update()
         self.__overviewStateText=self.__overviewCanvas.create_text(10,0,text="state: Offline",fill="red",anchor=tk.NW)
         self.__overviewPositionText=self.__overviewCanvas.create_text(10,20,text="X:100 Y:100 Z:100",anchor=tk.NW)
+        self.__overviewDistanceText=self.__overviewCanvas.create_text(10,40,text="L:100 R:100",anchor=tk.NW)
         self.__overviewRobot=self.__overviewCanvas.create_rectangle(int(self.__overviewCanvas.winfo_width()*0.40),int(self.__overviewCanvas.winfo_height()*0.20),int(self.__overviewCanvas.winfo_width()*0.60),int(self.__overviewCanvas.winfo_height()*0.80))
         self.__leftMiddleSensor=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4-30),int(self.__overviewCanvas.winfo_height()/2.0-4),int(self.__overviewCanvas.winfo_width()/2.0+4-30),int(self.__overviewCanvas.winfo_height()/2.0+4),fill="red")
         self.__rightMiddleSensor=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4+30),int(self.__overviewCanvas.winfo_height()/2.0-4),int(self.__overviewCanvas.winfo_width()/2.0+4+30),int(self.__overviewCanvas.winfo_height()/2.0+4),fill="red")
@@ -521,6 +522,10 @@ class Gui():
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
             try:
+                self.updateDistanceText()
+            except (socket.error,AttributeError):
+                self.handleInternalErrors("broken connection")
+            try:
                 self.updateStatusText()
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
@@ -560,6 +565,10 @@ class Gui():
     def updateArmPostionText(self):
         position=self.__gloria.getArmPosition()
         self.__overviewCanvas.itemconfig(self.__overviewPositionText,text="X:"+str(position[0])+" Y:"+str(position[1])+" Z:"+str(position[2]))
+    def updateDistanceText(self):
+        left_distance = self.__gloria.getLeftDistanceSensor()
+        right_distance = self.__gloria.getRightDistanceSensor()
+        self.__overviewDistanceText.itemconfig(text="L: %s R: %s" %(str(left_distance), str(right_distance)))
     def fix_buttons(self, state, autoMotor):  
         if state == "HALTED":
             self.__startButton.config(text="start", command=self.startFunction)            
