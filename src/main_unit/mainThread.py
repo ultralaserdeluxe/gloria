@@ -368,8 +368,17 @@ class Gloria:
         time.sleep(4)
 
     def return_to_carry_position(self):
+        side = self.shared["armPosition"][0]
+        if side < 0:
+            xpos =  -160
+        else:
+            xpos = 160
+
+        self.steer_arm_fixed(x=xpos, z=40)
+        time.sleep(3)
+
         self.steer_arm_fixed(z=self.carry_pos[2])
-        time.sleep(4)
+        time.sleep(3)
 
         self.steer_arm_fixed(x=self.carry_pos[0], y=self.carry_pos[1])
         time.sleep(4)
@@ -380,11 +389,13 @@ class Gloria:
         self.set_speed(0, 0)
 
         if left:
-            x = abs(self.arm_return_pos[0]) * -1
+            x = 170 * -1
         else:
-            x = abs(self.arm_return_pos[0])
+            x = 170
 
+        # Put down package on (x,y)=(170,0)
         self.arm_return_pos[0] = x
+        self.arm_return_pos[1] = 0
 
         self.steer_arm_fixed(x=self.arm_return_pos[0], y=self.arm_return_pos[1])
         time.sleep(4)

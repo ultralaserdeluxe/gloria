@@ -133,10 +133,9 @@ class LineDetector:
             return NO_STATION
 
 def detect_package(left_value, right_value):
-    if distance.distance_left(left_value) <= 20.0:
+    if distance.distance_left(left_value) <= 17.0:
         return LEFT
-    elif distance.distance_right(right_value) <= 20.0:
+    elif distance.distance_right(right_value) <= 17.0:
         return RIGHT
     else:
         return NO_PACKAGE
-
