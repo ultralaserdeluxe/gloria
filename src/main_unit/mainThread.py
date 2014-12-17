@@ -78,8 +78,7 @@ class Gloria:
         self.flush_timer = time.time()
 
         self.arm_return_pos = None
-        self.default_pos = (0, 100, 110, 0, 0, 140)
-        self.carry_pos = (0, 100, 130, 0, 0, 140)
+        self.carry_pos = (0, 100, 130, 0, 150, 140)
 
     def get_command(self):
         if not self.cmd_queue.empty():
@@ -517,7 +516,7 @@ if __name__ == "__main__":
                     "middleCalMin" : middle_cal_min,
                     "middleSensor" : [0, 0],
                     "distance" :  [0, 0],
-                    "armPosition" : [0, 100, 100, 4, 5, 5],
+                    "armPosition" : [0, 100, 130, 0, 150, 140],
                     "errorCodes" : ["Yngve Programmed Me Right"],
                     "motorSpeed" : [70, 70],
                     "latestCalibration" : "0000-00-00-15:00",
