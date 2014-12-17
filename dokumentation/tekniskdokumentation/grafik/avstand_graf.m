@@ -13,5 +13,5 @@ X_range = [(4:1:29),(4:1:29)];
 
 xlabel('Uppmätt Y');
 ylabel('X');
-plot(X_range, Y_both, '+');
+plot(Y_both, X_range, '+');
 grid on;
