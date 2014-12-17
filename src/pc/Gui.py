@@ -249,6 +249,7 @@ class Gui():
         self.__root.update()
         self.__overviewStateText=self.__overviewCanvas.create_text(10,0,text="state: Offline",fill="red",anchor=tk.NW)
         self.__overviewPositionText=self.__overviewCanvas.create_text(10,20,text="X:100 Y:100 Z:100",anchor=tk.NW)
+        self.__overviewDistanceText=self.__overviewCanvas.create_text(10,40,text="L:100 R:100",anchor=tk.NW)
         self.__overviewRobot=self.__overviewCanvas.create_rectangle(int(self.__overviewCanvas.winfo_width()*0.40),int(self.__overviewCanvas.winfo_height()*0.20),int(self.__overviewCanvas.winfo_width()*0.60),int(self.__overviewCanvas.winfo_height()*0.80))
         self.__leftMiddleSensor=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4-30),int(self.__overviewCanvas.winfo_height()/2.0-4),int(self.__overviewCanvas.winfo_width()/2.0+4-30),int(self.__overviewCanvas.winfo_height()/2.0+4),fill="red")
         self.__rightMiddleSensor=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4+30),int(self.__overviewCanvas.winfo_height()/2.0-4),int(self.__overviewCanvas.winfo_width()/2.0+4+30),int(self.__overviewCanvas.winfo_height()/2.0+4),fill="red")
@@ -335,8 +336,8 @@ class Gui():
         #starts mainloop
         self.__root.update()
         self.__root.after(2000, self.screenSaver)
-        self.__root.after(25,self.peripheralUpdater)
-        self.__root.after(25,self.sensorUpdater)
+        self.__root.after(10,self.peripheralUpdater)
+        self.__root.after(90,self.sensorUpdater)
         self.__root.mainloop()
     def connectArmJoystick(self):
         temp=Joystick("arm")
@@ -397,11 +398,11 @@ class Gui():
                 time.sleep(0.01)
     def updateDistanceSensor(self,left,right):
         temp_list=self.__overviewCanvas.coords(self.__distanceLineLeft)
-        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0-70-(150-left)/2.0)
+        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0-70-(30-left))
         self.__overviewCanvas.coords(self.__distanceLineLeft,tuple(temp_list))
         
         temp_list=self.__overviewCanvas.coords(self.__distanceLineRight)
-        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0+70+(150-right)/2.0)
+        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0+70+(right-30))
         self.__overviewCanvas.coords(self.__distanceLineRight,tuple(temp_list))
         self.__root.update()
     def speedBarsTester(self):
@@ -471,18 +472,18 @@ class Gui():
             temp=[]
             for i in range(10):
                 temp.append(function())
-                time.sleep(0.01)
+                time.sleep(0.0001)
             return reduce(lambda x,y:x+y,temp)/(len(temp))
         
         tempX=get_average(self.__armJoy.x_axis)
         tempY=get_average(self.__armJoy.y_axis)
         tempZ=get_average(self.__armJoy.axis3)
-        x=int(round(tempX*8.0))
-        y=int(round(-tempY*8.0))
-        z=int(round(tempZ*8.0))
-        grip=int(round(self.__armJoy.get_button_4()*8-self.__armJoy.get_button_5()*8))
-        wrist=int(round(self.__armJoy.get_button_8()*8-self.__armJoy.get_button_8()*8))
-        rotation=int(round(self.__armJoy.get_button_10()*8-self.__armJoy.get_button_11()*8))    
+        x=int(round(tempX*4.0))
+        y=int(round(-tempY*4.0))
+        z=int(round(tempZ*4.0))
+        grip=int(round(self.__armJoy.get_button_4()-self.__armJoy.get_button_5()))
+        wrist=int(round(self.__armJoy.get_button_8()-self.__armJoy.get_button_9()))
+        rotation=int(round(self.__armJoy.get_button_10()-self.__armJoy.get_button_11()))    
         self.__gloria.setArmPosition(x, y, z, wrist,rotation, grip)
     def linesensorBarsTester(self):
         if not self.__gloria:
@@ -499,7 +500,7 @@ class Gui():
             self.speedBarsTester()
             self.regulatorGraphTest()
             self.DistanceSensorsTest()
-        self.__root.after(1000, self.screenSaver)
+        self.__root.after(2000, self.screenSaver)
         
     def peripheralUpdater(self):
         if self.__motorJoy:
@@ -509,7 +510,7 @@ class Gui():
                 self.updateArmFromJoystick()
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
-        self.__root.after(50,self.peripheralUpdater)
+        self.__root.after(10,self.peripheralUpdater)
     def sensorUpdater(self):
         if self.__gloria:
             try:
@@ -518,6 +519,10 @@ class Gui():
                 self.handleInternalErrors("broken connection")
             try:
                 self.updateArmPostionText()
+            except (socket.error,AttributeError):
+                self.handleInternalErrors("broken connection")
+            try:
+                self.updateDistanceText()
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
             try:
@@ -553,13 +558,17 @@ class Gui():
                 self.fix_buttons(self.__gloria.getState(), self.__gloria.getAutoMotor())
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
-        self.__root.after(100,self.sensorUpdater)
+        self.__root.after(90,self.sensorUpdater)
     def updateStatusText(self):
         state=self.__gloria.getState()
         self.__overviewCanvas.itemconfig(self.__overviewStateText,text="state: "+state, fill="green")
     def updateArmPostionText(self):
         position=self.__gloria.getArmPosition()
         self.__overviewCanvas.itemconfig(self.__overviewPositionText,text="X:"+str(position[0])+" Y:"+str(position[1])+" Z:"+str(position[2]))
+    def updateDistanceText(self):
+        left_distance = self.__gloria.getLeftDistanceSensor()
+        right_distance = self.__gloria.getRightDistanceSensor()
+        self.__overviewCanvas.itemconfig(self.__overviewDistanceText, text="L: %.2f R: %.2f" %(left_distance, right_distance))
     def fix_buttons(self, state, autoMotor):  
         if state == "HALTED":
             self.__startButton.config(text="start", command=self.startFunction)            
