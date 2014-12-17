@@ -78,7 +78,8 @@ class Gloria:
         self.flush_timer = time.time()
 
         self.arm_return_pos = None
-        self.carry_pos = [0, 100, 130, 0, 0, 140]
+        self.default_pos = (0, 100, 110, 0, 0, 140)
+        self.carry_pos = (0, 100, 130, 0, 0, 140)
 
     def get_command(self):
         if not self.cmd_queue.empty():
@@ -317,6 +318,69 @@ class Gloria:
         left, right = self.shared["regulator"]
         self.set_speed(left, right)
 
+    def steer_arm_fixed(self, x=None, y=None, z=None, p=None, w=None, g=None):
+        if x is None:
+            x = self.shared["armPosition"][0]
+        if y is None:
+            y = self.shared["armPosition"][1]
+        if z is None:
+            z = self.shared["armPosition"][2]
+        if p is None:
+            p = self.shared["armPosition"][3]
+        if w is None:
+            w = self.shared["armPosition"][4]
+        if g is None:
+            g = self.shared["armPosition"][5]
+
+        old_position = tuple(self.shared["armPosition"])
+
+        self.shared["armPosition"][0] = x
+        self.shared["armPosition"][1] = y
+        self.shared["armPosition"][2] = z
+        self.shared["armPosition"][3] = p
+        self.shared["armPosition"][4] = w
+        self.shared["armPosition"][5] = g
+
+        log.info("steer_arm: x=%d y=%d z=%d p=%d w=%d g=%d"
+                 %(self.shared["armPosition"][0],
+                   self.shared["armPosition"][1],
+                   self.shared["armPosition"][2],
+                   self.shared["armPosition"][3],
+                   self.shared["armPosition"][4],
+                   self.shared["armPosition"][5]))
+
+        self.arm.setAll(self.shared["armPosition"])
+        servo_values = self.arm.getServoValues()
+
+        if self.arm.is_out_of_bounds():
+            log.warning("Arm is out of bounds! Resetting to last good coordinates.")
+            self.shared["armPosition"][0] = old_position[0]
+            self.shared["armPosition"][1] = old_position[1]
+            self.shared["armPosition"][2] = old_position[2]
+            self.shared["armPosition"][3] = old_position[3]
+            self.shared["armPosition"][4] = old_position[4]
+            self.shared["armPosition"][5] = old_position[5]
+        else:
+            for i in range(6):
+                self.drive.setArmAxis(i+1, servo_values[i])
+                time.sleep(0.001)
+                self.drive.sendAllAxis()
+                time.sleep(0.001)
+
+    def return_to_default_position(self):
+        self.steer_arm_fixed(z=self.carry_pos[2], w=self.carry_pos[4], p=self.carry_pos[0], g=self.carry_pos[1])
+        time.sleep(4)
+
+        self.steer_arm_fixed(x=self.carry_pos[0], y=self.carry_pos[1])
+        time.sleep(4)
+
+    def return_to_carry_position(self):
+        self.steer_arm_fixed(z=self.carry_pos[2])
+        time.sleep(4)
+
+        self.steer_arm_fixed(x=self.carry_pos[0], y=self.carry_pos[1])
+        time.sleep(4)
+
     def put_down_package(self, station):
         left = station.is_left()
         log.info("Putting down package on %s side." %["right", "left"][left])
@@ -329,35 +393,16 @@ class Gloria:
 
         self.arm_return_pos[0] = x
 
-        pos = self.arm_return_pos[:]
-        pos[2] = self.carry_pos[2]
+        self.steer_arm_fixed(x=self.arm_return_pos[0], y=self.arm_return_pos[1])
+        time.sleep(4)
 
-        log.info("Setting arm to %s" %str(pos))
-        self.steer_arm(*pos)
-        time.sleep(3)
+        self.steer_arm_fixed(z=self.arm_return_pos[2])
+        time.sleep(4)
 
-        pos[2] = self.arm_return_pos[2]
+        self.steer_arm_fixed(g=self.carry_pos[5])
+        time.sleep(4)
 
-        log.info("Setting arm to %s" %str(pos))
-        self.steer_arm(*pos)
-        time.sleep(3)
-
-        pos[5] = self.carry_pos[5]
-        log.info("Setting arm to %s" %str(pos))
-        self.steer_arm(*pos)
-        time.sleep(3)
-
-        pos[2] = self.carry_pos[2]
-
-        log.info("Setting arm to %s" %str(pos))
-        self.steer_arm(*pos)
-        time.sleep(3)
-
-        pos[0] = self.carry_pos[0]
-        pos[1] = self.carry_pos[1]
-
-        log.info("Setting arm to %s" %str(pos))
-        self.steer_arm(*pos)
+        self.return_to_default_position()
 
         self.has_package = self.shared["hasPackage"] = False
 
