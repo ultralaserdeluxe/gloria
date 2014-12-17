@@ -281,8 +281,8 @@ class Gui():
         self.__linesensorDot10=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-4+50),int(self.__overviewCanvas.winfo_height()/2.0-4-80),int(self.__overviewCanvas.winfo_width()/2.0+4+50),int(self.__overviewCanvas.winfo_height()/2.0+4-80),fill="red")
         self.__linesensorDots[10]=self.__linesensorDot10
         
-        self.__distanceLineLeft=self.__overviewCanvas.create_line(int(self.__overviewCanvas.winfo_width()/2.0-70),int(self.__overviewCanvas.winfo_height()/2.0-30),int(self.__overviewCanvas.winfo_width()/2.0-70),int(self.__overviewCanvas.winfo_height()/2.0+30),width=4,fill="black")
-        self.__distanceLineRight=self.__overviewCanvas.create_line(int(self.__overviewCanvas.winfo_width()/2.0+70),int(self.__overviewCanvas.winfo_height()/2.0-30),int(self.__overviewCanvas.winfo_width()/2.0+70),int(self.__overviewCanvas.winfo_height()/2.0+30),width=4,fill="black")
+        self.__distanceLineLeft=self.__overviewCanvas.create_line(int(self.__overviewCanvas.winfo_width()/2.0-60),int(self.__overviewCanvas.winfo_height()/2.0-30),int(self.__overviewCanvas.winfo_width()/2.0-60),int(self.__overviewCanvas.winfo_height()/2.0+30),width=4,fill="black")
+        self.__distanceLineRight=self.__overviewCanvas.create_line(int(self.__overviewCanvas.winfo_width()/2.0+60),int(self.__overviewCanvas.winfo_height()/2.0-30),int(self.__overviewCanvas.winfo_width()/2.0+60),int(self.__overviewCanvas.winfo_height()/2.0+30),width=4,fill="black")
 
         self.__overviewArmRing=self.__overviewCanvas.create_oval(int(self.__overviewCanvas.winfo_width()/2.0-10),int(self.__overviewCanvas.winfo_height()/2.0-10),int(self.__overviewCanvas.winfo_width()/2.0+10),int(self.__overviewCanvas.winfo_height()/2.0+10))
         self.__overviewArmHorizontalLine=self.__overviewCanvas.create_line(int(self.__overviewCanvas.winfo_width()/2.0-10),int(self.__overviewCanvas.winfo_height()/2.0),int(self.__overviewCanvas.winfo_width()/2.0+10),int(self.__overviewCanvas.winfo_height()/2.0),width=2,fill="black")
@@ -390,19 +390,19 @@ class Gui():
         self.__root.update()
     def DistanceSensorsTest(self):
         if not self.__gloria:
-            for i in range(0,150):
+            for i in range(0,30):
                 self.updateDistanceSensor(i, i)
                 time.sleep(0.01)
-            for i in range(150,0,-1):
+            for i in range(30,0,-1):
                 self.updateDistanceSensor(i, i)
                 time.sleep(0.01)
     def updateDistanceSensor(self,left,right):
         temp_list=self.__overviewCanvas.coords(self.__distanceLineLeft)
-        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0-70-(30-left))
+        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0-60-(left))
         self.__overviewCanvas.coords(self.__distanceLineLeft,tuple(temp_list))
         
         temp_list=self.__overviewCanvas.coords(self.__distanceLineRight)
-        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0+70+(right-30))
+        temp_list[0]=temp_list[2]=round(self.__overviewCanvas.winfo_width()/2.0+60+(right))
         self.__overviewCanvas.coords(self.__distanceLineRight,tuple(temp_list))
         self.__root.update()
     def speedBarsTester(self):

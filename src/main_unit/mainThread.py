@@ -127,15 +127,7 @@ class Gloria:
             self.has_package = self.shared["hasPackage"] = True
             self.arm_return_pos = self.shared["armPosition"][:]
 
-            pos = self.arm_return_pos[:]
-
-            pos[2] = self.carry_pos[2]
-            self.steer_arm(*pos)
-            time.sleep(3)
-
-            pos[0] = self.carry_pos[0]
-            pos[1] = self.carry_pos[1]
-            self.steer_arm(*pos)
+            self.return_to_carry_position()
 
             self.restore_state()
         elif cmd == "clearErrors":
