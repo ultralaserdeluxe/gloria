@@ -481,9 +481,9 @@ class Gui():
         x=int(round(tempX*4.0))
         y=int(round(-tempY*4.0))
         z=int(round(tempZ*4.0))
-        grip=int(round(self.__armJoy.get_button_4()*0.1-self.__armJoy.get_button_5()*0.1))
-        wrist=int(round(self.__armJoy.get_button_8()*0.1-self.__armJoy.get_button_9()*0.1))
-        rotation=int(round(self.__armJoy.get_button_10()*0.1-self.__armJoy.get_button_11()*0.1))    
+        grip=int(round(self.__armJoy.get_button_4()-self.__armJoy.get_button_5()))
+        wrist=int(round(self.__armJoy.get_button_8()-self.__armJoy.get_button_9()))
+        rotation=int(round(self.__armJoy.get_button_10()-self.__armJoy.get_button_11()))    
         self.__gloria.setArmPosition(x, y, z, wrist,rotation, grip)
     def linesensorBarsTester(self):
         if not self.__gloria:
