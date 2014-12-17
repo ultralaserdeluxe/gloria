@@ -140,6 +140,7 @@ class Gloria:
 
     def run(self):
         self.change_state(HALTED)
+        self.return_to_default_position()
 
         while True:
             time.sleep(0.005)
