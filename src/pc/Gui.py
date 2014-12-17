@@ -336,8 +336,8 @@ class Gui():
         #starts mainloop
         self.__root.update()
         self.__root.after(2000, self.screenSaver)
-        self.__root.after(25,self.peripheralUpdater)
-        self.__root.after(25,self.sensorUpdater)
+        self.__root.after(10,self.peripheralUpdater)
+        self.__root.after(90,self.sensorUpdater)
         self.__root.mainloop()
     def connectArmJoystick(self):
         temp=Joystick("arm")
@@ -472,7 +472,7 @@ class Gui():
             temp=[]
             for i in range(10):
                 temp.append(function())
-                time.sleep(0.01)
+                time.sleep(0.0001)
             return reduce(lambda x,y:x+y,temp)/(len(temp))
         
         tempX=get_average(self.__armJoy.x_axis)
@@ -500,7 +500,7 @@ class Gui():
             self.speedBarsTester()
             self.regulatorGraphTest()
             self.DistanceSensorsTest()
-        self.__root.after(1000, self.screenSaver)
+        self.__root.after(2000, self.screenSaver)
         
     def peripheralUpdater(self):
         if self.__motorJoy:
@@ -510,7 +510,7 @@ class Gui():
                 self.updateArmFromJoystick()
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
-        self.__root.after(25,self.peripheralUpdater)
+        self.__root.after(10,self.peripheralUpdater)
     def sensorUpdater(self):
         if self.__gloria:
             try:
@@ -558,7 +558,7 @@ class Gui():
                 self.fix_buttons(self.__gloria.getState(), self.__gloria.getAutoMotor())
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
-        self.__root.after(25,self.sensorUpdater)
+        self.__root.after(90,self.sensorUpdater)
     def updateStatusText(self):
         state=self.__gloria.getState()
         self.__overviewCanvas.itemconfig(self.__overviewStateText,text="state: "+state, fill="green")
