@@ -377,7 +377,7 @@ class Gloria:
         time.sleep(2)
 
         self.steer_arm_fixed(z=self.carry_pos[2])
-        time.sleep(3)
+        time.sleep(2)
 
         self.steer_arm_fixed(x=self.carry_pos[0], y=self.carry_pos[1])
         time.sleep(4)
