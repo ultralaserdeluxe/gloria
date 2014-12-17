@@ -482,7 +482,7 @@ class Gui():
         y=int(round(-tempY*8.0))
         z=int(round(tempZ*8.0))
         grip=int(round(self.__armJoy.get_button_4()*8-self.__armJoy.get_button_5()*8))
-        wrist=int(round(self.__armJoy.get_button_8()*8-self.__armJoy.get_button_8()*8))
+        wrist=int(round(self.__armJoy.get_button_8()*8-self.__armJoy.get_button_9()*8))
         rotation=int(round(self.__armJoy.get_button_10()*8-self.__armJoy.get_button_11()*8))    
         self.__gloria.setArmPosition(x, y, z, wrist,rotation, grip)
     def linesensorBarsTester(self):
@@ -510,7 +510,7 @@ class Gui():
                 self.updateArmFromJoystick()
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
-        self.__root.after(50,self.peripheralUpdater)
+        self.__root.after(25,self.peripheralUpdater)
     def sensorUpdater(self):
         if self.__gloria:
             try:
@@ -558,7 +558,7 @@ class Gui():
                 self.fix_buttons(self.__gloria.getState(), self.__gloria.getAutoMotor())
             except (socket.error,AttributeError):
                 self.handleInternalErrors("broken connection")
-        self.__root.after(100,self.sensorUpdater)
+        self.__root.after(25,self.sensorUpdater)
     def updateStatusText(self):
         state=self.__gloria.getState()
         self.__overviewCanvas.itemconfig(self.__overviewStateText,text="state: "+state, fill="green")
